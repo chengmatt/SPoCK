@@ -1,0 +1,42 @@
+Type: Package
+Package: SPoCK
+Title: Spatial (S) Population (Po) Model with Connectivity (C) across
+    generalized Komponents (K)
+Version: 0.1.0
+Authors@R: 
+    person("Matthew", "Cheng", , "jane@example.com", role = c("aut", "cre"))
+Description: A generalized spatial population model for stock assessment,
+    written in RTMB.
+License: GPL-3
+Depends:
+    RTMB
+Imports: 
+    afscOSA,
+    bayesplot,
+    compResidual,
+    cowplot,
+    data.table,
+    doSNOW,
+    dplyr,
+    future.apply,
+    GGally,
+    ggplot2,
+    here,
+    MASS,
+    Matrix,
+    parallel,
+    progressr,
+    randtests,
+    reshape2,
+    rstan,
+    stats,
+    stringr,
+    tidyr,
+    tidyverse,
+    tmbstan
+Remotes:
+    fishfollower/compResidual/compResidual,
+    noaa-afsc/afscOSA
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
