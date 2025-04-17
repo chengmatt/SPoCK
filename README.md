@@ -2,7 +2,7 @@
 
 ## Installation
 
-Install `compResidual` and `afscOSA` using the instructions below. 
+Install `SPoCK`,`afscOSA`, and `compResidual` using the instructions below. 
 
 ```
 # install.packages("devtools")
@@ -10,5 +10,6 @@ Install `compResidual` and `afscOSA` using the instructions below.
 # installation instructions
 # TMB:::install.contrib("https://github.com/vtrijoulet/OSA_multivariate_dists/archive/main.zip")
 # devtools::install_github("fishfollower/compResidual/compResidual")
+devtools::install_github("noaa-afsc/afscOSA", dependencies = TRUE)
 devtools::install_github("chengmatt/SPoCK", dependencies = TRUE)
 ```
