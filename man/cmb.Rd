@@ -19,3 +19,4 @@ For combining a parameter and data list in RTMB so a data object can be explicit
   obj <- RTMB::MakeADFun(cmb(sabie_RTMB, data), parameters = parameters, map = mapping, random = random, silent = TRUE)
 }
 }
+\keyword{internal}

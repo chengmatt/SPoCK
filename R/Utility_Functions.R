@@ -21,7 +21,7 @@ theme_sablefish <- function() {
 #' @param rho correaltion parameter
 #'
 #' @return correlation matrix for an ar1 process
-#' @export get_AR1_CorrMat
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -44,7 +44,7 @@ get_AR1_CorrMat <- function(n, rho) {
 #' @param rho correaltion parameter
 #'
 #' @return constant correlation matrix
-#' @export get_Constant_CorrMat
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -65,7 +65,7 @@ get_Constant_CorrMat <- function(n, rho) {
 #'
 #' @param f Parameter list
 #' @param d Data list
-#' @export cmb
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #'   obj <- RTMB::MakeADFun(cmb(sabie_RTMB, data), parameters = parameters, map = mapping, random = random, silent = TRUE)

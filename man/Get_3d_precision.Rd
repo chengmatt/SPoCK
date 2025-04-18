@@ -35,3 +35,4 @@ Sparse precision matrix dimensioned by n_ages * n_years, n_ages * n_years
 \description{
 Constructor algorithin for correlations within ages, years, and cohort (Work in Progress)
 }
+\keyword{internal}

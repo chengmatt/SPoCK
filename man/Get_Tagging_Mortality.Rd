@@ -47,3 +47,4 @@ Z or F values from tagging specifications
 \description{
 Get values for total tag mortality and tag fishing mortality
 }
+\keyword{internal}

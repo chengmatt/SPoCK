@@ -40,3 +40,4 @@ optim <- stats::nlminb(spr_ad$par, spr_ad$fn, spr_ad$gr,
 exp(optim$par) # f_x
 }
 }
+\keyword{internal}

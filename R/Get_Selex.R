@@ -9,7 +9,7 @@
 #' @param Region Region index value
 #' @param Sex Sex index value
 #'
-#' @export Get_Selex
+#' @keywords internal
 Get_Selex = function(Selex_Model, TimeVary_Model, ln_Pars, ln_seldevs, Region, Year, Age, Sex) {
 
   "c" <- RTMB::ADoverload("c")

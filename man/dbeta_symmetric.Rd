@@ -23,3 +23,4 @@ Returns likelihood values from a symmetric beta
 \description{
 Symmetric Beta Function
 }
+\keyword{internal}

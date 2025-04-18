@@ -21,3 +21,4 @@ numeric value of log likelihood (in positive space)
 \description{
 Get selectivity process error log likelihoods (positive)
 }
+\keyword{internal}

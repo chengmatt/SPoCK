@@ -23,3 +23,4 @@ Returns likelihood values from a logistic normal
 \description{
 Logistic Normal Likelihood
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ rlogistnormal(exp, pars, comp_like)
 \description{
 Simulate logistic normal variables
 }
+\keyword{internal}

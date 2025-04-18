@@ -4,7 +4,7 @@
 #' @param pars Parameters for a logistic normal (iid == 1 parameter, AR1 == 2 parameters, 2D, by age and sex == 3 parameters, 3D, by age, sex, and region == 4 parameters)
 #' @param comp_like Likelihood structure (iid == 2, ar1 == 3, 2d == 4, 3d == 5)
 #' @importFrom MASS mvrnorm
-#' @export rlogistnormal
+#' @keywords internal
 #'
 rlogistnormal <- function(exp,
                           pars,

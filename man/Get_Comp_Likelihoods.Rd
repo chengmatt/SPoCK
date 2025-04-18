@@ -66,3 +66,4 @@ Returns negative log likelihood for composition data (age and/or length)
 \description{
 Gives negative log liklelihood values for composition data for a given year and a given fleet (fishery or survey)
 }
+\keyword{internal}

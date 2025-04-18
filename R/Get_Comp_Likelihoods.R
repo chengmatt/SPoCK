@@ -20,7 +20,7 @@
 #' @param LN_corr_pars_agg Logistic normal correlation parameters if comps are aggregated (just dimensioned by length of 1 value)
 #'
 #' @return Returns negative log likelihood for composition data (age and/or length)
-#' @export Get_Comp_Likelihoods
+#' @keywords internal
 #'
 Get_Comp_Likelihoods = function(Exp,
                                 Obs,

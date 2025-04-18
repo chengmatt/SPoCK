@@ -25,3 +25,4 @@ returns likelihood values from a dirihclet multinomial
 Dirichlet Mutlinomial Likelihood
 From https://github.com/James-Thorson/CCSRA/blob/main/inst/executables/CCSRA_v9.cpp
 }
+\keyword{internal}

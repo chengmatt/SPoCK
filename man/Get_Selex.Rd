@@ -35,3 +35,4 @@ Get_Selex(
 \description{
 Get Selectivity
 }
+\keyword{internal}

@@ -6,7 +6,7 @@
 #' @param mapping Mapping list used for the RTMB model
 #'
 #' @returns List of data, parameters, and mapping that have truncated dimensions from the original data, parameters, and mapping list
-#' @export retro_truncate_yr
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{

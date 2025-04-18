@@ -21,3 +21,4 @@ Returns beta distribution parmeters with bounds
 \description{
 Get scaled alpha beta parameters for a scaled beta distribution (for steepness) from https://stackoverflow.com/questions/75165770/beta-distribution-with-bounds-at-0-1-0-5
 }
+\keyword{internal}

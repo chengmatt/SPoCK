@@ -3,7 +3,7 @@
 #' @param pars Parameter List
 #' @param data Data List
 #'
-#' @export single_region_SPR
+#' @keywords internal
 #' @import RTMB
 #'
 #' @examples

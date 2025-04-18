@@ -14,3 +14,4 @@ SPoCK_rtmb(pars, data)
 \description{
 Generalized RTMB model
 }
+\keyword{internal}

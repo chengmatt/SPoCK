@@ -12,7 +12,7 @@
 #' @param rec_sexratio Recruitment sexratio array dimensioned by year, region, sex, and 1
 #' @param movement_matrix Movement array, dimensioned by region from, region to, year, age, sex, and 1
 #'
-#' @export Equilibrium_PopSim_Iter
+#' @keywords internal
 #'
 Equilibrium_PopSim_Iter <- function(n_regions = n_regions,
                                     n_sexes = n_sexes,

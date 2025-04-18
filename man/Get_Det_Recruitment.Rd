@@ -44,3 +44,4 @@ Determinstic recruitment values from mean recruitment or beverton holt
 \description{
 Get Deterministic Recruitment
 }
+\keyword{internal}

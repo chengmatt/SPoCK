@@ -22,3 +22,4 @@ Constant correlation matrix
 mat <- get_Constant_CorrMat(10, 0.5)
 }
 }
+\keyword{internal}

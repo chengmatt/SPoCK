@@ -6,7 +6,7 @@
 #' @param map_sel_devs selectivity deviations to share
 #'
 #' @returns numeric value of log likelihood (in positive space)
-#' @export Get_sel_PE_loglik
+#' @keywords internal
 #' @import RTMB
 Get_sel_PE_loglik <- function(PE_model,
                               PE_pars,

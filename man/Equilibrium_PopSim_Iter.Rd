@@ -44,3 +44,4 @@ Equilibrium_PopSim_Iter(
 \description{
 Get equilibrium age structure for simulation via n iterations
 }
+\keyword{internal}

@@ -29,7 +29,7 @@
 #' @param pars Parameter List
 #' @param data Data List
 #' @import RTMB
-#' @export SPoCK_rtmb
+#' @keywords internal
 SPoCK_rtmb = function(pars, data) {
 
   "c" <- RTMB::ADoverload("c")

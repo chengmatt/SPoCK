@@ -22,3 +22,4 @@ Function to fill in an n x n correlation AR(1) matrix
 mat <- get_AR1_CorrMat(10, 0.5)
 }
 }
+\keyword{internal}

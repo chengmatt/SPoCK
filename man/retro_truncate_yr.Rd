@@ -27,3 +27,4 @@ retro_list <- retro_truncate_year(j = 0, data, parameters, mapping) # does not r
 retro_list <- retro_truncate_year(j = 1, data, parameters, mapping) # removes last year of data
 }
 }
+\keyword{internal}

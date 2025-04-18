@@ -93,7 +93,7 @@ get_idx_fits <- function(data,
 #' @param comp_agg_type Composition aggregation type to mimic sablefish ADMB assessment
 #'
 #' @return Returns a list of array observed and expected values for a given year and fleet
-#' @export Restrc_Comps
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{

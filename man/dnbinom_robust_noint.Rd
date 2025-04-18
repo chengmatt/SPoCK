@@ -21,3 +21,4 @@ Returns likelihood values from a robust negative binomial
 \description{
 Negative binomial that can take non-integer values
 }
+\keyword{internal}

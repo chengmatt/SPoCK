@@ -19,3 +19,4 @@ Returns likelihood values from a poisson
 \description{
 Poisson that can take non-integer values
 }
+\keyword{internal}

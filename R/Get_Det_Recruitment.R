@@ -12,7 +12,7 @@
 #' @param rec_lag recruitment lag for indexing SSB year
 #'
 #' @returns Determinstic recruitment values from mean recruitment or beverton holt
-#' @export Get_Det_Recruitment
+#' @keywords internal
 #'
 Get_Det_Recruitment <- function(recruitment_model,
                                 y,

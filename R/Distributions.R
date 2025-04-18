@@ -7,7 +7,7 @@
 #' @param log whether or not to return the log likelihood
 #'
 #' @returns Returns likelihood values from a symmetric beta
-#' @export dbeta_symmetric
+#' @keywords internal
 #'
 dbeta_symmetric <- function(p_val, p_ub, p_lb, p_prsd, log = TRUE) {
   # Calculate mu term
@@ -29,7 +29,7 @@ dbeta_symmetric <- function(p_val, p_ub, p_lb, p_prsd, log = TRUE) {
 #' @param log Whether to give log or not
 #'
 #' @returns Returns likelihood values form a dirichlet
-#' @export ddirichlet
+#' @keywords internal
 #'
 ddirichlet <- function(x, alpha, log = TRUE) {
   logres = lgamma(sum(alpha)) - sum(lgamma(alpha)) + sum((alpha - 1) * log(x))
@@ -45,7 +45,7 @@ ddirichlet <- function(x, alpha, log = TRUE) {
 #' @param give_log Whether or not likelihood is in log space
 #'
 #' @returns returns likelihood values from a dirihclet multinomial
-#' @export ddirmult
+#' @keywords internal
 #'
 ddirmult = function(obs, pred, Ntotal, ln_theta, give_log = TRUE) {
   # Set up function variables
@@ -79,7 +79,7 @@ ddirmult = function(obs, pred, Ntotal, ln_theta, give_log = TRUE) {
 #'
 #' @import RTMB
 #' @returns Returns likelihood values from a logistic normal
-#' @export dlogistnormal
+#' @keywords internal
 #'
 dlogistnormal = function(obs, pred, Sigma, perc = 0.85, give_log = TRUE) {
 
@@ -116,7 +116,7 @@ dlogistnormal = function(obs, pred, Sigma, perc = 0.85, give_log = TRUE) {
 #' @param log_var_minus_mu log var minus mu - reparameterize negbin
 #'
 #' @returns Returns likelihood values from a robust negative binomial
-#' @export dnbinom_robust_noint
+#' @keywords internal
 #'
 dnbinom_robust_noint <- function(x, log_mu, log_var_minus_mu, give_log = TRUE) {
   mu = exp(log_mu)
@@ -134,7 +134,7 @@ dnbinom_robust_noint <- function(x, log_mu, log_var_minus_mu, give_log = TRUE) {
 #' @param give_log if giving log likelihood
 #'
 #' @returns Returns likelihood values from a poisson
-#' @export dpois_noint
+#' @keywords internal
 #'
 dpois_noint <- function(x, pred, give_log = TRUE) {
   logres <- -pred + x*log(pred) - lgamma(x+1)
@@ -149,7 +149,7 @@ dpois_noint <- function(x, pred, give_log = TRUE) {
 #' @param mu mean in normal space
 #'
 #' @returns Returns beta distribution parmeters with bounds
-#' @export get_beta_scaled_pars
+#' @keywords internal
 #'
 get_beta_scaled_pars <- function(low, high, mu, sigma) {
   # convert mean and sd to alpha and beta

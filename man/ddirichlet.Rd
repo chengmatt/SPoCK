@@ -19,3 +19,4 @@ Returns likelihood values form a dirichlet
 \description{
 Dirichlet Likelihood
 }
+\keyword{internal}

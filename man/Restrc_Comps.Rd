@@ -31,3 +31,4 @@ comps <- Restrc_Comps(Exp, Obs, Comp_Type, age_or_len, AgeingError)
 comps$Exp; comps$Obs
 }
 }
+\keyword{internal}

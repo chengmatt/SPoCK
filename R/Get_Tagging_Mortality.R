@@ -13,7 +13,7 @@
 #' @param what Whether to return Z or F (total or fishing mortality)
 #'
 #' @returns Z or F values from tagging specifications
-#' @export Get_Tagging_Mortality
+#' @keywords internal
 #'
 Get_Tagging_Mortality <- function(tag_selex,
                                   tag_natmort,
