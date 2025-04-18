@@ -109,33 +109,78 @@ do_likelihood_profile <- function(data,
   } # end j loop
 
   # Doing some residual munging into the correct format
-  jnLL_df <- reshape2::melt(jnLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'jnLL')
-  rec_nLL_df <- reshape2::melt(rec_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'RecPen')
-  M_nLL_df <- reshape2::melt(M_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'M Prior')
-  sel_nLL_df <- reshape2::melt(sel_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'Selex Pen')
-  Movement_nLL_df <- reshape2::melt(Movement_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'Move Prior')
+  jnLL_df <- reshape2::melt(jnLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'jnLL')
+  rec_nLL_df <- reshape2::melt(rec_nLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'RecPen')
+  M_nLL_df <- reshape2::melt(M_nLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'M Prior')
+  sel_nLL_df <- reshape2::melt(sel_nLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'Selex Pen')
+  Movement_nLL_df <- reshape2::melt(Movement_nLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'Move Prior')
   h_nLL_df <- reshape2::melt(h_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'h Prior')
-  TagRep_nLL_df <- reshape2::melt(TagRep_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'TagRep Prior')
-  Fmort_nLL_df <- reshape2::melt(Fmort_nLL) %>% dplyr::select(-Var2) %>% dplyr::rename(prof_val = Var1) %>% dplyr::mutate(type = 'FmortPen')
-  Catch_nLL_df <- Catch_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3) %>% dplyr::mutate(type = 'Catch')
-  FishAge_nLL_df <- FishAge_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>% dplyr::mutate(type = 'FishAge')
-  SrvAge_nLL_df <- SrvAge_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>% dplyr::mutate(type = 'SrvAge')
-  FishLen_nLL_df <- FishLen_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>% dplyr::mutate(type = 'FishLen')
-  SrvLen_nLL_df <- SrvLen_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>% dplyr::mutate(type = 'SrvLen')
-  FishIdx_nLL_df <- FishLen_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3) %>% dplyr::mutate(type = 'FishIdx')
-  SrvIdx_nLL_df <- SrvIdx_nLL %>% dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3) %>% dplyr::mutate(type = 'SrvIdx')
-  Tag_nLL_df <- Tag_nLL %>% dplyr::rename(Recap_Year = Var1, Tag_Cohort = Var2, Region = Var3, Age = Var4, Sex = Var5) %>% dplyr::mutate(type = 'Tagging')
+  TagRep_nLL_df <- reshape2::melt(TagRep_nLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'TagRep Prior')
+  Fmort_nLL_df <- reshape2::melt(Fmort_nLL) %>%
+    dplyr::select(-Var2) %>%
+    dplyr::rename(prof_val = Var1) %>%
+    dplyr::mutate(type = 'FmortPen')
+  Catch_nLL_df <- Catch_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3) %>%
+    dplyr::mutate(type = 'Catch')
+  FishAge_nLL_df <- FishAge_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>%
+    dplyr::mutate(type = 'FishAge')
+  SrvAge_nLL_df <- SrvAge_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>%
+    dplyr::mutate(type = 'SrvAge')
+  FishLen_nLL_df <- FishLen_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>%
+    dplyr::mutate(type = 'FishLen')
+  SrvLen_nLL_df <- SrvLen_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Sex = Var3, Fleet = Var4) %>%
+    dplyr::mutate(type = 'SrvLen')
+  FishIdx_nLL_df <- FishLen_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3) %>%
+    dplyr::mutate(type = 'FishIdx')
+  SrvIdx_nLL_df <- SrvIdx_nLL %>%
+    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3) %>%
+    dplyr::mutate(type = 'SrvIdx')
+  Tag_nLL_df <- Tag_nLL %>%
+    dplyr::rename(Recap_Year = Var1, Tag_Cohort = Var2, Region = Var3, Age = Var4, Sex = Var5) %>%
+    dplyr::mutate(type = 'Tagging')
 
   # Get likelihoods aggregated across all dimensions
   agg_nLL <- rbind(jnLL_df, rec_nLL_df, M_nLL_df, Movement_nLL_df, h_nLL_df, TagRep_nLL_df,Fmort_nLL_df, sel_nLL_df,
-                   Catch_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value)),
-                   Tag_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T)),
-                   FishAge_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T)),
-                   SrvAge_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T)),
-                   FishLen_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T)),
-                   SrvLen_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T)),
-                   FishIdx_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T)),
-                   SrvIdx_nLL_df %>% dplyr::group_by(prof_val, type) %>% dplyr::summarize(value = sum(value, na.rm = T))
+                   Catch_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value)),
+                   Tag_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T)),
+                   FishAge_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T)),
+                   SrvAge_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T)),
+                   FishLen_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T)),
+                   SrvLen_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T)),
+                   FishIdx_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T)),
+                   SrvIdx_nLL_df %>% dplyr::group_by(prof_val, type) %>%
+                     dplyr::summarize(value = sum(value, na.rm = T))
                    )
 
   profile_list <- list(jnLL_df = jnLL_df,

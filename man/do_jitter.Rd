@@ -56,12 +56,15 @@ Function to conduct jitter analysis
                  n_cores = 8)
 
    # get proportion converged
-   prop_converged <- jit \%>\% filter(Year == 1, Type == 'Recruitment') \%>\%
+   prop_converged <- jit \%>\%
+   filter(Year == 1, Type == 'Recruitment') \%>\%
      summarize(prop_conv = sum(Hessian) / length(Hessian))
 
    # get final model results
-   final_mod <- reshape2::melt(sabie_rtmb_model$rep$SSB) \%>\% rename(Region = Var1, Year = Var2) \%>\% mutate(Type = 'SSB') \%>\%
-     bind_rows(reshape2::melt(sabie_rtmb_model$rep$Rec) \%>\% rename(Region = Var1, Year = Var2) \%>\% mutate(Type = 'Recruitment'))
+   final_mod <- reshape2::melt(sabie_rtmb_model$rep$SSB) \%>\% rename(Region = Var1, Year = Var2) \%>\%
+   mutate(Type = 'SSB') \%>\%
+     bind_rows(reshape2::melt(sabie_rtmb_model$rep$Rec) \%>\%
+     rename(Region = Var1, Year = Var2) \%>\% mutate(Type = 'Recruitment'))
 
    # comparison of SSB and recruitment
   ggplot() +
