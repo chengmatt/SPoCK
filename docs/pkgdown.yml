@@ -2,5 +2,7 @@ pandoc: '3.2'
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
+  single-region-bsai-pollock-case-study: single-region-bsai-pollock-case-study.html
   single-region-sablefish-case-study: single-region-sablefish-case-study.html
-last_built: 2025-04-18T16:18Z
+  spatial-sablefish-case-study: spatial-sablefish-case-study.html
+last_built: 2025-04-18T16:25Z

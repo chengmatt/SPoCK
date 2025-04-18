@@ -1,5 +1,5 @@
 ---
-title: "Setting up a single region model"
+title: "Setting up a single region model (Alaska Sablefish)"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{single-region-sablefish-case-study}

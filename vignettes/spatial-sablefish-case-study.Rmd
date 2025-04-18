@@ -1,0 +1,19 @@
+---
+title: "Setting up a spatial model (Alaska Sablefish)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{spatial-sablefish-case-study}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SPoCK)
+```
