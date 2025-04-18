@@ -13,7 +13,7 @@
 #' @import RTMB
 #' @import future.apply
 #' @import progressr
-#' @import reshape2
+#' @importFrom reshape2 melt
 #' @import dplyr
 #' @importFrom stats rnorm nlminb
 #' @returns Dataframe of jitter values
