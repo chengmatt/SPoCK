@@ -13,6 +13,7 @@ Depends:
 Imports: 
     afscOSA,
     bayesplot,
+    compResidual,
     cowplot,
     data.table,
     doSNOW,
@@ -36,8 +37,7 @@ Imports:
 Suggests: 
     here,
     knitr,
-    rmarkdown,
-    compResidual
+    rmarkdown
 VignetteBuilder: 
     knitr
 Remotes:
