@@ -1,0 +1,89 @@
+---
+title: "Setting up a single region model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{single-region-sablefish-case-study}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  tidy.opts = list(width.cutoff = 30), 
+  tidy = TRUE
+)
+
+```
+
+The `SPoCK` package utilizes several helper functions to facilitate the set up of an age-structured assessment model. In this vignette, we will demonstrate how these helper functions might be used to set up a single-region model for Alaska sablefish. The vignette sets up the model following the parameterization of the 2024 federal Alaska sablefish stock assessment and compares model outputs from `SPoCK` to the existing ADMB model. The 2024 federal Alaska sablefish stock assessment is assessed on an Alaska-wide scale (from the Bering Sea to Eastern Gulf of Alaska) as a panmictic single-region model, with 2 sexes (females and males), 2 fishery fleets (fixed-gear and trawl), and 3 survey fleets (domestic longline, Japanese longline, and a domestic trawl survey). 
+
+First, let us load in any necessary packages. 
+
+```{r setup, warning = FALSE, message = FALSE}
+# Load in packages
+library(SPoCK) 
+library(here)
+library(RTMB)
+```
+
+To initially set the model up, an input list containing a data list, parameter list, and a mapping list needs to be constructed. This is aided with the function `Setup_Mod_Dim`, where users specify a vector of years, ages, and lengths. Additionally, users need to specify the number of regions modelled (n_regions), number of sexes modelled (n_sexes), number of fishery fleets (n_fish_fleets), and number of survey fleets (n_srv_fleets)
+
+```{r, message = FALSE}
+input_list <- SPoCK::Setup_Mod_Dim(years = 1:65, # vector of years 
+                                   # (corresponds to year 1960 - 2024)
+                                   ages = 1:30, # vector of ages
+                                   lens = seq(41,99,2), # number of lengths
+                                   n_regions = 1, # number of regions
+                                   n_sexes = 2, # number of sexes == 1,
+                                   # female, == 2 male
+                                   n_fish_fleets = 2, # number of fishery
+                                   # fleet == 1, fixed gear, == 2 trawl gear
+                                   n_srv_fleets = 3 # number of survey fleets
+)
+```
+
+Following the initialization of `input_list`, we can pass the created object into the next function (`Setup_Mod_Rec`) to parameterize recruitment dynamics. In the case of Alaska sablefish, recruitment is parameterized as such:
+
+1) Mean Recruitment, with no stock recruitment relationship assumed,
+2) A recruitment bias ramp is used, following the methods of Methot and Taylor 2011 (`do_bias_ramp = 1`),
+3) Two values for `sigmaR` are used, the first value represents an early period `sigmaR`, which is fixed at 0.4, while the second value represents a late period `sigmaR`, which is freely estimated (although should be fixed).
+4) Recruitment deviations are estimated in a penalized likelihood framework,
+5) Recruitment deviations are estimated for all years, except for the terminal year,
+6) Recruitment sex-ratios are fixed at 0.5 for each sex,
+7) Initial age structure is derived by assuming a geometric series (`init_age_strc = 1`; the alternative is iterating age structure to some equilibrium `init_age_strc = 0`), and 
+8) A 10% fraction of the mean fishing mortality rate is assumed for initalizing the age structure.
+
+```{r, message = FALSE}
+input_list <- Setup_Mod_Rec(input_list = input_list, # input data list from above
+                            # Model options
+                            do_rec_bias_ramp = 1, # do bias ramp 
+                            # (0 == don't do bias ramp, 1 == do bias ramp)
+                            # breakpoints for bias ramp 
+                            # (1 == no bias ramp - 1960 - 1980, 
+                            # 2 == ascending limb of bias ramp - 1980 - 1990,
+                            # 3 == full bias correction - 1990 - 2022, == 4 
+                            # no bias correction - terminal year of 
+                            # recruitment estimate)
+                            bias_year = c(length(1960:1979),
+                                          length(1960:1989), 
+                                          (length(1960:2023) - 5), 
+                                          length(1960:2024) - 2) + 1,
+                            sigmaR_switch = as.integer(length(1960:1975)), 
+                            # when to switch from early to late sigmaR
+                            dont_est_recdev_last = 1, 
+                            # don't estimate last recruitment deviate
+                            ln_sigmaR = log(c(0.4, 1.2)),
+                            rec_model = "mean_rec", # recruitment model
+                            sigmaR_spec = "fix_early_est_late", 
+                            # fix early sigmaR, estiamte late sigmaR
+                            sexratio = as.vector(c(0.5, 0.5)), 
+                            # recruitment sex ratio
+                            init_age_strc = 1, # how to derive inital age strc
+                            init_F_prop = 0.1 # fraction of mean F from 
+                            # dominant fleet to apply to initial age strc
+)
+```
+
+

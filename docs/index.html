@@ -42,6 +42,18 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/single-region-sablefish-case-study.html">Setting up a single region model</a>
+    </li>
+  </ul>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -58,7 +70,11 @@
 <div class="section level1">
 <div class="page-header"><h1 id="spock-spatial-s-population-po-model-with-connectivity-c-across-generalized-komponents-k">SPoCK: Spatial (S) Population (Po) Model with Connectivity (C) across generalized Komponents (K)<a class="anchor" aria-label="anchor" href="#spock-spatial-s-population-po-model-with-connectivity-c-across-generalized-komponents-k"></a>
 </h1></div>
+<div class="section level4">
+<h4 id="matt-cheng-lhchengalaskaedu-dan-goethel-pete-hulson-curry-cunningham">Matt Cheng (<a href="mailto:lhcheng@alaska.edu" class="email">lhcheng@alaska.edu</a>), Dan Goethel, Pete Hulson, Curry Cunningham<a class="anchor" aria-label="anchor" href="#matt-cheng-lhchengalaskaedu-dan-goethel-pete-hulson-curry-cunningham"></a>
+</h4>
 <p>A generalized spatial stock assessment model written in RTMB, than be extended to represent any number of regions, ages, sexes, and fleets.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -72,6 +88,7 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chengmatt/SPoCK"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
 <p>Some users may experience installation issues regarding permissions. This can potentially be circumvented with the following code:</p>
 <pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chengmatt/SPoCK"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>, lib <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"R_LIBS_USER"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+<p><em>This package is still very much under active development. Use at your own risk!</em></p>
 </div>
 </div>
   </div>

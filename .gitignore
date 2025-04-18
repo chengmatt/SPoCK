@@ -4,3 +4,6 @@
 .Ruserdata
 .DS_Store
 /dev
+inst/doc
+/doc/
+/Meta/

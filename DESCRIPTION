@@ -33,7 +33,11 @@ Imports:
     tidyr,
     tmbstan
 Suggests: 
-    here
+    here,
+    knitr,
+    rmarkdown
+VignetteBuilder: 
+    knitr
 Remotes:
     fishfollower/compResidual/compResidual,
     noaa-afsc/afscOSA

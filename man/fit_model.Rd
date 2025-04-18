@@ -4,7 +4,14 @@
 \alias{fit_model}
 \title{Run RTMB model}
 \usage{
-fit_model(data, parameters, mapping, random = NULL, newton_loops = 3)
+fit_model(
+  data,
+  parameters,
+  mapping,
+  random = NULL,
+  newton_loops = 3,
+  silent = FALSE
+)
 }
 \arguments{
 \item{data}{Data list}
@@ -16,6 +23,8 @@ fit_model(data, parameters, mapping, random = NULL, newton_loops = 3)
 \item{random}{Character of random effects to integrate out}
 
 \item{newton_loops}{Number of newton loops to run to get gradients down}
+
+\item{silent}{Boolean on whether or not model run is silent}
 }
 \value{
 Returns a list object that is optimized, with results outputted from the RTMB model
