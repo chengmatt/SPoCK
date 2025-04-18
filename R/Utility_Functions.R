@@ -9,9 +9,9 @@ theme_sablefish <- function() {
           strip.text = element_text(size = 17),
           title = element_text(size = 21, color = 'black'),
           axis.text = element_text(size = 15, color = "black"),
-          axis.= element_text(size = 17, color = 'black'),
+          axis.title = element_text(size = 17, color = 'black'),
           legend.text = element_text(size = 15, color = "black"),
-          legend.= element_text(size = 17, color = 'black'))
+          legend.title = element_text(size = 17, color = 'black'))
 }
 
 

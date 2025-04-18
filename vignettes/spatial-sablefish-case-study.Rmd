@@ -1,5 +1,5 @@
 ---
-title: "Setting up a spatial model (Alaska Sablefish)"
+title: "spatial-sablefish-case-study"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{spatial-sablefish-case-study}

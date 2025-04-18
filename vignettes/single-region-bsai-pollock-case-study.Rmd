@@ -1,5 +1,5 @@
 ---
-title: "Setting up a single region model (BSAI Pollock)"
+title: "single-region-bsai-pollock-case-study"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{single-region-bsai-pollock-case-study}
