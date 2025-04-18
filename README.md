@@ -20,4 +20,5 @@ Some users may experience installation issues regarding permissions. This can po
 ```
 devtools::install_github("chengmatt/SPoCK", dependencies = TRUE, lib = Sys.getenv("R_LIBS_USER"))
 ```
+_This package is still very much under active development. Use at your own risk!_
 
