@@ -1,4 +1,6 @@
 # SPoCK: Spatial (S) Population (Po) Model with Connectivity (C) across generalized Komponents (K)
+#### Matt Cheng (lhcheng@alaska.edu), Dan Goethel, Pete Hulson, Curry Cunningham
+
 A generalized spatial stock assessment model written in RTMB, than be extended to represent any number of regions, ages, sexes, and fleets. 
 
 ## Installation
