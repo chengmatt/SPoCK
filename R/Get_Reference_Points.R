@@ -95,7 +95,7 @@ single_region_SPR <- function(pars,
 #' @param type Whether this is a "single_region" reference point (options are being developed)
 #' @param what What kind of reference point "SPR" (options are being developed)
 #'
-#' @import stats
+#' @importFrom stats nlminb
 #' @import RTMB
 #'
 #' @returns A RTMB list object with report information on estiamted reference points

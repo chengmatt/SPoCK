@@ -10,13 +10,12 @@
 #' @param do_par Whether to do paralleizaiton or not (boolean)
 #' @param n_cores Number of cores to use
 #'
-#' @import here
 #' @import RTMB
 #' @import future.apply
 #' @import progressr
 #' @import reshape2
 #' @import dplyr
-#' @import stats
+#' @importFrom stats rnorm nlminb
 #' @returns Dataframe of jitter values
 #' @export do_jitter
 #'

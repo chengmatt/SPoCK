@@ -9,10 +9,9 @@
 #' @param laplace Whether or not to do laplace approximation for random effects and MCMC for fixed effects
 #' @param ... Additional arguments for tmbstan (e.g., adapt_delta)
 #'
-#' @import rstan
 #' @import tmbstan
 #' @import RTMB
-#' @import here
+#' @importFrom stats rnorm nlminb
 #' @returns MCMC list object from rtmbstan
 #' @export do_mcmc
 #'
@@ -72,7 +71,7 @@ do_mcmc <- function(obj,
 #'
 #' @param mcmc_obj MCMC object from rtmbstan
 #'
-#' @import rstan
+#' @importFrom rstan extract
 #' @returns Returns a character vector of parameter names
 #' @export mcmc_par_names
 #'
@@ -92,12 +91,11 @@ mcmc_par_names <- function(mcmc_obj) {
 #' @param tmb_sdrep SD report fomr TMB
 #' @param plot Whether or not to plot outputs
 #' @param pars Parameters you want to plot out
-#' @import rstan
-#' @import GGally
-#' @import bayesplot
-#' @import tidyverse
-#' @import cowplot
-#'
+#' @importFrom rstan extract check_hmc_diagnostics summary
+#' @importFrom GGally ggpairs
+#' @importFrom bayesplot mcmc_trace
+#' @importFrom cowplot plot_grid
+#' @importFrom tidyr drop_na
 #'
 #' @returns A list of plots with traditional MCMC diagnostics
 #' @export mcmc_diag
@@ -117,7 +115,7 @@ mcmc_diag <- function(mcmc_obj,
   mle_sd$par <- ave(as.character(rownames(summary(tmb_sdrep))) , as.character(rownames(summary(tmb_sdrep))), FUN = function(z) if (length(z) == 1) z else paste0(z, ".", seq_along(z))) # make unique names
 
   # MCMC summary
-  mcmc_summary <- summary(mcmc_obj)
+  mcmc_summary <- rstan::summary(mcmc_obj)
   vals <- as.data.frame(rstan::extract(mcmc_obj))
   vals_long <- vals %>% pivot_longer(names_to = 'par', values_to = 'val', cols = everything()) # convert to long format
 
@@ -224,10 +222,9 @@ mcmc_diag <- function(mcmc_obj,
 #' @param mcmc_obj MCMC object from tmbstan
 #' @param tmb_obj RTMB object from MakeADFUN
 #'
-#' @import tidyverse
 #' @import doSNOW
 #' @import parallel
-#' @import data.table
+#' @importFrom data.table rbindlist
 #' @returns returns a dataframe of recruitment and ssb posterior samples and a plot of ssb and recruitment with mean, lwr 95 quantile, and upr 95 quantile.
 #' @export get_mcmc_ssb_rec
 #'
@@ -250,7 +247,7 @@ get_mcmc_ssb_rec <- function(mcmc_obj,
   opts <- list(progress = progress)
 
   # Get posteriors for derived variables
-  derived_post <- foreach(iter = 1:n_iters, .packages = c("RTMB", "here", "tidyverse"), .options.snow = opts) %dopar% {
+  derived_post <- foreach(iter = 1:n_iters, .packages = c("RTMB"), .options.snow = opts) %dopar% {
 
     # set up parameter data frame for posterior to join to so the parameter ordering is the same
     par_dat <- data.frame(tmb_obj$par, names = names(tmb_obj$par))

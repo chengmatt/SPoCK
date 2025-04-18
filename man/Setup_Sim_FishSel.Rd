@@ -30,7 +30,7 @@ Setup_Sim_FishSel(
 
 \item{sel_model}{Fishery selectivity model dimensioned by region and fleet. Options include: logistic}
 
-\item{fixed_fish_sel_pars}{Fixed parameters of fishery selectivity, dimensioned by region, sex, fishery fleet, and the max number of parameters needed for 
+\item{fixed_fish_sel_pars}{Fixed parameters of fishery selectivity, dimensioned by region, sex, fishery fleet, and the max number of parameters needed for
 for a defined fishery selectivity functional form out of all defined functional forms for the fishery}
 }
 \description{

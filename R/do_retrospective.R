@@ -152,12 +152,11 @@ retro_truncate_yr <- function(j,
 #' @returns Dataframe of retrospective estiamtes of SSB and recruitment
 #' @export do_retrospective
 #'
-#' @import here
 #' @import RTMB
-#' @import tidyverse
+#' @import dplyr
 #' @import future.apply
 #' @import progressr
-#' @import reshape2
+#' @importFrom reshape2 melt
 #'
 #'
 #' @examples
@@ -370,7 +369,7 @@ do_retrospective <- function(n_retro,
 #' @export get_retrospective_relative_difference
 #'
 #' @import dplyr
-#' @import tidyr
+#' @importFrom tidyr pivot_longer pivot_wider
 #' @examples
 #' \dontrun{
 #'  ret <- do_retrospective(7, data, parameters, mapping, random = NULL, do_par = TRUE, n_cores = 7, do_francis = TRUE, n_francis_iter = 5)

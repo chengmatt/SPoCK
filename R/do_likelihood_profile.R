@@ -11,9 +11,9 @@
 #' @param inc increment value between min and max value
 #'
 #' @import dplyr
-#' @import here
 #' @import RTMB
-#' @import reshape2
+#' @importFrom reshape2 melt
+#' @importFrom stats rnorm nlminb
 #' @returns Returns a list of likelihood profiled values for each data component with their respective dimensions (e.g., likelihood profiles by fleet, region, year, etc.) as well likelihood profiles for each data component, aggregated across all their respective dimensions.
 #' @export do_likelihood_profile
 #'

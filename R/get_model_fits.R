@@ -7,7 +7,7 @@
 #' @returns Fits to indices as a dataframe
 #' @export get_idx_fits
 #' @import dplyr
-#' @import tidyr
+#' @importFrom tidyr drop_na
 #' @examples
 #' \dontrun{
 #' idx_fits <- get_idx_fits(data = data, rep = rep, year_labs = seq(1960, 2024, 1))
@@ -218,7 +218,7 @@ Restrc_Comps <- function(Exp,
 #' @param len_labels vector of length labels in assessment
 #'
 #' @import dplyr
-#' @import tidyr
+#' @importFrom tidyr drop_na
 #' @returns List of fishery age, lengths, survey age, lengths dataframe as well as in matrix form (dimensioned by region, year, bin, sex, fleet)
 #' @export get_comp_prop
 #'

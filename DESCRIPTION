@@ -21,7 +21,6 @@ Imports:
     future.apply,
     GGally,
     ggplot2,
-    here,
     MASS,
     Matrix,
     parallel,
@@ -32,8 +31,9 @@ Imports:
     stats,
     stringr,
     tidyr,
-    tidyverse,
     tmbstan
+Suggests: 
+    here
 Remotes:
     fishfollower/compResidual/compResidual,
     noaa-afsc/afscOSA

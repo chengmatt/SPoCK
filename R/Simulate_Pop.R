@@ -4,7 +4,7 @@
 #' @returns a list object with a bunch of simulated values and outputs
 #' @export Simulate_Pop
 #' @import compResidual
-#' @import stats
+#' @importFrom stats rnorm rmultinom
 #' @examples
 #' \dontrun{
 #' library(here)

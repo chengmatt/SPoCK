@@ -8,7 +8,7 @@
 #' @param ln_var_value log space variance
 #' @param Var_Type variance type == 0, marginal (stationary and slower run time), == 1 conditional (non-statationary, faster run time)
 #'
-#' @import Matrix
+#' @importFrom Matrix sparseMatrix
 #' @returns Sparse precision matrix dimensioned by n_ages * n_years, n_ages * n_years
 #' @export Get_3d_precision
 #'
