@@ -1,0 +1,48 @@
+---
+title: "Description of Model Parameters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model-parameters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### Table 1. Description of Model Parameters
+
+| Parameter               | Dimension                                            | Component             | Description                                                              |
+|-------------------------|------------------------------------------------------|------------------------|-------------------------------------------------------------------------|
+| `ln_sigmaC`             | `n_regions, n_fish_fleets`                           | Fishery Removals       | SD for catch fit                                                        |
+| `ln_F_mean`             | `n_regions, n_fish_fleets`                           | Fishery Removals       | Log mean fishing mortality                                              |
+| `ln_F_devs`             | `n_regions, n_years, n_fish_fleets`                  | Fishery Removals       | Log deviations in fishing mortality                                     |
+| `ln_F_devs_AggCatch`    | `n_Catch_Type_years, n_fish_fleets`                  | Fishery Removals       | Region-aggregated log fishing mortality deviations                      |
+| `ln_F_mean_AggCatch`    | `n_fish_fleets`                                      | Fishery Removals       | Region-aggregated log mean fishing mortality                            |
+| `fishsel_pe_pars`       | `n_regions, 4, n_sexes, n_fish_fleets`               | Fishery Selectivity    | Time-varying selectivity process error parameters                       |
+| `ln_fishsel_devs`       | `n_regions, n_years, n_ages, n_sexes, n_fish_fleets` | Fishery Selectivity    | Log selectivity deviations                                              |
+| `ln_fish_fixed_sel_pars`| `n_regions, max_fish_pars, max_fishsel_blks, n_sexes, n_fish_fleets` | Fishery Selectivity | Log selectivity function parameters                        |
+| `ln_fish_q`             | `n_regions, max_fishq_blks, n_fish_fleets`           | Fishery Index          | Log fishery catchability                                                |
+| `ln_srv_fixed_sel_pars` | `n_regions, max_srv_pars, max_srv_blks, n_sexes, n_srv_fleets` | Survey Selectivity   | Log survey selectivity function parameters                      |
+| `ln_srv_q`              | `n_regions, max_srvq_blks, n_fish_fleets`            | Survey Index           | Log survey catchability                                                 |
+| `ln_M`                  | `1`                                                  | Natural Mortality      | Log natural mortality                                                   |
+| `M_offset`              | `1`                                                  | Natural Mortality      | Offset for M                                                            |
+| `ln_global_R0`          | `1`                                                  | Recruitment            | Log virgin/mean recruitment                                             |
+| `R0_prop`               | `n_regions – 1`                                      | Recruitment            | Proportions for R0                                                      |
+| `h`                     | `n_regions`                                          | Recruitment            | Steepness parameters (bounded logit space)                              |
+| `ln_InitDevs`           | `n_regions, n_ages - 2`                              | Recruitment            | Log initial age deviations                                              |
+| `ln_RecDevs`            | `n_regions, n_recdev_years`                          | Recruitment            | Log recruitment deviations                                              |
+| `ln_sigmaR`             | `2`                                                  | Recruitment            | SD for initial and recruitment deviations                               |
+| `ln_FishAge_theta`      | `n_regions, n_fish_fleets, n_sexes`                  | Fishery Compositions   | Log overdispersion (fishery age comp)                                   |
+| `ln_FishLen_theta`      | `n_regions, n_fish_fleets, n_sexes`                  | Fishery Compositions   | Log overdispersion (fishery length comp)                                |
+| `ln_SrvAge_theta`       | `n_regions, n_srv_fleets, n_sexes`                   | Survey Compositions    | Log overdispersion (survey age comp)                                    |
+| `ln_SrvLen_theta`       | `n_regions, n_srv_fleets, n_sexes`                   | Survey Compositions    | Log overdispersion (survey length comp)                                 |
+| `move_pars`             | `n_regions, n_regions – 1, n_years, n_ages, n_sexes` | Movement               | Movement logit parameters                                               |
+| `ln_Init_Tag_Mort`      | `1`                                                  | Tagging                | Log tag mortality                                                       |
+| `ln_Tag_Shed`           | `1`                                                  | Tagging                | Log chronic tag shedding                                                |
+| `Tag_Reporting_Pars`    | `n_regions, n_years`                                 | Tagging                | Logit tag reporting rate parameters                                     |
+| `ln_tag_theta`          | `1`                                                  | Tagging                | Log overdispersion for tagging                                          |
