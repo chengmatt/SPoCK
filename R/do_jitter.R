@@ -34,12 +34,15 @@
 #'                  n_cores = 8)
 #'
 #'    # get proportion converged
-#'    prop_converged <- jit %>% filter(Year == 1, Type == 'Recruitment') %>%
+#'    prop_converged <- jit %>%
+#'    filter(Year == 1, Type == 'Recruitment') %>%
 #'      summarize(prop_conv = sum(Hessian) / length(Hessian))
 #'
 #'    # get final model results
-#'    final_mod <- reshape2::melt(sabie_rtmb_model$rep$SSB) %>% rename(Region = Var1, Year = Var2) %>% mutate(Type = 'SSB') %>%
-#'      bind_rows(reshape2::melt(sabie_rtmb_model$rep$Rec) %>% rename(Region = Var1, Year = Var2) %>% mutate(Type = 'Recruitment'))
+#'    final_mod <- reshape2::melt(sabie_rtmb_model$rep$SSB) %>% rename(Region = Var1, Year = Var2) %>%
+#'    mutate(Type = 'SSB') %>%
+#'      bind_rows(reshape2::melt(sabie_rtmb_model$rep$Rec) %>%
+#'      rename(Region = Var1, Year = Var2) %>% mutate(Type = 'Recruitment'))
 #'
 #'    # comparison of SSB and recruitment
 #'   ggplot() +
@@ -84,7 +87,11 @@ do_jitter <- function(data,
 
   jitter_all <- data.frame()
 
-  obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters, map = mapping, random = random, silent = TRUE)
+  obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data),
+                         parameters = parameters,
+                         map = mapping,
+                         random = random,
+                         silent = TRUE)
 
   if(do_par == FALSE) {
     for(i in 1:n_jitter) {
@@ -93,7 +100,9 @@ do_jitter <- function(data,
       jitter_pars <- obj$par + stats::rnorm(length(obj$par), 0, sd)
 
       # Now, optimize the function
-      optim <- stats::nlminb(jitter_pars, obj$fn, obj$gr,
+      optim <- stats::nlminb(jitter_pars,
+                             obj$fn,
+                             obj$gr,
                              control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
 
       # newton steps
@@ -110,9 +119,16 @@ do_jitter <- function(data,
       obj$sd_rep <- RTMB::sdreport(obj) # Get sd report
 
       # put jitter results into a dataframe
-      jitter_ts_df <- reshape2::melt(obj$rep$SSB) %>% dplyr::rename(Region = Var1, Year = Var2) %>% dplyr::mutate(Type = 'SSB') %>%
-        dplyr::bind_rows(reshape2::melt(obj$rep$Rec) %>% dplyr::rename(Region = Var1, Year = Var2) %>% dplyr::mutate(Type = 'Recruitment')) %>%
-        dplyr::mutate(jitter = i, Hessian = obj$sd_rep$pdHess, jnLL = obj$rep$jnLL, Max_Gradient = max(abs(obj$sd_rep$gradient.fixed)))
+      jitter_ts_df <- reshape2::melt(obj$rep$SSB) %>%
+        dplyr::rename(Region = Var1, Year = Var2) %>%
+        dplyr::mutate(Type = 'SSB') %>%
+        dplyr::bind_rows(reshape2::melt(obj$rep$Rec) %>%
+                           dplyr::rename(Region = Var1, Year = Var2) %>%
+                           dplyr::mutate(Type = 'Recruitment')) %>%
+        dplyr::mutate(jitter = i,
+                      Hessian = obj$sd_rep$pdHess,
+                      jnLL = obj$rep$jnLL,
+                      Max_Gradient = max(abs(obj$sd_rep$gradient.fixed)))
 
       jitter_all <- rbind(jitter_all, jitter_ts_df) # bind dataframes
 
@@ -136,7 +152,10 @@ do_jitter <- function(data,
         jitter_pars <- obj$par + stats::rnorm(length(obj$par), 0, sd)
 
         # Optimize function
-        optim <- stats::nlminb(jitter_pars, obj$fn, obj$gr, control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
+        optim <- stats::nlminb(jitter_pars,
+                               obj$fn,
+                               obj$gr,
+                               control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
 
         # Newton steps
         try_improve <- tryCatch({
@@ -153,9 +172,16 @@ do_jitter <- function(data,
         obj$sd_rep <- RTMB::sdreport(obj)
 
         # put jitter results into a dataframe
-        jitter_ts_df <- reshape2::melt(obj$rep$SSB) %>% dplyr::rename(Region = Var1, Year = Var2) %>% dplyr::mutate(Type = 'SSB') %>%
-          dplyr::bind_rows(reshape2::melt(obj$rep$Rec) %>% dplyr::rename(Region = Var1, Year = Var2) %>% dplyr::mutate(Type = 'Recruitment')) %>%
-          dplyr::mutate(jitter = i, Hessian = obj$sd_rep$pdHess, jnLL = obj$rep$jnLL, Max_Gradient = max(abs(obj$sd_rep$gradient.fixed)))
+        jitter_ts_df <- reshape2::melt(obj$rep$SSB) %>%
+          dplyr::rename(Region = Var1, Year = Var2) %>%
+          dplyr::mutate(Type = 'SSB') %>%
+          dplyr::bind_rows(reshape2::melt(obj$rep$Rec) %>%
+                             dplyr::rename(Region = Var1, Year = Var2) %>%
+                             dplyr::mutate(Type = 'Recruitment')) %>%
+          dplyr::mutate(jitter = i,
+                        Hessian = obj$sd_rep$pdHess,
+                        jnLL = obj$rep$jnLL,
+                        Max_Gradient = max(abs(obj$sd_rep$gradient.fixed)))
 
         p() # update progress
 

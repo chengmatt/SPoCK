@@ -13,7 +13,6 @@ Depends:
 Imports: 
     afscOSA,
     bayesplot,
-    compResidual,
     cowplot,
     data.table,
     doSNOW,
@@ -27,19 +26,21 @@ Imports:
     progressr,
     randtests,
     reshape2,
+    remotes,
     rstan,
     stats,
     stringr,
     tidyr,
+    TMB,
     tmbstan
 Suggests: 
     here,
     knitr,
-    rmarkdown
+    rmarkdown,
+    compResidual
 VignetteBuilder: 
     knitr
 Remotes:
-    fishfollower/compResidual/compResidual,
     noaa-afsc/afscOSA
 Encoding: UTF-8
 LazyData: true
