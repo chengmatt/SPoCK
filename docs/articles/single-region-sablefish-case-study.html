@@ -49,19 +49,28 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/model-diagnostics.html">Conducting Model Diagnostics</a>
+    </li>
+    <li>
       <a href="../articles/model-dimensions.html">Description of Model and Data Dimensions</a>
+    </li>
+    <li>
+      <a href="../articles/model-equations.html">Description of Model Equations</a>
     </li>
     <li>
       <a href="../articles/model-parameters.html">Description of Model Parameters</a>
     </li>
     <li>
-      <a href="../articles/single-region-bsai-pollock-case-study.html">single-region-bsai-pollock-case-study</a>
+      <a href="../articles/simulation-self-test.html">Conducting a Simulation Self-Test</a>
+    </li>
+    <li>
+      <a href="../articles/single-region-bsai-pollock-case-study.html">Setting up a Single Region Model (BSAI Pollock)</a>
     </li>
     <li>
       <a href="../articles/single-region-sablefish-case-study.html">Setting up a Single Region Model (Alaska Sablefish)</a>
     </li>
     <li>
-      <a href="../articles/spatial-sablefish-case-study.html">spatial-sablefish-case-study</a>
+      <a href="../articles/spatial-sablefish-case-study.html">Setting up a Spatial Model (Alaska Sablefish)</a>
     </li>
   </ul>
 </li>
@@ -762,6 +771,10 @@ most likely be removed.</p>
 <span>                                  Wt_SrvAgeComps <span class="op">=</span> <span class="va">Wt_SrvAgeComps</span>,</span>
 <span>                                  Wt_SrvLenComps <span class="op">=</span> <span class="va">Wt_SrvLenComps</span></span>
 <span>                                  <span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="fit-model-and-plot">Fit Model and Plot<a class="anchor" aria-label="anchor" href="#fit-model-and-plot"></a>
+</h2>
 <p>We are finally done with the setup! Now, we can run our model. This
 is aided by the <code>fit_model</code> function, which expects a
 <code>data</code>, <code>mapping</code>, and <code>parameters</code>

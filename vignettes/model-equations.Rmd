@@ -1,8 +1,8 @@
 ---
-title: "Setting up a Spatial Model (Alaska Sablefish)"
+title: "Description of Model Equations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{spatial-sablefish-case-study}
+  %\VignetteIndexEntry{model-equations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

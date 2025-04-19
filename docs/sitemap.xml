@@ -1,8 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/model-diagnostics.html</loc></url>
 <url><loc>/articles/model-dimensions.html</loc></url>
+<url><loc>/articles/model-equations.html</loc></url>
 <url><loc>/articles/model-parameters.html</loc></url>
+<url><loc>/articles/simulation-self-test.html</loc></url>
 <url><loc>/articles/single-region-bsai-pollock-case-study.html</loc></url>
 <url><loc>/articles/single-region-sablefish-case-study.html</loc></url>
 <url><loc>/articles/spatial-sablefish-case-study.html</loc></url>
