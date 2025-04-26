@@ -112,13 +112,15 @@ Setup_Mod_Tagging <- function(input_list,
                               ...
                               ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   # Setup tagging likelihood
   tag_like_map <- data.frame(type = c("Poisson", "NegBin", "Multinomial_Release", "Multinomial_Recapture"), num = c(0,1,2,3))
   if(is.na(Tag_LikeType)) Tag_LikeType_vals <- 999
   else {
     if(!Tag_LikeType %in% c(tag_like_map$type)) stop("Tag Likelihood not correctly specified. Should be one of these: Poisson, NegBin, Multinomial_Release, Multinomial_Recapture")
     Tag_LikeType_vals <- tag_like_map$num[tag_like_map$type == Tag_LikeType]
-    message("Tag Likelihood specified as: ", Tag_LikeType)
+    collect_message("Tag Likelihood specified as: ", Tag_LikeType)
   }
 
   # Setup tagging selectivity
@@ -128,7 +130,7 @@ Setup_Mod_Tagging <- function(input_list,
   else {
     if(!tag_selex %in% c(tag_selex_map$type)) stop("Tag Selectivity not correctly specified. Should be one of these: Uniform_DomFleet, SexAgg_DomFleet, SexSp_DomFleet, Uniform_AllFleet, SexAgg_AllFleet, SexSp_AllFleet")
     tag_selex_vals <- tag_selex_map$num[tag_selex_map$type == tag_selex]
-    message("Tag Selectivity specified as: ", tag_selex)
+    collect_message("Tag Selectivity specified as: ", tag_selex)
   }
 
   # setup tagging natural mortality
@@ -137,7 +139,7 @@ Setup_Mod_Tagging <- function(input_list,
   else {
     if(!tag_natmort %in% c(tag_natmort_map$type)) stop("Tag Natural Mortality not correctly specified. Should be one of these: AgeAgg_SexAgg, AgeSp_SexAgg, AgeAgg_SexSp, AgeSp_SexSp")
     tag_natmort_vals <- tag_natmort_map$num[tag_natmort_map$type == tag_natmort]
-    message("Tag Natural Mortality specified as: ", tag_natmort)
+     collect_message("Tag Natural Mortality specified as: ", tag_natmort)
   }
 
   # If movement is pooled either across sexes or ages
@@ -149,8 +151,8 @@ Setup_Mod_Tagging <- function(input_list,
     if(move_sex_tag_pool == "all") move_sex_tag_pool_vals = list(1:input_list$data$n_sexes)
   } else move_sex_tag_pool_vals = move_sex_tag_pool
 
-  message("Tagging data are fit to by pooling across ", length(move_age_tag_pool_vals), " age groups")
-  message("Tagging data are fit to by pooling across ", length(move_sex_tag_pool_vals), " sex groups")
+  collect_message("Tagging data are fit to by pooling across ", length(move_age_tag_pool_vals), " age groups")
+  collect_message("Tagging data are fit to by pooling across ", length(move_sex_tag_pool_vals), " sex groups")
 
   # setup tag reporting rates
   Tag_Reporting_blocks_mat = array(NA, dim = c(input_list$data$n_regions, length(input_list$data$years)))
@@ -175,7 +177,7 @@ Setup_Mod_Tagging <- function(input_list,
     }
   }
 
-  for(r in 1:input_list$data$n_regions) message("Tag Reporting estimated with ", length(unique(Tag_Reporting_blocks_mat[r,])), " block for region ", r)
+   for(r in 1:input_list$data$n_regions) collect_message("Tag Reporting estimated with ", length(unique(Tag_Reporting_blocks_mat[r,])), " block for region ", r)
 
   # Input data list
   input_list$data$UseTagging <- UseTagging
@@ -233,8 +235,9 @@ Setup_Mod_Tagging <- function(input_list,
 
     if(!Init_Tag_Mort_spec %in% c("fix", "est")) stop("Init_Tag_Mort_spec is incorrectly specified. Should be one of these: fix, est")
     if(!Tag_Shed_spec %in% c("fix", "est")) stop("Tag_Shed_spec is incorrectly specified. Should be one of these: fix, est")
-    message("Initial Tag Mortality is specified as: ", Init_Tag_Mort_spec)
-    message("Chronic Tag Shedding is specified as: ", Tag_Shed_spec)
+
+    collect_message("Initial Tag Mortality is specified as: ", Init_Tag_Mort_spec)
+    collect_message("Chronic Tag Shedding is specified as: ", Tag_Shed_spec)
 
     # Initial tag mortality
     if(Init_Tag_Mort_spec == "fix") input_list$map$ln_Init_Tag_Mort <- factor(NA)
@@ -280,7 +283,7 @@ Setup_Mod_Tagging <- function(input_list,
       } # end r loop
       # if we want to fix
       if(TagRep_spec == 'fix') map_TagRep[] <- NA
-      message("Tag Reporting is specified as: ", TagRep_spec)
+      collect_message("Tag Reporting is specified as: ", TagRep_spec)
     } # end if
 
     map_TagRep <<- map_TagRep
@@ -290,6 +293,9 @@ Setup_Mod_Tagging <- function(input_list,
     input_list$data$map_Tag_Reporting_Pars <- array(as.numeric(input_list$map$Tag_Reporting_Pars), dim = dim(input_list$par$Tag_Reporting_Pars))
 
   } # end if for using tagging data
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 }

@@ -73,3 +73,11 @@ get_Constant_CorrMat <- function(n, rho) {
 cmb <- function(f, d) {
   function(p) f(p, d)
 }
+
+#' Title Helper function to collect messages
+#'
+#' @param ... character vector of messages
+#' @keywords internal
+collect_message <- function(...) {
+  messages_list <<- c(messages_list, paste(...))
+}

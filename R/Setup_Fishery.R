@@ -154,6 +154,8 @@ Setup_Mod_Catch_and_F <- function(input_list,
                                   ...
                                   ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   # Dimension checking
   check_data_dimensions(ObsCatch, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsCatch')
   check_data_dimensions(Catch_Type, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'Catch_Type')
@@ -164,20 +166,20 @@ Setup_Mod_Catch_and_F <- function(input_list,
 
   if(!(unique(as.vector(Catch_Type)) %in% c(0,1))) stop("Catch Type must be specified as either 0 (aggregated across regions) or 1 (region specific). In a single area case, this should be specified at 1")
   else {
-    if(est_all_regional_F == 0 && any(unique(Catch_Type) == 0)) message("Catch is aggregated by region in some years, with a separate aggregated ln_F_Mean and ln_F_devs estimated in those years")
-    if(est_all_regional_F == 1 && any(unique(Catch_Type) == 0)) message("Catch is aggregated by region in some years, with a region specific ln_F_Mean and ln_F_devs estiamted, where these fishing mortalities are estimated using information from data (age and indices) in subsequent years")
-    if(any(unique(Catch_Type) == 0)) message("Regional catch censoring is: ", ifelse(censor_regional_catch == 0, "Not Censored", "Censored"))
+    if(est_all_regional_F == 0 && any(unique(Catch_Type) == 0)) collect_message("Catch is aggregated by region in some years, with a separate aggregated ln_F_Mean and ln_F_devs estimated in those years")
+    if(est_all_regional_F == 1 && any(unique(Catch_Type) == 0)) collect_message("Catch is aggregated by region in some years, with a region specific ln_F_Mean and ln_F_devs estiamted, where these fishing mortalities are estimated using information from data (age and indices) in subsequent years")
+    if(any(unique(Catch_Type) == 0)) collect_message("Regional catch censoring is: ", ifelse(censor_regional_catch == 0, "Not Censored", "Censored"))
     if(censor_regional_catch == 1 & is.na(catch_censor_sd)) stop("Remember to specify a single value for catch_censor_sd!")
-    if(est_all_regional_F == 1 && any(unique(Catch_Type) == 1)) message("Catch is region specific, with region specific ln_F_Mean and ln_F_devs")
+    if(est_all_regional_F == 1 && any(unique(Catch_Type) == 1)) collect_message("Catch is region specific, with region specific ln_F_Mean and ln_F_devs")
   }
 
   if(!est_all_regional_F %in% c(0,1)) stop("est_all_regional_F incorrectly specified. Either set at 0 (not all regional Fs are estiamted) or 1 (all regional Fs are estimated)")
-  else message("Fishing mortality is estimated: ", ifelse(est_all_regional_F == 0, 'Not For All Regions', "For All Regions"))
+  else collect_message("Fishing mortality is estimated: ", ifelse(est_all_regional_F == 0, 'Not For All Regions', "For All Regions"))
 
   if(!Use_F_pen %in% c(0,1)) stop("Use_F_pen incorrectly specified. Either set at 0 (don't use F penalty) or 1 (use F penalty)")
-  else message("Fishing mortality penalty is: ", ifelse(Use_F_pen == 0, 'Not Used', "Used"))
+  else collect_message("Fishing mortality penalty is: ", ifelse(Use_F_pen == 0, 'Not Used', "Used"))
 
-  if(any(UseCatch == 0)) message("User specified catch for some years and fleets to not be fit to, and ln_F_devs will not be estimated for those dimensions")
+  if(any(UseCatch == 0)) collect_message("User specified catch for some years and fleets to not be fit to, and ln_F_devs will not be estimated for those dimensions")
 
   # Input data list
   input_list$data$ObsCatch <- ObsCatch
@@ -234,9 +236,9 @@ Setup_Mod_Catch_and_F <- function(input_list,
     # Fixing sigmaC
     if(sigmaC_spec == "fix") input_list$map$ln_sigmaC <- factor(rep(NA, length(input_list$par$ln_sigmaC)))
 
-    if(!sigmaC_spec %in% c("est_shared_f", "est_shared_r", "est_shared_r_f", "fix")) message("sigmaC is specified as: ", sigmaC_spec)
+    if(!sigmaC_spec %in% c("est_shared_f", "est_shared_r", "est_shared_r_f", "fix")) collect_message("sigmaC is specified as: ", sigmaC_spec)
 
-  } else message("sigmaC is estimated for all regions and fleets. Likely not estimable and consider fixing")
+  } else collect_message("sigmaC is estimated for all regions and fleets. Likely not estimable and consider fixing")
 
   # Mapping for fishing mortality deviations
   F_dev_map <- input_list$par$ln_F_devs # initialize for mapping
@@ -277,6 +279,9 @@ Setup_Mod_Catch_and_F <- function(input_list,
     input_list$map$ln_F_devs_AggCatch <- factor(rep(NA, input_list$data$n_fish_fleets * sum(input_list$data$Catch_Type == 0)))
     input_list$map$ln_F_mean_AggCatch <- factor(rep(NA, input_list$data$n_fish_fleets))
   }
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 }
@@ -325,6 +330,8 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
                                         ...
                                         ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   # Checking dimensions
   check_data_dimensions(ObsFishIdx, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishIdx')
   check_data_dimensions(ObsFishIdx_SE, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishIdx_SE')
@@ -358,7 +365,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
     if(fish_idx_type[f] == 'biom') fish_idx_type_vals[,f] <- 1 # biomass
     if(fish_idx_type[f] == 'abd') fish_idx_type_vals[,f] <- 0 # abundance
     if(fish_idx_type[f] == 'none') fish_idx_type_vals[,f] <- 999 # none
-    message(paste("Fishery Index", "for fishery fleet", f, "specified as:" , fish_idx_type[f]))
+    collect_message(paste("Fishery Index", "for fishery fleet", f, "specified as:" , fish_idx_type[f]))
   } # end f loop
 
   # Specifying fishery age composition values
@@ -371,7 +378,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
     if(FishAgeComps_LikeType[f] == "1d-Logistic-Normal") comp_fishage_like_vals <- c(comp_fishage_like_vals, 3)
     if(FishAgeComps_LikeType[f] == "2d-Logistic-Normal") comp_fishage_like_vals <- c(comp_fishage_like_vals, 4)
     if(FishAgeComps_LikeType[f] == "3d-Logistic-Normal") comp_fishage_like_vals <- c(comp_fishage_like_vals, 5)
-    message(paste("Fishery Age Composition Likelihoods", "for fishery fleet", f, "specified as:" , FishAgeComps_LikeType[f]))
+    collect_message(paste("Fishery Age Composition Likelihoods", "for fishery fleet", f, "specified as:" , FishAgeComps_LikeType[f]))
   } # end f loop
 
   # Specifying fishery len composition values
@@ -384,7 +391,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
     if(FishLenComps_LikeType[f] == "1d-Logistic-Normal") comp_fishlen_like_vals <- c(comp_fishlen_like_vals, 3)
     if(FishLenComps_LikeType[f] == "2d-Logistic-Normal") comp_fishlen_like_vals <- c(comp_fishlen_like_vals, 4)
     if(FishLenComps_LikeType[f] == "3d-Logistic-Normal") comp_fishlen_like_vals <- c(comp_fishlen_like_vals, 5)
-    message(paste("Fishery Length Composition Likelihoods", "for fishery fleet", f, "specified as:" , FishLenComps_LikeType[f]))
+    collect_message(paste("Fishery Length Composition Likelihoods", "for fishery fleet", f, "specified as:" , FishLenComps_LikeType[f]))
   } # end f loop
 
   # Specifying composition type (ages)
@@ -469,7 +476,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
 
   # Setup ISS stuff given differences in how composition data are structured
   if(is.null(ISS_FishAgeComps)) {
-    message("No ISS is specified for FishAgeComps. ISS weighting is calculated by summing up values from ObsFishAgeComps each year")
+    collect_message("No ISS is specified for FishAgeComps. ISS weighting is calculated by summing up values from ObsFishAgeComps each year")
     ISS_FishAgeComps <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), input_list$data$n_sexes, input_list$data$n_fish_fleets))
     for(y in 1:length(input_list$data$years)) {
       for(f in 1:input_list$data$n_fish_fleets) {
@@ -485,7 +492,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
   }
 
   if(is.null(ISS_FishLenComps)) {
-    message("No ISS is specified for FishLenComps. ISS weighting is calculated by summing up values from ObsFishLenComps each year")
+    collect_message("No ISS is specified for FishLenComps. ISS weighting is calculated by summing up values from ObsFishLenComps each year")
     ISS_FishLenComps <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), input_list$data$n_sexes, input_list$data$n_fish_fleets))
     for(y in 1:length(input_list$data$years)) {
       for(f in 1:input_list$data$n_fish_fleets) {
@@ -711,6 +718,9 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
   input_list$map$FishLen_corr_pars_agg <- factor(map_FishLen_corr_pars_agg)
   input_list$map$FishLen_corr_pars <- factor(map_FishLen_corr_pars)
 
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
+
   return(input_list)
 }
 
@@ -749,11 +759,13 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                                     ...
                                     ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   if(!is.null(fishsel_pe_pars_spec)) if(length(fishsel_pe_pars_spec) != input_list$data$n_fish_fleets) stop("fishsel_pe_pars_spec is not length n_fish_fleets")
   if(!is.null(fish_sel_devs_spec)) if(length(fish_sel_devs_spec) != input_list$data$n_fish_fleets) stop("fish_sel_devs_spec is not length n_fish_fleets")
   if(!is.null(corr_opt_semipar)) if(length(corr_opt_semipar) != input_list$data$n_fish_fleets) stop("corr_opt_semipar is not length n_fish_fleets")
   if(!Use_fish_q_prior %in% c(0,1)) stop("Values for Use_fish_q_prior are not valid. They are == 0 (don't use prior), or == 1 (use prior)")
-  message("Fishery Catchability priors are: ", ifelse(Use_fish_q_prior == 0, "Not Used", "Used"))
+  collect_message("Fishery Catchability priors are: ", ifelse(Use_fish_q_prior == 0, "Not Used", "Used"))
 
   # define for continuous time-varying selectivity
   cont_tv_fish_sel_mat <- array(NA, dim = c(input_list$data$n_regions, input_list$data$n_fish_fleets))
@@ -769,7 +781,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
     if(!fleet %in% c(1:input_list$data$n_fish_fleets)) stop("Invalid fleet specified for cont_tv_fish_sel This needs to be specified as timevarytype_Fleet_x")
     if(!cont_tv_type %in% c(cont_tv_map$type)) stop("cont_tv_fish_sel is not correctly specified. This needs to be one of these: none, iid, rw, 3dmarg, 3dcond, 2dar1 (the timevarytypes) and specified as timevarytype_Fleet_x")
     cont_tv_fish_sel_mat[,fleet] <- cont_tv_map$num[which(cont_tv_map$type == cont_tv_type)]
-    message("Continuous fishery time-varying selectivity specified as: ", cont_tv_type, " for fishery fleet ", fleet)
+    collect_message("Continuous fishery time-varying selectivity specified as: ", cont_tv_type, " for fishery fleet ", fleet)
   }
 
   # define fishery time blocks
@@ -795,7 +807,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
   if(any(is.na(fish_sel_blocks_arr))) stop("Fishery Selectivtiy Blocks are returning an NA. Did you forget to specify the year range of fish_sel_blocks?")
 
-  for(f in 1:input_list$data$n_fish_fleets) message(paste("Fishery Selectivity Time Blocks for fishery", f, "is specified at:", length(unique(fish_sel_blocks_arr[,,f]))))
+  for(f in 1:input_list$data$n_fish_fleets) collect_message(paste("Fishery Selectivity Time Blocks for fishery", f, "is specified at:", length(unique(fish_sel_blocks_arr[,,f]))))
 
   # Setup fishery selectivity models (functional forms)
   sel_map <- data.frame(sel = c('logist1', "gamma", "exponential", "logist2"),
@@ -810,7 +822,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
     if(!sel_type %in% c(sel_map$sel)) stop("fish_sel_model is not correctly specified. This needs to be one of these: logist1, gamma, exponential, logist2 (the seltypes) and specified as seltype_Fleet_x")
     if(!fleet %in% c(1:input_list$data$n_fish_fleets)) stop("Invalid fleet specified for fish_sel_model This needs to be specified as seltype_Fleet_x")
     fish_sel_model_arr[,,fleet] <- sel_map$num[which(sel_map$sel == sel_type)]
-    message("Fishery selectivity functional form specified as:", sel_type, " for fishery fleet ", f)
+    collect_message("Fishery selectivity functional form specified as:", sel_type, " for fishery fleet ", f)
   } # end i loop
 
   # setup fishery catchability blocks
@@ -836,7 +848,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
   if(any(is.na(fish_q_blocks))) stop("Fishery Catchability Blocks are returning an NA. Did you forget to specify the year range of fish_q_blocks?")
 
-  for(f in 1:input_list$data$n_fish_fleets) message(paste("Fishery Catchability Time Blocks for fishery", f, "is specified at:", length(unique(fish_q_blocks_arr[,,f]))))
+  for(f in 1:input_list$data$n_fish_fleets) collect_message(paste("Fishery Catchability Time Blocks for fishery", f, "is specified at:", length(unique(fish_q_blocks_arr[,,f]))))
 
   # Setup data input list
   input_list$data$cont_tv_fish_sel <- cont_tv_fish_sel_mat
@@ -943,7 +955,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
     # fix all parameters
     if(fish_fixed_sel_pars_spec[f] == "fix") map_fish_fixed_sel_pars[,,,,f] <- NA
-    message("fish_fixed_sel_pars_spec is specified as: ", fish_fixed_sel_pars_spec[f], " for fishery fleet ", f)
+    collect_message("fish_fixed_sel_pars_spec is specified as: ", fish_fixed_sel_pars_spec[f], " for fishery fleet ", f)
   } # end f loop
 
   # Initialize counter and mapping array for fishery catchability
@@ -987,7 +999,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
         if(fish_q_spec[f] == 'fix') map_fish_q[,,f] <- NA
       } # end else loop
     } # end r loop
-    message("fish_q_spec is specified as: ", fish_q_spec[f], " for fishery fleet ", f)
+    collect_message("fish_q_spec is specified as: ", fish_q_spec[f], " for fishery fleet ", f)
   } # end f loop
 
   # Initialize counter and mapping array for fishery process errors
@@ -1094,7 +1106,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
               # Reset numbering for mapping off correlation parameters for clarity
               non_na_positions <- which(!is.na(map_fishsel_pe_pars))
               map_fishsel_pe_pars[non_na_positions] <- seq_along(non_na_positions)
-              message("corr_opt_semipar is specified as: ", corr_opt_semipar[f], "for fishery fleet", f)
+              collect_message("corr_opt_semipar is specified as: ", corr_opt_semipar[f], "for fishery fleet", f)
 
             }
 
@@ -1107,7 +1119,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
       } # end else
     } # end r loop
 
-    if(!is.null(fishsel_pe_pars_spec)) message("fishsel_pe_pars_spec is specified as: ", fishsel_pe_pars_spec[f], "for fishery fleet", f)
+    if(!is.null(fishsel_pe_pars_spec)) collect_message("fishsel_pe_pars_spec is specified as: ", fishsel_pe_pars_spec[f], "for fishery fleet", f)
 
   } # end f loop
 
@@ -1217,7 +1229,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
         } # end y loop
       } # end s loop
 
-    if(!is.null(fish_sel_devs_spec)) message("fish_sel_devs_spec is specified as: ", fish_sel_devs_spec[f], "for fishery fleet", f, "and region ", r)
+    if(!is.null(fish_sel_devs_spec)) collect_message("fish_sel_devs_spec is specified as: ", fish_sel_devs_spec[f], "for fishery fleet", f, "and region ", r)
 
     } # end f loop
   } # end r loop
@@ -1232,6 +1244,9 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
   # Checking whether fishery q dimensions are correct
   if(!is.na(fish_q_prior) || Use_fish_q_prior == 1) if(sum(dim(fish_q_prior) == c(dim(map_fish_q), 2)) != 4) stop("Fishery catchability dimensions are not correct. Should be n_regions, max n_blocks, n_fish_fleets, and 2 (where 2 represents the 2 prior parameters - the mean and sd). You can input an NA if not availiable for certain regions or fleets.")
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 }

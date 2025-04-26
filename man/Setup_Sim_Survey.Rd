@@ -39,7 +39,7 @@ Setup_Sim_Survey(
 
 \item{sel_model}{Survey selectivity model dimensioned by region and fleet. Options include: logistic}
 
-\item{fixed_srv_sel_pars}{Fixed parameters of survey selectivity, dimensioned by region, sex, survey fleet, and the max number of parameters needed for 
+\item{fixed_srv_sel_pars}{Fixed parameters of survey selectivity, dimensioned by region, sex, survey fleet, and the max number of parameters needed for
 for a defined survey selectivity functional form out of all defined functional forms for the survey.}
 }
 \description{

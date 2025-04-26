@@ -23,6 +23,19 @@ install_compResidual <- function() {
   })
 }
 
+# install afscOSA
+install_afscOSA <- function() {
+  if (!requireNamespace("remotes", quietly = TRUE)) {
+    stop("remotes package required but not installed.")
+  }
+
+  tryCatch({
+    remotes::install_github("noaa-afsc/afscOSA", force = TRUE)
+  }, error = function(e) {
+    stop("Failed to install afscOSA: ", conditionMessage(e))
+  })
+}
+
 .onAttach <- function(libname, pkgname) {
   # check and install OSA_multivariate_dists if not already installed
   if (!requireNamespace("OSA_multivariate_dists", quietly = TRUE)) {
@@ -41,6 +54,16 @@ install_compResidual <- function() {
       install_compResidual()
     }, error = function(e) {
       packageStartupMessage("Failed to install compResidual: ", conditionMessage(e))
+    })
+  }
+
+  # check and install afscOSA if not already installed
+  if (!requireNamespace("afscOSA", quietly = TRUE)) {
+    message("Installing afscOSA from GitHub...")
+    tryCatch({
+      install_afscOSA()
+    }, error = function(e) {
+      packageStartupMessage("Failed to install afscOSA: ", conditionMessage(e))
     })
   }
 }

@@ -90,8 +90,10 @@ Setup_Mod_Weighting <- function(input_list,
                                 Wt_SrvLenComps
                                 ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   if(!likelihoods %in% c(0,1)) stop("likelihoods are not correctly specified. Should be either 0 (ADMB) or 1 (TMB)")
-  else message("Using ", ifelse(likelihoods == 0, 'ADMB', 'TMB'), " likelihoods")
+  else collect_message("Using ", ifelse(likelihoods == 0, 'ADMB', 'TMB'), " likelihoods")
 
   input_list$data$sablefish_ADMB <- sablefish_ADMB
   input_list$data$likelihoods <- likelihoods
@@ -104,6 +106,9 @@ Setup_Mod_Weighting <- function(input_list,
   input_list$data$Wt_SrvAgeComps<- Wt_SrvAgeComps
   input_list$data$Wt_FishLenComps<- Wt_FishLenComps
   input_list$data$Wt_SrvLenComps<- Wt_SrvLenComps
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 }

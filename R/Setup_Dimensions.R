@@ -39,6 +39,7 @@ Setup_Sim_Dim <- function(n_sims,
 #' @param n_srv_fleets Number of survey fleets
 #' @param years vector of years
 #' @param lens vector of lengths (can just input 1 if not fitting lengths)
+#' @param verbose Whether to print messages
 #'
 #' @returns Returns a list object of length 3, with a data list, a par list, and a map list
 #' @export Setup_Mod_Dim
@@ -49,7 +50,11 @@ Setup_Mod_Dim <- function(years,
                           n_regions,
                           n_sexes,
                           n_fish_fleets,
-                          n_srv_fleets) {
+                          n_srv_fleets,
+                          verbose = FALSE
+                          ) {
+
+  messages_list <<- character(0) # string to attach to for printing messages
 
   # Create empty list
   input_list <- list(data = list(), par = list(), map = list())
@@ -62,14 +67,18 @@ Setup_Mod_Dim <- function(years,
   input_list$data$n_sexes <- n_sexes
   input_list$data$n_fish_fleets <- n_fish_fleets
   input_list$data$n_srv_fleets <- n_srv_fleets
+  input_list$verbose <- verbose
 
-  message("Number of Years: ", length(years))
-  message("Number of Regions: ", n_regions)
-  message("Number of Age Bins: ", length(ages))
-  message("Number of Length Bins: ", length(lens))
-  message("Number of Sexes: ", n_sexes)
-  message("Number of Fishery Fleets: ", n_fish_fleets)
-  message("Number of Survey Fleets: ", n_srv_fleets)
+  collect_message("Number of Years: ", length(years))
+  collect_message("Number of Regions: ", n_regions)
+  collect_message("Number of Age Bins: ", length(ages))
+  collect_message("Number of Length Bins: ", length(lens))
+  collect_message("Number of Sexes: ", n_sexes)
+  collect_message("Number of Fishery Fleets: ", n_fish_fleets)
+  collect_message("Number of Survey Fleets: ", n_srv_fleets)
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 

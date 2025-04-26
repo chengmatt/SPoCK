@@ -11,7 +11,8 @@ Setup_Mod_Dim(
   n_regions,
   n_sexes,
   n_fish_fleets,
-  n_srv_fleets
+  n_srv_fleets,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ Setup_Mod_Dim(
 \item{n_fish_fleets}{Number of fishery fleets}
 
 \item{n_srv_fleets}{Number of survey fleets}
+
+\item{verbose}{Whether to print messages}
 }
 \value{
 Returns a list object of length 3, with a data list, a par list, and a map list

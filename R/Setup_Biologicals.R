@@ -82,6 +82,8 @@ Setup_Mod_Biologicals <- function(input_list,
                                   M_spec = NULL,
                                   ...) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   # Checking dimensions
   check_data_dimensions(WAA, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'WAA')
   check_data_dimensions(MatAA, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'MatAA')
@@ -98,10 +100,10 @@ Setup_Mod_Biologicals <- function(input_list,
   input_list$data$M_prior <- M_prior
 
   if(!fit_lengths %in% c(0,1)) stop("Values for fit_lengths are not valid. They are == 0 (not used), or == 1 (used)")
-  message("Length Composition data are: ", ifelse(fit_lengths == 0, "Not Used", "Used"))
+  collect_message("Length Composition data are: ", ifelse(fit_lengths == 0, "Not Used", "Used"))
 
   if(!Use_M_prior %in% c(0,1)) stop("Values for Use_M_prior are not valid. They are == 0 (don't use prior), or == 1 (use prior)")
-  message("Natural Mortality priors are: ", ifelse(Use_M_prior == 0, "Not Used", "Used"))
+  collect_message("Natural Mortality priors are: ", ifelse(Use_M_prior == 0, "Not Used", "Used"))
 
   if(fit_lengths == 1 & is.na(sum(SizeAgeTrans))) stop("Length composition are fit to, but the size-age transition matrix is NA")
 
@@ -125,10 +127,11 @@ Setup_Mod_Biologicals <- function(input_list,
     }
 
     if(!M_spec %in% c('est_ln_M_only', 'fix')) stop("M_spec needs to be specified as either est_ln_M_only (only for a single sex) or fix")
-    else message("Natural Mortality specified as: ", M_spec)
-  } else if(input_list$data$n_sexes == 2) message("Natural Mortality is estiamted for both sexes") else message("Natural Mortality is estiamted")
+    else collect_message("Natural Mortality specified as: ", M_spec)
+  } else if(input_list$data$n_sexes == 2) collect_message("Natural Mortality is estiamted for both sexes") else collect_message("Natural Mortality is estiamted")
 
-
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 }

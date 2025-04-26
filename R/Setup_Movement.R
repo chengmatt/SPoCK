@@ -28,6 +28,8 @@ Setup_Mod_Movement <- function(input_list,
                                ...
                                ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   # if no fixed movement matrix provided
   if(is.na(sum(Fixed_Movement))) {
     Fixed_Movement <- array(1, dim = c(input_list$data$n_regions, input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes))
@@ -37,13 +39,13 @@ Setup_Mod_Movement <- function(input_list,
   if(use_fixed_movement == 1) check_data_dimensions(Fixed_Movement, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'Fixed_Movement')
 
   if(!do_recruits_move %in% c(0,1)) stop('Movement for recruits is not correctly specified. The options are do_recruits_move == 0 (they dont move), or == 1 (they move)')
-  else message("Recruits are: ", ifelse(do_recruits_move == 0, "Not Moving", "Moving"))
+  else collect_message("Recruits are: ", ifelse(do_recruits_move == 0, "Not Moving", "Moving"))
 
   if(!use_fixed_movement %in% c(0,1)) stop('Options for fixing movement are not correctly specified. The options are use_fixed_movement == 0 (dont use and estiamte movement parameters), or == 1 (use)')
-  else message("Movement is: ", ifelse(use_fixed_movement == 0, "Estimated", "Fixed"))
+  else collect_message("Movement is: ", ifelse(use_fixed_movement == 0, "Estimated", "Fixed"))
 
   if(!Use_Movement_Prior %in% c(0,1)) stop('Options for movement priors not correctly specified. The options are Use_Movement_Prior == 0 (dont use), or == 1 (use)')
-  else message("Movement priors are: ", ifelse(Use_Movement_Prior == 0, "Not Used", "Used"))
+  else collect_message("Movement priors are: ", ifelse(Use_Movement_Prior == 0, "Not Used", "Used"))
 
   if(!is.null(Movement_ageblk_spec)) if(!typeof(Movement_ageblk_spec) %in% c("list", "character", NULL)) stop("Movement age blocks are not correctly specified, it needs to be either a list object or set at 'constant'. For example, if we had 10 ages and wanted 2 age blocks, this would be list(c(1:5), c(6:10)) such that ages 1 - 5 are a block, and ages 6 - 10 are a block.")
   if(!is.null(Movement_yearblk_spec)) if(!typeof(Movement_yearblk_spec) %in% c("list", "character", NULL)) stop("Movement year blocks are not correctly specified, it needs to be either a list object or set at 'constant'. For example, if we had 10 years and wanted 2 year blocks, this would be list(c(1:5), c(6:10)) such that years 1 - 5 are a block, and years 6 - 10 are a block.")
@@ -106,7 +108,7 @@ Setup_Mod_Movement <- function(input_list,
           } # end i loop
 
           # Now input these unique indices into the map array
-          for(a in map_a) for(y in map_y) for(s in map_s) map_Movement_Pars[,,y,a,s] <- map_idx
+          for(a in 1:length(map_a)) for(y in 1:length(map_y)) for(s in 1:length(map_s)) map_Movement_Pars[,,y,a,s] <- map_idx
 
         } # end sex block
       } # end year block
@@ -114,13 +116,16 @@ Setup_Mod_Movement <- function(input_list,
   } else map_Movement_Pars <- factor(rep(NA, length(input_list$par$move_pars)))
 
   # Print out movement specifications and error handling
-  if(is.list(Movement_sexblk_spec)) message("Movement is specified with ", length(Movement_sexblk_spec), " sex blocks") else message("Movement is sex-invariant")
-  if(is.list(Movement_yearblk_spec)) message("Movement is specified with ", length(Movement_yearblk_spec), " year blocks") else message("Movement is time-invariant")
-  if(is.list(Movement_ageblk_spec)) message("Movement is specified with ", length(Movement_ageblk_spec), " age blocks") else message("Movement is age-invariant")
+  if(is.list(Movement_sexblk_spec)) collect_message("Movement is specified with ", length(Movement_sexblk_spec), " sex blocks") else collect_message("Movement is sex-invariant")
+  if(is.list(Movement_yearblk_spec)) collect_message("Movement is specified with ", length(Movement_yearblk_spec), " year blocks") else collect_message("Movement is time-invariant")
+  if(is.list(Movement_ageblk_spec)) collect_message("Movement is specified with ", length(Movement_ageblk_spec), " age blocks") else collect_message("Movement is age-invariant")
 
   # Input into data and mapping list
   input_list$map$move_pars <- factor(map_Movement_Pars)
   input_list$data$map_Movement_Pars <- array(as.numeric(input_list$map$move_pars), dim = dim(input_list$par$move_pars))
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 }

@@ -112,28 +112,30 @@ Setup_Mod_Rec <- function(input_list,
                           ...
                           ) {
 
+  messages_list <<- character(0) # string to attach to for printing messages
+
   # Specify recruitment options
   if(rec_model == "mean_rec") rec_model_val <- 0
   if(rec_model == "bh_rec") rec_model_val <- 1
 
   if(!rec_model %in% c("mean_rec", "bh_rec")) stop("Please specify a valid recruitment form. These include: mean_rec or bh_rec")
-  message("Recruitment is specified as: ", rec_model)
+  collect_message("Recruitment is specified as: ", rec_model)
 
-  if(rec_model != 'mean_rec') message("Recruitment and SSB lag is specified as: ", rec_lag)
+  if(rec_model != 'mean_rec') collect_message("Recruitment and SSB lag is specified as: ", rec_lag)
   if(rec_model == 'bh_rec') if(!Use_h_prior %in% c(0,1)) stop("Steepness priors are not specified as either: 0 (don't turn on), or 1 (turn on)")
-  else message("Steepness priors are: ", ifelse(Use_h_prior == 0, 'Not Used', 'Used'))
+  else collect_message("Steepness priors are: ", ifelse(Use_h_prior == 0, 'Not Used', 'Used'))
 
   if(!do_rec_bias_ramp %in% c(0,1)) stop("Recruitment bias ramp options are either: 0 (don't turn on), or 1 (turn on)")
-  message("Recruitment Bias Ramp is: ", ifelse(do_rec_bias_ramp == 0, "Off", 'On'))
+  collect_message("Recruitment Bias Ramp is: ", ifelse(do_rec_bias_ramp == 0, "Off", 'On'))
 
   if(!init_age_strc %in% c(0,1)) stop("Initial Age Structure options are either: 0 (iterate), or 1 (geometric series solution)")
-  message("Initial Age Structure is: ", ifelse(init_age_strc == 0, "Iterated", 'Geometric Series Solution'))
+  collect_message("Initial Age Structure is: ", ifelse(init_age_strc == 0, "Iterated", 'Geometric Series Solution'))
 
   if(!is.numeric(sigmaR_switch)) stop("sigmaR_switch needs to be a numeric value. If you want to use a single sigmaR, please specify at 1")
-  if(sigmaR_switch > 1) message("Sigma R switches from an early period value to a late period value at year: ", sigmaR_switch)
+  if(sigmaR_switch > 1) collect_message("Sigma R switches from an early period value to a late period value at year: ", sigmaR_switch)
 
-  if(dont_est_recdev_last == 0) message("Recruitment deviations for every year is estiamted")
-  else message("Recruitment deviations are not estimated for terminal year - ", dont_est_recdev_last, ". Recruitment during those periods are specified as the mean / deterministic recruitment")
+  if(dont_est_recdev_last == 0) collect_message("Recruitment deviations for every year is estiamted")
+  else collect_message("Recruitment deviations are not estimated for terminal year - ", dont_est_recdev_last, ". Recruitment during those periods are specified as the mean / deterministic recruitment")
 
   # input variables into data list
   input_list$data$rec_model <- rec_model_val
@@ -184,8 +186,8 @@ Setup_Mod_Rec <- function(input_list,
     # Fix both sigmaRs at starting values
     if(sigmaR_spec == "fix") input_list$map$ln_sigmaR <- factor(c(NA, NA))
     if(!sigmaR_spec %in% c("est_shared", "fix_early_est_late", "fix"))  stop("Please specify a valid recruitment variability option. These include: fix, fix_early_est_late, est_shared. Conversely, leave at NULL to estimate all recruitment variability parameters (early and late period).")
-    else message("Recruitment Variability is specified as: ", sigmaR_spec)
-  } else message("Recruitment Variability is estimated for both early and late periods")
+    else collect_message("Recruitment Variability is specified as: ", sigmaR_spec)
+  } else collect_message("Recruitment Variability is estimated for both early and late periods")
 
   # Initial age deviations
   if(!is.null(InitDevs_spec)) {
@@ -198,8 +200,8 @@ Setup_Mod_Rec <- function(input_list,
     # Fix all initial deviations
     if(InitDevs_spec == "fix") input_list$map$ln_InitDevs <- factor(rep(NA, prod(dim(map_InitDevs))))
     if(!InitDevs_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid initial deviations option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all initial deviations.")
-    else message("Initial Deviations is specified as: ", InitDevs_spec)
-  } else message("Initial Deviations is estimated for all dimensions")
+    else collect_message("Initial Deviations is specified as: ", InitDevs_spec)
+  } else collect_message("Initial Deviations is estimated for all dimensions")
 
   # Recruitment deviations
   if(!is.null(RecDevs_spec)) {
@@ -212,8 +214,8 @@ Setup_Mod_Rec <- function(input_list,
     # Fix all recruitment deviations
     if(RecDevs_spec == "fix") input_list$map$ln_RecDevs <- factor(rep(NA, prod(dim(map_RecDevs))))
     if(!RecDevs_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid recruitment deviations option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all recruitment deviations.")
-    else message("Recruitment Deviations is specified as: ", RecDevs_spec)
-  } else message("Recruitment Deviations is estimated for all dimensions")
+    else collect_message("Recruitment Deviations is specified as: ", RecDevs_spec)
+  } else collect_message("Recruitment Deviations is estimated for all dimensions")
 
   # Steepness
   if(input_list$data$rec_model == 0) input_list$map$h <- factor(rep(NA, length(input_list$par$h)))
@@ -223,13 +225,16 @@ Setup_Mod_Rec <- function(input_list,
     # Fix all steepness values
     if(h_spec == "fix") input_list$map$h <- factor(rep(NA, length(input_list$par$h)))
     if(!h_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid steepness option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all steepness values.")
-    else message("Steepness is specified as: ", h_spec)
-  } else if(rec_model == 'bh_rec') message("Steepness is estimated for all dimensions")
+    else collect_message("Steepness is specified as: ", h_spec)
+  } else if(rec_model == 'bh_rec') collect_message("Steepness is estimated for all dimensions")
 
   input_list$data$map_h_Pars <- as.numeric(input_list$map$h) # specify which ones are mapped off so they are only penalized once in priors
 
   # R0 proportions
   if(input_list$data$n_regions == 1) input_list$map$R0_prop <- factor(rep(NA, length(input_list$par$R0_prop)))
+
+  # Print all messages if verbose is TRUE
+  if(input_list$verbose) for(msg in messages_list) message(msg)
 
   return(input_list)
 
