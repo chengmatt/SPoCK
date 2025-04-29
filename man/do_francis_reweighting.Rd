@@ -39,24 +39,17 @@ for(j in 1:5) {
     data$Wt_SrvLenComps[] <- wts$new_srv_len_wts
   }
 
-  # make AD model function
-  sabie_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters, map = mapping, silent = T)
-
-  # Now, optimize the function
-  sabie_optim <- stats::nlminb(sabie_rtmb_model$par, sabie_rtmb_model$fn, sabie_rtmb_model$gr,
-                               control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
-  # newton steps
-  try_improve <- tryCatch(expr =
-                            for(i in 1:3) {
-                              g = as.numeric(sabie_rtmb_model$gr(sabie_optim$par))
-                              h = optimHess(sabie_optim$par, fn = sabie_rtmb_model$fn, gr = sabie_rtmb_model$gr)
-                              sabie_optim$par = sabie_optim$par - solve(h,g)
-                              sabie_optim$objective = sabie_rtmb_model$fn(sabie_optim$par)
-                            }
-                          , error = function(e){e}, warning = function(w){w})
+  sabie_rtmb_model <- fit_model(data,
+                                parameters,
+                                mapping,
+                                random = NULL,
+                                newton_loops = 3,
+                                silent = TRUE
+  )
 
   rep <- sabie_rtmb_model$report(sabie_rtmb_model$env$last.par.best) # Get report
-  wts <- do_francis_reweighting(data = data, rep = rep, age_labels = 2:31, len_labels = seq(41, 99, 2), year_labels = 1960:2024)
+  wts <- do_francis_reweighting(data = data, rep = rep, age_labels = 2:31,
+                                len_labels = seq(41, 99, 2), year_labels = 1960:2021)
 }
 }
 }

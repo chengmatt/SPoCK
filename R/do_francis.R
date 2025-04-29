@@ -29,17 +29,32 @@ get_francis_weights <- function(n_regions,
                                 weights,
                                 bins,
                                 comp_type
-) {
+                                ) {
+
+  n_years <- dim(Use)[2] # get n_years
 
   for(f in 1:n_fleets) {
 
-    data_yrs <- which(Use[,,f] == 1) # get years with data for a given fleet
+    data_indices <- matrix(nrow=0, ncol=2)  # storage container for data indices
+
+    for(r in 1:n_regions) {
+      for(y in 1:n_years) {
+        if(Use[r, y, f] == 1) {
+          data_indices <- rbind(data_indices, c(r, y)) # get data indices by regionn and year
+        } # end if
+      } # end y loop
+    } # end r loop
+
+    if(nrow(data_indices) == 0) next  # skip if no usable data
+
+    # get year ranges with data to loop through
+    data_yrs <- sort(unique(data_indices[,2]))
 
     # Set up reweighting vectors
-    exp_bar <- array(NA, dim = c(n_regions, length(data_yrs), n_sexes)) # mean expected
-    obs_bar <- array(NA, dim = c(n_regions, length(data_yrs), n_sexes))  # mean observed
-    v_y <- array(NA, dim = c(n_regions, length(data_yrs), n_sexes))  # variance
-    w_denom <- array(NA, dim = c(n_regions, length(data_yrs), n_sexes))  # weight factor in denominator
+    exp_bar <- array(NA, dim = c(length(unique(data_indices[,1])), length(data_yrs), n_sexes)) # mean expected
+    obs_bar <- array(NA, dim = c(length(unique(data_indices[,1])), length(data_yrs), n_sexes))  # mean observed
+    v_y <- array(NA, dim = c(length(unique(data_indices[,1])), length(data_yrs), n_sexes))  # variance
+    w_denom <- array(NA, dim = c(length(unique(data_indices[,1])), length(data_yrs), n_sexes))  # weight factor in denominator
 
     for(y in data_yrs) {
 
@@ -48,6 +63,13 @@ get_francis_weights <- function(n_regions,
       tmp_exp <- Pred_array[,y,,,f, drop = FALSE] # temporary expected values
       tmp_obs <- Obs_array[,y,,,f, drop = FALSE] # temporary observed values
       yr_alt_idx <- which(data_yrs == y) # get indexing to start from 1
+      use_regions <- data_indices[which(data_indices[,2] == y)] # get regions with data
+
+      if((length(use_regions) != n_regions) & comp_type[y,f] == 3) {
+        warning("The number of regions with data is not the same as the total nunmber of regions.
+                                                                           If there are some years where the number of bins differs, the jntRjntS approach
+                                                                           is not appropriate for calculating Francis weights!")
+      }
 
       if(comp_type[y,f] == 3) { # if joint, reorder array
         tmp_exp_jntall <- aperm(tmp_exp, perm = c(3,4,1,2,5)) # reorder array, by ages, sexes, region, year, and fleet
@@ -64,7 +86,7 @@ get_francis_weights <- function(n_regions,
 
       # If compositions are split by region and sex
       if(comp_type[y,f] == 1) {
-        for(r in 1:n_regions) {
+        for(r in use_regions) {
           for(s in 1:n_sexes) {
             exp_bar[r,yr_alt_idx,s] <- sum(bins * as.vector(tmp_exp[r,1,,s,1])) # get mean pred comps
             obs_bar[r,yr_alt_idx,s] <- sum(bins * as.vector(tmp_obs[r,1,,s,1])) # get mean obs comps
@@ -76,7 +98,7 @@ get_francis_weights <- function(n_regions,
 
       # If compositions are split by region, but joint by sex
       if(comp_type[y,f] == 2) {
-        for(r in 1:n_regions) {
+        for(r in use_regions) {
           exp_bar[r,yr_alt_idx,1] <- sum(rep(bins, n_sexes) * as.vector(tmp_exp[r,1,,,1])) # get mean pred comps
           obs_bar[r,yr_alt_idx,1] <- sum(rep(bins, n_sexes) * as.vector(tmp_obs[r,1,,,1])) # get mean obs comps
           v_y[r,yr_alt_idx,1] <- sum(rep(bins, n_sexes)^2*as.vector(tmp_exp[r,1,,,1]))-exp_bar[r,yr_alt_idx,1]^2 # get variance
@@ -86,9 +108,9 @@ get_francis_weights <- function(n_regions,
 
       # If compostions are joint by region and sex
       if(comp_type[y,f] == 3) {
-        exp_bar[1,yr_alt_idx,1] <- sum(rep(bins, n_regions * n_sexes) * as.vector(tmp_exp_jntall[,,,1,1])) # get mean pred comps
-        obs_bar[1,yr_alt_idx,1] <- sum(rep(bins, n_regions * n_sexes) * as.vector(tmp_obs_jntall[,,,1,1])) # get mean obs comps
-        v_y[1,yr_alt_idx,1] <- sum(rep(bins, n_regions * n_sexes)^2*as.vector(tmp_exp_jntall[,1,,,1]))-exp_bar[1,yr_alt_idx,1]^2 # get variance
+        exp_bar[1,yr_alt_idx,1] <- sum(rep(bins, length(use_regions) * n_sexes) * as.vector(tmp_exp_jntall[,,,1,1])) # get mean pred comps
+        obs_bar[1,yr_alt_idx,1] <- sum(rep(bins, length(use_regions) * n_sexes) * as.vector(tmp_obs_jntall[,,,1,1])) # get mean obs comps
+        v_y[1,yr_alt_idx,1] <- sum(rep(bins, length(use_regions) * n_sexes)^2*as.vector(tmp_exp_jntall[,1,,,1]))-exp_bar[1,yr_alt_idx,1]^2 # get variance
         w_denom[1,yr_alt_idx,1] <- (obs_bar[1,yr_alt_idx,1]-exp_bar[1,yr_alt_idx,1])/sqrt(v_y[1,yr_alt_idx,1]/tmp_iss_obs[1,1,1,1]) # get weights
       } # end if joint by region and sex
     } # end y loop
@@ -102,13 +124,13 @@ get_francis_weights <- function(n_regions,
       year_pointer <- which(comp_type[data_yrs,f] == unique_comp_type[j])
 
       # if aggregated or joint by region and sex
-      if(unique_comp_type[j] %in% c(0,3)) weights[1,data_yrs,1,f] <- 1 / var(w_denom[1,year_pointer,1])
+      if(unique_comp_type[j] %in% c(0,3)) weights[1,data_yrs,1,f] <- 1 / var(w_denom[1,year_pointer,1], na.rm = TRUE)
 
       # if split by sex and region
-      if(unique_comp_type[j] == 1) for(r in 1:n_regions) for(s in 1:n_sexes) weights[r,data_yrs,s,f] <- 1 / var(w_denom[r,year_pointer,s])
+      if(unique_comp_type[j] == 1) for(r in 1:n_regions) for(s in 1:n_sexes) weights[r,data_yrs,s,f] <- 1 / var(w_denom[r,year_pointer,s], na.rm = TRUE)
 
       # if split by region, joint by sex
-      if(unique_comp_type[j] == 2) for(r in 1:n_regions) weights[r,data_yrs,1,f] <- 1 / var(w_denom[r,year_pointer,1])
+      if(unique_comp_type[j] == 2) for(r in 1:n_regions) weights[r,data_yrs,1,f] <- 1 / var(w_denom[r,year_pointer,1], na.rm = TRUE)
 
     } # end j loop
   } # end f loop
@@ -143,24 +165,17 @@ get_francis_weights <- function(n_regions,
 #'     data$Wt_SrvLenComps[] <- wts$new_srv_len_wts
 #'   }
 #'
-#'   # make AD model function
-#'   sabie_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters, map = mapping, silent = T)
-#'
-#'   # Now, optimize the function
-#'   sabie_optim <- stats::nlminb(sabie_rtmb_model$par, sabie_rtmb_model$fn, sabie_rtmb_model$gr,
-#'                                control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
-#'   # newton steps
-#'   try_improve <- tryCatch(expr =
-#'                             for(i in 1:3) {
-#'                               g = as.numeric(sabie_rtmb_model$gr(sabie_optim$par))
-#'                               h = optimHess(sabie_optim$par, fn = sabie_rtmb_model$fn, gr = sabie_rtmb_model$gr)
-#'                               sabie_optim$par = sabie_optim$par - solve(h,g)
-#'                               sabie_optim$objective = sabie_rtmb_model$fn(sabie_optim$par)
-#'                             }
-#'                           , error = function(e){e}, warning = function(w){w})
+#'   sabie_rtmb_model <- fit_model(data,
+#'                                 parameters,
+#'                                 mapping,
+#'                                 random = NULL,
+#'                                 newton_loops = 3,
+#'                                 silent = TRUE
+#'   )
 #'
 #'   rep <- sabie_rtmb_model$report(sabie_rtmb_model$env$last.par.best) # Get report
-#'   wts <- do_francis_reweighting(data = data, rep = rep, age_labels = 2:31, len_labels = seq(41, 99, 2), year_labels = 1960:2024)
+#'   wts <- do_francis_reweighting(data = data, rep = rep, age_labels = 2:31,
+#'                                 len_labels = seq(41, 99, 2), year_labels = 1960:2021)
 #' }
 #' }
 do_francis_reweighting <- function(data,
