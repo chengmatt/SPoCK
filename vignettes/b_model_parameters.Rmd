@@ -14,13 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 ### Table 1. Description of Model Parameters
 
 | Parameter               | Dimension                                            | Component             | Description                                                              |
