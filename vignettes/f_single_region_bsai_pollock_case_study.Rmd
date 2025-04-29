@@ -1,0 +1,19 @@
+---
+title: "Setting up a Single Region Model (BSAI Pollock)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{f_single_region_bsai_pollock_case_study}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SPoCK)
+```

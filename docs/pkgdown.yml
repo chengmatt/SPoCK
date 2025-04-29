@@ -2,12 +2,12 @@ pandoc: '3.2'
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  model-diagnostics: model-diagnostics.html
-  model-dimensions: model-dimensions.html
-  model-equations: model-equations.html
-  model-parameters: model-parameters.html
-  simulation-self-test: simulation-self-test.html
-  single-region-bsai-pollock-case-study: single-region-bsai-pollock-case-study.html
-  single-region-sablefish-case-study: single-region-sablefish-case-study.html
-  spatial-sablefish-case-study: spatial-sablefish-case-study.html
-last_built: 2025-04-26T04:52Z
+  a_model_dimensions: a_model_dimensions.html
+  b_model_parameters: b_model_parameters.html
+  c_model_equations: c_model_equations.html
+  d_model_diagnostics: d_model_diagnostics.html
+  e_single_region_sablefish_case_study: e_single_region_sablefish_case_study.html
+  f_single_region_bsai_pollock_case_study: f_single_region_bsai_pollock_case_study.html
+  g_spatial_sablefish_case_study: g_spatial_sablefish_case_study.html
+  h_simulation_self_test: h_simulation_self_test.html
+last_built: 2025-04-29T03:41Z

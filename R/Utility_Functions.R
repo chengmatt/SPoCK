@@ -79,5 +79,5 @@ cmb <- function(f, d) {
 #' @param ... character vector of messages
 #' @keywords internal
 collect_message <- function(...) {
-  messages_list <<- c(messages_list, paste(...))
+  messages_list <<- c(messages_list, paste(..., sep = ""))
 }

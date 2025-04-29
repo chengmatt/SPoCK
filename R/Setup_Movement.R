@@ -90,6 +90,7 @@ Setup_Mod_Movement <- function(input_list,
     if(Movement_sexblk_spec == "constant") Movement_sexblk_spec_vals = list(1:input_list$data$n_sexes)
   } else Movement_sexblk_spec_vals = Movement_yearblk_spec
 
+  counter <- 1
   if(input_list$data$n_regions > 1) {
     for(ageblk in 1:length(Movement_ageblk_spec_vals)) {
       map_a <- Movement_ageblk_spec_vals[[ageblk]] # get ages to block and map off
@@ -108,7 +109,7 @@ Setup_Mod_Movement <- function(input_list,
           } # end i loop
 
           # Now input these unique indices into the map array
-          for(a in 1:length(map_a)) for(y in 1:length(map_y)) for(s in 1:length(map_s)) map_Movement_Pars[,,y,a,s] <- map_idx
+          for(a in map_a) for(y in map_y) for(s in map_s) map_Movement_Pars[,,y,a,s] <- map_idx
 
         } # end sex block
       } # end year block

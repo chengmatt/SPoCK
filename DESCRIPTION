@@ -35,9 +35,11 @@ Imports:
     tidyr,
     tmbstan
 Suggests: 
+    ggthemes,
     here,
     knitr,
-    rmarkdown
+    rmarkdown,
+    scales
 VignetteBuilder: 
     knitr
 Remotes:
@@ -45,4 +47,5 @@ Remotes:
     noaa-afsc/afscOSA
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: xz
 RoxygenNote: 7.3.2
