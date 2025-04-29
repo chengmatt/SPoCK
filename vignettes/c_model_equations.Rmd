@@ -58,27 +58,27 @@ Recruitment processes occur at the beginning of the year and can be described by
 #### Natural Mortality
 
 \begin{equation}
-P(log(NatMort_{s = 1}) = \frac{1}{\sqrt{2\pi} \sigma^{NatMortPrior}} exp(-\frac{[log(NatMort_{s = 1}) - log(Natmort_{s = 1}^{Prior})]^2}{2\sigma^{2^{NatMortPrior}}})
+P(log(NatMort_{s = 1}) = \frac{1}{\sqrt{2\pi} \sigma^{\text{NatMortPrior}}} exp(-\frac{[log(NatMort_{s = 1}) - log(Natmort_{s = 1}^{\text{Prior}})]^2}{2\sigma^{2^{\text{NatMortPrior}}}})
 \end{equation}
 
 #### Fishery and Survey Catchability
 
 \begin{equation}
-P(log(q_{r,y,f})) = \frac{1}{\sqrt{2\pi} \sigma_{r,y,f}^{qPrior}} exp(-\frac{[log(q_{r,y,f}) - log(q_{r,y,f}^{Prior})]^2}{2\sigma^{2^{qPrior}}_{r,y,f}})
+P(log(q_{r,y,f})) = \frac{1}{\sqrt{2\pi} \sigma_{r,y,f}^{\text{qPrior}}} exp(-\frac{[log(q_{r,y,f}) - log(q_{r,y,f}^{\text{Prior}})]^2}{2\sigma^{2^{\text{qPrior}}}_{r,y,f}})
 \end{equation}
 
 #### Steepness
 
 \begin{equation}
-a = (\frac{h^{PriorMu}_r - 0.2}{1 - 0.2}) (\frac{h^{PriorSD}_r }{1 - 0.2})^2 \\ 
-b = [1 - (\frac{h^{PriorMu}_r - 0.2}{1 - 0.2})] [(\frac{h^{PriorSD}_r }{1 - 0.2})^2] \\ 
+a = \left(\frac{h^{\text{PriorMu}}_r - 0.2}{1 - 0.2}\right) \left(\frac{h^{\text{PriorSD}}_r }{1 - 0.2}\right)^2 \\ 
+b = \left[1 - \left(\frac{h^{\text{PriorMu}}_r - 0.2}{1 - 0.2}\right)\right] \left[\left(\frac{h^{\text{PriorSD}}_r }{1 - 0.2}\right)^2\right] \\ 
 P(h_r) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}h^{a-1}_r(1-h_r)^{b-1}
 \end{equation}
 
 #### Movement
 
 \begin{equation}
-P(M_{k,y,a,s}) = \frac{\Gamma(\sum_{j=1}^{n_r} \alpha_{j,y,a,s})}{\Pi_{j=1}^{n_r}\Gamma(\alpha_{j,y,a,s})} \Pi_{j=1}^{n_r}M_{k,j,y,a,s}^{\alpha_{j,y,a,s}-1}
+P(M_{k,y,a,s}) = \frac{\Gamma(\sum_{j=1}^{n_r} \alpha_{j,y,a,s})}{\prod_{j=1}^{n_r}\Gamma(\alpha_{j,y,a,s})} \prod_{j=1}^{n_r}M_{k,j,y,a,s}^{\alpha_{j,y,a,s}-1}
 \end{equation}
 
 #### Tag Reporting Rates
@@ -86,15 +86,15 @@ P(M_{k,y,a,s}) = \frac{\Gamma(\sum_{j=1}^{n_r} \alpha_{j,y,a,s})}{\Pi_{j=1}^{n_r
 Two types of priors can be specified for facilitating the estimation of tag reporting rates. In particular, the first type of prior includes a symmetric beta parameterization, which is given by the following:
 
 \begin{equation}
-P(\beta_{r,y}) = (\beta_{r,y} + 1e-4)^{\beta^{PriorScale} } (1 - \beta_{r,y} + 1e-4)^{\beta^{PriorScale}}
+P(\beta_{r,y}) = (\beta_{r,y} + 1e-4)^{\beta^{\text{PriorScale}} } (1 - \beta_{r,y} + 1e-4)^{\beta^{\text{PriorScale}}}
 \end{equation}
 
-where $\beta^{PriorScale}$ determines the scale of the tag reporting parameter and controls how strongly to penalize estimates when they approach the bounds of $(0,1)$. Larger values of $\beta^{PriorScale}$ result in larger penalties. By contrast, a standard beta distribution can also be specified, with shape parameters $a$ and $b$. This is given by the following expression: 
+where $\beta^{\text{PriorScale}}$ determines the scale of the tag reporting parameter and controls how strongly to penalize estimates when they approach the bounds of $(0,1)$. Larger values of $\beta^{\text{PriorScale}}$ result in larger penalties. By contrast, a standard beta distribution can also be specified, with shape parameters $a$ and $b$. This is given by the following expression: 
 
 \begin{equation}
-a = \frac{\beta^{PriorMu}}{(\beta^{PriorSD})^2} \\
-b = [\frac{1-\beta^{PriorMu}}{\beta^{PriorSD})^2}] \\
-P(\beta_{r,y}) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}\beta_{r,y}^{a-1}(1-\beta_{r,y})^{b-1}
+a = \frac{\beta^{\text{PriorMu}}}{\left(\beta^{\text{PriorSD}}\right)^2} \\
+b = \left[\frac{1 - \beta^{\text{PriorMu}}}{\left(\beta^{\text{PriorSD}}\right)^2}\right] \\
+P(\beta_{r,y}) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)} \, \beta_{r,y}^{a-1} \left(1 - \beta_{r,y}\right)^{b-1}
 \end{equation}
 
-where $\beta^{PriorMu}$ defines the mean of the distribution, while $\beta^{PriorSD}$ defines the standard deviation of the beta distribution. Currently, only a tag reporting rate priors are not region or year-specific (i.e., the same value is applied across all regions and years). 
+where $\beta^{\text{PriorMu}}$ defines the mean of the distribution, while $\beta^{\text{PriorSD}}$ defines the standard deviation of the beta distribution. Currently, only a tag reporting rate priors are not region or year-specific (i.e., the same value is applied across all regions and years). 
