@@ -5,7 +5,7 @@
 \alias{mlt_rg_sable_mod_results}
 \title{Sablefish model results for multi region case study}
 \format{
-A list object containing parameters, report, sdreport, and elements from a MakeADFun object
+A list object containing parameters, report, and elements from a MakeADFun object
 }
 \source{
 Cheng et al. 2025, In review; Panmictic Panacea? Demonstrating Good Practices for Developing Spatial Stock Assessments through Application to Alaska Sablefish (Anoplopoma fimbria)

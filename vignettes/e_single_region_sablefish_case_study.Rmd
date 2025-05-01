@@ -459,7 +459,6 @@ input_list <- Setup_Mod_Weighting(input_list = input_list,
 We are finally done with the setup! Now, we can run our model. This is aided by the `fit_model` function, which expects a `data`, `mapping`, and `parameters` list and uses the `MakeADFUN` function internally. These lists can be extracted from the `input_list` constructed. If users want to utilize and integrate random effects out using Laplace Approximation, they can supply a character vector to the `random` argument. For instance, if we wanted to integrate recruitment deviations out, we would set: `random = c("ln_RecDevs")`. The `newton_loops` argument indicates whether or not the user wants to take additional newton steps to ensure that the model has achieved a local minimum, and uses both the Hessian and gradients to compute this (and thus, serves as an additional check for model convergence). The report file is extracted out internall from `fit_model` and standard errors can then be extracted using the `RTMB::sdreport` function. 
 
 ```{r Fit Model, message = FALSE,  eval = FALSE}
-
 # extract out lists updated with helper functions
 data <- input_list$data
 parameters <- input_list$par

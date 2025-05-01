@@ -5,7 +5,7 @@
 \alias{sgl_rg_sable_mod_results}
 \title{Sablefish model results for single region case study}
 \format{
-A list object containing parameters, report, sdreport, and elements from a MakeADFun object
+A list object containing parameters, report, and elements from a MakeADFun object
 }
 \source{
 2024 Federal Alaska Sablefish Assessment
