@@ -169,9 +169,8 @@ Z_{r,y,a,s} = Natmort_{r,y,a,s} + \sum_{f} Fmort_{r,y,f} Sel_{r,y,a,s,f}^{Fsh}
 <h3 id="population-initialization">Population Initialization<a class="anchor" aria-label="anchor" href="#population-initialization"></a>
 </h3>
 <p><span class="math display">$$\begin{equation}
-Z_{r,a,s}^{Init} = Natmort_{r,1,a,s} +
-Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1}, \quad \text{for } a &lt;
-a_+ \\
+Z_{r,a,s}^{Init} = Natmort_{r,1,a,s} + Fmort_{InitProp} \cdot
+\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1}, \quad \text{for } a &lt; a_+ \\
 cumsum_{Z_{r,a,s}^{Init}} = \sum_{a=1}^{a} Z_{r,a,s}^{Init}
 \end{equation}$$</span></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>R</mi><msub><mn>0</mn><mi>r</mi></msub><msub><mi>ψ</mi><mi>s</mi></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>R</mi><msub><mn>0</mn><mi>r</mi></msub><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mi>c</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi>u</mi><msub><mi>m</mi><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup></msub><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>ψ</mi><mi>s</mi></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
@@ -180,10 +179,10 @@ R0_r \psi_s, &amp; \text{if } a = 1 \\
 R0_r \exp\left(-cumsum_{Z_{r,a,s}^{Init}}\right)\psi_s, &amp; \text{if } a &gt; 1
 \end{cases}
 \end{equation}</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>R</mi><msub><mn>0</mn><mi>r</mi></msub><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msub><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>ψ</mi><mi>s</mi></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mo>≤</mo><mi>a</mi><mo>&lt;</mo><msub><mi>a</mi><mo>+</mo></msub></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac><mrow><mi>R</mi><msub><mn>0</mn><mi>r</mi></msub><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>a</mi><mo>+</mo></msub><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msub><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msub><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><msub><mi>ψ</mi><mi>s</mi></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><msub><mi>a</mi><mo>+</mo></msub></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>R</mi><msub><mn>0</mn><mi>r</mi></msub><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msub><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>ψ</mi><mi>s</mi></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mo>≤</mo><mi>a</mi><mo>&lt;</mo><msub><mi>a</mi><mo>+</mo></msub></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac><mrow><mi>R</mi><msub><mn>0</mn><mi>r</mi></msub><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>a</mi><mo>+</mo></msub><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>P</mi><mi>r</mi><mi>o</mi><mi>p</mi></mrow></msub><mo>⋅</mo><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msub><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><msub><mi>ψ</mi><mi>s</mi></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><msub><mi>a</mi><mo>+</mo></msub></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 N_{r,a,s}^{Init} = \begin{cases}
 R0_r \exp\left(-(a-1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)\psi_s, &amp; \text{if } 2 \leq a &lt; a_+ \\
-\frac{R0_r \exp\left(-(a_+ - 1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)}{1 - \exp\left(-(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)}\psi_s, &amp; \text{if } a = a_+
+\frac{R0_r \exp\left(-(a_+ - 1)(Natmort_{r,1,a,s} + Fmort_{InitProp} \cdot \mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)}{1 - \exp\left(-(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)}\psi_s, &amp; \text{if } a = a_+
 \end{cases}
 \end{equation}</annotation></semantics></math></p>
 </div>
@@ -249,6 +248,25 @@ T^k_{r,y,a,s}\exp(-Z^{Tag}_{r,y,a,s}), \quad \text{for } a = a_+
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>κ</mi><mo>+</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>M</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo>+</mo><mi>F</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>M</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 Z^{Tag}_{r,y,a,s} = (\kappa + NatMort^{Tag}_{r,y,a,s} + FishMort^{Tag}_{r,y,a,s})
 \end{equation}</annotation></semantics></math></p>
+<p><span class="math display">$$\begin{equation}
+NatMort^{Tag}_{r,y,a,s} = \frac{\sum_a\sum_s NatMort_{r,y,a,s}}{n_an_s}
+\\
+NatMort^{Tag}_{r,y,a,s} = \frac{\sum_s NatMort_{r,y,a,s}}{n_s} \\
+NatMort^{Tag}_{r,y,a,s} = \frac{\sum_a NatMort_{r,y,a,s}}{n_a} \\
+NatMort^{Tag}_{r,y,a,s} = NatMort_{r,y,a,s}
+\end{equation}$$</span></p>
+<p><span class="math display">$$\begin{equation}
+FishMort^{Tag}_{r,y,a,s} = Fmort_{r,y,f=1} \\
+FishMort^{Tag}_{r,y,a,s} = Fmort_{r,y,f=1} \cdot \frac{\sum_s
+Sel_{r,y,a,s,f=1}^{Fsh}}{n_s} \\
+FishMort^{Tag}_{r,y,a,s} = Fmort_{r,y,f=1} \cdot Sel_{r,y,a,s,f=1}^{Fsh}
+\\
+FishMort^{Tag}_{r,y,a,s} = \sum_f^{n_f} Fmort_{r,y,f} \\
+FishMort^{Tag}_{r,y,a,s} = \sum_{f=1} \left[Fmort_{r,y,f} \cdot
+\frac{\sum_s Sel_{r,y,a,s,f}^{Fsh}}{n_s} \right] \\
+FishMort^{Tag}_{r,y,a,s} = \sum_{f=1} \left[Fmort_{r,y,f} \cdot
+Sel_{r,y,a,s,f}^{Fsh} \right]
+\end{equation}$$</span></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>=</mo><msub><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow></msub><mfrac><mrow><mi>F</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>M</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup></mrow><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup></mfrac><msubsup><mi>T</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \text{Recap}^k_{r,y,a,s} = \beta_{r,y} \frac{FishMort^{Tag}_{r,y,a,s}}{Z^{Tag}_{r,y,a,s}} T^k_{r,y,a,s} \left[1-\exp(-Z^{Tag}_{r,y,a,s})\right]
 \end{equation}</annotation></semantics></math></p>
@@ -279,21 +297,21 @@ L(log(\text{ObsSrvIdx}_{r,y,sf})) = \lambda_{\text{ObsSrvIdx}} \frac{1}{\sqrt{2\
 <div class="section level4">
 <h4 id="fishery-and-survey-compositions">Fishery and Survey Compositions<a class="anchor" aria-label="anchor" href="#fishery-and-survey-compositions"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>*</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>*</mo><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><msubsup><mi>E</mi><mi>b</mi><msub><mi>O</mi><mi>b</mi></msub></msubsup></mrow><annotation encoding="application/x-tex">\begin{equation}
-L((\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} * ISS * \prod_{b = 1}^{n_b} E_b^{O_b} 
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><msubsup><mi>E</mi><mi>b</mi><msub><mi>O</mi><mi>b</mi></msub></msubsup></mrow><annotation encoding="application/x-tex">\begin{equation}
+L((\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} \cdot ISS \cdot \prod_{b = 1}^{n_b} E_b^{O_b} 
 \end{equation}</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>*</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∏</mo><mi>b</mi></munder><mi>I</mi><mi>S</mi><mi>S</mi><mo>*</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mn>1</mn></mrow></mfrac><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo>*</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mi>θ</mi><mo>*</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>*</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mi>θ</mi><mo>*</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>*</mo><msub><mi>E</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>θ</mi><mo>*</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>*</mo><msub><mi>E</mi><mi>b</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
-L(\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} * \frac{\Gamma(ISS + 1)}{\prod_b ISS * O_b + 1} \frac{\Gamma(\theta * ISS)}{\Gamma(ISS + \theta * ISS)} \prod_{b = 1}^{n_b} \frac{\Gamma(ISS * O_b + \theta * ISS * E_b)}{\theta * ISS * E_b}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>⋅</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∏</mo><mi>b</mi></munder><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mn>1</mn></mrow></mfrac><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>E</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>E</mi><mi>b</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+L(\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} \cdot \frac{\Gamma(ISS + 1)}{\prod_b ISS \cdot O_b + 1} \frac{\Gamma(\theta \cdot ISS)}{\Gamma(ISS + \theta \cdot ISS)} \prod_{b = 1}^{n_b} \frac{\Gamma(ISS \cdot O_b + \theta \cdot ISS \cdot E_b)}{\theta \cdot ISS \cdot E_b}
 \end{equation}</annotation></semantics></math></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>θ</mi></mrow></mfrac><mo>+</mo><mi>I</mi><mi>S</mi><mi>S</mi><mfrac><mi>θ</mi><mrow><mn>1</mn><mo>+</mo><mi>θ</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
 ESS = \frac{1}{1 + \theta} + ISS \frac{\theta}{1 + \theta}
 \end{equation}</annotation></semantics></math></p>
 <p><span class="math display">$$\begin{equation}
-\boldsymbol{\Sigma} = \boldsymbol{I} * \frac{\theta^2} {ISS} \\
+\boldsymbol{\Sigma} = \boldsymbol{I} \cdot \frac{\theta^2} {ISS} \\
 O^{'}_b = log(O_{-n_b}) - log(O_{n_b}) \\
 E^{'}_b = log(E_{-n_b}) - log(E_{n_b}) \\
 L(\text{ObsCompositionData}_{r,y,f}) =
-\lambda_{\text{ObsCompositionData}} * 2\pi^{-k/2}
+\lambda_{\text{ObsCompositionData}} \cdot 2\pi^{-k/2}
 \text{det}(\boldsymbol{\Sigma})^{-1/2} \exp\left[-\frac{1}{2} (O^{'}_b -
 E^{'}_b)^T \boldsymbol{\Sigma}^{-1}(O^{'}_b - E^{'}_b)\right]
 \end{equation}$$</span></p>
@@ -313,14 +331,33 @@ L(\text{ObsRecap}^k_{r,y,a,s}) = \frac{\Gamma(\text{ObsRecap}_{r,y,a,s} + \eta)}
 \end{equation}</annotation></semantics></math></p>
 <p><span class="math display">$$\begin{equation}
 \text{PRecap}^k_{r,y,a,s} =
-\frac{\text{Recap}^k_{r,y,a,s}}{\text{InitTag}^K} \\
+\frac{\text{Recap}^k_{r,y,a,s}}{\text{InitTag}^k} \\
 \text{PObsRecap}^k_{r,y,a,s} =
 \frac{\text{ObsRecap}^k_{r,y,a,s}}{\text{InitTag}^K} \\
 \text{PNonRecap}^k = 1 - \sum_r \sum_y \sum_a \sum_s
 \text{PRecap}^k_{r,y,a,s} \\
 \text{PObsNonRecap}^k = 1 - \sum_r \sum_y \sum_a \sum_s
 \text{PObsNonRecap}^k_{r,y,a,s} \\
+\boldsymbol{E}^k_{\text{Tagging}} = \{\textbf{PRecap}^k,
+\text{PNonRecap}^k \} \\
+\boldsymbol{O}^k_{\text{Tagging}} = \{\textbf{PObsRecap}^k,
+\text{PObsNonRecap}^k \}
 \end{equation}$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mtext mathvariant="normal">InitTag</mtext><mi>k</mi></msup><munder><mo>∏</mo><mi>i</mi></munder><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>E</mi><mrow><mi>i</mi><mo>,</mo><mtext mathvariant="normal">Tagging</mtext></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mi>O</mi><mrow><mi>i</mi><mo>,</mo><mtext mathvariant="normal">Tagging</mtext></mrow><mi>k</mi></msubsup></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
+L(\text{ObsRecap}^k_{r,y,a,s}) = \text{InitTag}^k \prod_i (E^k_{i,\text{Tagging}})^{O^k_{i,\text{Tagging}}}
+\end{equation}</annotation></semantics></math></p>
+<p><span class="math display">$$\begin{equation}
+\text{PRecap}^k_{r,y,a,s} =
+\frac{\text{Recap}^k_{r,y,a,s}}{\sum_r\sum_a\sum_s
+\text{Recap}^k_{r,y,a,s}} \\
+\text{PObsRecap}^k_{r,y,a,s} =
+\frac{\text{ObsRecap}^k_{r,y,a,s}}{\sum_r\sum_a\sum_s
+\text{ObsRecap}^k_{r,y,a,s}} \\
+\text{TotRecap}_y^k = \sum_r\sum_a\sum_s \text{ObsRecap}^k_{r,y,a,s}
+\end{equation}$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mtext mathvariant="normal">TotRecap</mtext><mi>y</mi><mi>k</mi></msubsup><munder><mo>∏</mo><mi>i</mi></munder><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">PRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mtext mathvariant="normal">PObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
+L(\text{ObsRecap}^k_{r,y,a,s}) = \text{TotRecap}_y^k \prod_i (\text{PRecap}^k_{r,y,a,s})^{\text{PObsRecap}^k_{r,y,a,s}}
+\end{equation}</annotation></semantics></math></p>
 </div>
 </div>
 <div class="section level3">
@@ -396,6 +433,72 @@ defines the mean of the distribution, while
 defines the standard deviation of the beta distribution. Currently, only
 a tag reporting rate priors are not region or year-specific (i.e., the
 same value is applied across all regions and years).</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="penalties-process-error">Penalties (Process Error)<a class="anchor" aria-label="anchor" href="#penalties-process-error"></a>
+</h3>
+<div class="section level4">
+<h4 id="recruitment">Recruitment<a class="anchor" aria-label="anchor" href="#recruitment"></a>
+</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msubsup><mi>σ</mi><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow><mn>2</mn></msubsup><mn>2</mn></mfrac><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+\epsilon_{r,y}^{Rec} \sim N\left(-\frac{\sigma^2_{Rec}}{2},\sigma^2_{Rec}\right)
+\end{equation}</annotation></semantics></math></p>
+</div>
+<div class="section level4">
+<h4 id="fishing-mortality">Fishing Mortality<a class="anchor" aria-label="anchor" href="#fishing-mortality"></a>
+</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>F</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>M</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>F</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>M</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+\epsilon_{r,y,f}^{FishMort} \sim N\left(0,\sigma^2_{FishMort}\right)
+\end{equation}</annotation></semantics></math></p>
+</div>
+<div class="section level4">
+<h4 id="selectivity-fishery-and-survey">Selectivity (Fishery and Survey)<a class="anchor" aria-label="anchor" href="#selectivity-fishery-and-survey"></a>
+</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+\epsilon_{r,y,i,s,f}^{Sel} \sim N\left(0,\sigma^2_{i,Sel}\right)
+\end{equation}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msup><mn>50</mn><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation} 
+\epsilon_{r,y,i,s,f}^{Sel} \sim \begin{cases}
+N\left(\epsilon_{r,1,i,s,f}^{Sel}, 50^2 \right), &amp; \text{if } i = 1 \\
+N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) &amp; \text{if } i &gt; 1
+\end{cases}
+\end{equation}</annotation></semantics></math></p>
+<p><span class="math display">$$\begin{equation}
+\boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}) \\
+\textbf{Q} = (\textbf{I} - (\textbf{B})^T) \boldsymbol{\Omega}
+(\textbf{I} - \textbf{B}) \\
+\text{diag}(\boldsymbol{\Omega}) = \sigma_{Sel}^{-2}
+\end{equation}$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐁</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>y</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>a</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>c</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>a</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>y</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+\mathbf{B} = \begin{bmatrix} 
+1 &amp; 0 &amp; 0 &amp; 0 \\
+\rho_y &amp; 0 &amp; 0 &amp; 0 \\
+\rho_a &amp; 0 &amp; 0 &amp; 0 \\
+\rho_c &amp; \rho_a &amp; \rho_y &amp; 0
+\end{bmatrix}
+\end{equation}</annotation></semantics></math></p>
+<p><span class="math display">$$\begin{equation}
+\boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}^{-1})
+\\
+\textbf{Q} = (\textbf{I} - (\textbf{B})^T) \boldsymbol{\Omega}
+(\textbf{I} - \textbf{B}) \\
+\end{equation}$$</span></p>
+<p><span class="math display">$$\begin{equation}
+\boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}^{-1})
+\\
+\textbf{Q}^{-1} = \textbf{R}_y \otimes \textbf{R}_a \\
+\textbf{R}_y = \begin{bmatrix}
+\rho^y_{11} &amp; \rho^y_{12} &amp; \rho^y_{13} \\
+\rho^y_{21} &amp; \rho^y_{22} &amp; \rho^y_{23} \\
+\rho^y_{31} &amp; \rho^y_{32} &amp; \rho^y_{33}
+\end{bmatrix} \\
+
+\textbf{R}_a = \begin{bmatrix}
+\rho^a_{11} &amp; \rho^a_{12} \\
+\rho^a_{21} &amp; \rho^a_{22} \\
+\end{bmatrix}
+\end{equation}$$</span></p>
 </div>
 </div>
 </div>
