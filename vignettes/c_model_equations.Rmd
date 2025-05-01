@@ -70,7 +70,7 @@ Z_{r,y,a,s} = Natmort_{r,y,a,s} + \sum_{f} Fmort_{r,y,f} Sel_{r,y,a,s,f}^{Fsh}
 ### Population Initialization
 
 \begin{equation}
-Z_{r,a,s}^{Init} = Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,y,a,s,f=1}, \quad \text{for } a < a_+ \\
+Z_{r,a,s}^{Init} = Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1}, \quad \text{for } a < a_+ \\
 cumsum_{Z_{r,a,s}^{Init}} = \sum_{a=1}^{a} Z_{r,a,s}^{Init}
 \end{equation}
 
@@ -83,8 +83,8 @@ R0_r \exp\left(-cumsum_{Z_{r,a,s}^{Init}}\right)\psi_s, & \text{if } a > 1
 
 \begin{equation}
 N_{r,a,s}^{Init} = \begin{cases}
-R0_r \exp\left(-(a-1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,y,a,s,f=1})\right)\psi_s, & \text{if } 2 \leq a < a_+ \\
-\frac{R0_r \exp\left(-(a_+ - 1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,y,a,s,f=1})\right)}{1 - \exp\left(-(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,y,a,s,f=1})\right)}\psi_s, & \text{if } a = a_+
+R0_r \exp\left(-(a-1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)\psi_s, & \text{if } 2 \leq a < a_+ \\
+\frac{R0_r \exp\left(-(a_+ - 1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)}{1 - \exp\left(-(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,f=1})\right)}\psi_s, & \text{if } a = a_+
 \end{cases}
 \end{equation}
 
@@ -94,21 +94,123 @@ R0_r \exp\left(-(a-1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,y,a,
 
 ### Fishery Observation Model
 
+\begin{equation}
+C^a_{r,y,a,s,f} = \frac{Fmort_{r,y,f}Sel^{Fsh}_{r,y,a,s,f}}{Z_{r,y,a,s}} N_{r,y,a,s} \left[1-\exp(-Z_{r,y,a,s})\right]
+\end{equation}
+
+\begin{equation}
+C^l_{r,y,l,s,f} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{C^a}_{r,y,s,f}
+\end{equation}
+
+\begin{equation}
+\text{Catch}_{r,y,f} = \sum_a^{a_+} \sum_s^{n_s} C^a_{r,y,a,s,f} W_{r,y,a,s}
+\end{equation}
+
+\begin{equation}
+\text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} \\
+\text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} W_{r,y,a,s}
+\end{equation}
+
 ### Survey Observation Model
 
+\begin{equation}
+I^a_{r,y,a,s,sf} = N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,sf}^{Srv} \\
+\end{equation}
+
+\begin{equation}
+I^l_{r,y,l,s,sf} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{I^a}_{r,y,s,f}
+\end{equation}
+
+\begin{equation}
+\text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} \\ 
+\text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} W_{r,y,a,s}
+\end{equation}
+
 ### Tagging Observation Model
+
+\begin{equation}
+T^k_{r,y,a,s} = T^k_{r,y,a,s} \exp(-\tau)
+\end{equation}
+
+\begin{equation}
+\boldsymbol{T}^k_{y,a,s} = (\boldsymbol{T}^k_{y,a,s})^T \boldsymbol{M}_{y,a,s}
+\end{equation}
+
+\begin{equation}
+T^k_{r,y+1,a+1,s} = T^k_{r,y,a,s}\exp(-Z^{Tag}_{r,y,a,s}), \quad \text{for } 1 \leq a < a_+ \\
+T^k_{r,y+1,a,s} =T^k_{r,y,a-1,s}\exp(-Z^{Tag}_{r,y,a-1,s}) + T^k_{r,y,a,s}\exp(-Z^{Tag}_{r,y,a,s}), \quad \text{for } a = a_+
+\end{equation}
+
+\begin{equation}
+Z^{Tag}_{r,y,a,s} = (\kappa + NatMort^{Tag}_{r,y,a,s} + FishMort^{Tag}_{r,y,a,s})
+\end{equation}
+
+\begin{equation}
+\text{Recap}^k_{r,y,a,s} = \beta_{r,y} \frac{FishMort^{Tag}_{r,y,a,s}}{Z^{Tag}_{r,y,a,s}} T^k_{r,y,a,s} \left[1-\exp(-Z^{Tag}_{r,y,a,s})\right]
+\end{equation}
+
+\begin{equation}
+\beta_{r,y} = \frac{\exp(\beta^{'}_{r,y})}{1 + \exp(\beta^{'}_{r,y})}
+\end{equation}
 
 ### Observation Likelihoods
 
 #### Fishery Catches
 
+\begin{equation}
+L(log(\text{ObsCatch}_{r,y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{r,y,f}) - log(\text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
+\end{equation}
+
 #### Fishery and Survey Indices
 
+\begin{equation}
+L(log(\text{ObsFshIdx}_{r,y,f})) = \lambda_{\text{ObsFshIdx}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsFshIdx}}} \exp(-\frac{[log(\text{ObsFshIdx}_{r,y,f}) - log(\text{FshIdx}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsFshIdx}}}})
+\end{equation}
+
+\begin{equation}
+L(log(\text{ObsSrvIdx}_{r,y,sf})) = \lambda_{\text{ObsSrvIdx}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsSrvIdx}}} \exp(-\frac{[log(\text{ObsSrvIdx}_{r,y,sf}) - log(\text{SrvIdx}_{r,y,sf})]^2}{2\sigma^{2^{\text{ObsSrvIdx}}}})
+\end{equation}
+
 #### Fishery and Survey Compositions
+
+\begin{equation}
+L((\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} * ISS * \prod_{b = 1}^{n_b} E_b^{O_b} 
+\end{equation}
+
+\begin{equation}
+L(\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} * \frac{\Gamma(ISS + 1)}{\prod_b ISS * O_b + 1} \frac{\Gamma(\theta * ISS)}{\Gamma(ISS + \theta * ISS)} \prod_{b = 1}^{n_b} \frac{\Gamma(ISS * O_b + \theta * ISS * E_b)}{\theta * ISS * E_b}
+\end{equation}
+
+\begin{equation}
+ESS = \frac{1}{1 + \theta} + ISS \frac{\theta}{1 + \theta}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\Sigma} = \boldsymbol{I} * \frac{\theta^2} {ISS} \\
+O^{'}_b = log(O_{-n_b}) - log(O_{n_b}) \\
+E^{'}_b = log(E_{-n_b}) - log(E_{n_b}) \\
+L(\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} * 2\pi^{-k/2} \text{det}(\boldsymbol{\Sigma})^{-1/2} \exp\left[-\frac{1}{2} (O^{'}_b - E^{'}_b)^T \boldsymbol{\Sigma}^{-1}(O^{'}_b - E^{'}_b)\right]
+\end{equation}
 
 ##### Structuring Observed and Expected Compositions
 
 #### Tagging
+
+\begin{equation}
+L(\text{ObsRecap}_{r,y,a,s}) = \frac{\exp(-\text{Recap}^k_{r,y,a,s})(\text{Recap}^k_{r,y,a,s})^{\text{ObsRecap}_{r,y,a,s}}}{\text{ObsRecap}_{r,y,a,s}!}
+\end{equation}
+
+\begin{equation}
+L(\text{ObsRecap}^k_{r,y,a,s}) = \frac{\Gamma(\text{ObsRecap}_{r,y,a,s} + \eta)}{\Gamma(\eta)\Gamma(\text{ObsRecap}_{r,y,a,s} + 1)} \left(\frac{\text{Recap}_{r,y,a,s}}{\text{Recap}_{r,y,a,s} + \eta}\right)^{\text{ObsRecap}_{r,y,a,s}} \left(\frac{\eta}{\text{Recap}_{r,y,a,s}^k + \eta}\right)^\eta
+\end{equation}
+
+\begin{equation}
+\text{PRecap}^k_{r,y,a,s} = \frac{\text{Recap}^k_{r,y,a,s}}{\text{InitTag}^K} \\ 
+\text{PObsRecap}^k_{r,y,a,s} = \frac{\text{ObsRecap}^k_{r,y,a,s}}{\text{InitTag}^K} \\
+\text{PNonRecap}^k = 1 - \sum_r \sum_y \sum_a \sum_s \text{PRecap}^k_{r,y,a,s} \\ 
+\text{PObsNonRecap}^k = 1 - \sum_r \sum_y \sum_a \sum_s \text{PObsNonRecap}^k_{r,y,a,s} \\
+\end{equation}
+
 
 ### Priors
 
@@ -155,3 +257,4 @@ P(\beta_{r,y}) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)} \, \beta_{r,y}^{a-1} \le
 \end{equation}
 
 where $\beta^{\text{PriorMu}}$ defines the mean of the distribution, while $\beta^{\text{PriorSD}}$ defines the standard deviation of the beta distribution. Currently, only a tag reporting rate priors are not region or year-specific (i.e., the same value is applied across all regions and years). 
+

@@ -43,7 +43,7 @@ Name | Description
 `init_age_strc`	| Value specifying how the population age structure should be initialized. 0: Initialize via iteration to equilibrium, 1: Initialize with geometric series solution 
 `init_F_prop`	| Value specifying the proportion of fishing mortality to apply to the initial age deviations relative to the mean fishing mortality parameter for fishery fleet 1 (the dominant fleet)
 
-## Table 3 Data Inputs for Defining Biological Processes
+## Table 3. Data Inputs for Defining Biological Processes
 Name | Description
 |-------------------------|------------------------------------------------------|
 `WAA`	| Weight-at-age values dimensioned by n_regions, n_years, n_ages, n_sexes
