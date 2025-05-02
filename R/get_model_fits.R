@@ -469,8 +469,6 @@ get_comp_prop <- function(data,
 #' @param bin_label Bin label for whether these are ages or lengths
 #'
 #' @import dplyr
-#' @import compResidual
-#' @import afscOSA
 #' @returns Dataframe of OSA residuals
 #' @export get_osa
 #'
@@ -495,6 +493,14 @@ get_osa <- function(obs_mat,
                     comp_type,
                     bin_label
                     ) {
+
+  # Check if afscOSA and compResidual are installed
+  if (!requireNamespace("afscOSA", quietly = TRUE)) {
+    stop("afscOSA package is required but not installed.")
+  }
+  if (!requireNamespace("compResidual", quietly = TRUE)) {
+    stop("compResidual package is required but not installed.")
+  }
 
   years <- as.character(years) # define as character
   obs <- obs_mat[,years,,,fleet, drop = FALSE] # get filtered observed matrix
@@ -664,6 +670,14 @@ get_osa <- function(obs_mat,
 #' osa_plot <- plot_resids(osa_results)
 #' }
 plot_resids <- function(osa_results) {
+
+  # Check if afscOSA and compResidual are installed
+  if (!requireNamespace("afscOSA", quietly = TRUE)) {
+    stop("afscOSA package is required but not installed.")
+  }
+  if (!requireNamespace("compResidual", quietly = TRUE)) {
+    stop("compResidual package is required but not installed.")
+  }
 
   # extract results
   res <- osa_results$res %>% dplyr::mutate(sign = ifelse(resid < 0, "Neg", "Pos"), Outlier = ifelse(abs(resid) > 3, "Yes", "No"))

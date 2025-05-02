@@ -180,40 +180,60 @@ where deviations are placed about the parametric form. For further details on op
 ## Observation Models and Equations
 
 ### Fishery Observation Model
+The fishery observation model describes the expected catch-at-age, catch-at-length, catch (in units of biomass), and fishery indices. Expected catch-at-age ($C^a_{r,y,a,s,f}$) is calculated using Baranov’s catch equation:
 
 \begin{equation}
 C^a_{r,y,a,s,f} = \frac{Fmort_{r,y,f}Sel^{Fsh}_{r,y,a,s,f}}{Z_{r,y,a,s}} N_{r,y,a,s} \left[1-\exp(-Z_{r,y,a,s})\right]
 \end{equation}
 
+Catch-at-length ($C^l_{r,y,l,s,f}$) can then be derived using catch-at-age ($C^a_{r,y,a,s,f}$) and a size-age transition matrix ($\boldsymbol{A}^l_{r,y,s}$):
+
 \begin{equation}
 C^l_{r,y,l,s,f} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{C^a}_{r,y,s,f}
 \end{equation}
 
+$\boldsymbol{A}^l_{r,y,s}$ is a data input derived external to the assessment model and is required if users are fitting to length composition data, where the matrix represents the probability of being in a length bin, given some age. 
+
+Expected catch ($\text{Catch}_{r,y,f}$) is then derived by simply taking the summation of the expected catch-at-age across ages and sexes, multiplied by their respective weights-at-age:
+
 \begin{equation}
 \text{Catch}_{r,y,f} = \sum_a^{a_+} \sum_s^{n_s} C^a_{r,y,a,s,f} W_{r,y,a,s}
 \end{equation}
+
+Fishery indices ($\text{FshIdx}_{r,y,f}$) can be specified as either abundance-based (first equation below) or biomass-based (second equation below): 
 
 \begin{equation}
 \text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} \\
 \text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} W_{r,y,a,s}
 \end{equation}
 
+where $q^{Fsh}_{r,y,f}$ is the catchability coefficient for a given fishery and the value 0.5 represents the fraction of year in which the fishery index should be computed at. Currently, fishery catchability coefficients can only vary over time as time blocks.
+
 ### Survey Observation Model
+The survey observation model describes the expected survey catch-at-age, survey catch-at-length, and survey indices. Expected survey catch-at-age ($I^a_{r,y,a,s,sf}$) is calculated using the following equation:
 
 \begin{equation}
 I^a_{r,y,a,s,sf} = N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,sf}^{Srv} \\
 \end{equation}
 
+where $Sel_{r,y,a,s,sf}^{Srv}$ here is the survey selectivity pattern. Expected survey catch-at-length ($I^l_{r,y,l,s,sf}$) can then be derived as: 
+
 \begin{equation}
 I^l_{r,y,l,s,sf} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{I^a}_{r,y,s,f}
 \end{equation}
+
+Again, survey indices ($\text{SrvIdx}_{r,y,sf}$) can be computed either as abundance-based (first equation below), or biomass-based (second equation below):
 
 \begin{equation}
 \text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} \\ 
 \text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} W_{r,y,a,s}
 \end{equation}
 
+where $q^{Srv}_{r,y,sf}$ is the survey catchability coefficient. Currently, survey catchability coefficients can only vary over time as time blocks.
+
 ### Tagging Observation Model
+
+Tag cohorts ($T^k_{r,y,a,s}$) are dimensioned by regions, years, ages, and sexes, where index $k$ denotes a unique tag cohort (release region and release year combination). Tag cohorts are tracked for a user-specific maximum duration (maximum tag liberty; $n_L$), after which calculations for the tag cohort are no longer computed. This is done to help with computation time. Additionally, tag cohorts also have the option to undergo a fraction of mortality in the year of release, such that if a given cohort is released during the middle of the year, mortality processes are discounted. If mortality discounting is specified, movement does not occur in the year of release. In general, the process dynamics for the tagged cohort mimics those specified for the overall population. Immediately following release, tag cohorts are decremented by an initial tag-induced mortality rate:
 
 \begin{equation}
 T^k_{r,y,a,s} = T^k_{r,y,a,s} \exp(-\tau)

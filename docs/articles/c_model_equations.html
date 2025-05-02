@@ -422,38 +422,86 @@ process error section</a>.</p>
 <div class="section level3">
 <h3 id="fishery-observation-model">Fishery Observation Model<a class="anchor" aria-label="anchor" href="#fishery-observation-model"></a>
 </h3>
+<p>The fishery observation model describes the expected catch-at-age,
+catch-at-length, catch (in units of biomass), and fishery indices.
+Expected catch-at-age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mi>a</mi></msubsup><annotation encoding="application/x-tex">C^a_{r,y,a,s,f}</annotation></semantics></math>)
+is calculated using Baranov’s catch equation:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mi>a</mi></msubsup><mo>=</mo><mfrac><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup></mrow><msub><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></mfrac><msub><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 C^a_{r,y,a,s,f} = \frac{Fmort_{r,y,f}Sel^{Fsh}_{r,y,a,s,f}}{Z_{r,y,a,s}} N_{r,y,a,s} \left[1-\exp(-Z_{r,y,a,s})\right]
 \end{equation}</annotation></semantics></math></p>
+<p>Catch-at-length
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>l</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mi>l</mi></msubsup><annotation encoding="application/x-tex">C^l_{r,y,l,s,f}</annotation></semantics></math>)
+can then be derived using catch-at-age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mi>a</mi></msubsup><annotation encoding="application/x-tex">C^a_{r,y,a,s,f}</annotation></semantics></math>)
+and a size-age transition matrix
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>𝐀</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow><mi>l</mi></msubsup><annotation encoding="application/x-tex">\boldsymbol{A}^l_{r,y,s}</annotation></semantics></math>):</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>l</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mi>l</mi></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐀</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow><mi>l</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><msub><msup><mi>𝐂</mi><mi>𝐚</mi></msup><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\begin{equation}
 C^l_{r,y,l,s,f} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{C^a}_{r,y,s,f}
 \end{equation}</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>𝐀</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow><mi>l</mi></msubsup><annotation encoding="application/x-tex">\boldsymbol{A}^l_{r,y,s}</annotation></semantics></math>
+is a data input derived external to the assessment model and is required
+if users are fitting to length composition data, where the matrix
+represents the probability of being in a length bin, given some age.</p>
+<p>Expected catch
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">\text{Catch}_{r,y,f}</annotation></semantics></math>)
+is then derived by simply taking the summation of the expected
+catch-at-age across ages and sexes, multiplied by their respective
+weights-at-age:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>=</mo><munderover><mo>∑</mo><mi>a</mi><msub><mi>a</mi><mo>+</mo></msub></munderover><munderover><mo>∑</mo><mi>s</mi><msub><mi>n</mi><mi>s</mi></msub></munderover><msubsup><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mi>a</mi></msubsup><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\begin{equation}
 \text{Catch}_{r,y,f} = \sum_a^{a_+} \sum_s^{n_s} C^a_{r,y,a,s,f} W_{r,y,a,s}
 \end{equation}</annotation></semantics></math></p>
+<p>Fishery indices
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">FshIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">\text{FshIdx}_{r,y,f}</annotation></semantics></math>)
+can be specified as either abundance-based (first equation below) or
+biomass-based (second equation below):</p>
 <p><span class="math display">$$\begin{equation}
 \text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s}
 N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} \\
 \text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s}
 N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} W_{r,y,a,s}
 \end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup><annotation encoding="application/x-tex">q^{Fsh}_{r,y,f}</annotation></semantics></math>
+is the catchability coefficient for a given fishery and the value 0.5
+represents the fraction of year in which the fishery index should be
+computed at. Currently, fishery catchability coefficients can only vary
+over time as time blocks.</p>
 </div>
 <div class="section level3">
 <h3 id="survey-observation-model">Survey Observation Model<a class="anchor" aria-label="anchor" href="#survey-observation-model"></a>
 </h3>
+<p>The survey observation model describes the expected survey
+catch-at-age, survey catch-at-length, and survey indices. Expected
+survey catch-at-age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>I</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mi>a</mi></msubsup><annotation encoding="application/x-tex">I^a_{r,y,a,s,sf}</annotation></semantics></math>)
+is calculated using the following equation:</p>
 <p><span class="math display">$$\begin{equation}
 I^a_{r,y,a,s,sf} = N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5)
 Sel_{r,y,a,s,sf}^{Srv} \\
 \end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mrow><mi>S</mi><mi>r</mi><mi>v</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">Sel_{r,y,a,s,sf}^{Srv}</annotation></semantics></math>
+here is the survey selectivity pattern. Expected survey catch-at-length
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>I</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>l</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mi>l</mi></msubsup><annotation encoding="application/x-tex">I^l_{r,y,l,s,sf}</annotation></semantics></math>)
+can then be derived as:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>I</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>l</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mi>l</mi></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐀</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow><mi>l</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><msub><msup><mi>𝐈</mi><mi>𝐚</mi></msup><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\begin{equation}
 I^l_{r,y,l,s,sf} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{I^a}_{r,y,s,f}
 \end{equation}</annotation></semantics></math></p>
+<p>Again, survey indices
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">SrvIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">\text{SrvIdx}_{r,y,sf}</annotation></semantics></math>)
+can be computed either as abundance-based (first equation below), or
+biomass-based (second equation below):</p>
 <p><span class="math display">$$\begin{equation}
 \text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s}
 I^a_{r,y,a,s,sf} \\
 \text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s}
 I^a_{r,y,a,s,sf} W_{r,y,a,s}
 \end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mrow><mi>S</mi><mi>r</mi><mi>v</mi></mrow></msubsup><annotation encoding="application/x-tex">q^{Srv}_{r,y,sf}</annotation></semantics></math>
+is the survey catchability coefficient. Currently, survey catchability
+coefficients can only vary over time as time blocks.</p>
 </div>
 <div class="section level3">
 <h3 id="tagging-observation-model">Tagging Observation Model<a class="anchor" aria-label="anchor" href="#tagging-observation-model"></a>
