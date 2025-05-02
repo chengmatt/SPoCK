@@ -5,7 +5,7 @@ A generalized spatial stock assessment model written in RTMB, than be extended t
 
 ## Installation
 
-`SPoCK` is a package written in RTMB, and relies on several packages for plotting and model diagnostics purposes. To install the package, users should have `devtools` installed. It is also generally recommended to install the packaged listed below in the following order
+`SPoCK` is a package written in RTMB, and optionally relies on several packages for plotting and model diagnostics purposes. To install the package, users should have `devtools` installed. It is also generally recommended to also install the packaged listed below, but need not be if users do not want functionality with one-step ahead residuals.
 
 ```
 install.packages("devtools")
