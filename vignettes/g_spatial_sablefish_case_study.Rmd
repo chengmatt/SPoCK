@@ -528,13 +528,8 @@ sabie_rtmb_model <- fit_model(data,
 sabie_rtmb_model$sd_rep <- RTMB::sdreport(sabie_rtmb_model)
 ```
 
-```{r, eval = TRUE, include = FALSE}
-data("mlt_rg_sable_mod_results") # load in model results and rename
-sabie_rtmb_model <- mlt_rg_sable_mod_results
-```
-
 Inspecting results from our spatial model, it appears that the highest spawning biomass occurs in the CGOA, followed by the EGOA. Western regions generally demonstrate relatively comparable levels of spawning biomass. By contrast, western regions (BS and AI) along with the CGOA appear to exhibit the highest recruitment levels. 
-```{r, fig.width = 12, fig.height = 5.5, message = FALSE, warning = FALSE}
+```{r, fig.width = 12, fig.height = 5.5, message = FALSE, warning = FALSE, eval = FALSE}
 # Get recruitment time-series
 rec_series <- reshape2::melt((sabie_rtmb_model$rep$Rec))
 rec_series$Par <- "Recruitment"

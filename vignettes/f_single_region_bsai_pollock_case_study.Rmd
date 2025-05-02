@@ -332,12 +332,7 @@ ebswp_rtmb_model <- fit_model(data,
 ebswp_rtmb_model$sd_rep <- RTMB::sdreport(ebswp_rtmb_model)
 ```
 
-```{r, eval = TRUE, include = FALSE}
-data("sgl_rg_ebswp_mod_results") # load in model results and rename
-ebswp_rtmb_model <- sgl_rg_ebswp_mod_results
-```
-
-```{r Compare Models, message = FALSE, eval = TRUE, fig.width = 11, fig.height = 5, fig.align='center'}
+```{r Compare Models, message = FALSE, eval = FALSE, fig.width = 11, fig.height = 5, fig.align='center'}
 # Get recruitment time-series
 rec_series <- reshape2::melt((ebswp_rtmb_model$rep$Rec))
 rec_series$Par <- "Recruitment"

@@ -477,14 +477,8 @@ sabie_rtmb_model <- fit_model(data,
 sabie_rtmb_model$sd_rep <- RTMB::sdreport(sabie_rtmb_model)
 ```
 
-```{r, eval = TRUE, include = FALSE}
-data("sgl_rg_sable_mod_results") # load in model results and rename
-sabie_rtmb_model <- sgl_rg_sable_mod_results
-```
-
-
 Finally, we can compare outputs from ADMB to RTMB. For brevity, we will only show comparisons of spawning biomass and recruitment between the two models. 
-```{r Compare Models, message = FALSE, eval = TRUE, fig.width = 11, fig.height = 5, fig.align='center'}
+```{r Compare Models, message = FALSE, eval = FALSE, fig.width = 11, fig.height = 5, fig.align='center'}
 # Get recruitment time-series
 rec_series <- data.frame(Par = "Recruitment",
                          Year = 1960:2024,
