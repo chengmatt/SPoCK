@@ -3,7 +3,6 @@
 #'
 #' @returns a list object with a bunch of simulated values and outputs
 #' @export Simulate_Pop
-#' @import compResidual
 #' @importFrom stats rnorm rmultinom
 #' @examples
 #' \dontrun{
@@ -252,7 +251,7 @@ Simulate_Pop <- function(output_path) {
             if(comp_strc == 0) {
               tmp_FishAgeComps_Prob <- CAA[y,r,,s,f,sim] # Get probabilities for a given region and sex
               if(comp_fish_like[f] == 0) Obs_FishAgeComps[y,r,,s,f,sim] <- array(stats::rmultinom(1, 400, tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = c(dim(CAA[y,r,,s,f,sim]))) # simulate multinomial probabilities
-              if(comp_fish_like[f] == 1) Obs_FishAgeComps[y,r,,s,f,sim] <- array(compResidual::rdirM(1, 400, 5 * 400 * tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate dirichlet multinomial samples
+              if(comp_fish_like[f] == 1) Obs_FishAgeComps[y,r,,s,f,sim] <- array(rdirM(1, 400, 5 * 400 * tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate dirichlet multinomial samples
             } # end if for "Split" approach for composition data (split by region and sex
 
           } # end s loop
@@ -264,7 +263,7 @@ Simulate_Pop <- function(output_path) {
           if(comp_strc == 1) {
             tmp_FishAgeComps_Prob <- CAA[y,r,,,f,sim] # Get probabilities for a given region and sex
             if(comp_fish_like[f] == 0) Obs_FishAgeComps[y,r,,,f,sim] <- array(stats::rmultinom(1, 400, tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = c(dim(CAA[y,r,,,f,sim, drop = FALSE]))) # simulate multinomial probabilities
-            if(comp_fish_like[f] == 1) Obs_FishAgeComps[y,r,,,f,sim] <- array(compResidual::rdirM(1, 400, 5 * 400 * tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate dirichlet multinomial samples
+            if(comp_fish_like[f] == 1) Obs_FishAgeComps[y,r,,,f,sim] <- array(rdirM(1, 400, 5 * 400 * tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate dirichlet multinomial samples
           } # end if for 'Split' approach for composition data split by region by not by sex
 
         } # end r loop
@@ -275,7 +274,7 @@ Simulate_Pop <- function(output_path) {
           # age 1-30, sex 1, region 2, age 1-30, sex 2, region 2 ... )
           tmp_FishAgeComps_Prob <- aperm(CAA[y, , , , f, sim, drop = FALSE], c(3,4,2,1,5,6)) # ordered by ages, sexes, regions, year = y, fishery fleet = f, and sim = sim
           if(comp_fish_like[f] == 0) tmp_sim_FishAgeComps <- array(stats::rmultinom(1, 500, tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate Multinomial samples
-          if(comp_fish_like[f] == 1) tmp_sim_FishAgeComps <- array(compResidual::rdirM(1, 500, 1 * 500 * tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate dirichlet multinomial samples
+          if(comp_fish_like[f] == 1) tmp_sim_FishAgeComps <- array(rdirM(1, 500, 1 * 500 * tmp_FishAgeComps_Prob / sum(tmp_FishAgeComps_Prob)), dim = dim(tmp_FishAgeComps_Prob)) # Simulate dirichlet multinomial samples
           if(comp_fish_like[f] == 2) tmp_sim_FishAgeComps <- array(rlogistnormal(exp = tmp_FishAgeComps_Prob, pars = 3, comp_like = comp_fish_like[f]), dim = dim(tmp_FishAgeComps_Prob)) # Simulate logistic normal samples
           if(comp_fish_like[f] == 5) tmp_sim_FishAgeComps <- array(rlogistnormal(exp = tmp_FishAgeComps_Prob, pars = c(0.3, 0.6, 0.6, 0.6), comp_like = comp_fish_like[f]), dim = dim(tmp_FishAgeComps_Prob)) # Simulate logistic normal samples
           # Inputing simulated data into dataframe while reshaping to correct dimension (revert to year, region, ages, sexes, fleet, sim)

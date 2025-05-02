@@ -47,3 +47,19 @@ rlogistnormal <- function(exp,
   return(p)
 }
 
+
+#' Title Simulate dirichlet multinomial draws
+#'
+#' @param n Number of sims
+#' @param N Sum of observations
+#' @param alpha Concentration parameter
+#'
+#' @keywords internal
+rdirM <- function(n, N, alpha) {
+  rd1 <- function(alpha) {
+    x <- rgamma(length(alpha), alpha)
+    p <- x/sum(x)
+    p
+  }
+  replicate(n, as.vector(stats::rmultinom(1, N, rd1(alpha))))
+}

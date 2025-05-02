@@ -506,9 +506,29 @@ coefficients can only vary over time as time blocks.</p>
 <div class="section level3">
 <h3 id="tagging-observation-model">Tagging Observation Model<a class="anchor" aria-label="anchor" href="#tagging-observation-model"></a>
 </h3>
+<p>Tag cohorts
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>T</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><annotation encoding="application/x-tex">T^k_{r,y,a,s}</annotation></semantics></math>)
+are dimensioned by regions, years, ages, and sexes, where index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+denotes a unique tag cohort (release region and release year
+combination). Tag cohorts are tracked for a user-specific maximum
+duration (maximum tag liberty;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>L</mi></msub><annotation encoding="application/x-tex">n_L</annotation></semantics></math>),
+after which calculations for the tag cohort are no longer computed. This
+is done to help with computation time. Additionally, tag cohorts also
+have the option to undergo a fraction of mortality in the year of
+release, such that if a given cohort is released during the middle of
+the year, mortality processes are discounted. If mortality discounting
+is specified, movement does not occur in the year of release. In
+general, the process dynamics for the tagged cohort mimics those
+specified for the overall population. Immediately following release, tag
+cohorts are decremented by an initial tag-induced mortality rate:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>T</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>=</mo><msubsup><mi>T</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 T^k_{r,y,a,s} = T^k_{r,y,a,s} \exp(-\tau)
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+is the initial tag-induced mortality rate, which can be</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐓</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐓</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><msub><mi>𝐌</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\begin{equation}
 \boldsymbol{T}^k_{y,a,s} = (\boldsymbol{T}^k_{y,a,s})^T \boldsymbol{M}_{y,a,s}
 \end{equation}</annotation></semantics></math></p>

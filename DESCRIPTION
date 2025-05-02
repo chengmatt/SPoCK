@@ -33,12 +33,10 @@ Imports:
     tidyr,
     tmbstan
 Suggests: 
-    ggthemes,
     here,
     knitr,
     rmarkdown,
-    scales,
-    afscOSA, 
+    afscOSA,
     compResidual
 VignetteBuilder: 
     knitr
