@@ -1,6 +1,9 @@
 ---
 title: "Setting up a Spatial Model (Alaska Sablefish)"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{g_spatial_sablefish_case_study}
   %\VignetteEngine{knitr::rmarkdown}

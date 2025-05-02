@@ -1,6 +1,9 @@
 ---
 title: "Description of Model and Data Dimensions"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{a_model_dimensions}
   %\VignetteEngine{knitr::rmarkdown}

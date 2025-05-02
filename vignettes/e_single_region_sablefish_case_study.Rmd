@@ -1,6 +1,9 @@
 ---
 title: "Setting up a Single Region Model (Alaska Sablefish)"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{e_single_region_sablefish_case_study}
   %\VignetteEngine{knitr::rmarkdown}

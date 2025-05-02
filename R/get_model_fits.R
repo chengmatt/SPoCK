@@ -496,10 +496,10 @@ get_osa <- function(obs_mat,
 
   # Check if afscOSA and compResidual are installed
   if (!requireNamespace("afscOSA", quietly = TRUE)) {
-    stop("afscOSA package is required but not installed.")
+    stop("afscOSA package is required but not installed. Please refer to the installation instructions on the main page if you want to use get_osa.")
   }
   if (!requireNamespace("compResidual", quietly = TRUE)) {
-    stop("compResidual package is required but not installed.")
+    stop("compResidual package is required but not installed. Please refer to the installation instructions on the main page if you want to use get_osa.")
   }
 
   years <- as.character(years) # define as character

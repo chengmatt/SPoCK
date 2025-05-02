@@ -1,6 +1,9 @@
 ---
 title: "Description of Model Parameters"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{b_model_parameters}
   %\VignetteEngine{knitr::rmarkdown}

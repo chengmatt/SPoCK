@@ -25,7 +25,6 @@ Imports:
     parallel,
     progressr,
     randtests,
-    remotes,
     reshape2,
     rstan,
     stats,

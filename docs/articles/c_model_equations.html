@@ -528,19 +528,41 @@ T^k_{r,y,a,s} = T^k_{r,y,a,s} \exp(-\tau)
 \end{equation}</annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-is the initial tag-induced mortality rate, which can be</p>
+is the initial tag-induced mortality rate, which can either be estimated
+freely or fixed at a user-specified value. In practice, this parameter
+is often cofounded with other mortality processes and needs to be fixed.
+If tagged cohorts are released at the beginning of a calendar year,
+Markovian movement occurs (movement does not occur otherwise):</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐓</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐓</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><msub><mi>𝐌</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\begin{equation}
 \boldsymbol{T}^k_{y,a,s} = (\boldsymbol{T}^k_{y,a,s})^T \boldsymbol{M}_{y,a,s}
 \end{equation}</annotation></semantics></math></p>
+<p>Mortality and ageing of the tagged cohort then occurs:</p>
 <p><span class="math display">$$\begin{equation}
 T^k_{r,y+1,a+1,s} = T^k_{r,y,a,s}\exp(-Z^{Tag}_{r,y,a,s}), \quad
 \text{for } 1 \leq a &lt; a_+ \\
 T^k_{r,y+1,a,s} =T^k_{r,y,a-1,s}\exp(-Z^{Tag}_{r,y,a-1,s}) +
 T^k_{r,y,a,s}\exp(-Z^{Tag}_{r,y,a,s}), \quad \text{for } a = a_+
 \end{equation}$$</span></p>
+<p>where tagged cohorts follow an exponential mortality model, with
+accumulation of individuals in the plus-group. Total mortality for the
+tagged cohort can be specified as:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>κ</mi><mo>+</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>M</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo>+</mo><mi>F</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>M</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 Z^{Tag}_{r,y,a,s} = (\kappa + NatMort^{Tag}_{r,y,a,s} + FishMort^{Tag}_{r,y,a,s})
 \end{equation}</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math>
+is a parameter describing chronic tag loss, which can be estimated in
+the model. However, this parameter should be fixed in practice, given
+confounding with mortality processes. Natural mortality for tagged
+individuals can be derived in several ways:</p>
+<ol style="list-style-type: decimal">
+<li>Natural mortality applied to tagged cohorts is averaged across ages
+and sexes,</li>
+<li>Natural mortality applied to tagged cohorts is averaged across
+sexes, but is age-specific,</li>
+<li>Natural mortality applied to tagged cohorts is averaged across ages,
+but is sex-specific, and</li>
+<li>Natural mortality is both age-and sex-specific:</li>
+</ol>
 <p><span class="math display">$$\begin{equation}
 NatMort^{Tag}_{r,y,a,s} = \frac{\sum_a\sum_s NatMort_{r,y,a,s}}{n_an_s}
 \\
@@ -548,6 +570,27 @@ NatMort^{Tag}_{r,y,a,s} = \frac{\sum_s NatMort_{r,y,a,s}}{n_s} \\
 NatMort^{Tag}_{r,y,a,s} = \frac{\sum_a NatMort_{r,y,a,s}}{n_a} \\
 NatMort^{Tag}_{r,y,a,s} = NatMort_{r,y,a,s}
 \end{equation}$$</span></p>
+<p>The different calculations for natural mortality applied to tagged
+cohorts might be used if the observed tagging data are not age-or
+sex-specific such that calculations between observed and expected values
+are consistent with the nature of tag recapture data (e.g., if tagging
+data are not age-or sex-specific, one might use option 1). Similarly,
+fishing mortality experienced by tagged cohorts can also be specified in
+a multitude of ways:</p>
+<ol style="list-style-type: decimal">
+<li>Fishing mortality at age and sex from fleet 1 is applied to all ages
+and sexes with uniform selectivity,</li>
+<li>Fishing mortality at age and sex from fleet 1 is multiplied by
+sex-averaged selectivity values,</li>
+<li>Fishing mortality at age and sex from fleet 1 is multiplied by
+sex-specific selectivity values,</li>
+<li>Fishing mortality at age and sex is derived by taking the weighted
+sum of annual fishing mortality across fleets with sex-averaged
+selectivity values, and</li>
+<li>Fishing mortality at age and sex is derived by taking the weighted
+sum of annual fishing mortality across fleets with sex-specific
+selectivity values:</li>
+</ol>
 <p><span class="math display">$$\begin{equation}
 FishMort^{Tag}_{r,y,a,s} = Fmort_{r,y,f=1} \\
 FishMort^{Tag}_{r,y,a,s} = Fmort_{r,y,f=1} \cdot \frac{\sum_s
@@ -560,25 +603,82 @@ FishMort^{Tag}_{r,y,a,s} = \sum_{f=1} \left[Fmort_{r,y,f} \cdot
 FishMort^{Tag}_{r,y,a,s} = \sum_{f=1} \left[Fmort_{r,y,f} \cdot
 Sel_{r,y,a,s,f}^{Fsh} \right]
 \end{equation}$$</span></p>
+<p>Again, users might specify different options depending on the nature
+of observed recapture data. For instance, if sex-specific information
+was not available, one might specify option 2 or 4 (sex-averaged
+selectivity values).</p>
+<p>To derive the expected number of recaptures, a modified version of
+Baranov’s catch equation is used:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>=</mo><msub><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow></msub><mfrac><mrow><mi>F</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>M</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup></mrow><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup></mfrac><msubsup><mi>T</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>T</mi><mi>a</mi><mi>g</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \text{Recap}^k_{r,y,a,s} = \beta_{r,y} \frac{FishMort^{Tag}_{r,y,a,s}}{Z^{Tag}_{r,y,a,s}} T^k_{r,y,a,s} \left[1-\exp(-Z^{Tag}_{r,y,a,s})\right]
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">\beta_{r,y}</annotation></semantics></math>
+represents a tag reporting rate parameter that can vary across space and
+time. Currently, time-variation in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">\beta_{r,y}</annotation></semantics></math>
+can only be specified as a time-block. Additionally,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">\beta_{r,y}</annotation></semantics></math>
+is estimated as a logit variable:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mi>′</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mi>′</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
 \beta_{r,y} = \frac{\exp(\beta^{'}_{r,y})}{1 + \exp(\beta^{'}_{r,y})}
 \end{equation}</annotation></semantics></math></p>
+<p>and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>β</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mi>′</mi></msubsup><annotation encoding="application/x-tex">\beta^{'}_{r,y}</annotation></semantics></math>
+represents the tag reporting parameter in logit space.</p>
 </div>
 <div class="section level3">
 <h3 id="observation-likelihoods">Observation Likelihoods<a class="anchor" aria-label="anchor" href="#observation-likelihoods"></a>
 </h3>
+<p>Currently, the generalized assessment model has the capability to fit
+to a variety of data sources, which include:</p>
+<ol style="list-style-type: decimal">
+<li>fishery catches,</li>
+<li>fishery indices,</li>
+<li>fishery age compositions,</li>
+<li>fishery length compositions,</li>
+<li>survey indices,</li>
+<li>survey age compositions,</li>
+<li>survey length compositions, and</li>
+<li>tagging data</li>
+</ol>
+<p>Each of these data sources are fit to using a statistical likelihood,
+where each likelihood component summed together to compute the joint
+negative log likelihood. Therefore, the joint negative log likelihood
+represents the function to be minimized.</p>
 <div class="section level4">
 <h4 id="fishery-catches">Fishery Catches<a class="anchor" aria-label="anchor" href="#fishery-catches"></a>
 </h4>
+<p>Fishery catches can fit to using a lognormal likelihood, given by the
+following:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCatch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCatch</mtext></msub><mfrac><mn>1</mn><mrow><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt><msup><mi>σ</mi><mtext mathvariant="normal">ObsCatch</mtext></msup></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mrow><mo stretchy="true" form="prefix">[</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCatch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(log(\text{ObsCatch}_{r,y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{r,y,f}) - log(\text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">ObsCatch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">\text{ObsCatch}_{r,y,f}</annotation></semantics></math>
+represent the observed catches and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsCatch}}}</annotation></semantics></math>
+is the standard deviation of the catch. In general,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsCatch}}}</annotation></semantics></math>
+is not estimable and should be fixed at a small value (e.g., 1e-02) such
+that catch is assumed to be known.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mtext mathvariant="normal">ObsCatch</mtext></msub><annotation encoding="application/x-tex">\lambda_{\text{ObsCatch}}</annotation></semantics></math>
+in this case represents a likelihood weight to apply to catch data
+(generally not recommended to use and should be set to 1). In a case
+where only spatially-aggregated catches are available for a period of
+time, the model has the option to switch to an aggregated likelihood for
+those defined periods:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCatch</mtext><mrow><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCatch</mtext></msub><mfrac><mn>1</mn><mrow><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt><msup><mi>σ</mi><mtext mathvariant="normal">ObsCatch</mtext></msup></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mrow><mo stretchy="true" form="prefix">[</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCatch</mtext><mrow><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>r</mi></munder><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(log(\text{ObsCatch}_{y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{y,f}) - log(\sum_r \text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
 \end{equation}</annotation></semantics></math></p>
+<p>where a lognormal likelihood is still assumed, but the expected
+catches are summed across regions to derive spatially-aggregated catch.
+Additionally, users have the option to use a censored likelihood for
+catch data in periods where only spatially-aggregated catches are
+available. This approach essentially allows the model to better predict
+regional-catch values when only spatially-aggregated catch information
+are availiable and ensures that the model predicts values within the
+specified bounds:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">CensoredCatch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.9</mn><mo>⋅</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>L</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>+</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.1</mn><mo>⋅</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>0.075</mn><mo>⋅</mo><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>L</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>0.075</mn><mo>⋅</mo><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align*}
 L(\text{CensoredCatch}_{r,y,f}) = 
 &amp; \left(0.9 \cdot \phi_N\left[\frac{\log(U_{r,y,f}/\text{Catch}_{r,y,f})}{\sigma_{\text{CensoredCatch}}}\right] 
@@ -586,31 +686,153 @@ L(\text{CensoredCatch}_{r,y,f}) =
 &amp; + \left(0.1 \cdot \phi_N\left[\frac{\log(U_{r,y,f}/\text{Catch}_{r,y,f})}{0.075 \cdot \sigma_{\text{CensoredCatch}}}\right] 
 - \phi_N\left[\frac{\log(L_{r,y,f}/\text{Catch}_{r,y,f})}{0.075 \cdot \sigma_{\text{CensoredCatch}}}\right]\right)
 \end{align*}</annotation></semantics></math></p>
+<p>The censored likelihood here represents a mixture of two cumulative
+normal distribution functions
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\phi_N</annotation></semantics></math>),
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">U_{r,y,f}</annotation></semantics></math>
+are the regional upper bound values (can be specified as the aggregate
+catch), and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">L_{r,y,f}</annotation></semantics></math>
+are the lower bound values (should ideally be specified at values larger
+than 0 if used).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub><annotation encoding="application/x-tex">\sigma_{\text{CensoredCatch}}</annotation></semantics></math>
+represents the standard deviation (not estimable and is user-specific),
+where smaller values forces the model to predict values strictly within
+the specified range.</p>
 </div>
 <div class="section level4">
 <h4 id="fishery-and-survey-indices">Fishery and Survey Indices<a class="anchor" aria-label="anchor" href="#fishery-and-survey-indices"></a>
 </h4>
+<p>Fishery indices can be fit to assuming a lognormal likelihood:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsFshIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsFshIdx</mtext></msub><mfrac><mn>1</mn><mrow><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt><msup><mi>σ</mi><mtext mathvariant="normal">ObsFshIdx</mtext></msup></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mrow><mo stretchy="true" form="prefix">[</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsFshIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">FshIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsFshIdx</mtext></msup></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(log(\text{ObsFshIdx}_{r,y,f})) = \lambda_{\text{ObsFshIdx}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsFshIdx}}} \exp(-\frac{[log(\text{ObsFshIdx}_{r,y,f}) - log(\text{FshIdx}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsFshIdx}}}})
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">ObsFshIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">\text{ObsFshIdx}_{r,y,f}</annotation></semantics></math>
+are the observed fishery indices and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsFshIdx</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsFshIdx}}}</annotation></semantics></math>
+describes the variance of the fishery index (can be estimated but should
+theoretically be known).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mtext mathvariant="normal">ObsFshIdx</mtext></msub><annotation encoding="application/x-tex">\lambda_{\text{ObsFshIdx}}</annotation></semantics></math>
+represents a likelihood weight applied to fishery indices (should
+ideally not be used and set at a value of 1 to allow the model to
+objectively weight data sources using the specified variance).</p>
+<p>Similarly, survey indices are fit to assuming a lognormal
+likelihod:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsSrvIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsSrvIdx</mtext></msub><mfrac><mn>1</mn><mrow><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt><msup><mi>σ</mi><mtext mathvariant="normal">ObsSrvIdx</mtext></msup></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mrow><mo stretchy="true" form="prefix">[</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsSrvIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">SrvIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsSrvIdx</mtext></msup></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(log(\text{ObsSrvIdx}_{r,y,sf})) = \lambda_{\text{ObsSrvIdx}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsSrvIdx}}} \exp(-\frac{[log(\text{ObsSrvIdx}_{r,y,sf}) - log(\text{SrvIdx}_{r,y,sf})]^2}{2\sigma^{2^{\text{ObsSrvIdx}}}})
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">ObsSrvIdx</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">\text{ObsSrvIdx}_{r,y,sf}</annotation></semantics></math>
+are the observed survey indices and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsSrvIdx</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsSrvIdx}}}</annotation></semantics></math>
+describes the variance of the survey index (can be estimated but should
+theoretically be known).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mtext mathvariant="normal">ObsSrvIdx</mtext></msub><annotation encoding="application/x-tex">\lambda_{\text{ObsSrvIdx}}</annotation></semantics></math>
+represents a likelihood weight applied to survey indices (should ideally
+not be used and set at a value of 1 to allow the model to objectively
+weight data sources using the specified variance).</p>
 </div>
 <div class="section level4">
 <h4 id="fishery-and-survey-compositions">Fishery and Survey Compositions<a class="anchor" aria-label="anchor" href="#fishery-and-survey-compositions"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><msubsup><mi>E</mi><mi>b</mi><msub><mi>O</mi><mi>b</mi></msub></msubsup></mrow><annotation encoding="application/x-tex">\begin{equation}
+<p>At present, a total of 3 multivariate likelihoods are available for
+use to fit to composition data. These include the multinomial, the
+Dirichlet-multinomial, and logistic-normal likelihoods.</p>
+<p>In the case of a multinomial likelihood, the following expression is
+invoked:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><msubsup><mi>E</mi><mi>b</mi><msub><mi>O</mi><mi>b</mi></msub></msubsup></mrow><annotation encoding="application/x-tex">\begin{equation}
 L((\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} \cdot ISS \cdot \prod_{b = 1}^{n_b} E_b^{O_b} 
-\end{equation}</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>⋅</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∏</mo><mi>b</mi></munder><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mn>1</mn></mrow></mfrac><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>E</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>E</mi><mi>b</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">ISS</annotation></semantics></math>
+is the input sample size that determines the initial weight to apply to
+a given composition dataset, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><annotation encoding="application/x-tex">\lambda_{\text{ObsCompositionData}}</annotation></semantics></math>
+is the weight to apply to the input sample size after some form of
+iterative re-weighting process (e.g., Francis).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>b</mi></msub><annotation encoding="application/x-tex">E_b</annotation></semantics></math>
+describes the expected values for a given bin
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>,
+while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>O</mi><mi>b</mi></msub><annotation encoding="application/x-tex">O_b</annotation></semantics></math>
+describes the observed values.</p>
+<p>If a Dirichlet-multinomial likelihood (linear parameterization) is
+assumed, the following expression is used:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsCompositionData</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>λ</mi><mtext mathvariant="normal">ObsCompositionData</mtext></msub><mo>⋅</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∏</mo><mi>b</mi></munder><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mn>1</mn></mrow></mfrac><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>+</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>b</mi></msub></munderover><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>O</mi><mi>b</mi></msub><mo>+</mo><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>E</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>θ</mi><mo>⋅</mo><mi>I</mi><mi>S</mi><mi>S</mi><mo>⋅</mo><msub><mi>E</mi><mi>b</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(\text{ObsCompositionData}_{r,y,f}) = \lambda_{\text{ObsCompositionData}} \cdot \frac{\Gamma(ISS + 1)}{\prod_b ISS \cdot O_b + 1} \frac{\Gamma(\theta \cdot ISS)}{\Gamma(ISS + \theta \cdot ISS)} \prod_{b = 1}^{n_b} \frac{\Gamma(ISS \cdot O_b + \theta \cdot ISS \cdot E_b)}{\theta \cdot ISS \cdot E_b}
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+here represents the overdispersion parameter such that the input sample
+size can be adjusted to obtain an effective sample size
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">ESS</annotation></semantics></math>):</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><mi>S</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>θ</mi></mrow></mfrac><mo>+</mo><mi>I</mi><mi>S</mi><mi>S</mi><mfrac><mi>θ</mi><mrow><mn>1</mn><mo>+</mo><mi>θ</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
 ESS = \frac{1}{1 + \theta} + ISS \frac{\theta}{1 + \theta}
 \end{equation}</annotation></semantics></math></p>
+<p>Thus, if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+was large such that
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>&gt;</mo><mo>&gt;</mo><mi>I</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\theta &gt;&gt; ISS</annotation></semantics></math>),
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><mi>S</mi><mi>−</mi><mo>&gt;</mo><mi>I</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">ESS -&gt; ISS</annotation></semantics></math>,
+while if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+was small such that
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>&lt;</mo><mo>&lt;</mo><mi>I</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\theta &lt;&lt; ISS</annotation></semantics></math>)
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+would approximate the ratio of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">ESS</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">ISS</annotation></semantics></math>.</p>
+<p>Lastly, a logistic-normal likelihood can also be invoked, where
+several covariance structures can be parameterized. In it’s simplest
+form, an iid covariance can be specified:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝚺</mi><mo>=</mo><mi>𝐈</mi><mo>⋅</mo><mfrac><msup><mi>θ</mi><mn>2</mn></msup><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+\boldsymbol{\Sigma} = \boldsymbol{I} \cdot \frac{\theta^2} {ISS}
+\end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>
+is the covariance structure scaled by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><msup><mi>θ</mi><mn>2</mn></msup><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow></mfrac><annotation encoding="application/x-tex">\frac{\theta^2} {ISS}</annotation></semantics></math>
+to allow for overdispersion and inter-annual variation in weighting.
+Thus, when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">ISS</annotation></semantics></math>
+is large, the variance of this process gets small.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐈</mi><annotation encoding="application/x-tex">\boldsymbol{I}</annotation></semantics></math>
+is an identity matrix dimensioned by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>b</mi></msub><mo>−</mo><mn>1</mn><mo>⋅</mo><msub><mi>n</mi><mi>b</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_b - 1 \cdot n_b - 1</annotation></semantics></math>.
+A first-order autoregressive process can also be specified across
+ages:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝚺</mi><mo>=</mo><msub><mi>𝐑</mi><mi>𝐚</mi></msub><mo>⋅</mo><mfrac><msup><mi>θ</mi><mn>2</mn></msup><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+\boldsymbol{\Sigma} = \boldsymbol{R_a} \cdot \frac{\theta^2} {ISS}
+\end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐑</mi><mi>𝐚</mi></msub><annotation encoding="application/x-tex">\boldsymbol{R_a}</annotation></semantics></math>
+is a matrix representing a first-order autoregressive process.
+Two-dimensional autoregression can also be specified across ages and
+sexes:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝚺</mi><mo>=</mo><msub><mi>𝐑</mi><mi>𝐚</mi></msub><mo>⊗</mo><msub><mi>𝐑</mi><mi>𝐬</mi></msub><mo>⋅</mo><mfrac><msup><mi>θ</mi><mn>2</mn></msup><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+\boldsymbol{\Sigma} = \boldsymbol{R_a} \otimes \boldsymbol{R_s} \cdot \frac{\theta^2} {ISS}
+\end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐑</mi><mi>𝐬</mi></msub><annotation encoding="application/x-tex">\boldsymbol{R_s}</annotation></semantics></math>
+in this case is a constant correlation matrix by sex. Lastly,
+three-dimensional autoregression can be specified across ages, sexes,
+and regions, and is generally recommended to only use this when samples
+are availiable consistently across years and regions (otherwise, the
+number of bins changes):</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝚺</mi><mo>=</mo><msub><mi>𝐑</mi><mi>𝐚</mi></msub><mo>⊗</mo><msub><mi>𝐑</mi><mi>𝐬</mi></msub><mo>⊗</mo><msub><mi>𝐑</mi><mi>𝐫</mi></msub><mo>⋅</mo><mfrac><msup><mi>θ</mi><mn>2</mn></msup><mrow><mi>I</mi><mi>S</mi><mi>S</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+\boldsymbol{\Sigma} = \boldsymbol{R_a} \otimes \boldsymbol{R_s} \otimes \boldsymbol{R_r} \cdot \frac{\theta^2} {ISS}
+\end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐑</mi><mi>𝐫</mi></msub><annotation encoding="application/x-tex">\boldsymbol{R_r}</annotation></semantics></math>
+here is a constant correlation matrix by region. Following the
+specification of a covariance matrix, a logistic transformation is then
+conducted on the observed and expected compositions, and a multivariate
+normal likelihood is invoked on logistic random variables:</p>
 <p><span class="math display">$$\begin{equation}
-\boldsymbol{\Sigma} = \boldsymbol{I} \cdot \frac{\theta^2} {ISS} \\
 O^{'}_b = log(O_{-n_b}) - log(O_{n_b}) \\
 E^{'}_b = log(E_{-n_b}) - log(E_{n_b}) \\
 L(\text{ObsCompositionData}_{r,y,f}) =
@@ -618,9 +840,47 @@ L(\text{ObsCompositionData}_{r,y,f}) =
 \text{det}(\boldsymbol{\Sigma})^{-1/2} \exp\left[-\frac{1}{2} (O^{'}_b -
 E^{'}_b)^T \boldsymbol{\Sigma}^{-1}(O^{'}_b - E^{'}_b)\right]
 \end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>O</mi><mi>b</mi><mi>′</mi></msubsup><annotation encoding="application/x-tex">O^{'}_b</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>E</mi><mi>b</mi><mi>′</mi></msubsup><annotation encoding="application/x-tex">E^{'}_b</annotation></semantics></math>
+are the observed and expected compositions after a logistic additive
+transformation.</p>
 <div class="section level5">
 <h5 id="structuring-observed-and-expected-compositions">Structuring Observed and Expected Compositions<a class="anchor" aria-label="anchor" href="#structuring-observed-and-expected-compositions"></a>
 </h5>
+<p>Four options can be used for structuring age and length compositions.
+These are:</p>
+<ol style="list-style-type: decimal">
+<li>Aggregated age or length compositions across regions and sexes,</li>
+<li>‘Split’ age or length compositions for each region and sex (i.e., no
+implicit information about region and sex-ratios),</li>
+<li>‘Split’ age or length compositions for each region, coupled with
+‘Joint’ compositions across sexes (i.e., implicit information about
+sex-ratios, but no information about regional-ratios), and</li>
+<li>‘Joint’ age or length compositions across regions and sexes (i.e.,
+implicit information about both region and sex-ratios)</li>
+</ol>
+<p>In the first option (termed ‘Aggregated’), both observed and expected
+age or length compositions within a given year and fleet (survey or
+fishery) are aggregated across both sexes and regions. For simplicity,
+observed age and length compositions will be denoted as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>O</mi><mrow><mi>r</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">O_{r,b,s}</annotation></semantics></math>
+and expected age and length compositions will be denoted as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mrow><mi>r</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">E_{r,b,s}</annotation></semantics></math>.
+Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+represents either age or length bins. Note that observed compositions
+will need to be aggregated prior to the modelling process (but need not
+be normalized, as it is normalized within the modeling process).
+Expected compositions are then first normalized by dividing the sum of a
+given region and/or sex such that proportions sum to 1 within a given
+region and a given sex. Following that, the average of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mrow><mi>r</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">E_{r,b,s}</annotation></semantics></math>
+across regions and sexes is taken. If age compositions have ageing error
+associated with them, the expected age compositions are then multiplied
+by an ageing-error matrix to derive the compositions to fit to. This
+process is described by the equations below:</p>
 <p><span class="math display">$$\begin{equation}
 O_b = \frac{O_b}{\sum_b O_b} \\
 E_b = \frac{1}{n_s \cdot n_r} \sum_{i = 1}^{n_s \cdot n_r}
@@ -629,6 +889,11 @@ E_b = \frac{1}{n_s \cdot n_r} \sum_{i = 1}^{n_s \cdot n_r}
 \boldsymbol{O} = \left\{ O_b \;\middle|\; b = 1, \ldots, n_b \right\} \\
 \boldsymbol{E} = \left\{ E_b \;\middle|\; b = 1, \ldots, n_b \right\}
 \end{equation}$$</span></p>
+<p>In the second option (termed ‘SplitRegionSplitSex’), both observed
+and expected compositions for a given year and fleet are normalized to
+sum to 1 within a given sex and region. For age compositions, an
+ageing-error matrix can then applied to a given region and sex. This
+process is mathematically described in the following equation:</p>
 <p><span class="math display">$$\begin{equation}
 O_{r,b,s} = \frac{O_{r,b,s}}{\sum_b O_{r,b,s}} \\
 E_{r,b,s} = \frac{E_{r,b,s}}{\sum_b E_{r,b,s}} \\
@@ -638,6 +903,13 @@ E_{r,b,s} = \frac{E_{r,b,s}}{\sum_b E_{r,b,s}} \\
 \boldsymbol{E}_{r,s} = \left\{ E_{r,b,s} \;\middle|\; b = 1, \ldots, n_b
 \right\}
 \end{equation}$$</span></p>
+<p>In the third option (termed ‘SplitRegionJointSex’), observed and
+expected compositions for a given year and fleet are normalized to sum
+to 1 within a given region, but jointly across sexes. For age
+compositions, the ageing-error matrix can then extended to accommodate
+such that it is dimensioned by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>b</mi></msub><msub><mi>n</mi><mi>s</mi></msub><mo>⋅</mo><msub><mi>n</mi><mi>b</mi></msub><msub><mi>n</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">n_bn_s \cdot n_bn_s</annotation></semantics></math>,
+and is given by the following equations:</p>
 <p><span class="math display">$$\begin{equation}
 O_{r,b,s} = \frac{O_{r,b,s}}{\sum_{b,s} O_{r,b,s}} \\
 E_{r,b,s} = \frac{E_{r,b,s}}{\sum_{b,s} E_{r,b,s}} \\
@@ -648,6 +920,12 @@ E_{r,b,s} = \frac{E_{r,b,s}}{\sum_{b,s} E_{r,b,s}} \\
 \boldsymbol{E}_r = \left\{ E_{r,b,s} \;\middle|\; b = 1,\ldots,n_b;\; s
 = 1,2 \right\}
 \end{equation}$$</span></p>
+<p>In the last option (termed ‘JointRegionJointSex’), observed and
+expected compositions sum to one jointly across both regions and sexes.
+For age compositions, the ageing-error matrix can then extended to
+accommodate such that it is dimensioned by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>b</mi></msub><msub><mi>n</mi><mi>s</mi></msub><msub><mi>n</mi><mi>r</mi></msub><mo>⋅</mo><msub><mi>n</mi><mi>b</mi></msub><msub><mi>n</mi><mi>s</mi></msub><msub><mi>n</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">n_bn_sn_r \cdot n_bn_sn_r</annotation></semantics></math>,
+and is given by the following equations:</p>
 <p><span class="math display">$$\begin{equation}
 O_{r,b,s} = \frac{O_{r,b,s}}{\sum_{r,b,s} O_{r,b,s}} \\
 E_{r,b,s} = \frac{E_{r,b,s}}{\sum_{r,b,s} E_{r,b,s}} \\
@@ -663,29 +941,117 @@ E_{r,b,s} = \frac{E_{r,b,s}}{\sum_{r,b,s} E_{r,b,s}} \\
 <div class="section level4">
 <h4 id="tagging">Tagging<a class="anchor" aria-label="anchor" href="#tagging"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></msup></mrow><mrow><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mi>!</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
+<p>The generalized assessment model has the option to fit to tagging
+data, which tracks a tag cohort across regions, ages, and sexes.
+However, in many cases, age or sex information may not be available for
+a given species. Thus, when tagging data does not include age or sex
+information, the user must specify all tagged individuals to occupy the
+first age class and first sex category as a starting point. Users should
+then also specify tagging data to be fit via pooling across all ages and
+sexes using the <code>move_age_tag_pool</code> and
+<code>move_sex_tag_pool</code> data inputs under the scenario that no
+information is available to distinguish age-and sex-specific tag
+recaptures.</p>
+<p>Given that tagging data is highly multi-dimensional, use of these
+data can greatly increase the computational demand of the model.
+Therefore, to partially reduce these demands, the model allows for
+pooling of data across age and sex partitions. This process groups
+observations and expected values into their respective age blocks. It is
+recommended that if age-varying movement is estimated in age-blocks,
+pooling of tag data should align with these age-blocks. Moreover, it is
+important to note that when tag recoveries are fit to by pooling
+observations and expected values, likelihood values for alternative
+pooling parameterizations are not directly comparable.</p>
+<p>Additionally, a central tenant of using tagging data is that tagged
+individuals are representative of the overall population such that these
+individuals need to be well-mixed. To address the well-mixed assumption,
+the model allows for a specification of mixing period, which specifies
+the time-at-liberty for which tags are fit to. For example, if all
+individuals are well-mixed followed release, then the mixing period
+would be specified at a value of 1. By contrast, if individuals are only
+well-mixed after 2 years, then the mixing period would be specified at a
+value of 2. Therefore, the model requires the entire history of a given
+tag cohort to be input (starting from the initial release and recapture
+year).</p>
+<p>Currently, several tag likelihoods can be utilized to describe tag
+recapture data. These options are: 1) Poisson likelihood, 2) Negative
+Binomial likelihood, 3) Multinomial likelihood, assuming release
+conditioned dynamics, and 4) Multinomial likelihood, assuming recapture
+conditioned dynamics</p>
+<p>The Poisson likelihood for tag recaptures is given by the following
+expression:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></msup></mrow><mrow><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mi>!</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(\text{ObsRecap}_{r,y,a,s}) = \frac{\exp(-\text{Recap}^k_{r,y,a,s})(\text{Recap}^k_{r,y,a,s})^{\text{ObsRecap}_{r,y,a,s}}}{\text{ObsRecap}_{r,y,a,s}!}
 \end{equation}</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mrow><msub><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>η</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>η</mi><mrow><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>+</mo><mi>η</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>η</mi></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><annotation encoding="application/x-tex">\text{Recap}^k_{r,y,a,s}</annotation></semantics></math>
+are observed tag recaptures. If pooling is specified, then observed
+recoveries are fit to but summing the observed and expected tag
+recoveries across the respective age and sex groups. In the model, the
+likelihood is specified in log space, such that the factorial term in
+the denominator is specified as a gamma function, allowing for
+recoveries to be fit to as non-integer terms (as would be the case if an
+age-length key were used to convert observed lengths to ages).</p>
+<p>The negative binomial likelihood for tag recaptures is given by the
+expression:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mrow><msub><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>+</mo><mi>η</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><msub><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>η</mi><mrow><msubsup><mtext mathvariant="normal">Recap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo>+</mo><mi>η</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>η</mi></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(\text{ObsRecap}^k_{r,y,a,s}) = \frac{\Gamma(\text{ObsRecap}_{r,y,a,s} + \eta)}{\Gamma(\eta)\Gamma(\text{ObsRecap}_{r,y,a,s} + 1)} \left(\frac{\text{Recap}_{r,y,a,s}}{\text{Recap}_{r,y,a,s} + \eta}\right)^{\text{ObsRecap}_{r,y,a,s}} \left(\frac{\eta}{\text{Recap}_{r,y,a,s}^k + \eta}\right)^\eta
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+represents the overdispersion parameter for tagging data.</p>
+<p>The multinomial release conditioned likelihood for tag recoveries
+fits to both recaptured and non-recaptured states. Proportions of
+observed
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mtext mathvariant="normal">PObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><annotation encoding="application/x-tex">\text{PObsRecap}^k_{r,y,a,s}</annotation></semantics></math>)
+and expected recaptured
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mtext mathvariant="normal">PRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><annotation encoding="application/x-tex">\text{PRecap}^k_{r,y,a,s}</annotation></semantics></math>)
+individuals are given by:</p>
 <p><span class="math display">$$\begin{equation}
 \text{PRecap}^k_{r,y,a,s} =
 \frac{\text{Recap}^k_{r,y,a,s}}{\text{InitTag}^k} \\
 \text{PObsRecap}^k_{r,y,a,s} =
-\frac{\text{ObsRecap}^k_{r,y,a,s}}{\text{InitTag}^K} \\
+\frac{\text{ObsRecap}^k_{r,y,a,s}}{\text{InitTag}^K}
+\end{equation}$$</span></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mtext mathvariant="normal">InitTag</mtext><mi>k</mi></msup><annotation encoding="application/x-tex">\text{InitTag}^k</annotation></semantics></math>
+are the total tags released for a given tag cohort for a given release
+region and year. Non-recaptured states can then be written as:</p>
+<p><span class="math display">$$\begin{equation}
 \text{PNonRecap}^k = 1 - \sum_r \sum_y \sum_a \sum_s
 \text{PRecap}^k_{r,y,a,s} \\
 \text{PObsNonRecap}^k = 1 - \sum_r \sum_y \sum_a \sum_s
-\text{PObsNonRecap}^k_{r,y,a,s} \\
+\text{PObsNonRecap}^k_{r,y,a,s}
+\end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mtext mathvariant="normal">PNonRecap</mtext><mi>k</mi></msup><annotation encoding="application/x-tex">\text{PNonRecap}^k</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mtext mathvariant="normal">PObsNonRecap</mtext><mi>k</mi></msup><annotation encoding="application/x-tex">\text{PObsNonRecap}^k</annotation></semantics></math>
+are the expected and observed non-recapture proportions, respectively.
+Rewriting both recaptured and non-recaptured states for observed and
+expected values gives:</p>
+<p><span class="math display">$$\begin{equation}
 \boldsymbol{E}^k_{\text{Tagging}} = \{\textbf{PRecap}^k,
 \text{PNonRecap}^k \} \\
 \boldsymbol{O}^k_{\text{Tagging}} = \{\textbf{PObsRecap}^k,
 \text{PObsNonRecap}^k \}
 \end{equation}$$</span></p>
+<p>Following that, a standard multinomial likelihood with the
+aforementioned vectors can be written as:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mtext mathvariant="normal">InitTag</mtext><mi>k</mi></msup><munder><mo>∏</mo><mi>i</mi></munder><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>E</mi><mrow><mi>i</mi><mo>,</mo><mtext mathvariant="normal">Tagging</mtext></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mi>O</mi><mrow><mi>i</mi><mo>,</mo><mtext mathvariant="normal">Tagging</mtext></mrow><mi>k</mi></msubsup></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(\text{ObsRecap}^k_{r,y,a,s}) = \text{InitTag}^k \prod_i (E^k_{i,\text{Tagging}})^{O^k_{i,\text{Tagging}}}
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+indexes a given element in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>E</mi><mrow><mi>i</mi><mo>,</mo><mtext mathvariant="normal">Tagging</mtext></mrow><mi>k</mi></msubsup><annotation encoding="application/x-tex">E^k_{i,\text{Tagging}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>O</mi><mrow><mi>i</mi><mo>,</mo><mtext mathvariant="normal">Tagging</mtext></mrow><mi>k</mi></msubsup><annotation encoding="application/x-tex">O^k_{i,\text{Tagging}}</annotation></semantics></math>.</p>
+<p>The multinomial recapture conditioned likelihood for tag recoveries
+assumes that tag shedding, tag induced mortality, and tag reporting
+rates are spatially-invariant, given that these terms cancel out in the
+denominator. Thus, these terms need not be specified or estimated when
+assuming this likelihood. The following expression is used to transform
+observed and expected recaptured individuals to proportions:</p>
 <p><span class="math display">$$\begin{equation}
 \text{PRecap}^k_{r,y,a,s} =
 \frac{\text{Recap}^k_{r,y,a,s}}{\sum_r\sum_a\sum_s
@@ -695,6 +1061,11 @@ L(\text{ObsRecap}^k_{r,y,a,s}) = \text{InitTag}^k \prod_i (E^k_{i,\text{Tagging}
 \text{ObsRecap}^k_{r,y,a,s}} \\
 \text{TotRecap}_y^k = \sum_r\sum_a\sum_s \text{ObsRecap}^k_{r,y,a,s}
 \end{equation}$$</span></p>
+<p>where recapture probabilities are normalized by the sum of all
+recaptures in a given year and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mtext mathvariant="normal">TotRecap</mtext><mi>y</mi><mi>k</mi></msubsup><annotation encoding="application/x-tex">\text{TotRecap}_y^k</annotation></semantics></math>
+are the total number of observed recaptures within a given year. The
+multinomial likelihood is then expressed as:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">ObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mtext mathvariant="normal">TotRecap</mtext><mi>y</mi><mi>k</mi></msubsup><munder><mo>∏</mo><mi>i</mi></munder><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mtext mathvariant="normal">PRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mtext mathvariant="normal">PObsRecap</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mi>k</mi></msubsup></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
 L(\text{ObsRecap}^k_{r,y,a,s}) = \text{TotRecap}_y^k \prod_i (\text{PRecap}^k_{r,y,a,s})^{\text{PObsRecap}^k_{r,y,a,s}}
 \end{equation}</annotation></semantics></math></p>
@@ -703,23 +1074,43 @@ L(\text{ObsRecap}^k_{r,y,a,s}) = \text{TotRecap}_y^k \prod_i (\text{PRecap}^k_{r
 <div class="section level3">
 <h3 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
 </h3>
+<p>Several priors are available to help inform the estimation of
+parameters. In particular, priors are available for natural mortality,
+catchability, steepness, movement, and tag reporting rates.</p>
 <div class="section level4">
 <h4 id="natural-mortality">Natural Mortality<a class="anchor" aria-label="anchor" href="#natural-mortality"></a>
 </h4>
+<p>For natural mortality, a lognormal prior can be invoked:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>M</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt><msup><mi>σ</mi><mtext mathvariant="normal">NatMortPrior</mtext></msup></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mrow><mo stretchy="true" form="prefix">[</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>M</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mtext mathvariant="normal">Prior</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">NatMortPrior</mtext></msup></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 P(log(NatMort_{s = 1}) = \frac{1}{\sqrt{2\pi} \sigma^{\text{NatMortPrior}}} \exp(-\frac{[log(NatMort_{s = 1}) - log(Natmort_{s = 1}^{\text{Prior}})]^2}{2\sigma^{2^{\text{NatMortPrior}}}})
 \end{equation}</annotation></semantics></math></p>
+<p>where the lognormal prior is only invoked on the first sex (female if
+sex-structured),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">NatMortPrior</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{NatMortPrior}}}</annotation></semantics></math>
+represents the variance of the prior, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>o</mi><mi>r</mi><msubsup><mi>t</mi><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mtext mathvariant="normal">Prior</mtext></msubsup></mrow><annotation encoding="application/x-tex">Natmort_{s = 1}^{\text{Prior}}</annotation></semantics></math>
+represents the prior value itself.</p>
 </div>
 <div class="section level4">
 <h4 id="fishery-and-survey-catchability">Fishery and Survey Catchability<a class="anchor" aria-label="anchor" href="#fishery-and-survey-catchability"></a>
 </h4>
+<p>For fishery or survey catchability, a lognormal prior can similarly
+be used:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt><msubsup><mi>σ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">qPrior</mtext></msubsup></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mrow><mo stretchy="true" form="prefix">[</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Prior</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><msubsup><mi>σ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><msup><mn>2</mn><mtext mathvariant="normal">qPrior</mtext></msup></msubsup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 P(log(q_{r,y,f})) = \frac{1}{\sqrt{2\pi} \sigma_{r,y,f}^{\text{qPrior}}} \exp(-\frac{[log(q_{r,y,f}) - log(q_{r,y,f}^{\text{Prior}})]^2}{2\sigma^{2^{\text{qPrior}}}_{r,y,f}})
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">qPrior</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{qPrior}}}</annotation></semantics></math>
+represents the variance of the prior, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">qPrior</mtext></msubsup><annotation encoding="application/x-tex">q_{r,y,f}^{\text{qPrior}}</annotation></semantics></math>
+represents the prior value itself.</p>
 </div>
 <div class="section level4">
 <h4 id="steepness">Steepness<a class="anchor" aria-label="anchor" href="#steepness"></a>
 </h4>
+<p>If a Beverton-Holt stock recruitment relationship is assumed, priors
+for steepness can be imposed. Currently, a scaled beta prior (bounded
+between 0.2 and 1) can be invoked:</p>
 <p><span class="math display">$$\begin{equation}
 a = \left(\frac{h^{\text{PriorMu}}_r - 0.2}{1 - 0.2}\right)
 \left(\frac{h^{\text{PriorSD}}_r }{1 - 0.2}\right)^2 \\
@@ -728,13 +1119,39 @@ b = \left[1 - \left(\frac{h^{\text{PriorMu}}_r - 0.2}{1 -
 0.2}\right)^2\right] \\
 P(h_r) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}h^{a-1}_r(1-h_r)^{b-1}
 \end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>h</mi><mi>r</mi><mtext mathvariant="normal">PriorMu</mtext></msubsup><annotation encoding="application/x-tex">h^{\text{PriorMu}}_r</annotation></semantics></math>
+represents the prior mean steepness value in a given region (bounded
+between 0.2 and 1) and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>h</mi><mi>r</mi><mtext mathvariant="normal">PriorSD</mtext></msubsup><annotation encoding="application/x-tex">h^{\text{PriorSD}}_r</annotation></semantics></math>
+is the standard deviation for those priors.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+are the shape parameters for a beta distribution.</p>
 </div>
 <div class="section level4">
 <h4 id="movement">Movement<a class="anchor" aria-label="anchor" href="#movement"></a>
 </h4>
+<p>Priors on movement parameters can also be invoked, where these priors
+are imposed on the rows of the movement matrix itself (as opposed to the
+multinomial logit parameters). Here a Dirichlet prior can be
+invoked:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>k</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>r</mi></msub></munderover><msub><mi>α</mi><mrow><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>r</mi></msub></munderover><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mrow><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>r</mi></msub></munderover><msubsup><mi>M</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><msub><mi>α</mi><mrow><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\begin{equation}
 P(M_{k,y,a,s}) = \frac{\Gamma(\sum_{j=1}^{n_r} \alpha_{j,y,a,s})}{\prod_{j=1}^{n_r}\Gamma(\alpha_{j,y,a,s})} \prod_{j=1}^{n_r}M_{k,j,y,a,s}^{\alpha_{j,y,a,s}-1}
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+indexes movement towards a given region and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mrow><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">\alpha_{j,y,a,s}</annotation></semantics></math>
+are the Dirichlet prior parameters. These priors have the flexibility to
+be specified for movement of individuals towards region j for any year,
+age, or sex partition. If a user were to specify a uniform prior, all
+values in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mrow><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">\alpha_{j,y,a,s}</annotation></semantics></math>
+would have the same values. Increasing the values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mrow><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">\alpha_{j,y,a,s}</annotation></semantics></math>
+increases the concentration (i.e., the weight of the prior).</p>
 </div>
 <div class="section level4">
 <h4 id="tag-reporting-rates">Tag Reporting Rates<a class="anchor" aria-label="anchor" href="#tag-reporting-rates"></a>
@@ -781,42 +1198,146 @@ same value is applied across all regions and years).</p>
 <div class="section level4">
 <h4 id="initpen">Initial Age Deviations<a class="anchor" aria-label="anchor" href="#initpen"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msubsup><mi>σ</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow><mn>2</mn></msubsup><mn>2</mn></mfrac><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
-\epsilon_{r,y}^{Init} \sim N\left(-\frac{\sigma^2_{Init}}{2},\sigma^2_{Init}\right)
+<p>Estimation of initial age deviations is constrained by a normal
+distribution:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+\epsilon_{r,y}^{Init} \sim N\left(0,\sigma^2_{Init}\right)
 \end{equation}</annotation></semantics></math></p>
+<p>with a mean of 0 and a variance of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Init}</annotation></semantics></math>.
+In <code>SPoCK</code>, these can either be estimated in a penalized
+likelihood framework, where the variance parameter is fixed at a known
+value and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><annotation encoding="application/x-tex">\epsilon_{r,y}^{Init}</annotation></semantics></math>
+are estimated as fixed-effects. Conversely, a random effects framework
+can also be used where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><annotation encoding="application/x-tex">\epsilon_{r,y}^{Init}</annotation></semantics></math>
+are treated as random effects and are integrated out using Laplace
+approximation.</p>
 </div>
 <div class="section level4">
 <h4 id="recruitmentpen">Recruitment<a class="anchor" aria-label="anchor" href="#recruitmentpen"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msubsup><mi>σ</mi><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow><mn>2</mn></msubsup><mn>2</mn></mfrac><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
-\epsilon_{r,y}^{Rec} \sim N\left(-\frac{\sigma^2_{Rec}}{2},\sigma^2_{Rec}\right)
+<p>Similarly, estimation of recruitment deviations is constrained by a
+normal distribution:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+\epsilon_{r,y}^{Rec} \sim N\left(0,\sigma^2_{Rec}\right)
 \end{equation}</annotation></semantics></math></p>
+<p>with a mean of 0 and a variance of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Rec}</annotation></semantics></math>.
+Again, recruitment deviations can either be estimated in a penalized
+likelihood framework, where the variance parameter is fixed at a known
+value and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow></msubsup><annotation encoding="application/x-tex">\epsilon_{r,y}^{Rec}</annotation></semantics></math>
+are estimated as fixed-effects. Conversely,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>R</mi><mi>e</mi><mi>c</mi></mrow></msubsup><annotation encoding="application/x-tex">\epsilon_{r,y}^{Rec}</annotation></semantics></math>
+can also be treated as random effects and integrated out using Laplace
+approximation.</p>
 </div>
 <div class="section level4">
 <h4 id="fishmortpen">Fishing Mortality<a class="anchor" aria-label="anchor" href="#fishmortpen"></a>
 </h4>
+<p>Fishing mortality deviations are also constrained by a normal
+distribution:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \epsilon_{r,y,f}^{Fmort} \sim N\left(0,\sigma^2_{Fmort}\right)
 \end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Fmort}</annotation></semantics></math>
+is fixed at an arbitrary value to ensure that observed catches are fit
+to adequately. Given that values of observed catch are generally known
+with negligible error, the value specified for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Fmort}</annotation></semantics></math>
+should be inconsequential. It is generally necessary to constrain
+fishing mortality deviations to ensure that all parameters are
+identifiable.</p>
 </div>
 <div class="section level4">
 <h4 id="selpen">Selectivity (Fishery and Survey)<a class="anchor" aria-label="anchor" href="#selpen"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
+<p>Several options can be specified to parameterize continuous
+time-varying selectivity. For all forms, users can specify deviations to
+occur in a penalized likelihood framework, or in a random effects
+framework. The simplest form represents iid deviations about selectivity
+parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+for a given functional form:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \epsilon_{r,y,i,s,f}^{Sel} \sim N\left(0,\sigma^2_{i,Sel}\right)
-\end{equation}</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msup><mn>50</mn><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation} 
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{i,Sel}</annotation></semantics></math>
+is the variance of selectivity parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+(e.g.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mn>50</mn></msup><annotation encoding="application/x-tex">a^{50}</annotation></semantics></math>).
+Using this form, selectivity is assumed to vary across time but in a
+parametric manner.</p>
+<p>Parametric selectivity deviations can also be specified assuming a
+random walk process:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msup><mn>50</mn><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation} 
 \epsilon_{r,y,i,s,f}^{Sel} \sim \begin{cases}
 N\left(\epsilon_{r,1,i,s,f}^{Sel}, 50^2 \right), &amp; \text{if } i = 1 \\
 N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) &amp; \text{if } i &gt; 1
 \end{cases}
 \end{equation}</annotation></semantics></math></p>
+<p>where the first parameter deviation is initialized with an
+arbitrarily large variance
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>50</mn><mn>2</mn></msup><annotation encoding="application/x-tex">50^2</annotation></semantics></math>)
+and subsequent deviations are dependent on the previous time point,
+constrained by an estimable variance for a given selectivity parameter
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{i,Sel}</annotation></semantics></math>).</p>
+<p>Semi-parametric deviations can also be specified, where deviations
+can occur across years, ages, and cohorts. Two options can be specified
+to allow for deviations across these three dimensions, which include a
+marginal stationary and a conditional non-stationary variance option.
+The primary difference between the two is that the marginal variance
+version does not have a closed form solution for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛀</mi><annotation encoding="application/x-tex">\boldsymbol{\Omega}</annotation></semantics></math>
+(see equations below) and needs to be iteratively solved, while the
+conditional variance version has a closed form solution. The following
+equations describe the conditional variance version:</p>
 <p><span class="math display">$$\begin{equation}
 \boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}) \\
+\end{equation}$$</span></p>
+<p>where process error arises from a multivariate normal distribution
+with precision matrix
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>;
+inverse of the covariance). Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+is constructed as:</p>
+<p><span class="math display">$$\begin{equation}
 \textbf{Q} = (\textbf{I} - (\textbf{B})^T) \boldsymbol{\Omega}
 (\textbf{I} - \textbf{B}) \\
 \text{diag}(\boldsymbol{\Omega}) = \sigma_{Sel}^{-2}
 \end{equation}$$</span></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐈</mtext><annotation encoding="application/x-tex">\textbf{I}</annotation></semantics></math>
+is an identity matrix and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛀</mi><annotation encoding="application/x-tex">\boldsymbol{\Omega}</annotation></semantics></math>
+is a diagonal matrix that determines the variance of the multivariate
+normal process.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐁</mtext><annotation encoding="application/x-tex">\textbf{B}</annotation></semantics></math>
+is a square matrix representing the partial effect of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>𝛜</mi><mrow><mi>r</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><annotation encoding="application/x-tex">\boldsymbol{\epsilon}_{r,s,f}^{Sel}</annotation></semantics></math>
+on preceeding ages and/or years, governing by partial correlation
+coefficients for ages, years, and cohorts. To demonstrate the
+formulation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐁</mtext><annotation encoding="application/x-tex">\textbf{B}</annotation></semantics></math>,
+a simplified example is provided with rows representing ages
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>ϵ</mi><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">a \epsilon \{1,2\}</annotation></semantics></math>
+and columns representing years
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>ϵ</mi><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">t \epsilon \{1,2\}</annotation></semantics></math>.
+In this example,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐁</mtext><annotation encoding="application/x-tex">\textbf{B}</annotation></semantics></math>
+is a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi>x</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">4 x 4</annotation></semantics></math>
+matrix, where both the rows and columns represent combinations of age
+and year. For instance,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mn>1</mn><mo>,</mo><mn>2</mn></mrow></msub><annotation encoding="application/x-tex">B_{1,2}</annotation></semantics></math>
+captures the correlation within the same year between age 1 in year 1,
+and age 2 in year 1, whereas
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mn>4</mn><mo>,</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">B_{4,1}</annotation></semantics></math>
+constructs the correlation within the same cohort between age 1 in year
+1, and age 2 in year 2:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐁</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>y</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>a</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>c</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>a</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>ρ</mi><mi>y</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \mathbf{B} = \begin{bmatrix} 
 1 &amp; 0 &amp; 0 &amp; 0 \\
@@ -825,27 +1346,30 @@ N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) &amp; \text{if } i &
 \rho_c &amp; \rho_a &amp; \rho_y &amp; 0
 \end{bmatrix}
 \end{equation}</annotation></semantics></math></p>
+<p>Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>y</mi></msub><annotation encoding="application/x-tex">\rho_y</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>a</mi></msub><annotation encoding="application/x-tex">\rho_a</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\rho_c</annotation></semantics></math>
+are parameters describing the partial autocorrelation among years within
+a given age, among ages within a given year, and years within a cohort,
+respectively.</p>
+<p>Lastly, semi-parametric deviations can also be specified to vary
+across years and ages (i.e., in a two-dimensional manner). Similar to
+the process described above, selectivity deviations are constrained by a
+precision matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>,
+following a multivarite normal process:</p>
 <p><span class="math display">$$\begin{equation}
 \boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}^{-1})
 \\
-\textbf{Q} = (\textbf{I} - (\textbf{B})^T) \boldsymbol{\Omega}
-(\textbf{I} - \textbf{B}) \\
+\textbf{Q}^{-1} = \sigma^2_{Sel}\textbf{R}_y \otimes \textbf{R}_a \\
 \end{equation}$$</span></p>
-<p><span class="math display">$$\begin{equation}
-\boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}^{-1})
-\\
-\textbf{Q}^{-1} = \textbf{R}_y \otimes \textbf{R}_a \\
-\textbf{R}_y = \begin{bmatrix}
-\rho^y_{11} &amp; \rho^y_{12} &amp; \rho^y_{13} \\
-\rho^y_{21} &amp; \rho^y_{22} &amp; \rho^y_{23} \\
-\rho^y_{31} &amp; \rho^y_{32} &amp; \rho^y_{33}
-\end{bmatrix} \\
-
-\textbf{R}_a = \begin{bmatrix}
-\rho^a_{11} &amp; \rho^a_{12} \\
-\rho^a_{21} &amp; \rho^a_{22} \\
-\end{bmatrix}
-\end{equation}$$</span></p>
+<p>where _bf{Q} is determined by the Kronecker product of a first-order
+autoregressive process across ages
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="bold">𝐑</mtext><mi>a</mi></msub><annotation encoding="application/x-tex">\textbf{R}_a</annotation></semantics></math>
+and across years
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="bold">𝐑</mtext><mi>y</mi></msub><annotation encoding="application/x-tex">\textbf{R}_y</annotation></semantics></math>.</p>
 </div>
 </div>
 </div>

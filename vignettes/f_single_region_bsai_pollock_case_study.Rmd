@@ -1,6 +1,9 @@
 ---
 title: "Setting up a Single Region Model (BSAI Pollock)"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{f_single_region_bsai_pollock_case_study}
   %\VignetteEngine{knitr::rmarkdown}
@@ -30,7 +33,7 @@ data("sgl_rg_ebswp_data") # load in data
 input_list <- Setup_Mod_Dim(
     years = sgl_rg_ebswp_data$years,
     # vector of years
-    ages = ebswp_SPoCK_data$ages,
+    ages = sgl_rg_ebswp_data$ages,
     # vector of ages
     lens = NA,
     # number of lengths
@@ -49,7 +52,6 @@ input_list <- Setup_Mod_Dim(
 ```{r, eval = FALSE}
 input_list <- Setup_Mod_Rec(
     input_list = input_list,
-
     # Model options
     do_rec_bias_ramp = 0,
     # do bias ramp (0 == don't do bias ramp, 1 == do bias ramp)
@@ -75,23 +77,20 @@ input_list <- Setup_Mod_Rec(
 ```{r, eval = FALSE}
 input_list <- Setup_Mod_Biologicals(
     input_list = input_list,
-
     # Data inputs
-    WAA = ebswp_SPoCK_data$WAA,
-    MatAA = ebswp_SPoCK_data$MatAA,
-    AgeingError = ebswp_SPoCK_data$AgeingError,
+    WAA = sgl_rg_ebswp_data$WAA,
+    MatAA = sgl_rg_ebswp_data$MatAA,
+    AgeingError = sgl_rg_ebswp_data$AgeingError,
     # ageing error
 
     # Model options
-    Use_M_prior = 1,
-    # use natural mortality prior
-    M_prior = c(0.3, 0.1),
-    # mean and sd for M prior
+    Use_M_prior = 0,
+    # dont use M prior
     fit_lengths = 0,
     # don't fit length compositions
     ln_M = log(0.3),
-    M_spec = "est_ln_M_only"
-    # estimating log M
+    M_spec = "fix"
+    # fixing
   )
 ```
 
@@ -115,9 +114,9 @@ input_list <- Setup_Mod_Catch_and_F(
   input_list = input_list,
 
   # Data inputs
-  ObsCatch = ebswp_SPoCK_data$ObsCatch,
-  Catch_Type = ebswp_SPoCK_data$Catch_Type,
-  UseCatch = ebswp_SPoCK_data$UseCatch,
+  ObsCatch = sgl_rg_ebswp_data$ObsCatch,
+  Catch_Type = sgl_rg_ebswp_data$Catch_Type,
+  UseCatch = sgl_rg_ebswp_data$UseCatch,
 
   # Model options
   Use_F_pen = 1,
@@ -138,9 +137,9 @@ input_list <- Setup_Mod_FishIdx_and_Comps(
   ObsFishIdx = array(NA, dim = c(1, length(input_list$data$years), 1)),
   ObsFishIdx_SE = array(NA, dim = c(1, length(input_list$data$years), 1)),
   UseFishIdx = array(0, dim = c(1, length(input_list$data$years), 1)),
-  ObsFishAgeComps = ebswp_SPoCK_data$ObsFishAgeComps,
-  UseFishAgeComps = ebswp_SPoCK_data$UseFishAgeComps,
-  ISS_FishAgeComps = ebswp_SPoCK_data$ISS_FishAgeComps,
+  ObsFishAgeComps = sgl_rg_ebswp_data$ObsFishAgeComps,
+  UseFishAgeComps = sgl_rg_ebswp_data$UseFishAgeComps,
+  ISS_FishAgeComps = sgl_rg_ebswp_data$ISS_FishAgeComps,
   ObsFishLenComps = array(NA_real_, 
                           dim = c(1, length(input_list$data$years), 
                                   length(input_list$data$lens), 1, 1)),
@@ -171,12 +170,12 @@ input_list <- Setup_Mod_SrvIdx_and_Comps(
     input_list = input_list,
 
     # data inputs
-    ObsSrvIdx = ebswp_SPoCK_data$ObsSrvIdx,
-    ObsSrvIdx_SE = ebswp_SPoCK_data$ObsSrvIdx_SE,
-    UseSrvIdx = ebswp_SPoCK_data$UseSrvIdx,
-    ObsSrvAgeComps = ebswp_SPoCK_data$ObsSrvAgeComps,
-    ISS_SrvAgeComps = ebswp_SPoCK_data$ISS_SrvAgeComps,
-    UseSrvAgeComps = ebswp_SPoCK_data$UseSrvAgeComps,
+    ObsSrvIdx = sgl_rg_ebswp_data$ObsSrvIdx,
+    ObsSrvIdx_SE = sgl_rg_ebswp_data$ObsSrvIdx_SE,
+    UseSrvIdx = sgl_rg_ebswp_data$UseSrvIdx,
+    ObsSrvAgeComps = sgl_rg_ebswp_data$ObsSrvAgeComps,
+    ISS_SrvAgeComps = sgl_rg_ebswp_data$ISS_SrvAgeComps,
+    UseSrvAgeComps = sgl_rg_ebswp_data$UseSrvAgeComps,
     ObsSrvLenComps = array(NA_real_, dim = c(1, length(input_list$data$years),
                                              length(input_list$data$lens), 1, 3)),
     UseSrvLenComps = array(0, dim = c(1, length(input_list$data$years), 3)),
