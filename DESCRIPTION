@@ -42,9 +42,6 @@ Suggests:
     compResidual
 VignetteBuilder: 
     knitr
-Remotes:
-    fishfollower/compResidual/compResidual,
-    noaa-afsc/afscOSA
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
