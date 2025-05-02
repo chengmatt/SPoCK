@@ -161,10 +161,7 @@ Setup_Mod_Catch_and_F <- function(input_list,
   check_data_dimensions(Catch_Type, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'Catch_Type')
   check_data_dimensions(UseCatch, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'UseCatch')
   if(!is.null(Catch_Constant)) check_data_dimensions(Catch_Constant, n_fish_fleets = input_list$data$n_fish_fleets, what = 'Catch_Constant')
-  if(!is.na(ub_catch_censor)) check_data_dimensions(UseCatch, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'ub_catch_censor')
-  if(!is.na(lb_catch_censor)) check_data_dimensions(UseCatch, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'lb_catch_censor')
 
-  if(!(unique(as.vector(Catch_Type)) %in% c(0,1))) stop("Catch Type must be specified as either 0 (aggregated across regions) or 1 (region specific). In a single area case, this should be specified at 1")
   else {
     if(est_all_regional_F == 0 && any(unique(Catch_Type) == 0)) collect_message("Catch is aggregated by region in some years, with a separate aggregated ln_F_Mean and ln_F_devs estimated in those years")
     if(est_all_regional_F == 1 && any(unique(Catch_Type) == 0)) collect_message("Catch is aggregated by region in some years, with a region specific ln_F_Mean and ln_F_devs estiamted, where these fishing mortalities are estimated using information from data (age and indices) in subsequent years")

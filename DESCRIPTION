@@ -33,7 +33,8 @@ Imports:
     stats,
     stringr,
     tidyr,
-    tmbstan
+    tmbstan,
+    TMB
 Suggests: 
     ggthemes,
     here,

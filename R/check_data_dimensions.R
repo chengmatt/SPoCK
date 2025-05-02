@@ -49,7 +49,7 @@ check_data_dimensions <- function(x,
 
 # Fishery Stuff -----------------------------------------------------------------
 
-  if(what %in% c('ObsCatch', "UseCatch", 'ObsFishIdx', 'ObsFishIdx_SE', 'UseFishIdx', 'UseFishAgeComps', 'UseFishLenComps', 'ub_catch_censor', 'lb_catch_censor')) {
+  if(what %in% c('ObsCatch', "UseCatch", 'ObsFishIdx', 'ObsFishIdx_SE', 'UseFishIdx', 'UseFishAgeComps', 'UseFishLenComps')) {
     if(sum(dim(x) == c(n_regions, n_years, n_fish_fleets)) != 3)
       stop(paste(what, " is not the correct dimension. Should be n_regions, n_years, n_fish_fleets"))
   }

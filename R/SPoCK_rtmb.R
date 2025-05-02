@@ -179,35 +179,30 @@ SPoCK_rtmb = function(pars, data) {
 
 
   ## Mortality ---------------------------------------------------------------
-  for(y in 1:n_yrs) {
-    for(a in 1:n_ages) {
-      for(s in 1:n_sexes) {
-        for(r in 1:n_regions) {
+  for(r in 1:n_regions) {
+    for(y in 1:n_yrs) {
 
-          # Fishing Mortality at Age calculations
-          for(f in 1:n_fish_fleets) {
-            if(UseCatch[r,y,f] == 0) {
-              Fmort[r,y,f] = 0 # Set F to zero when no catch data
-              FAA[r,y,a,s,f] = 0
-            } else {
-              if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) {
-                Fmort[r,y,f] = exp(ln_F_mean_AggCatch[f] + ln_F_devs_AggCatch[y,f]) # If catch is aggregated across regions
-              } else Fmort[r,y,f] = exp(ln_F_mean[r,f] + ln_F_devs[r,y,f]) # Fully selected F
-              FAA[r,y,a,s,f] = Fmort[r,y,f] * fish_sel[r,y,a,s,f] # Fishing mortality at age
-            }
-          } # f loop
+      # Fishing Mortality at Age calculations
+      for(f in 1:n_fish_fleets) {
+        if(UseCatch[r,y,f] == 0) {
+          Fmort[r,y,f] = 0 # Set F to zero when no catch data
+        } else {
+          if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) {
+            Fmort[r,y,f] = exp(ln_F_mean_AggCatch[f] + ln_F_devs_AggCatch[y,f]) # If catch is aggregated across regions
+          } else Fmort[r,y,f] = exp(ln_F_mean[r,f] + ln_F_devs[r,y,f]) # Fully selected F
+        }
+        FAA[r,y,,,f] = Fmort[r,y,f] * fish_sel[r,y,,,f,drop = FALSE] # Fishing mortality at age
+      } # f loop
 
-          # Population Mortality and Survival
-          if(s == 1) natmort[r,y,a,s] = exp(ln_M) # get natural mortality (females or single-sex)
-          if(s == 2) natmort[r,y,a,s] = exp(ln_M) + M_offset # natural mortality with offset (males)
-          ZAA[r,y,a,s] = sum(FAA[r,y,a,s,]) + natmort[r,y,a,s] # Total Mortality at age
-          SAA[r,y,a,s] = exp(-ZAA[r,y,a,s]) # Survival at age
-          SAA_mid[r,y,a,s] = exp(-0.5 * ZAA[r,y,a,s]) # Survival at age at midpoint of year
+      # Population Mortality and Survival
+      natmort[r,y,,1] = exp(ln_M) # get natural mortality (females or single-sex)
+      if(n_sexes == 2) natmort[r,y,,2] = exp(ln_M) + M_offset # natural mortality with offset (males)
+      ZAA[r,y,,] = apply(FAA[r,y,,,,drop = FALSE],3:4,sum) + natmort[r,y,,] # Total Mortality at age
+      SAA[r,y,,] = exp(-ZAA[r,y,,]) # Survival at age
+      SAA_mid[r,y,,] = exp(-0.5 * ZAA[r,y,,]) # Survival at age at midpoint of year
 
-        } # r loop
-      } # s loop
-    } # a loop
-  } # y loop
+    } # end y loop
+  } # end r loop
 
 
   ## Recruitment Transformations and Bias Ramp (Methot and Taylor) -------------------------------
@@ -257,7 +252,7 @@ SPoCK_rtmb = function(pars, data) {
         Init_NAA_next_year[,2:n_ages,s] = Init_NAA[,1:(n_ages-1),s] * exp(-(natmort[,1,1:(n_ages-1),s] + (init_F * fish_sel[,1,1:(n_ages-1),s,1])))
         # accumulate plus group
         Init_NAA_next_year[,n_ages,s] = (Init_NAA_next_year[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1])))) +
-          (Init_NAA[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1]))))
+                                        (Init_NAA[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1]))))
         Init_NAA = Init_NAA_next_year # iterate to next cycle
       } # end s loop
     } # end i loop
@@ -265,7 +260,7 @@ SPoCK_rtmb = function(pars, data) {
     # Apply initial age deviations
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
-        Init_NAA[r,2:(n_ages-1),s] = Init_NAA[r,2:(n_ages-1),s] * exp(ln_InitDevs[r,] - sigmaR2_early/2 * bias_ramp[1]) # add in non-equilibrium age structure
+        Init_NAA[r,2:(n_ages-1),s] = Init_NAA[r,2:(n_ages-1),s] * exp(ln_InitDevs[r,]) # add in non-equilibrium age structure
         NAA[r,1,2:n_ages,s] = Init_NAA[r,2:n_ages,s] # add in plus group
       } # end s loop
     } # end r loop
@@ -320,25 +315,14 @@ SPoCK_rtmb = function(pars, data) {
     } # only compute if spatial
 
     ### Mortality and Ageing ------------------------------------------------------
-    for(r in 1:n_regions) {
-      for(s in 1:n_sexes) {
-        for(a in 1:n_ages) {
-          # Project ages and years forward and then apply movement
-          if(a < n_ages) {
-            # Exponential mortality for individuals not in plus group (recruits experience mortality)
-            NAA[r,y+1,a+1,s] = NAA[r,y,a,s] * exp(-ZAA[r,y,a,s])
-          } else {
-            # Accumulate individuals recently "recruited" into plus group and individuals from previous year
-            NAA[r,y+1,n_ages,s] = NAA[r,y+1,n_ages,s] + NAA[r,y,n_ages,s] * exp(-ZAA[r,y,a,s])
-          } # end else (calculations for plus group)
-        } # end a loop
-      } # end s loop
+    NAA[,y+1,2:n_ages,] = NAA[,y,1:(n_ages-1),] * exp(-ZAA[,y,1:(n_ages-1),]) # Exponential mortality for individuals not in plus group
+    NAA[,y+1,n_ages,] = NAA[,y+1,n_ages,] + NAA[,y,n_ages,] * exp(-ZAA[,y,n_ages,]) # Acuumulate plus group
 
-      ### Compute Biomass Quantities ----------------------------------------------
-      Total_Biom[r,y] = sum(as.vector(NAA[r,y,,]) * as.vector(WAA[r,y,,])) # Total Biomass
-      SSB[r,y] = sum(as.vector(NAA[r,y,,1]) * as.vector(WAA[r,y,,1]) * MatAA[r,y,,1]) # Spawning Stock Biomass
-      if(n_sexes == 1) SSB[r,y] = SSB[r,y] * 0.5 # If single sex model, multiply SSB calculations by 0.5
-    } # end r loop
+    ### Compute Biomass Quantities ----------------------------------------------
+    Total_Biom[,y] = apply(NAA[,1,,,drop = FALSE] * WAA[,1,,,drop = FALSE], 1, sum) # Total biomass
+    SSB[,y] = apply(NAA[,y,,1,drop = FALSE] * WAA[,y,,1,drop = FALSE] * MatAA[,y,,1,drop = FALSE], 1, sum) # Spawning Stock Biomass
+    if(n_sexes == 1) SSB[,y] = SSB[,y] * 0.5 # If single sex model, multiply SSB calculations by 0.5
+
   } # end y loop
 
   ## Fishery Observation Model -----------------------------------------------
@@ -349,8 +333,9 @@ SPoCK_rtmb = function(pars, data) {
         fish_q_blk_idx = fish_q_blocks[r,y,f] # get time-block catchability index
         fish_q[r,y,f] = exp(ln_fish_q[r,fish_q_blk_idx,f]) # Input into fishery catchability container
 
+        CAA[r,y,,,f] = FAA[r,y,,,f] / ZAA[r,y,,] * NAA[r,y,,] * (1 - exp(-ZAA[r,y,,])) # Catch at age (Baranov's)
+
         for(s in 1:n_sexes) {
-          CAA[r,y,,s,f] = FAA[r,y,,s,f] / ZAA[r,y,,s] * NAA[r,y,,s] * (1 - exp(-ZAA[r,y,,s])) # Catch at age (Baranov's)
           if(fit_lengths == 1 && sablefish_ADMB == 1) CAL[r,y,,s,f] = SizeAgeTrans[r,y,,,s] %*% (CAA[r,y,,s,f] / sum(CAA[r,y,,s,f])) # Catch at length (Sablefish bridging specific)
           else if(fit_lengths == 1) CAL[r,y,,s,f] = SizeAgeTrans[r,y,,,s] %*% CAA[r,y,,s,f] # Catch at length
         } # end s loop
@@ -376,9 +361,10 @@ SPoCK_rtmb = function(pars, data) {
         srv_q_blk_idx = srv_q_blocks[r,y,sf] # get time-block catchability index
         srv_q[r,y,sf] = exp(ln_srv_q[r,srv_q_blk_idx,sf]) # Input into survey catchability container
 
+        if(sablefish_ADMB == 1) SrvIAA[r,y,,,sf] = NAA[r,y,,] * srv_sel[r,y,,,sf] # Survey index at age (sablefish specific)
+        else SrvIAA[r,y,,,sf] = NAA[r,y,,] * srv_sel[r,y,,,sf] * SAA_mid[r,y,,] # Survey index at age
+
         for(s in 1:n_sexes) {
-          if(sablefish_ADMB == 1) SrvIAA[r,y,,s,sf] = NAA[r,y,,s] * srv_sel[r,y,,s,sf] # Survey index at age (sablefish specific)
-          else SrvIAA[r,y,,s,sf] = NAA[r,y,,s] * srv_sel[r,y,,s,sf] * SAA_mid[r,y,,s] # Survey index at age
           if(fit_lengths == 1) SrvIAL[r,y,,s,sf] = SizeAgeTrans[r,y,,,s] %*% SrvIAA[r,y,,s,sf] # Survey index at length
         } # end s loop
 
@@ -396,10 +382,8 @@ SPoCK_rtmb = function(pars, data) {
 
     # Set up tag reporting rates
     for(r in 1:n_regions) {
-      for(y in 1:n_yrs) {
-        TagRep_blk_idx = Tag_Reporting_blocks[r,y] # get time-block tag reporting rates
-        Tag_Reporting[r,y] = RTMB::plogis(Tag_Reporting_Pars[r,TagRep_blk_idx]) # inverse logit transform
-      } # end y loop
+      TagRep_blk_idx = Tag_Reporting_blocks[r,]  # Get all blocks for this region
+      Tag_Reporting[r,] = RTMB::plogis(Tag_Reporting_Pars[r,TagRep_blk_idx])  # inverse logit transform
     } # end r loop
 
     # Transform tagging parameters here
@@ -439,16 +423,11 @@ SPoCK_rtmb = function(pars, data) {
         } else for(a in 1:n_ages) for(s in 1:n_sexes) Tags_Avail[ry,tc,,a,s] = t(Tags_Avail[ry,tc,,a,s]) %*% Movement[,,y,a,s] # Movement always occurs after first release year
 
         # Mortality and ageing of tagged fish
-        for(a in 1:n_ages) {
-          for(s in 1:n_sexes) {
-            if(a < n_ages) Tags_Avail[ry+1,tc,,a+1,s] = Tags_Avail[ry,tc,,a,s] * exp(-tmp_Z[,1,a,s]) # if not plus group
-            else Tags_Avail[ry+1,tc,,n_ages,s] = Tags_Avail[ry+1,tc,,n_ages,s] + (Tags_Avail[ry,tc,,n_ages,s] * exp(-tmp_Z[,1,n_ages,s])) # accumulate plus group
-          } # end s loop
-        } # end a loop
+        Tags_Avail[ry+1,tc,,2:n_ages,] = Tags_Avail[ry,tc,,1:(n_ages-1),] * exp(-tmp_Z[,1,1:(n_ages-1),]) # not in plus group
+        Tags_Avail[ry+1,tc,,n_ages,] = Tags_Avail[ry+1,tc,,n_ages,] + (Tags_Avail[ry,tc,,n_ages,] * exp(-tmp_Z[,1,n_ages,])) # accumulate plus group
 
         # Get predicted recaptures
-        Pred_Tag_Recap[ry,tc,,,] = Tag_Reporting[,y] * (tmp_F[,1,,] / tmp_Z[,1,,]) *
-          Tags_Avail[ry,tc,,,] * (1 - exp(-tmp_Z[,1,,]))
+        Pred_Tag_Recap[ry,tc,,,] = Tag_Reporting[,y] * (tmp_F[,1,,] / tmp_Z[,1,,]) * Tags_Avail[ry,tc,,,] * (1 - exp(-tmp_Z[,1,,]))
 
       } # end ry loop
     } # end tc loop
@@ -476,17 +455,19 @@ SPoCK_rtmb = function(pars, data) {
 
         # Option for censoring region specific catch
         if(censor_regional_catch == 1) {
-          for(r in 1:n_regions) {
-            x = PredCatch[r,y,f] # extract out predicted catch
-            # First normal cdf mixture
-            up = log(ub_catch_censor[r,y,f]/x) / catch_censor_sd
-            low = log(lb_catch_sensor[r,y,f]/x) / catch_censor_sd
-            # Defining mixture of normal cdfs for stable MLE
-            up1 = log(ub_catch_censor[r,y,f]/x) / (catch_censor_sd * 0.075)
-            low1 = log(lb_catch_sensor[r,y,f]/x) / (catch_censor_sd * 0.075)
-            Catch_nLL[1,y,f] = Catch_nLL[1,y,f] -log(0.9 * RTMB::pnorm(up) - RTMB::pnorm(low) + (1-0.9) * (RTMB::pnorm(up1) - RTMB::pnorm(low1))
-            )
-          }
+          if(!is.na(ub_catch_censor[r,y,f]) && !is.na(lb_catch_censor[r,y,f])) {
+            for(r in 1:n_regions) {
+              x = PredCatch[r,y,f] # extract out predicted catch
+              # First normal cdf mixture
+              up = log(ub_catch_censor[r,y,f]/x) / catch_censor_sd
+              low = log(lb_catch_censor[r,y,f]/x) / catch_censor_sd
+              # Defining mixture of normal cdfs for stable MLE
+              up1 = log(ub_catch_censor[r,y,f]/x) / (catch_censor_sd * 0.075)
+              low1 = log(lb_catch_censor[r,y,f]/x) / (catch_censor_sd * 0.075)
+              Catch_nLL[1,y,f] = Catch_nLL[1,y,f] -log(0.9 * RTMB::pnorm(up) - RTMB::pnorm(low) + (1-0.9) * (RTMB::pnorm(up1) - RTMB::pnorm(low1))
+              )
+            }
+          } # only run if have availiable information on upper and lower bounds
         } # end if
 
       } # if some fishery catches are aggregated
@@ -798,8 +779,8 @@ SPoCK_rtmb = function(pars, data) {
             } # ADMB
 
             if(likelihoods == 1) {
-              if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) Fmort_nLL[1,y,f] = -RTMB::dnorm(ln_F_devs_AggCatch[y,f], 0, 5, TRUE) # Use aggregated catch
-              else Fmort_nLL[r,y,f] = -RTMB::dnorm(ln_F_devs[r,y,f], 0, 5, TRUE)
+              if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) Fmort_nLL[1,y,f] = -RTMB::dnorm(ln_F_devs_AggCatch[y,f], 0, 1, TRUE) # Use aggregated catch
+              else Fmort_nLL[r,y,f] = -RTMB::dnorm(ln_F_devs[r,y,f], 0, 1, TRUE)
             } # TMB
           } # end if have catch
 

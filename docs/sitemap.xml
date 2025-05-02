@@ -67,7 +67,9 @@
 <url><loc>/reference/get_mcmc_ssb_rec.html</loc></url>
 <url><loc>/reference/get_osa.html</loc></url>
 <url><loc>/reference/get_retrospective_relative_difference.html</loc></url>
+<url><loc>/reference/has_dependencies.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/install_spock_dependencies.html</loc></url>
 <url><loc>/reference/mcmc_diag.html</loc></url>
 <url><loc>/reference/mcmc_par_names.html</loc></url>
 <url><loc>/reference/mlt_rg_sable_data.html</loc></url>
