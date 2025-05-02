@@ -239,6 +239,8 @@ Tag cohorts ($T^k_{r,y,a,s}$) are dimensioned by regions, years, ages, and sexes
 T^k_{r,y,a,s} = T^k_{r,y,a,s} \exp(-\tau)
 \end{equation}
 
+where $\tau$ is the initial tag-induced mortality rate, which can be 
+
 \begin{equation}
 \boldsymbol{T}^k_{y,a,s} = (\boldsymbol{T}^k_{y,a,s})^T \boldsymbol{M}_{y,a,s}
 \end{equation}

@@ -12,9 +12,7 @@ Depends:
     R (>= 3.5),
     RTMB
 Imports: 
-    afscOSA,
     bayesplot,
-    compResidual,
     cowplot,
     data.table,
     doSNOW,
@@ -39,7 +37,9 @@ Suggests:
     here,
     knitr,
     rmarkdown,
-    scales
+    scales,
+    afscOSA, 
+    compResidual
 VignetteBuilder: 
     knitr
 Remotes:
