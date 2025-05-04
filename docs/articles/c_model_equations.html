@@ -1290,12 +1290,11 @@ variance for a given selectivity parameter
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{i,Sel}</annotation></semantics></math>).</p>
 <p>Semi-parametric deviations can also be specified, where deviations
 can occur across years, ages, and cohorts. For all semi-parametric
-deviations, a first-order difference penalty is applied across years and
-ages to provide some regularity:</p>
-<p><span class="math display">$$\begin{equation}
-selPen = \epsilon_{r,y,a+1,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel} \\
-selPen = \epsilon_{r,y+1,a,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel}
-\end{equation}$$</span></p>
+deviations, a curvature penalty is applied across ages for
+regularity:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">age curvature</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>y</mi><mo>=</mo><mn>1</mn></mrow><mi>Y</mi></munderover><munderover><mo>∑</mo><mrow><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>A</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>−</mo><mn>2</mn><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>−</mo><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\begin{equation}
+P_{\text{age curvature}} = \sum_{y=1}^{Y} \sum_{a=1}^{A-1} (\epsilon_{y,a+1}^{Sel} - 2\epsilon_{y,a}^{Sel} - \epsilon_{y,a-1}^{Sel})^2
+\end{equation}</annotation></semantics></math></p>
 <p>Two options can be specified to allow for deviations across these
 three dimensions, which include a marginal stationary and a conditional
 non-stationary variance option. The primary difference between the two

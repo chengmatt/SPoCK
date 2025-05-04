@@ -660,11 +660,10 @@ Parametric selectivity deviations can also be specified assuming a random walk p
 
 where the first parameter deviation is set at 0 (such that a fixed effect is estimated in the first time step) and subsequent deviations are dependent on the previous time point, constrained by an estimable variance for a given selectivity parameter ($\sigma^2_{i,Sel}$).
 
-Semi-parametric deviations can also be specified, where deviations can occur across years, ages, and cohorts. For all semi-parametric deviations, a first-order difference penalty is applied across years and ages to provide some regularity:
+Semi-parametric deviations can also be specified, where deviations can occur across years, ages, and cohorts. For all semi-parametric deviations, a curvature penalty is applied across ages for regularity:
 
 \begin{equation}
-selPen = \epsilon_{r,y,a+1,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel} \\
-selPen = \epsilon_{r,y+1,a,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel} 
+P_{\text{age curvature}} = \sum_{y=1}^{Y} \sum_{a=1}^{A-1} (\epsilon_{y,a+1}^{Sel} - 2\epsilon_{y,a}^{Sel} - \epsilon_{y,a-1}^{Sel})^2
 \end{equation}
 
 Two options can be specified to allow for deviations across these three dimensions, which include a marginal stationary and a conditional non-stationary variance option. The primary difference between the two is that the marginal variance version does not have a closed form solution for $\boldsymbol{\Omega}$ (see equations below) and needs to be iteratively solved, while the conditional variance version has a closed form solution. The following equations describe the conditional variance version: 

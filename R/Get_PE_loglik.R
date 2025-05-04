@@ -103,21 +103,14 @@ Get_sel_PE_loglik <- function(PE_model,
         ll = ll + RTMB::dseparable(f1, f2)(eps_ya, scale = unit_var)
       } # end if
 
-      # Now, apply some regularity on selectivity deviations
-      for(y in 1:n_yrs) {
-        # age regularity
-        for(a in 1:(n_ages-1)) {
-          age_diff = ln_devs[r,y,a+1,s,1] - ln_devs[r,y,a,s,1]
-          ll = ll - age_diff^2
-        } # end a loop
-
-        # year regularity
-        if(y < n_yrs) {
-          for(a in 1:n_ages) {
-            year_diff = ln_devs[r,y+1,a,s,1] - ln_devs[r,y,a,s,1]
-            ll = ll - year_diff^2
+      # Now, apply some regularity on selectivity age deviations
+      for (y in 1:n_yrs) {
+        if (n_ages >= 1) {
+          for (a in 2:(n_ages - 1)) {
+            age_curvature = ln_devs[r,y,a+1,s,1] - 2 * ln_devs[r,y,a,s,1] + ln_devs[r,y,a-1,s,1]
+            ll = ll - age_curvature^2
           } # end a loop
-        } # end if y < n_yrs
+        } # end if
       } # end y loop
 
     } # end idx loop
