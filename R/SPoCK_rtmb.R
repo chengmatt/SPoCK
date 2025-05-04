@@ -53,7 +53,6 @@ SPoCK_rtmb = function(pars, data) {
   Init_NAA_next_year = Init_NAA # initial age structure
   NAA = array(data = 0, dim = c(n_regions, n_yrs + 1, n_ages, n_sexes)) # Numbers at age
   ZAA = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # Total mortality at age
-  SAA = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # Survival at age
   SAA_mid = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # Survival at age (midpoint of the year)
   natmort = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # natural mortality at age
   Total_Biom = array(0, dim = c(n_regions, n_yrs)) # Total biomass
@@ -152,6 +151,7 @@ SPoCK_rtmb = function(pars, data) {
     } # end y loop
   } # end r loop
 
+
   ## Survey Selectivity ------------------------------------------------------
   for(r in 1:n_regions) {
     for(y in 1:n_yrs) {
@@ -198,7 +198,6 @@ SPoCK_rtmb = function(pars, data) {
       natmort[r,y,,1] = exp(ln_M) # get natural mortality (females or single-sex)
       if(n_sexes == 2) natmort[r,y,,2] = exp(ln_M) + M_offset # natural mortality with offset (males)
       ZAA[r,y,,] = apply(FAA[r,y,,,,drop = FALSE],3:4,sum) + natmort[r,y,,] # Total Mortality at age
-      SAA[r,y,,] = exp(-ZAA[r,y,,]) # Survival at age
       SAA_mid[r,y,,] = exp(-0.5 * ZAA[r,y,,]) # Survival at age at midpoint of year
 
     } # end y loop
@@ -221,15 +220,20 @@ SPoCK_rtmb = function(pars, data) {
   sigmaR2_late = exp(ln_sigmaR[2])^2 # recruitment variability for late period
 
   # Bias ramp set up
-  for(y in 1:n_yrs) {
-    if(do_rec_bias_ramp == 0) bias_ramp[y] = 1 # don't do bias ramp correction
-    if(do_rec_bias_ramp == 1) {
-      if(y < bias_year[1] || y == bias_year[4]) bias_ramp[y] = 0 # no bias correction during poor data
-      if(y >= bias_year[1] && y < bias_year[2]) bias_ramp[y] = 1 * ((y - bias_year[1]) / (bias_year[2] - bias_year[1])) # ascending limb
-      if(y >= bias_year[2] && y < bias_year[3]) bias_ramp[y] = 1 # full bias correction
-      if(y >= bias_year[3] && y < bias_year[4]) bias_ramp[y] = 1 * (1 - ((y - bias_year[3]) / (bias_year[4] - bias_year[3]))) #descending limb
-    } # if we want to do bias ramp
-  } # end y loop
+  if (do_rec_bias_ramp == 0) {
+    bias_ramp = rep(1, n_yrs) # don't do bias ramp, set values to 1
+  } else if (do_rec_bias_ramp == 1) {
+    # setup bias ramp year ranges
+    years = 1:n_yrs # years for indexing
+    range1 = which(years >= bias_year[1] & years < bias_year[2])  # ascending limb
+    range2 = which(years >= bias_year[2] & years < bias_year[3])  # full bias correction
+    range3 = which(years >= bias_year[3] & years < bias_year[4])  # descending limb
+
+    # Apply bias ramp to the different ramp year ranges
+    if (length(range1) > 0) bias_ramp[range1] = (years[range1] - bias_year[1]) / (bias_year[2] - bias_year[1]) # ascneding limb
+    if (length(range2) > 0) bias_ramp[range2] = 1 # full bias correction
+    if (length(range3) > 0) bias_ramp[range3] = 1 - ((years[range3] - bias_year[3]) / (bias_year[4] - bias_year[3])) # descending limb
+  } # end if doing bias ramp
 
   ## Initial Age Structure ---------------------------------------------------
   if(init_age_strc == 0) { # start initial age structure with iterative approach
@@ -494,26 +498,17 @@ SPoCK_rtmb = function(pars, data) {
 
 
   ### Fishery Indices ---------------------------------------------------------
-  for(y in 1:n_yrs) {
-    for(f in 1:n_fish_fleets) {
-      for(r in 1:n_regions) {
+  # ADMB likelihoods
+  if(likelihoods == 0) {
+    FishIdx_nLL[UseFishIdx == 1] = (log(ObsFishIdx[UseFishIdx == 1] + 1e-4) - log(PredFishIdx[UseFishIdx == 1] + 1e-4))^2 /
+                                    (2 * (ObsFishIdx_SE[UseFishIdx == 1] / ObsFishIdx[UseFishIdx == 1])^2) # lognormal fishery index
+    }
 
-        if(UseFishIdx[r,y,f] == 1) {
-          if(likelihoods == 0)  {
-            FishIdx_nLL[r,y,f] = UseFishIdx[r,y,f] * (log(ObsFishIdx[r,y,f] + 1e-4) - log(PredFishIdx[r,y,f] + 1e-4))^2 /
-              (2 * (ObsFishIdx_SE[r,y,f] / ObsFishIdx[r,y,f])^2) # lognormal fishery index
-          } # ADMB likelihoods
-          if(likelihoods == 1) {
-            FishIdx_nLL[r,y,f] = UseFishIdx[r,y,f] -1 * RTMB::dnorm(log(ObsFishIdx[r,y,f] + 1e-10),
-                                                                    log(PredFishIdx[r,y,f] + 1e-10),
-                                                                    ObsFishIdx_SE[r,y,f], TRUE)
-          } # TMB likelihoods
-        } # if no NAs for fishery index
-
-      } # end r loop
-    } # end f loop
-  } # end y loop
-
+  # TMB likelihoods
+  if(likelihoods == 1) {
+    FishIdx_nLL[UseFishIdx == 1] = -1 * RTMB::dnorm(log(ObsFishIdx[UseFishIdx == 1] + 1e-10), log(PredFishIdx[UseFishIdx == 1] + 1e-10),
+                                                    ObsFishIdx_SE[UseFishIdx == 1], TRUE)
+  }
 
   ### Fishery Compositions ------------------------------------------------
   for(y in 1:n_yrs) {
@@ -582,26 +577,17 @@ SPoCK_rtmb = function(pars, data) {
 
   ## Survey Likelihoods ------------------------------------------------------
   ### Survey Indices ---------------------------------------------------------
-  for(y in 1:n_yrs) {
-    for(sf in 1:n_srv_fleets) {
-      for(r in 1:n_regions) {
+  # ADMB likelihoods
+  if(likelihoods == 0) {
+    SrvIdx_nLL[UseSrvIdx == 1] = (log(ObsSrvIdx[UseSrvIdx == 1] + 1e-4) - log(PredSrvIdx[UseSrvIdx == 1] + 1e-4))^2 /
+      (2 * (ObsSrvIdx_SE[UseSrvIdx == 1] / ObsSrvIdx[UseSrvIdx == 1])^2) # lognormal Srvery index
+  }
 
-        if(UseSrvIdx[r,y,sf] == 1) {
-          if(likelihoods == 0) {
-            SrvIdx_nLL[r,y,sf] = UseSrvIdx[r,y,sf] * (log(ObsSrvIdx[r,y,sf] + 1e-4) - log(PredSrvIdx[r,y,sf] + 1e-4))^2 /
-              (2 * (ObsSrvIdx_SE[r,y,sf] / ObsSrvIdx[r,y,sf])^2) # lognormal survey index
-          } # ADMB likelihoods
-          if(likelihoods == 1) {
-            SrvIdx_nLL[r,y,sf] = UseSrvIdx[r,y,sf] -1 * RTMB::dnorm(log(ObsSrvIdx[r,y,sf] + 1e-10),
-                                                                    log(PredSrvIdx[r,y,sf] + 1e-10),
-                                                                    ObsSrvIdx_SE[r,y,sf] , TRUE)
-          } # TMB likelihoods
-        } # if no NAs for survey index
-
-      } # end r loop
-    } # end sf loop
-  } # end y loop
-
+  # TMB likelihoods
+  if(likelihoods == 1) {
+    SrvIdx_nLL[UseSrvIdx == 1] = -1 * RTMB::dnorm(log(ObsSrvIdx[UseSrvIdx == 1] + 1e-10), log(PredSrvIdx[UseSrvIdx == 1] + 1e-10),
+                                                  ObsSrvIdx_SE[UseSrvIdx == 1], TRUE)
+  }
 
   ### Survey Compositions ---------------------------------------------------------
   for(y in 1:n_yrs) {
@@ -792,7 +778,6 @@ SPoCK_rtmb = function(pars, data) {
 
   ### Selectivity (Penalty) ---------------------------------------------------
   for(r in 1:n_regions) {
-
     # Fishery Selectivity Deviations
     for(f in 1:n_fish_fleets) {
       if(cont_tv_fish_sel[r,f] > 0) {
@@ -801,6 +786,10 @@ SPoCK_rtmb = function(pars, data) {
                                                 ln_devs = ln_fishsel_devs[,,,,f, drop = FALSE], # extract out process error deviations for a given fleet
                                                 map_sel_devs = map_ln_fishsel_devs[,,,,f, drop = FALSE])
       } # end if
+
+      # Mean Standardizing to help with interpretability
+      if(cont_tv_fish_sel[r,f] %in% 3:5) for(s in 1:n_sexes) fish_sel[r,,,s,f] = fish_sel[r,,,s,f] / mean(fish_sel[r,,,s,f])
+
     } # end f loop
 
     # Survey Selectivity Deviations
@@ -811,8 +800,11 @@ SPoCK_rtmb = function(pars, data) {
                                                 ln_devs = ln_srvsel_devs[,,,,sf, drop = FALSE], # extract out process error deviations for a given fleet
                                                 map_sel_devs = map_ln_srvsel_devs[,,,,sf, drop = FALSE])
       } # end if
-    } # end sf loop
 
+      # Mean Standardizing to help with interpretability
+      if(cont_tv_srv_sel[r,sf] %in% 3:5) for(s in 1:n_sexes) srv_sel[r,,,s,sf] = srv_sel[r,,,s,sf] / mean(srv_sel[r,,,s,sf])
+
+    } # end sf loop
   } # end r loop
 
   ### Recruitment (Penalty) ----------------------------------------------------
@@ -940,7 +932,7 @@ SPoCK_rtmb = function(pars, data) {
     Movement_nLL + # movement Prior
     TagRep_nLL + # tag reporting rate Prior
     fish_q_nLL + # fishery q prior
-    srv_q_nLL # survey q prior
+    srv_q_nLL  # survey q prior
 
   # Report Section ----------------------------------------------------------
   # Biological Processes

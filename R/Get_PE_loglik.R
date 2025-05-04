@@ -41,11 +41,7 @@ Get_sel_PE_loglik <- function(PE_model,
       } # iid process error
 
       if(PE_model == 2) { # random walk
-        if(y == 1) {
-          ll = ll + RTMB::dnorm(ln_devs[r,1,i,s,1], 0, 50, TRUE) # if y == 1, initialize with large sigma on dnorm
-        } else {
-          ll = ll + RTMB::dnorm(ln_devs[r,y,i,s,1], ln_devs[r,y-1,i,s,1], exp(PE_pars[r,i,s,1]), TRUE)
-        } # end else
+         ll = ll + RTMB::dnorm(ln_devs[r,y,i,s,1], ln_devs[r,y-1,i,s,1], exp(PE_pars[r,i,s,1]), TRUE)
       } # end random walk process error
 
     } # end dev_idx loop
@@ -106,6 +102,23 @@ Get_sel_PE_loglik <- function(PE_model,
         f2 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_a, log = TRUE)
         ll = ll + RTMB::dseparable(f1, f2)(eps_ya, scale = unit_var)
       } # end if
+
+      # Now, apply some regularity on selectivity deviations
+      for(y in 1:n_yrs) {
+        # age regularity
+        for(a in 1:(n_ages-1)) {
+          age_diff = ln_devs[r,y,a+1,s,1] - ln_devs[r,y,a,s,1]
+          ll = ll - age_diff^2
+        } # end a loop
+
+        # year regularity
+        if(y < n_yrs) {
+          for(a in 1:n_ages) {
+            year_diff = ln_devs[r,y+1,a,s,1] - ln_devs[r,y,a,s,1]
+            ll = ll - year_diff^2
+          } # end a loop
+        } # end if y < n_yrs
+      } # end y loop
 
     } # end idx loop
   } # end 3dgrmf or 2dar1 process error

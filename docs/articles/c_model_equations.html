@@ -408,10 +408,13 @@ a_{y}^{50} = a^{50} \exp(\epsilon_{y,2}^{Sel})
 <p>where the parameters of the logistic form are allowed to vary over
 time. By contrast, in the case of semi-parametric deviations for
 logistic selectivity, the following expression is used:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>−</mi><mi>k</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>−</mo><msup><mi>a</mi><mn>50</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
-Sel_{y,a} = \frac{1}{1 + \exp[-k(a - a^{50})]} \exp(\epsilon_{y,a}^{Sel}) 
-\end{equation}</annotation></semantics></math></p>
-<p>where deviations are placed about the parametric form. For further
+<p><span class="math display">$$\begin{equation}
+Sel_{y,a} = \frac{1}{1 + \exp[-k(a - a^{50})]}
+\exp(\epsilon_{y,a}^{Sel}) \\
+Sel_{y,a} = \frac{Sel_{y,a}} / mean(\boldsymbol{Sel})
+\end{equation}$$</span></p>
+<p>where deviations are placed about the parametric form and selectivity
+values are mean standardized to aid with interpretability. For further
 details on options available, see the <a href="#selpen">selectivity
 process error section</a>.</p>
 </div>
@@ -1274,24 +1277,30 @@ Using this form, selectivity is assumed to vary across time but in a
 parametric manner.</p>
 <p>Parametric selectivity deviations can also be specified assuming a
 random walk process:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>∼</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msup><mn>50</mn><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation} 
-\epsilon_{r,y,i,s,f}^{Sel} \sim \begin{cases}
-N\left(\epsilon_{r,1,i,s,f}^{Sel}, 50^2 \right), &amp; \text{if } i = 1 \\
-N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) &amp; \text{if } i &gt; 1
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\begin{equation} 
+\epsilon_{r,y,i,s,f}^{Sel} \begin{cases}
+0, &amp; \text{if } y = 1 \\
+\sim N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) &amp; \text{if } y &gt; 1
 \end{cases}
 \end{equation}</annotation></semantics></math></p>
-<p>where the first parameter deviation is initialized with an
-arbitrarily large variance
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>50</mn><mn>2</mn></msup><annotation encoding="application/x-tex">50^2</annotation></semantics></math>)
-and subsequent deviations are dependent on the previous time point,
-constrained by an estimable variance for a given selectivity parameter
+<p>where the first parameter deviation is set at 0 (such that a fixed
+effect is estimated in the first time step) and subsequent deviations
+are dependent on the previous time point, constrained by an estimable
+variance for a given selectivity parameter
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{i,Sel}</annotation></semantics></math>).</p>
 <p>Semi-parametric deviations can also be specified, where deviations
-can occur across years, ages, and cohorts. Two options can be specified
-to allow for deviations across these three dimensions, which include a
-marginal stationary and a conditional non-stationary variance option.
-The primary difference between the two is that the marginal variance
-version does not have a closed form solution for
+can occur across years, ages, and cohorts. For all semi-parametric
+deviations, a first-order difference penalty is applied across years and
+ages to provide some regularity:</p>
+<p><span class="math display">$$\begin{equation}
+selPen = \epsilon_{r,y,a+1,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel} \\
+selPen = \epsilon_{r,y+1,a,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel}
+\end{equation}$$</span></p>
+<p>Two options can be specified to allow for deviations across these
+three dimensions, which include a marginal stationary and a conditional
+non-stationary variance option. The primary difference between the two
+is that the marginal variance version does not have a closed form
+solution for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛀</mi><annotation encoding="application/x-tex">\boldsymbol{\Omega}</annotation></semantics></math>
 (see equations below) and needs to be iteratively solved, while the
 conditional variance version has a closed form solution. The following
@@ -1365,7 +1374,7 @@ following a multivarite normal process:</p>
 \\
 \textbf{Q}^{-1} = \sigma^2_{Sel}\textbf{R}_y \otimes \textbf{R}_a \\
 \end{equation}$$</span></p>
-<p>where _bf{Q} is determined by the Kronecker product of a first-order
+<p>where is determined by the Kronecker product of a first-order
 autoregressive process across ages
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="bold">𝐑</mtext><mi>a</mi></msub><annotation encoding="application/x-tex">\textbf{R}_a</annotation></semantics></math>
 and across years

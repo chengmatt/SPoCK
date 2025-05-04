@@ -806,8 +806,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
         map_srvsel_pe_pars[r,,,f] <- NA
       } else { # if we have time-variation
         for(s in 1:input_list$data$n_sexes) {
-          # If iid time-variation or random walk for this fleet
-          if(input_list$data$cont_tv_srv_sel[r,f] %in% c(1,2)) {
+          # If iid time-variation for this fleet
+          if(input_list$data$cont_tv_srv_sel[r,f] == 1) {
             for(i in 1:max_sel_pars) {
               # Estimating all parameters separately (unique for each region, sex, fleet, parameter)
               if(srvsel_pe_pars_spec[f] == "est_all") {
@@ -830,7 +830,35 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                 srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
               }
             } # end i loop
-          } # end iid or random walk variation
+          } # end iid variation
+
+          # If random walk time-variation for this fleet
+          if(y > 1) {
+            if(input_list$data$cont_tv_srv_sel[r,f] == 2) {
+              for(i in 1:max_sel_pars) {
+                # Estimating all parameters separately (unique for each region, sex, fleet, parameter)
+                if(srvsel_pe_pars_spec[f] == "est_all") {
+                  map_srvsel_pe_pars[r,i,s,f] <- srvsel_pe_pars_counter
+                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
+                } # end est_all
+                # Estimating process error parameters shared across regions (but unique for each sex, fleet, parameter)
+                if(srvsel_pe_pars_spec[f] == 'est_shared_r' && r == 1) {
+                  map_srvsel_pe_pars[,i,s,f] <- srvsel_pe_pars_counter
+                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
+                }
+                # Estimating process error parameters shared across sexes (but unique for each region, fleet, parameter)
+                if(srvsel_pe_pars_spec[f] == 'est_shared_s' && s == 1) {
+                  map_srvsel_pe_pars[r,i,,f] <- srvsel_pe_pars_counter
+                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
+                }
+                # Estimating process error parameters shared across regions and sexes (but unique for each fleet, parameter)
+                if(srvsel_pe_pars_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
+                  map_srvsel_pe_pars[,i,,f] <- srvsel_pe_pars_counter
+                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
+                }
+              } # end i loop
+            } # end random walk variation
+          } # only estimate if y > 1, otherwise devs set to zero
 
           # If 3d gmrf or 2dar1
           if(input_list$data$cont_tv_srv_sel[r,f] %in% c(3,4,5)) {

@@ -1144,8 +1144,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
           if(input_list$data$cont_tv_fish_sel[r,f] == 0) {
             map_fishsel_devs[r,y,,s,f] <- NA
           } else {
-            # If iid time-variation or random walk for this fleet
-            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(1,2)) {
+            # If iid time-variation for this fleet
+            if(input_list$data$cont_tv_fish_sel[r,f] == 1) {
               for(i in 1:max_sel_pars) {
                 # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
                 if(fish_sel_devs_spec[f] == 'est_all') {
@@ -1168,7 +1168,35 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
               } # end i loop
-            } # end iid or random walk variation
+            } # end iid variation
+
+            # If random walk time-variation for this fleet
+            if(y > 1) {
+              if(input_list$data$cont_tv_fish_sel[r,f] == 2) {
+                for(i in 1:max_sel_pars) {
+                  # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
+                  if(fish_sel_devs_spec[f] == 'est_all') {
+                    map_fishsel_devs[r,y,i,s,f] <- fishsel_devs_counter
+                    fishsel_devs_counter <- fishsel_devs_counter + 1
+                  }
+                  # Estimating selectivity deviations across sexes, fleets, and parameters, but shared across regions
+                  if(fish_sel_devs_spec[f] == 'est_shared_r' && r == 1) {
+                    map_fishsel_devs[,y,i,s,f] <- fishsel_devs_counter
+                    fishsel_devs_counter <- fishsel_devs_counter + 1
+                  }
+                  # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
+                  if(fish_sel_devs_spec[f] == 'est_shared_s' && r == 1) {
+                    map_fishsel_devs[r,y,i,,f] <- fishsel_devs_counter
+                    fishsel_devs_counter <- fishsel_devs_counter + 1
+                  }
+                  # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
+                  if(fish_sel_devs_spec[f] == 'est_shared_s' && r == 1 && s == 1) {
+                    map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
+                    fishsel_devs_counter <- fishsel_devs_counter + 1
+                  }
+                } # end i loop
+              } # end random walk variation
+            } # only estimate values if y > 1, devs set to 0 otherwise
 
             # If 3d gmrf for this fleet
             if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4,5)) {

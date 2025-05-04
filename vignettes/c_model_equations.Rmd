@@ -175,10 +175,11 @@ a_{y}^{50} = a^{50} \exp(\epsilon_{y,2}^{Sel})
 where the parameters of the logistic form are allowed to vary over time. By contrast, in the case of semi-parametric deviations for logistic selectivity, the following expression is used:
 
 \begin{equation}
-Sel_{y,a} = \frac{1}{1 + \exp[-k(a - a^{50})]} \exp(\epsilon_{y,a}^{Sel}) 
+Sel_{y,a} = \frac{1}{1 + \exp[-k(a - a^{50})]} \exp(\epsilon_{y,a}^{Sel}) \\
+Sel_{y,a} = \frac{Sel_{y,a}} / mean(\boldsymbol{Sel})
 \end{equation}
 
-where deviations are placed about the parametric form. For further details on options available, see the [selectivity process error section](#selpen).
+where deviations are placed about the parametric form and selectivity values are mean standardized to aid with interpretability. For further details on options available, see the [selectivity process error section](#selpen).
 
 ## Observation Models and Equations
 
@@ -651,15 +652,22 @@ where $\sigma^2_{i,Sel}$ is the variance of selectivity parameter $i$ (e.g., $a^
 
 Parametric selectivity deviations can also be specified assuming a random walk process:
 \begin{equation} 
-\epsilon_{r,y,i,s,f}^{Sel} \sim \begin{cases}
-N\left(\epsilon_{r,1,i,s,f}^{Sel}, 50^2 \right), & \text{if } i = 1 \\
-N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) & \text{if } i > 1
+\epsilon_{r,y,i,s,f}^{Sel} \begin{cases}
+0, & \text{if } y = 1 \\
+\sim N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) & \text{if } y > 1
 \end{cases}
 \end{equation}
 
-where the first parameter deviation is initialized with an arbitrarily large variance ($50^2$) and subsequent deviations are dependent on the previous time point, constrained by an estimable variance for a given selectivity parameter ($\sigma^2_{i,Sel}$).
+where the first parameter deviation is set at 0 (such that a fixed effect is estimated in the first time step) and subsequent deviations are dependent on the previous time point, constrained by an estimable variance for a given selectivity parameter ($\sigma^2_{i,Sel}$).
 
-Semi-parametric deviations can also be specified, where deviations can occur across years, ages, and cohorts. Two options can be specified to allow for deviations across these three dimensions, which include a marginal stationary and a conditional non-stationary variance option. The primary difference between the two is that the marginal variance version does not have a closed form solution for $\boldsymbol{\Omega}$ (see equations below) and needs to be iteratively solved, while the conditional variance version has a closed form solution. The following equations describe the conditional variance version: 
+Semi-parametric deviations can also be specified, where deviations can occur across years, ages, and cohorts. For all semi-parametric deviations, a first-order difference penalty is applied across years and ages to provide some regularity:
+
+\begin{equation}
+selPen = \epsilon_{r,y,a+1,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel} \\
+selPen = \epsilon_{r,y+1,a,s,f}^{Sel} - \epsilon_{r,y,a,s,f}^{Sel} 
+\end{equation}
+
+Two options can be specified to allow for deviations across these three dimensions, which include a marginal stationary and a conditional non-stationary variance option. The primary difference between the two is that the marginal variance version does not have a closed form solution for $\boldsymbol{\Omega}$ (see equations below) and needs to be iteratively solved, while the conditional variance version has a closed form solution. The following equations describe the conditional variance version: 
 
 \begin{equation}
 \boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}) \\
@@ -692,4 +700,4 @@ Lastly, semi-parametric deviations can also be specified to vary across years an
 \textbf{Q}^{-1} = \sigma^2_{Sel}\textbf{R}_y \otimes \textbf{R}_a \\ 
 \end{equation}
 
-where \text_bf{Q} is determined by the Kronecker product of a first-order autoregressive process across ages $\textbf{R}_a$ and across years $\textbf{R}_y$. 
+where \textbf{Q} is determined by the Kronecker product of a first-order autoregressive process across ages $\textbf{R}_a$ and across years $\textbf{R}_y$. 

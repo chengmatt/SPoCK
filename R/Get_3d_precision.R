@@ -67,7 +67,7 @@ Get_3d_precision <- function(n_ages,n_yrs, pcorr_age, pcorr_year, pcorr_cohort, 
 
     # omega matrix
     Omega_inv = diag(1/d, n_ages * n_yrs, n_ages * n_yrs)
-    Q = as((I-t(B)) %*% Omega_inv %*% (I-B), "sparseMatrix") # solve for precision
+    Q = as((I-Matrix::t(B)) %*% Omega_inv %*% (I-B), "sparseMatrix") # solve for precision
 
     return(Q)
   }
