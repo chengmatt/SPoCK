@@ -969,7 +969,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
                 # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
-                if(srv_sel_devs_spec[f] == 'est_shared_s' && r == 1) {
+                if(srv_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
                   map_srvsel_devs[r,y,i,,f] <- srvsel_devs_counter
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }

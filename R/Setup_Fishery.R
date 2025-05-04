@@ -1211,6 +1211,18 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                   map_fishsel_devs[,y,i,s,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
+                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes
+                if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
+                  map_fishsel_devs[r,y,i,,f] <- fishsel_devs_counter
+                  fishsel_devs_counter <- fishsel_devs_counter + 1
+                }
+
+                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes and regions
+                if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1 && r == 1) {
+                  map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
+                  fishsel_devs_counter <- fishsel_devs_counter + 1
+                }
+
               } # end i loop
 
               # Estimating selectivity deviations across years, but blocking structure / pooling across ages
