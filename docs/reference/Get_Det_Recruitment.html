@@ -41,9 +41,6 @@
       <a href="../articles/c_model_equations.html">Description of Model Equations</a>
     </li>
     <li>
-      <a href="../articles/d_model_diagnostics.html">Conducting Model Diagnostics</a>
-    </li>
-    <li>
       <a href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a>
     </li>
     <li>
@@ -51,9 +48,6 @@
     </li>
     <li>
       <a href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a>
-    </li>
-    <li>
-      <a href="../articles/h_simulation_self_test.html">Conducting a Simulation Self-Test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -77,10 +71,13 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Get_Det_Recruitment</span><span class="op">(</span></span>
 <span>  <span class="va">recruitment_model</span>,</span>
+<span>  <span class="va">recruitment_dd</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">rec_lag</span>,</span>
 <span>  <span class="va">R0</span>,</span>
+<span>  <span class="va">Rec_Prop</span>,</span>
 <span>  <span class="va">h</span>,</span>
+<span>  <span class="va">n_regions</span>,</span>
 <span>  <span class="va">n_ages</span>,</span>
 <span>  <span class="va">WAA</span>,</span>
 <span>  <span class="va">MatAA</span>,</span>
@@ -97,6 +94,10 @@
 <dd><p>== 0, mean recruitment, == 1 beverton holt recruitment with steepness</p></dd>
 
 
+<dt id="arg-recruitment-dd">recruitment_dd<a class="anchor" aria-label="anchor" href="#arg-recruitment-dd"></a></dt>
+<dd><p>Recruitment density dependence (0 == local, 1 == global)</p></dd>
+
+
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>year</p></dd>
 
@@ -106,11 +107,19 @@
 
 
 <dt id="arg-r-">R0<a class="anchor" aria-label="anchor" href="#arg-r-"></a></dt>
-<dd><p>virgin or mean recruitment</p></dd>
+<dd><p>virgin or mean recruitment (global)</p></dd>
+
+
+<dt id="arg-rec-prop">Rec_Prop<a class="anchor" aria-label="anchor" href="#arg-rec-prop"></a></dt>
+<dd><p>Recruitment proportions to allocate global R0 if local density dependence</p></dd>
 
 
 <dt id="arg-h">h<a class="anchor" aria-label="anchor" href="#arg-h"></a></dt>
-<dd><p>steepness</p></dd>
+<dd><p>Vector of steepness values by n_regions</p></dd>
+
+
+<dt id="arg-n-regions">n_regions<a class="anchor" aria-label="anchor" href="#arg-n-regions"></a></dt>
+<dd><p>Number of regions</p></dd>
 
 
 <dt id="arg-n-ages">n_ages<a class="anchor" aria-label="anchor" href="#arg-n-ages"></a></dt>
@@ -118,24 +127,24 @@
 
 
 <dt id="arg-waa">WAA<a class="anchor" aria-label="anchor" href="#arg-waa"></a></dt>
-<dd><p>vector of weight at age</p></dd>
+<dd><p>Weight at age by region and age</p></dd>
 
 
 <dt id="arg-mataa">MatAA<a class="anchor" aria-label="anchor" href="#arg-mataa"></a></dt>
-<dd><p>vector of maturity at age</p></dd>
+<dd><p>Maturity by region and age</p></dd>
 
 
 <dt id="arg-natmort">natmort<a class="anchor" aria-label="anchor" href="#arg-natmort"></a></dt>
-<dd><p>vector of natural mortality at age</p></dd>
+<dd><p>Natural moratliaty by region and age</p></dd>
 
 
 <dt id="arg-ssb-vals">SSB_vals<a class="anchor" aria-label="anchor" href="#arg-ssb-vals"></a></dt>
-<dd><p>spawning stock biomass value</p></dd>
+<dd><p>SSB matrix by regiona and year</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Determinstic recruitment values from mean recruitment or beverton holt</p>
+    <p>Vector of n_regions of deterministic recruitment values from mean recruitment or beverton holt</p>
     </div>
 
   </div>

@@ -91,15 +91,15 @@ Get_Comp_Likelihoods = function(Exp,
 
     if(Likelihood_Type == 2) {
       tmp_Obs = (Obs[1,,1]) / sum(Obs[1,,1]) # Normalize observed values
-      Sigma = diag(length(tmp_Obs)-1) * (exp(ln_theta_agg)^2 / ISS[1,1])
+      Sigma = diag(length(tmp_Obs)-1) * exp(ln_theta_agg)^2
       comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (iid)
     } # end if logistic normal (iid)
 
     if(Likelihood_Type == 3) {
       tmp_Obs = (Obs[1,,1]) / sum(Obs[1,,1]) # Normalize observed values
       LN_corr_b = rho_trans(LN_corr_pars_agg) # correlation by age / length
-      Sigma = get_AR1_CorrMat(n_bins, LN_corr_b) * (exp(ln_theta_agg)^2 / ISS[1,1])
-      Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] # remove last row and column
+      Sigma = get_AR1_CorrMat(n_bins, LN_corr_b)
+      Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta_agg)^2 # remove last row and column
       comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1)
     } # end if logistic normal (1dar1)
 
@@ -130,15 +130,15 @@ Get_Comp_Likelihoods = function(Exp,
 
         if(Likelihood_Type == 2) {
           tmp_Obs = Obs[r,,s] / sum(Obs[r,,s]) # extract variable and normalize
-          Sigma = diag(length(tmp_Obs)-1) * (exp(ln_theta[r,s])^2 / ISS[r,s]) # construct sigma
+          Sigma = diag(length(tmp_Obs)-1) * exp(ln_theta[r,s])^2 # construct sigma
           comp_nLL[r,s] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood
         } # end if logistic normal
 
         if(Likelihood_Type == 3) {
           tmp_Obs = Obs[r,,s] / sum(Obs[r,,s]) # extract variable and normalize
           LN_corr_b = rho_trans(LN_corr_pars[r,s,1]) # correlation by age / length
-          Sigma = get_AR1_CorrMat(n_bins, LN_corr_b) * (exp(ln_theta[r,s])^2 / ISS[r,s])
-          Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] # remove last row and column
+          Sigma = get_AR1_CorrMat(n_bins, LN_corr_b)
+          Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[r,s])^2  # remove last row and column
           comp_nLL[r,s] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1)
         } # end if logistic normal (1dar1)
 
@@ -173,16 +173,24 @@ Get_Comp_Likelihoods = function(Exp,
 
       if(Likelihood_Type == 2) {
         tmp_Obs = Obs[r,,] / sum(Obs[r,,]) # extract temporary observed variable and normalize
-        Sigma = diag(length(tmp_Obs)-1) * (exp(ln_theta[r,1])^2 / ISS[r,1])
+        Sigma = diag(length(tmp_Obs)-1) * exp(ln_theta[r,1])^2
         comp_nLL[r,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (iid)
       } # end if logistic normal (iid)
+
+      if(Likelihood_Type == 3) {
+        tmp_Obs = Obs[r,,] / sum(Obs[r,,]) # extract variable and normalize
+        LN_corr_b = rho_trans(LN_corr_pars[r,1,1]) # correlation by age / length
+        Sigma = get_AR1_CorrMat(n_bins * n_sexes, LN_corr_b)
+        Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[r,1])^2  # remove last row and column
+        comp_nLL[r,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1)
+      } # end if logistic normal (1dar1)
 
       if(Likelihood_Type == 4) {
         tmp_Obs = Obs[r,,] / sum(Obs[r,,]) # extract temporary observed variable and normalize
         LN_corr_b = rho_trans(LN_corr_pars[r,1,1]) # correlation by age / length
         LN_corr_s = rho_trans(LN_corr_pars[r,1,2]) # correlation by sex
-        Sigma = kronecker(get_AR1_CorrMat(n_bins, LN_corr_b), get_Constant_CorrMat(n_sexes, LN_corr_s)) * (exp(ln_theta[r,1])^2 / ISS[r,1])
-        Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] # remove last row and column
+        Sigma = kronecker(get_AR1_CorrMat(n_bins, LN_corr_b), get_Constant_CorrMat(n_sexes, LN_corr_s))
+        Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[r,1])^2 # remove last row and column
         comp_nLL[r,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1 by age, constant corr by sex)
       } # end if logistic normal (1dar1 by age, constant corr by sex)
 
@@ -217,7 +225,7 @@ Get_Comp_Likelihoods = function(Exp,
     } # end if Dirichlet multinomial
 
     if(Likelihood_Type == 2) {
-      Sigma = diag(length(tmp_Obs)-1) * (exp(ln_theta[1,1])^2 / ISS[1,1])
+      Sigma = diag(length(tmp_Obs)-1) * exp(ln_theta[1,1])^2
       comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood
     } # Logistic normal likelihood (iid)
 
@@ -225,12 +233,11 @@ Get_Comp_Likelihoods = function(Exp,
       LN_corr_b = rho_trans(LN_corr_pars[1,1,1]) # correlation by age / length
       LN_corr_s = rho_trans(LN_corr_pars[1,1,2]) # correlation by sex
       LN_corr_r = rho_trans(LN_corr_pars[1,1,3]) # correlation by region
-
       # Create covariance
       Sigma = kronecker(
         kronecker(get_AR1_CorrMat(n_bins, LN_corr_b), get_Constant_CorrMat(n_sexes, LN_corr_s)),
-        get_Constant_CorrMat(n_regions_obs_use, LN_corr_r)) * (exp(ln_theta[1,1])^2 / ISS[1,1])
-      Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] # remove last row and column
+        get_Constant_CorrMat(n_regions_obs_use, LN_corr_r))
+      Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[1,1])^2 # remove last row and column
       comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1 by age, constant corr by sex and constant corr by region)
     } # end if logistic normal (1dar1 by age, constant corr by sex and constant corr by region)
 

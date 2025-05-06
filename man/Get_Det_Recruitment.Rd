@@ -6,10 +6,13 @@
 \usage{
 Get_Det_Recruitment(
   recruitment_model,
+  recruitment_dd,
   y,
   rec_lag,
   R0,
+  Rec_Prop,
   h,
+  n_regions,
   n_ages,
   WAA,
   MatAA,
@@ -20,26 +23,32 @@ Get_Det_Recruitment(
 \arguments{
 \item{recruitment_model}{== 0, mean recruitment, == 1 beverton holt recruitment with steepness}
 
+\item{recruitment_dd}{Recruitment density dependence (0 == local, 1 == global)}
+
 \item{y}{year}
 
 \item{rec_lag}{recruitment lag for indexing SSB year}
 
-\item{R0}{virgin or mean recruitment}
+\item{R0}{virgin or mean recruitment (global)}
 
-\item{h}{steepness}
+\item{Rec_Prop}{Recruitment proportions to allocate global R0 if local density dependence}
+
+\item{h}{Vector of steepness values by n_regions}
+
+\item{n_regions}{Number of regions}
 
 \item{n_ages}{number of ages}
 
-\item{WAA}{vector of weight at age}
+\item{WAA}{Weight at age by region and age}
 
-\item{MatAA}{vector of maturity at age}
+\item{MatAA}{Maturity by region and age}
 
-\item{natmort}{vector of natural mortality at age}
+\item{natmort}{Natural moratliaty by region and age}
 
-\item{SSB_vals}{spawning stock biomass value}
+\item{SSB_vals}{SSB matrix by regiona and year}
 }
 \value{
-Determinstic recruitment values from mean recruitment or beverton holt
+Vector of n_regions of deterministic recruitment values from mean recruitment or beverton holt
 }
 \description{
 Get Deterministic Recruitment

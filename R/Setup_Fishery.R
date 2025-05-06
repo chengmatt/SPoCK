@@ -131,11 +131,13 @@ Setup_Sim_FishSel <- function(n_sims = n_sims,
 #' @param est_all_regional_F Indicator number specifying whether all regional fishing mortality deviates are estimated, == 0 some F's are not regional and are aggregated, == 1 all fishing mortality deviates are regional
 #' @param Catch_Constant A vector dimensioned by n_fish_fleets specifying the constant to add to catch observations
 #' @param ... Additional arguments specifying starting values for fishery parameters (ln_sigmaC, ln_F_mean, ln_F_devs, ln_F_mean_AggCatch)
-#' @param sigmaC_spec Observation error specificaiotn for catch. Default behavior is to estimate it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, and "fix" which fixes it at the starting value.
+#' @param sigmaC_spec Observation error specificaiotn for catch. Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all
 #' @param censor_regional_catch Numeric for whether to censor catch if aggregated catch (0 == don't censor, 1 == censor)
 #' @param ub_catch_censor Upper bound for aggregated catch if censor_regional_catch is specified. Dimensions should be n_regions, n_years (for aggregated years), and n_fish_fleets
 #' @param lb_catch_censor Lower bound for aggregated catch if censor_regional_catch is specified. Dimensions should be n_regions, n_years (for aggregated years), and n_fish_fleets
 #' @param catch_censor_sd Catch censoring standard deviation (single value). Smaller values mean it should definitely be within the bound, larger = more flexbility.
+#' @param sigmaF_spec Process error specificaiotn for fishing mortality Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all
+#' @param sigmaF_agg_spec Process error specificaiotn for fishing mortality when aggregated. Default behavior is to fix it for all fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all
 #'
 #' @export Setup_Mod_Catch_and_F
 #'
@@ -146,7 +148,9 @@ Setup_Mod_Catch_and_F <- function(input_list,
                                   Use_F_pen = 1,
                                   est_all_regional_F = 1,
                                   Catch_Constant = NULL,
-                                  sigmaC_spec = NULL,
+                                  sigmaC_spec = "fix",
+                                  sigmaF_spec = "fix",
+                                  sigmaF_agg_spec = "fix",
                                   censor_regional_catch = 0,
                                   ub_catch_censor = NA,
                                   lb_catch_censor = NA,
@@ -198,6 +202,14 @@ Setup_Mod_Catch_and_F <- function(input_list,
   if("ln_sigmaC" %in% names(starting_values)) input_list$par$ln_sigmaC <- starting_values$ln_sigmaC
   else input_list$par$ln_sigmaC <- array(log(1e-3), dim = c(input_list$data$n_regions, input_list$data$n_fish_fleets))
 
+  # Process error fishing deviations for regional catch
+  if("ln_sigmaF" %in% names(starting_values)) input_list$par$ln_sigmaF <- starting_values$ln_sigmaF
+  else input_list$par$ln_sigmaF <- array(log(1), dim = c(input_list$data$n_regions, input_list$data$n_fish_fleets))
+
+  # Process error fishing deviations for regional catch
+  if("ln_sigmaF_agg" %in% names(starting_values)) input_list$par$ln_sigmaF <- starting_values$ln_sigmaF
+  else input_list$par$ln_sigmaF_agg <- rep(log(1), input_list$data$n_fish_fleets)
+
   # Log mean fishing mortality
   if("ln_F_mean" %in% names(starting_values)) input_list$par$ln_F_mean <- starting_values$ln_F_mean
   else input_list$par$ln_F_mean <- array(log(0.1), dim = c(input_list$data$n_regions, input_list$data$n_fish_fleets))
@@ -215,27 +227,61 @@ Setup_Mod_Catch_and_F <- function(input_list,
   else input_list$par$ln_F_devs_AggCatch <- array(0, dim = dim(input_list$data$Catch_Type[rowSums(input_list$data$Catch_Type) == 0, , drop = FALSE]))
 
   # Setup mapping list
+
   # Observation error for catch
   map_sigmaC <- input_list$par$ln_sigmaC # initialize
-  if(!is.null(sigmaC_spec)) {
-    # Same sigmaC across fleets, but unique across regions
-    if(sigmaC_spec == "est_shared_f") {
-      map_sigmaC[1:input_list$data$n_regions,] <- 1:input_list$data$n_regions
-      input_list$map$ln_sigmaC <- factor(map_sigmaC)
-    }
-    # Same sigmaC across regions, but unique across fleets
-    if(sigmaC_spec == "est_shared_r") {
-      map_sigmaC[,1:input_list$data$n_fish_fleets] <- 1:input_list$data$n_fish_fleets
-      input_list$map$ln_sigmaC <- factor(map_sigmaC)
-    }
-    # Same sigmaC across regions and fleets
-    if(sigmaC_spec == "est_shared_r_f") input_list$map$ln_sigmaC <- factor(rep(1, length(input_list$par$ln_sigmaC)))
-    # Fixing sigmaC
-    if(sigmaC_spec == "fix") input_list$map$ln_sigmaC <- factor(rep(NA, length(input_list$par$ln_sigmaC)))
+  # Same sigmaC across fleets, but unique across regions
+  if(sigmaC_spec == "est_shared_f") {
+    map_sigmaC[1:input_list$data$n_regions,] <- 1:input_list$data$n_regions
+    input_list$map$ln_sigmaC <- factor(map_sigmaC)
+  }
+  # Same sigmaC across regions, but unique across fleets
+  if(sigmaC_spec == "est_shared_r") {
+    map_sigmaC[,1:input_list$data$n_fish_fleets] <- 1:input_list$data$n_fish_fleets
+    input_list$map$ln_sigmaC <- factor(map_sigmaC)
+  }
+  # Same sigmaC across regions and fleets
+  if(sigmaC_spec == "est_shared_r_f") input_list$map$ln_sigmaC <- factor(rep(1, length(input_list$par$ln_sigmaC)))
+  # Fixing sigmaC
+  if(sigmaC_spec == "fix") input_list$map$ln_sigmaC <- factor(rep(NA, length(input_list$par$ln_sigmaC)))
+  # Estimating all sigmaC
+  if(sigmaC_spec == "est_all") input_list$map$ln_sigmaC <- factor(1:length(input_list$par$ln_sigmaC))
+  if(!sigmaC_spec %in% c("est_shared_f", "est_shared_r", "est_shared_r_f", "fix", "est_all")) collect_message("sigmaC is specified as: ", sigmaC_spec)
 
-    if(!sigmaC_spec %in% c("est_shared_f", "est_shared_r", "est_shared_r_f", "fix")) collect_message("sigmaC is specified as: ", sigmaC_spec)
+  # Process error for fishing mortality
+  map_sigmaF <- input_list$par$ln_sigmaF # initialize
+  # Same sigmaF across fleets, but unique across regions
+  if(sigmaF_spec == "est_shared_f") {
+    map_sigmaF[1:input_list$data$n_regions,] <- 1:input_list$data$n_regions
+    input_list$map$ln_sigmaF <- factor(map_sigmaF)
+  }
+  # Same sigmaF across regions, but unique across fleets
+  if(sigmaF_spec == "est_shared_r") {
+    map_sigmaF[,1:input_list$data$n_fish_fleets] <- 1:input_list$data$n_fish_fleets
+    input_list$map$ln_sigmaF <- factor(map_sigmaF)
+  }
+  # Same sigmaF across regions and fleets
+  if(sigmaF_spec == "est_shared_r_f") input_list$map$ln_sigmaF <- factor(rep(1, length(input_list$par$ln_sigmaF)))
+  # Fixing sigmaF
+  if(sigmaF_spec == "fix") input_list$map$ln_sigmaF <- factor(rep(NA, length(input_list$par$ln_sigmaF)))
+  # Estimating all sigmaF
+  if(sigmaF_spec == "est_all") input_list$map$ln_sigmaF <- factor(1:length(input_list$par$ln_sigmaF))
+  collect_message("sigmaF is specified as: ", sigmaF_spec)
 
-  } else collect_message("sigmaC is estimated for all regions and fleets. Likely not estimable and consider fixing")
+  # Process error for aggregated fishing mortality / catch options
+  if(input_list$data$est_all_regional_F == 0) {
+    # Same sigmaF across fleets
+    if(sigmaF_agg_spec == "est_shared_f") input_list$map$ln_sigmaF <- factor(rep(1, length(input_list$par$ln_sigmaF_agg)))
+    # Fixing ln_sigmaF_agg
+    if(sigmaF_agg_spec == "fix") input_list$map$ln_sigmaF_agg <- factor(rep(NA, length(input_list$par$ln_sigmaF_agg)))
+    # Estimating all ln_sigmaF_agg
+    if(sigmaF_agg_spec == "est_all") input_list$map$ln_sigmaF_agg <- factor(1:length(input_list$par$ln_sigmaF_agg))
+  } # end if some fishing mortality deviations are aggregated
+
+  # If all fishing mortality deviations are regional, then don't estimate this
+  if(input_list$data$est_all_regional_F == 1 && sigmaF_agg_spec != 'fix') stop("Fishing mortality is specified to be aggregated for all regions, but sigmaF_agg_spec is not specified at `fix`!")
+  if(input_list$data$est_all_regional_F == 1) input_list$map$ln_sigmaF_agg <- factor(rep(NA, length(input_list$par$ln_sigmaF_agg)))
+  collect_message("sigmaF_agg is specified as: ", sigmaF_agg_spec)
 
   # Mapping for fishing mortality deviations
   F_dev_map <- input_list$par$ln_F_devs # initialize for mapping
@@ -271,9 +317,15 @@ Setup_Mod_Catch_and_F <- function(input_list,
   F_dev_map <<- F_dev_map
   input_list$map$ln_F_devs <- factor(F_dev_map)
 
+  # If we are estimating some aggregated F devs
+  if(input_list$data$est_all_regional_F == 0) {
+    input_list$map$ln_F_devs_AggCatch <- factor(1:length(input_list$par$ln_F_devs_AggCatch))
+    input_list$map$ln_F_mean_AggCatch <- factor(1:input_list$data$n_fish_fleets)
+  }
+
   # If we are estimating regional F devs for all
   if(input_list$data$est_all_regional_F == 1) {
-    input_list$map$ln_F_devs_AggCatch <- factor(rep(NA, input_list$data$n_fish_fleets * sum(input_list$data$Catch_Type == 0)))
+    input_list$map$ln_F_devs_AggCatch <- factor(array(NA, dim = dim(input_list$data$Catch_Type[rowSums(input_list$data$Catch_Type) == 0, , drop = FALSE])))
     input_list$map$ln_F_mean_AggCatch <- factor(rep(NA, input_list$data$n_fish_fleets))
   }
 
@@ -617,6 +669,8 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
       map_FishAge_theta[1,1,f] <- counter_fishage
       counter_fishage <- counter_fishage + 1 # joint by sex and region
 
+      if(input_list$data$FishAgeComps_LikeType[f] %in% 3:4) stop("Joint Region and Sex Composition Structure does not currently support 1d and 2d Logistic Normal Versions!")
+
       # if this is logistic normal, with 3d correlation
       if(input_list$data$FishAgeComps_LikeType[f] == 5) {
         for(i in 1:3) {
@@ -631,6 +685,8 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
     if(any(fishlen_comp_type == 3) && input_list$data$FishLenComps_LikeType[f] != 0) {
       map_FishLen_theta[1,1,f] <- counter_fishlen
       counter_fishlen <- counter_fishlen + 1 # joint by sex and region
+
+      if(input_list$data$FishLenComps_LikeType[f] %in% 3:4) stop("Joint Region and Sex Composition Structure does not currently support 1d and 2d Logistic Normal Versions!")
 
       # if this is logistic normal, with 3d correlation
       if(input_list$data$FishLenComps_LikeType[f] == 5) {
@@ -675,6 +731,12 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
           map_FishAge_theta[r,1,f] <- counter_fishage
           counter_fishage <- counter_fishage + 1 # joint by sex, split by region
 
+          # if logistic normal 1dar1 by age only (unique age correlations for age each region and sex)
+          if(input_list$data$FishAgeComps_LikeType[f] == 3) {
+            map_FishAge_corr_pars[r,1,f,1] <- counter_fishage_corr
+            counter_fishage_corr <- counter_fishage_corr + 1
+          }
+
           # if logistic normal, 2d, where 1dar1 by age, constant correlation by sex
           if(input_list$data$FishAgeComps_LikeType[f] == 4) {
             for(i in 1:2) {
@@ -689,6 +751,12 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
         if(any(fishlen_comp_type == 2) && input_list$data$FishLenComps_LikeType[f] != 0 && s == 1) {
           map_FishLen_theta[r,1,f] <- counter_fishlen
           counter_fishlen <- counter_fishlen + 1 # joint by sex, split by region
+
+          # if logistic normal 1dar1 by length only (unique length correlations for length each region and sex)
+          if(input_list$data$FishLenComps_LikeType[f] == 3) {
+            map_FishLen_corr_pars[r,1,f,1] <- counter_fishlen_corr
+            counter_fishlen_corr <- counter_fishlen_corr + 1
+          }
 
           # if logistic normal, 2d, where 1dar1 by length, constant correlation by sex
           if(input_list$data$FishLenComps_LikeType[f] == 4) {
@@ -729,7 +797,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
 #' @param fish_sel_model Specification for fishery selectivity model for a given region and fleet, array dimensioned by n_regions, n_years, n_fish_fleets, == 0 a50, k, logistic, == 1 gamma dome shaped, == 2, exponential, == 3 a50, a95 logistic
 #' @param fish_q_blocks Specification for fishery catchability blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_fish_fleets
 #' @param ... Additional arguments specifying starting values for fishery selectivity and catchability parameters (fishsel_pe_pars, ln_fishsel_devs, ln_fish_fixed_sel_pars, ln_fish_q)
-#' @param fishsel_pe_pars_spec Specification for fishery selectivity process error parameters. If cont_tv_fish_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
+#' @param fishsel_pe_pars_spec Specification for fishery selectivity process error parameters. If cont_tv_fish_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes, options fix and none all indicate to not estimate seletivity process error parameters and treat these as fixed.
 #' @param fish_fixed_sel_pars_spec Specification for fishery selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
 #' @param fish_q_spec Specification for fishery catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.
 #' @param fish_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes
@@ -1008,8 +1076,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   for(f in 1:input_list$data$n_fish_fleets) {
 
     if(!is.null(fishsel_pe_pars_spec)) {
-      if(!fishsel_pe_pars_spec[f] %in% c(NA, "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s"))
-        stop("fishsel_pe_pars_spec not correctly specfied. Should be one of these: NA, est_all, est_shared_r, est_shared_r_s")
+      if(!fishsel_pe_pars_spec[f] %in% c("fix", "none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s"))
+        stop("fishsel_pe_pars_spec not correctly specfied. Should be one of these: fix, none, est_all, est_shared_r, est_shared_r_s")
     }
 
     for(r in 1:input_list$data$n_regions) {
@@ -1026,6 +1094,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
           # If iid time-variation or random walk for this fleet
           if(input_list$data$cont_tv_fish_sel[r,f] %in% c(1,2)) {
             for(i in 1:max_sel_pars) {
+              # either fixing parameters or not used for a given fleet
+              if(fishsel_pe_pars_spec[f] %in% c("none", "fix")) map_fishsel_pe_pars[r,i,s,f] <- NA
               # Estimating all parameters separately (unique for each region, sex, fleet, parameter)
               if(fishsel_pe_pars_spec[f] == "est_all") {
                 map_fishsel_pe_pars[r,i,s,f] <- fishsel_pe_pars_counter
@@ -1057,6 +1127,10 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
             if(input_list$data$cont_tv_fish_sel[r,f] %in% c(5)) idx = c(1,2,4) # 2dar1 (1 = pcorr_age, 2 = pcorr_year, 4 = log_sigma)
 
             for(i in idx) {
+
+              # either fixing parameters or not used for a given fleet
+              if(fishsel_pe_pars_spec[f] %in% c("none", "fix")) map_fishsel_pe_pars[r,i,s,f] <- NA
+
               # Estimating all process error parameters
               if(fishsel_pe_pars_spec[f] == "est_all") {
                 map_fishsel_pe_pars[r,i,s,f] <- fishsel_pe_pars_counter
@@ -1129,8 +1203,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
     for(f in 1:input_list$data$n_fish_fleets) {
 
       if(!is.null(fish_sel_devs_spec)) {
-        if(!fish_sel_devs_spec[f] %in% c(NA, "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s", "est_shared_a", "est_shared_r_a", "est_shared_a_s", "est_shared_r_a_s"))
-          stop("fish_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_a, est_shared_r_a, est_shared_a_s, est_shared_r_a_s, NA")
+        if(!fish_sel_devs_spec[f] %in% c("none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s", "est_shared_a", "est_shared_r_a", "est_shared_a_s", "est_shared_r_a_s"))
+          stop("fish_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_a, est_shared_r_a, est_shared_a_s, est_shared_r_a_s, none")
       }
 
     # Figure out max number of selectivity parameters for a given region and fleet

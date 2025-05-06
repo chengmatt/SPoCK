@@ -24,6 +24,8 @@ The following table describes all elements contained within `input_list$pars`, w
 | Parameter               | Dimension                                            | Component             | Description                                                              |
 |-------------------------|------------------------------------------------------|------------------------|-------------------------------------------------------------------------|
 | `ln_sigmaC`             | `n_regions, n_fish_fleets`                           | Fishery Removals       | SD for catch fit                                                        |
+| `ln_sigmaF`             | `n_regions, n_fish_fleets`                           | Fishery Removals       | SD for fishing mortality process error                                  |
+| `ln_sigmaF_agg`         | `n_fish_fleets`                                      | Fishery Removals       | SD for aggregated fishing mortality process error                       |
 | `ln_F_mean`             | `n_regions, n_fish_fleets`                           | Fishery Removals       | Log mean fishing mortality                                              |
 | `ln_F_devs`             | `n_regions, n_years, n_fish_fleets`                  | Fishery Removals       | Log deviations in fishing mortality                                     |
 | `ln_F_devs_AggCatch`    | `n_Catch_Type_years, n_fish_fleets`                  | Fishery Removals       | Region-aggregated log fishing mortality deviations                      |
@@ -38,7 +40,7 @@ The following table describes all elements contained within `input_list$pars`, w
 | `M_offset`              | `1`                                                  | Natural Mortality      | Offset for M                                                            |
 | `ln_global_R0`          | `1`                                                  | Recruitment            | Log virgin/mean recruitment                                             |
 | `R0_prop`               | `n_regions – 1`                                      | Recruitment            | Proportions for R0                                                      |
-| `h`                     | `n_regions`                                          | Recruitment            | Steepness parameters (bounded logit space)                              |
+| `steepness_h`                     | `n_regions`                                          | Recruitment            | Steepness parameters (bounded logit space)                              |
 | `ln_InitDevs`           | `n_regions, n_ages - 2`                              | Recruitment            | Log initial age deviations                                              |
 | `ln_RecDevs`            | `n_regions, n_recdev_years`                          | Recruitment            | Log recruitment deviations                                              |
 | `ln_sigmaR`             | `2`                                                  | Recruitment            | SD for initial and recruitment deviations                               |

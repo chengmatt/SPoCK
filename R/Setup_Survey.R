@@ -398,6 +398,8 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
       map_SrvAge_theta[1,1,f] <- counter_srvage
       counter_srvage <- counter_srvage + 1 # joint by sex and region
 
+      if(input_list$data$SrvAgeComps_LikeType[f] %in% 3:4) stop("Joint Region and Sex Composition Structure does not currently support 1d and 2d Logistic Normal Versions!")
+
       # if this is logistic normal, with 3d correlation
       if(input_list$data$SrvAgeComps_LikeType[f] == 5) {
         for(i in 1:3) {
@@ -412,6 +414,8 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
     if(any(srvlen_comp_type == 3) && input_list$data$SrvLenComps_LikeType[f] != 0) {
       map_SrvLen_theta[1,1,f] <- counter_srvlen
       counter_srvlen <- counter_srvlen + 1 # joint by sex and region
+
+      if(input_list$data$SrvLenComps_LikeType[f] %in% 3:4) stop("Joint Region and Sex Composition Structure does not currently support 1d and 2d Logistic Normal Versions!")
 
       # if this is logistic normal, with 3d correlation
       if(input_list$data$SrvLenComps_LikeType[f] == 5) {
@@ -456,6 +460,12 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
           map_SrvAge_theta[r,1,f] <- counter_srvage
           counter_srvage <- counter_srvage + 1 # joint by sex, split by region
 
+          # if logistic normal 1dar1 by age only (unique age correlations for age each region and sex)
+          if(input_list$data$SrvAgeComps_LikeType[f] == 3) {
+            map_SrvAge_corr_pars[r,1,f,1] <- counter_srvage_corr
+            counter_srvage_corr <- counter_srvage_corr + 1
+          }
+
           # if logistic normal, 2d, where 1dar1 by age, constant correlation by sex
           if(input_list$data$SrvAgeComps_LikeType[f] == 4) {
             for(i in 1:2) {
@@ -470,6 +480,12 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
         if(any(srvlen_comp_type == 2) && input_list$data$SrvLenComps_LikeType[f] != 0 && s == 1) {
           map_SrvLen_theta[r,1,f] <- counter_srvlen
           counter_srvlen <- counter_srvlen + 1 # joint by sex, split by region
+
+          # if logistic normal 1dar1 by length only (unique length correlations for length each region and sex)
+          if(input_list$data$SrvLenComps_LikeType[f] == 3) {
+            map_SrvLen_corr_pars[r,1,f,1] <- counter_srvlen_corr
+            counter_srvlen_corr <- counter_srvlen_corr + 1
+          }
 
           # if logistic normal, 2d, where 1dar1 by length, constant correlation by sex
           if(input_list$data$SrvLenComps_LikeType[f] == 4) {
@@ -509,13 +525,13 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
 #' @param srv_sel_model Specification for survey selectivity model for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets, == 0 a50, k, logistic, == 1 gamma dome shaped, == 3, exponential, == 4 a50, a95 logistic
 #' @param srv_q_blocks Specification for survey catchability blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets
 #' @param ... Additional arguments specifying starting values for survey selectivity and catchability parameters (ln_srv_fixed_sel_pars, ln_srv_q)
-#' @param srvsel_pe_pars_spec Specification for survey selectivity process error parameters. If cont_tv_srv_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
+#' @param srvsel_pe_pars_spec Specification for survey selectivity process error parameters. If cont_tv_srv_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes. Other options are fix and none which indicate to not estimate these parameters
 #' @param srv_fixed_sel_pars_spec Specification for survey selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
 #' @param srv_q_spec Specification for survey catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.
-#' @param srv_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes
+#' @param srv_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes, or none, which indicates there aren't any estimated
 #' @param semipar_age_block_spec Number (length 1) that needs to be specified if est_shared_a variants are specified. Number represents the number of ages to share deviations for spaced evenly.
 #' @param cont_tv_srv_sel Specificaiton for continuous time-varying selectivity, character vector dimensioned by n_srv_fleets, where the character is time variation type, _, Fleet, fleet number. time variation types include (none, iid, rw, 3dmarg, 3dcond, 2dar1), and so if we were to specify iid for fleet 1, this would be iid_Fleet_1.
-#' @param corr_opt_semipar Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correaltions to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.
+#' @param corr_opt_semipar Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correlations to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.
 #' @param Use_srv_q_prior Integer specifying whether to use survey q prior or not (0 dont use) (1 use)
 #' @param srv_q_prior Survey q priors in normal space, dimensioned by region, block, survey fleet, and 2 (mean, and sd in the 4 dimension of array)
 #'
@@ -791,8 +807,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   for(f in 1:input_list$data$n_srv_fleets) {
 
     if(!is.null(srvsel_pe_pars_spec)) {
-      if(!srvsel_pe_pars_spec[f] %in% c("est_all", "est_shared_r", NA, "est_shared_s", "est_shared_r_s"))
-        stop("srvsel_pe_pars_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, fix, NA")
+      if(!srvsel_pe_pars_spec[f] %in% c("est_all", "est_shared_r", "fix", "none", "est_shared_s", "est_shared_r_s"))
+        stop("srvsel_pe_pars_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, fix, none")
     }
 
     for(r in 1:input_list$data$n_regions) {
@@ -806,9 +822,11 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
         map_srvsel_pe_pars[r,,,f] <- NA
       } else { # if we have time-variation
         for(s in 1:input_list$data$n_sexes) {
-          # If iid time-variation for this fleet
-          if(input_list$data$cont_tv_srv_sel[r,f] == 1) {
+          # If iid or random walk time-variation for this fleet
+          if(input_list$data$cont_tv_srv_sel[r,f] %in% c(1,2)) {
             for(i in 1:max_sel_pars) {
+              # either fixing parameters or not used for a given fleet
+              if(srvsel_pe_pars_spec[f] %in% c("none", "fix")) map_srvsel_pe_pars[r,i,s,f] <- NA
               # Estimating all parameters separately (unique for each region, sex, fleet, parameter)
               if(srvsel_pe_pars_spec[f] == "est_all") {
                 map_srvsel_pe_pars[r,i,s,f] <- srvsel_pe_pars_counter
@@ -830,35 +848,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                 srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
               }
             } # end i loop
-          } # end iid variation
-
-          # If random walk time-variation for this fleet
-          if(y > 1) {
-            if(input_list$data$cont_tv_srv_sel[r,f] == 2) {
-              for(i in 1:max_sel_pars) {
-                # Estimating all parameters separately (unique for each region, sex, fleet, parameter)
-                if(srvsel_pe_pars_spec[f] == "est_all") {
-                  map_srvsel_pe_pars[r,i,s,f] <- srvsel_pe_pars_counter
-                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
-                } # end est_all
-                # Estimating process error parameters shared across regions (but unique for each sex, fleet, parameter)
-                if(srvsel_pe_pars_spec[f] == 'est_shared_r' && r == 1) {
-                  map_srvsel_pe_pars[,i,s,f] <- srvsel_pe_pars_counter
-                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
-                }
-                # Estimating process error parameters shared across sexes (but unique for each region, fleet, parameter)
-                if(srvsel_pe_pars_spec[f] == 'est_shared_s' && s == 1) {
-                  map_srvsel_pe_pars[r,i,,f] <- srvsel_pe_pars_counter
-                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
-                }
-                # Estimating process error parameters shared across regions and sexes (but unique for each fleet, parameter)
-                if(srvsel_pe_pars_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
-                  map_srvsel_pe_pars[,i,,f] <- srvsel_pe_pars_counter
-                  srvsel_pe_pars_counter <- srvsel_pe_pars_counter + 1
-                }
-              } # end i loop
-            } # end random walk variation
-          } # only estimate if y > 1, otherwise devs set to zero
+          } # end iid or random walk variation
 
           # If 3d gmrf or 2dar1
           if(input_list$data$cont_tv_srv_sel[r,f] %in% c(3,4,5)) {
@@ -868,6 +858,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
             if(input_list$data$cont_tv_srv_sel[r,f] %in% c(5)) idx = c(1,2,4) # 2dar1 (1 = pcorr_age, 2 = pcorr_year, 4 = log_sigma)
 
             for(i in idx) {
+              # either fixing parameters or not used for a given fleet
+              if(srvsel_pe_pars_spec[f] %in% c("none", "fix")) map_srvsel_pe_pars[r,i,s,f] <- NA
               # Estimating all process error parameters
               if(srvsel_pe_pars_spec[f] == "est_all") {
                 map_srvsel_pe_pars[r,i,s,f] <- srvsel_pe_pars_counter
@@ -940,8 +932,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
     for(f in 1:input_list$data$n_srv_fleets) {
 
       if(!is.null(srv_sel_devs_spec)) {
-        if(!srv_sel_devs_spec[f] %in% c(NA, "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s", "est_shared_a", "est_shared_r_a", "est_shared_a_s", "est_shared_r_a_s"))
-          stop("srv_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_a, est_shared_r_a, est_shared_a_s, est_shared_r_a_s")
+        if(!srv_sel_devs_spec[f] %in% c("none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s", "est_shared_a", "est_shared_r_a", "est_shared_a_s", "est_shared_r_a_s"))
+          stop("srv_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_a, est_shared_r_a, est_shared_a_s, est_shared_r_a_s, none")
       }
 
       # Figure out max number of selectivity parameters for a given region and fleet
@@ -955,8 +947,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
           if(input_list$data$cont_tv_srv_sel[r,f] == 0) {
             map_srvsel_devs[r,y,,s,f] <- NA
           } else {
-            # If iid time-variation or random walk for this fleet
-            if(input_list$data$cont_tv_srv_sel[r,f] %in% c(1,2)) {
+            # If iid time-variation for this fleet
+            if(input_list$data$cont_tv_srv_sel[r,f] == 1) {
               for(i in 1:max_sel_pars) {
                 # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
                 if(srv_sel_devs_spec[f] == 'est_all') {
@@ -979,7 +971,35 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
               } # end i loop
-            } # end iid or random walk variation
+            } # end iid variation
+
+            # If random walk time-variation for this fleet
+            if(y > 1) {
+              if(input_list$data$cont_tv_srv_sel[r,f] == 2) {
+                for(i in 1:max_sel_pars) {
+                  # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
+                  if(srv_sel_devs_spec[f] == 'est_all') {
+                    map_srvsel_devs[r,y,i,s,f] <- srvsel_devs_counter
+                    srvsel_devs_counter <- srvsel_devs_counter + 1
+                  }
+                  # Estimating selectivity deviations across sexes, fleets, and parameters, but shared across regions
+                  if(srv_sel_devs_spec[f] == 'est_shared_r' && r == 1) {
+                    map_srvsel_devs[,y,i,s,f] <- srvsel_devs_counter
+                    srvsel_devs_counter <- srvsel_devs_counter + 1
+                  }
+                  # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
+                  if(srv_sel_devs_spec[f] == 'est_shared_s' && r == 1) {
+                    map_srvsel_devs[r,y,i,,f] <- srvsel_devs_counter
+                    srvsel_devs_counter <- srvsel_devs_counter + 1
+                  }
+                  # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
+                  if(srv_sel_devs_spec[f] == 'est_shared_s' && r == 1 && s == 1) {
+                    map_srvsel_devs[,y,i,,f] <- srvsel_devs_counter
+                    srvsel_devs_counter <- srvsel_devs_counter + 1
+                  }
+                } # end i loop
+              } # end random walk variation
+            } # only estimate values if y > 1, devs set to 0 otherwise
 
             # If 3d gmrf for this fleet
             if(input_list$data$cont_tv_srv_sel[r,f] %in% c(3,4,5)) {

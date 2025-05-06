@@ -7,6 +7,7 @@
 Setup_Mod_Rec(
   input_list,
   rec_model,
+  rec_dd = NULL,
   rec_lag = 1,
   Use_h_prior = 0,
   h_mu = NA,
@@ -29,6 +30,8 @@ Setup_Mod_Rec(
 \item{input_list}{List containing a data list, parameter list, and map list}
 
 \item{rec_model}{recruitment model, options are mean_rec, bh_rec}
+
+\item{rec_dd}{Recruitment density dependence, Options are "local", "global", or NULL}
 
 \item{rec_lag}{duration of recruitment lag with SSB}
 
@@ -60,7 +63,7 @@ Setup_Mod_Rec(
 
 \item{h_spec}{Specification for steepness. Default is NULL, such that it is estimated for all reigons if rec_model == 1 (Beverton-Holt). Other options include "est_shared_r" which estimates h but shares across regions, or "fix" which fixes all steepness values. If rec_model == 0, h is fixed.}
 
-\item{...}{Additional arguments for starting values for recruitment parameters (ln_global_R0, R0_prop, h, ln_InitDevs, ln_RecDevs, ln_sigmaR)}
+\item{...}{Additional arguments for starting values for recruitment parameters (ln_global_R0, Rec_prop, h, ln_InitDevs, ln_RecDevs, ln_sigmaR)}
 }
 \description{
 Setup model objects for specifying recruitment module and associated processes

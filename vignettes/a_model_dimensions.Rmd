@@ -45,6 +45,8 @@ Name | Description
 `sexratio`	| Vector specifying the recruitment sex ratio
 `init_age_strc`	| Value specifying how the population age structure should be initialized. 0: Initialize via iteration to equilibrium, 1: Initialize with geometric series solution 
 `init_F_prop`	| Value specifying the proportion of fishing mortality to apply to the initial age deviations relative to the mean fishing mortality parameter for fishery fleet 1 (the dominant fleet)
+`rec_model` | Value specifying the recruitment model. 0 == Mean Recruitment, 1 == Beverton-Holt with steepness parameterization
+`rec_dd` | Value specifying the recruitment density dependence (only used when there is a stock recruitment relationship) 0 == local density, 1 == global density, 999 == no density dependent stock recruitment form is used
 
 ## Table 3. Data Inputs for Defining Biological Processes
 Name | Description

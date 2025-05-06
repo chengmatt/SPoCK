@@ -36,7 +36,7 @@ Setup_Mod_Fishsel_and_Q(
 
 \item{fish_q_blocks}{Specification for fishery catchability blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_fish_fleets}
 
-\item{fishsel_pe_pars_spec}{Specification for fishery selectivity process error parameters. If cont_tv_fish_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes}
+\item{fishsel_pe_pars_spec}{Specification for fishery selectivity process error parameters. If cont_tv_fish_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes, options fix and none all indicate to not estimate seletivity process error parameters and treat these as fixed.}
 
 \item{fish_fixed_sel_pars_spec}{Specification for fishery selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes}
 

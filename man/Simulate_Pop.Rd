@@ -91,7 +91,7 @@ Setup_Sim_Rec(n_yrs = n_yrs,
               base_h = 1,
               init_sigmaR = 0.5,
               sigmaR = 0.5,
-              recruitment_opt = 0, # == 0, mean recruitment, == 1 BH
+              recruitment_opt = 0, # == 0, mean recruitment
               recdev_opt = 0) # == 0, global rec devs, == 1, local rec devs
 
 # Setup biologicals

@@ -41,9 +41,6 @@
       <a href="../articles/c_model_equations.html">Description of Model Equations</a>
     </li>
     <li>
-      <a href="../articles/d_model_diagnostics.html">Conducting Model Diagnostics</a>
-    </li>
-    <li>
       <a href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a>
     </li>
     <li>
@@ -51,9 +48,6 @@
     </li>
     <li>
       <a href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a>
-    </li>
-    <li>
-      <a href="../articles/h_simulation_self_test.html">Conducting a Simulation Self-Test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -78,6 +72,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Setup_Mod_Rec</span><span class="op">(</span></span>
 <span>  <span class="va">input_list</span>,</span>
 <span>  <span class="va">rec_model</span>,</span>
+<span>  rec_dd <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rec_lag <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  Use_h_prior <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  h_mu <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -107,6 +102,10 @@
 
 <dt id="arg-rec-model">rec_model<a class="anchor" aria-label="anchor" href="#arg-rec-model"></a></dt>
 <dd><p>recruitment model, options are mean_rec, bh_rec</p></dd>
+
+
+<dt id="arg-rec-dd">rec_dd<a class="anchor" aria-label="anchor" href="#arg-rec-dd"></a></dt>
+<dd><p>Recruitment density dependence, Options are "local", "global", or NULL</p></dd>
 
 
 <dt id="arg-rec-lag">rec_lag<a class="anchor" aria-label="anchor" href="#arg-rec-lag"></a></dt>
@@ -170,7 +169,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments for starting values for recruitment parameters (ln_global_R0, R0_prop, h, ln_InitDevs, ln_RecDevs, ln_sigmaR)</p></dd>
+<dd><p>Additional arguments for starting values for recruitment parameters (ln_global_R0, Rec_prop, h, ln_InitDevs, ln_RecDevs, ln_sigmaR)</p></dd>
 
 </dl></div>
 

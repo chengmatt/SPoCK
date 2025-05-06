@@ -295,7 +295,7 @@ Setup_Mod_Tagging <- function(input_list,
   } # end if for using tagging data
 
   # Print all messages if verbose is TRUE
-  if(input_list$verbose) for(msg in messages_list) message(msg)
+  if(input_list$verbose && UseTagging == 1) for(msg in messages_list) message(msg)
 
   return(input_list)
 }

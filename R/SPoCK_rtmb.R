@@ -207,13 +207,15 @@ SPoCK_rtmb = function(pars, data) {
   ## Recruitment Transformations and Bias Ramp (Methot and Taylor) -------------------------------
   # Mean or virgin recruitment
   if(n_regions > 1) {
-    R0_trans = c(0, R0_prop) # set up vector for transformation
-    R0_trans = exp(R0_trans) / sum(exp(R0_trans)) # do multinomial logit
-    R0 = exp(ln_global_R0) * R0_trans # Multiply a global scaling parameter by estimated proportions
-  } else R0 = exp(ln_global_R0)
+    Rec_trans_prop = c(0, Rec_prop) # set up vector for transformation
+    Rec_trans_prop = exp(Rec_trans_prop) / sum(exp(Rec_trans_prop)) # do multinomial logit to get recruitment proportions
+  } else Rec_trans_prop = 1
+
+  # Global recruitment scalar
+  R0 = exp(ln_global_R0) # exponentiate
 
   # Steepness
-  h_trans = 0.2 + (1 - 0.2) * RTMB::plogis(h) # bound steepness between 0.2 and 1
+  h_trans = 0.2 + (1 - 0.2) * RTMB::plogis(steepness_h) # bound steepness between 0.2 and 1
 
   # Recruitment SD
   sigmaR2_early = exp(ln_sigmaR[1])^2 # recruitment variability for early period
@@ -240,14 +242,14 @@ SPoCK_rtmb = function(pars, data) {
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
         tmp_cumsum_Z = cumsum(natmort[r,1,1:(n_ages-1),s] + init_F * fish_sel[r,1,1:(n_ages-1),s,1])
-        Init_NAA[r,,s] = c(R0[r], R0[r] * exp(-tmp_cumsum_Z)) * sexratio[s]
+        Init_NAA[r,,s] = c(R0, R0 * exp(-tmp_cumsum_Z)) * sexratio[s] * Rec_trans_prop[r]
       } # end s loop
     } # end r loop
 
     # Apply annual cycle and iterate to equilibrium
     for(i in 1:init_iter) {
       for(s in 1:n_sexes) {
-        Init_NAA_next_year[,1,s] = R0 * sexratio[s] # recruitment
+        Init_NAA_next_year[,1,s] = R0 * sexratio[s] * Rec_trans_prop # recruitment
         # recruits don't move
         if(do_recruits_move == 0) for(a in 2:n_ages) Init_NAA[,a,s] = t(Init_NAA[,a,s]) %*% Movement[,,1,a,s] # movement
         # recruits move
@@ -275,12 +277,11 @@ SPoCK_rtmb = function(pars, data) {
     init_age_idx = 1:(n_ages - 2) # Get initial age indexing
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
-        NAA[r,1,init_age_idx + 1,s] = R0[r] * exp(ln_InitDevs[r,init_age_idx] -
-                                                    (init_age_idx * (natmort[r,1, init_age_idx + 1, s] +
-                                                                       (init_F * fish_sel[r,1, init_age_idx + 1, s, 1])))) * sexratio[s] # not plus group
+        NAA[r,1,init_age_idx + 1,s] = R0 * exp(ln_InitDevs[r,init_age_idx] - (init_age_idx * (natmort[r,1, init_age_idx + 1, s] +
+                                      (init_F * fish_sel[r,1, init_age_idx + 1, s, 1])))) * sexratio[s] *  Rec_trans_prop[r] # not plus group
         # Plus group calculations
-        NAA[r,1,n_ages,s] = R0[r] * exp( - ((n_ages - 1) * (natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1]))) ) /
-          (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) * sexratio[s]
+        NAA[r,1,n_ages,s] = R0 * exp( - ((n_ages - 1) * (natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1]))) ) /
+                            (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) * sexratio[s] * Rec_trans_prop[r]
 
       } # end s loop
     } # end r loop
@@ -289,18 +290,29 @@ SPoCK_rtmb = function(pars, data) {
 
   ## Population Projection ---------------------------------------------------
   for(y in 1:n_yrs) {
-    ### Annual Recruitment ------------------------------------------------------
-    for(r in 1:n_regions) {
-      # Get Deterministic Recruitment
-      tmp_Det_Rec = Get_Det_Recruitment(recruitment_model = rec_model, R0 = R0[r], h = h_trans[r], n_ages = n_ages,
-                                        WAA = WAA[r,y,,1], MatAA = MatAA[r,y,,1], natmort = natmort[r,y,,1],
-                                        SSB_vals = SSB[r,], y = y, rec_lag = rec_lag)
 
+    ### Annual Recruitment ------------------------------------------------------
+    # Get Deterministic Recruitment
+    tmp_Det_Rec = Get_Det_Recruitment(recruitment_model = rec_model,
+                                      recruitment_dd = rec_dd,
+                                      R0 = R0,
+                                      Rec_Prop = Rec_trans_prop,
+                                      h = h_trans,
+                                      n_ages = n_ages,
+                                      n_regions = n_regions,
+                                      WAA = WAA[,y,,1],
+                                      MatAA = MatAA[,y,,1],
+                                      natmort = natmort[,y,,1],
+                                      SSB_vals = SSB,
+                                      y = y,
+                                      rec_lag = rec_lag
+                                      )
+    for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
-        if(y < sigmaR_switch) NAA[r,y,1,s] = tmp_Det_Rec * exp(ln_RecDevs[r,y] - (sigmaR2_early/2 * bias_ramp[y])) * sexratio[s] # early period recruitment
-        if(y >= sigmaR_switch && y <= n_est_rec_devs) NAA[r,y,1,s] = tmp_Det_Rec * exp(ln_RecDevs[r,y] - (sigmaR2_late/2 * bias_ramp[y])) * sexratio[s] # late period recruitment
+        if(y < sigmaR_switch) NAA[r,y,1,s] = tmp_Det_Rec[r] * exp(ln_RecDevs[r,y] - (sigmaR2_early/2 * bias_ramp[y])) * sexratio[s] # early period recruitment
+        if(y >= sigmaR_switch && y <= n_est_rec_devs) NAA[r,y,1,s] = tmp_Det_Rec[r] * exp(ln_RecDevs[r,y] - (sigmaR2_late/2 * bias_ramp[y])) * sexratio[s] # late period recruitment
         # Dealing with terminal year recruitment
-        if(y > n_est_rec_devs) NAA[r,y,1,s] = tmp_Det_Rec * sexratio[s] # mean recruitment in terminal year (not estimate last year rec dev)
+        if(y > n_est_rec_devs) NAA[r,y,1,s] = tmp_Det_Rec[r] * sexratio[s] # mean recruitment in terminal year (not estimate last year rec dev)
       } # end s loop
       Rec[r,y] = sum(NAA[r,y,1,]) # get annual recruitment container here
     } # end r loop
@@ -761,12 +773,12 @@ SPoCK_rtmb = function(pars, data) {
           if(UseCatch[r,y,f] == 1) {
             if(likelihoods == 0) {
               if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) Fmort_nLL[1,y,f] = ln_F_devs_AggCatch[y,f]^2 # Use aggregated catch
-              else Fmort_nLL[r,y,f] = ln_F_devs[r,y,f]^2 # SSQ ADMB
+              else Fmort_nLL[r,y,f] = (ln_F_devs[r,y,f] / exp(ln_sigmaF[r,f]))^2 # SSQ ADMB
             } # ADMB
 
             if(likelihoods == 1) {
               if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) Fmort_nLL[1,y,f] = -RTMB::dnorm(ln_F_devs_AggCatch[y,f], 0, 1, TRUE) # Use aggregated catch
-              else Fmort_nLL[r,y,f] = -RTMB::dnorm(ln_F_devs[r,y,f], 0, 1, TRUE)
+              else Fmort_nLL[r,y,f] = -RTMB::dnorm(ln_F_devs[r,y,f], 0, exp(ln_sigmaF[r,f]), TRUE)
             } # TMB
           } # end if have catch
 

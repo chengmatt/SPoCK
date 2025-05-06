@@ -80,7 +80,7 @@
 #'               base_h = 1,
 #'               init_sigmaR = 0.5,
 #'               sigmaR = 0.5,
-#'               recruitment_opt = 0, # == 0, mean recruitment, == 1 BH
+#'               recruitment_opt = 0, # == 0, mean recruitment
 #'               recdev_opt = 0) # == 0, global rec devs, == 1, local rec devs
 #'
 #' # Setup biologicals
@@ -200,11 +200,6 @@ Simulate_Pop <- function(output_path) {
         if(recdev_opt == 0 && is.null(tmp_ln_rec_devs)) tmp_ln_rec_devs <- stats::rnorm(1, 0, sigmaR[y,r]) # Get recruitment deviates (global density dependence)
         if(recdev_opt == 1) tmp_ln_rec_devs <- ln_rec_devs[y,r,sim] <- stats::rnorm(1, 0, sigmaR[y,r]) # Get recruitment deviates (local density dependence)
         ln_rec_devs[y,r,sim] = tmp_ln_rec_devs # input vector of temporary rec devs
-
-        # get deterministic recruitment
-        tmp_Det_Rec <- Get_Det_Recruitment(recruitment_model = recruitment_opt, R0 = r0[y,r,sim], h = h[y,r,sim], n_ages = n_ages,
-                                           WAA = WAA[y,r,,1,sim], MatAA = Maturity_AA[y,r,,1,sim], natmort = M[y,r,,1,sim],
-                                           SSB_vals = SSB[y,r,sim], y = y, rec_lag = rec_lag)
 
         for(s in 1:n_sexes) {
           # get recruitment

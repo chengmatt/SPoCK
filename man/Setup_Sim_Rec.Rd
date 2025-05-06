@@ -46,7 +46,7 @@ Setup_Sim_Rec(
 
 \item{sigmaR}{Sigma R for everything else}
 
-\item{recruitment_opt}{== 0, mean recruitment, == 1 Beverton Holt}
+\item{recruitment_opt}{== 0, mean recruitment}
 
 \item{recdev_opt}{== 0, global rec devs, == 1, local rec devs}
 }

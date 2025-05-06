@@ -12,7 +12,9 @@ Setup_Mod_Catch_and_F(
   Use_F_pen = 1,
   est_all_regional_F = 1,
   Catch_Constant = NULL,
-  sigmaC_spec = NULL,
+  sigmaC_spec = "fix",
+  sigmaF_spec = "fix",
+  sigmaF_agg_spec = "fix",
   censor_regional_catch = 0,
   ub_catch_censor = NA,
   lb_catch_censor = NA,
@@ -35,7 +37,11 @@ Setup_Mod_Catch_and_F(
 
 \item{Catch_Constant}{A vector dimensioned by n_fish_fleets specifying the constant to add to catch observations}
 
-\item{sigmaC_spec}{Observation error specificaiotn for catch. Default behavior is to estimate it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, and "fix" which fixes it at the starting value.}
+\item{sigmaC_spec}{Observation error specificaiotn for catch. Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all}
+
+\item{sigmaF_spec}{Process error specificaiotn for fishing mortality Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all}
+
+\item{sigmaF_agg_spec}{Process error specificaiotn for fishing mortality when aggregated. Default behavior is to fix it for all fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all}
 
 \item{censor_regional_catch}{Numeric for whether to censor catch if aggregated catch (0 == don't censor, 1 == censor)}
 

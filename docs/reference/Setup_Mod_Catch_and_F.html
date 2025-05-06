@@ -41,9 +41,6 @@
       <a href="../articles/c_model_equations.html">Description of Model Equations</a>
     </li>
     <li>
-      <a href="../articles/d_model_diagnostics.html">Conducting Model Diagnostics</a>
-    </li>
-    <li>
       <a href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a>
     </li>
     <li>
@@ -51,9 +48,6 @@
     </li>
     <li>
       <a href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a>
-    </li>
-    <li>
-      <a href="../articles/h_simulation_self_test.html">Conducting a Simulation Self-Test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -83,7 +77,9 @@
 <span>  Use_F_pen <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  est_all_regional_F <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  Catch_Constant <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sigmaC_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sigmaC_spec <span class="op">=</span> <span class="st">"fix"</span>,</span>
+<span>  sigmaF_spec <span class="op">=</span> <span class="st">"fix"</span>,</span>
+<span>  sigmaF_agg_spec <span class="op">=</span> <span class="st">"fix"</span>,</span>
 <span>  censor_regional_catch <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ub_catch_censor <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  lb_catch_censor <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -125,7 +121,15 @@
 
 
 <dt id="arg-sigmac-spec">sigmaC_spec<a class="anchor" aria-label="anchor" href="#arg-sigmac-spec"></a></dt>
-<dd><p>Observation error specificaiotn for catch. Default behavior is to estimate it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, and "fix" which fixes it at the starting value.</p></dd>
+<dd><p>Observation error specificaiotn for catch. Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all</p></dd>
+
+
+<dt id="arg-sigmaf-spec">sigmaF_spec<a class="anchor" aria-label="anchor" href="#arg-sigmaf-spec"></a></dt>
+<dd><p>Process error specificaiotn for fishing mortality Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all</p></dd>
+
+
+<dt id="arg-sigmaf-agg-spec">sigmaF_agg_spec<a class="anchor" aria-label="anchor" href="#arg-sigmaf-agg-spec"></a></dt>
+<dd><p>Process error specificaiotn for fishing mortality when aggregated. Default behavior is to fix it for all fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all</p></dd>
 
 
 <dt id="arg-censor-regional-catch">censor_regional_catch<a class="anchor" aria-label="anchor" href="#arg-censor-regional-catch"></a></dt>
