@@ -112,13 +112,19 @@ SPoCK_rtmb = function(pars, data) {
 
   # Model Process Equations -------------------------------------------------
   ## Movement Parameters (Set up) --------------------------------------------
+  ref_region = 1 # Set up reference region (always set at 0)
   for(r in 1:n_regions) {
     for(y in 1:n_yrs) {
       for(a in 1:n_ages) {
         for(s in 1:n_sexes) {
           move_tmp = rep(0, n_regions) # temporary movement vector to store values (from - to)
-          move_tmp[r] = 0 # Input zero for residency
-          move_tmp[-r] = move_pars[r,,y,a,s] # Input parameter values for emigration rates (only if there more than 1 region)
+          counter = 1  # counter
+          for(rr in 1:n_regions) {
+            if(rr != ref_region) {
+              move_tmp[rr] = move_pars[r,counter,y,a,s] + logit_move_devs[r,counter,y,a]
+              counter = counter + 1
+            } # end if not reference region
+          } # end rr loop
           if(use_fixed_movement == 0) Movement[r,,y,a,s] = exp(move_tmp) / sum(exp(move_tmp)) # multinomial logit transform (basically a softmax) - estimated movement
           if(use_fixed_movement == 1) Movement[r,,y,a,s] = Fixed_Movement[r,,y,a,s] # fixed movement matrix
         } # end s loop
@@ -335,7 +341,7 @@ SPoCK_rtmb = function(pars, data) {
     NAA[,y+1,n_ages,] = NAA[,y+1,n_ages,] + NAA[,y,n_ages,] * exp(-ZAA[,y,n_ages,]) # Acuumulate plus group
 
     ### Compute Biomass Quantities ----------------------------------------------
-    Total_Biom[,y] = apply(NAA[,1,,,drop = FALSE] * WAA[,1,,,drop = FALSE], 1, sum) # Total biomass
+    Total_Biom[,y] = apply(NAA[,y,,,drop = FALSE] * WAA[,y,,,drop = FALSE], 1, sum) # Total biomass
     SSB[,y] = apply(NAA[,y,,1,drop = FALSE] * WAA[,y,,1,drop = FALSE] * MatAA[,y,,1,drop = FALSE], 1, sum) # Spawning Stock Biomass
     if(n_sexes == 1) SSB[,y] = SSB[,y] * 0.5 # If single sex model, multiply SSB calculations by 0.5
 
@@ -468,24 +474,6 @@ SPoCK_rtmb = function(pars, data) {
                                                               log(sum(PredCatch[,y,f]) + Catch_Constant[f]),
                                                               exp(ln_sigmaC[1,f]), TRUE)
         } # TMB likelihoods
-
-        # Option for censoring region specific catch
-        if(censor_regional_catch == 1) {
-          if(!is.na(ub_catch_censor[r,y,f]) && !is.na(lb_catch_censor[r,y,f])) {
-            for(r in 1:n_regions) {
-              x = PredCatch[r,y,f] # extract out predicted catch
-              # First normal cdf mixture
-              up = log(ub_catch_censor[r,y,f]/x) / catch_censor_sd
-              low = log(lb_catch_censor[r,y,f]/x) / catch_censor_sd
-              # Defining mixture of normal cdfs for stable MLE
-              up1 = log(ub_catch_censor[r,y,f]/x) / (catch_censor_sd * 0.075)
-              low1 = log(lb_catch_censor[r,y,f]/x) / (catch_censor_sd * 0.075)
-              Catch_nLL[1,y,f] = Catch_nLL[1,y,f] -log(0.9 * RTMB::pnorm(up) - RTMB::pnorm(low) + (1-0.9) * (RTMB::pnorm(up1) - RTMB::pnorm(low1))
-              )
-            }
-          } # only run if have availiable information on upper and lower bounds
-        } # end if
-
       } # if some fishery catches are aggregated
 
       for(r in 1:n_regions) {
@@ -700,8 +688,8 @@ SPoCK_rtmb = function(pars, data) {
           } # end a loop
         } # end r loop
 
-        # Multinomial likelihood (release conditioned)
-        if(Tag_LikeType %in% c(2)) {
+        # Release Conditioned for Multinomial or Dirichlet-Multinomial
+        if(Tag_LikeType %in% c(2, 4)) {
 
           # Temporary vectors for recaptured individuals
           tmp_pred_c_all = vector()
@@ -715,10 +703,15 @@ SPoCK_rtmb = function(pars, data) {
             for(s in 1:n_move_sex_tag_pool) {
               move_age_pool_idx = move_age_tag_pool[[a]] # extract movement age pool indices
               move_sex_pool_idx = move_sex_tag_pool[[s]] # extract movement sex pool indices
-              tmp_pred_c = apply(Pred_Tag_Recap[ry,tc,,move_age_pool_idx,move_sex_pool_idx] + 1e-10, 1, sum) # sum across age and sex groups
-              tmp_obs_c = apply(Obs_Tag_Recap[ry,tc,,move_age_pool_idx,move_sex_pool_idx] + 1e-10, 1, sum) # sum across age and sex groups
-              tmp_pred_c_all = c(tmp_pred_c_all, tmp_pred_c) # combine predicted recaptures for a given age sex pooled group
-              tmp_obs_c_all = c(tmp_obs_c_all, tmp_obs_c) # combine observed recaptures for a given age sex pooled group
+
+              # Pool observed and expected if any pooling
+              for (r in 1:n_regions) {
+                pred_val = sum(Pred_Tag_Recap[ry, tc, r, move_age_pool_idx, move_sex_pool_idx] + 1e-10) # sum across age and sex groups
+                obs_val  = sum(Obs_Tag_Recap[ry, tc, r, move_age_pool_idx, move_sex_pool_idx] + 1e-10) # sum across age and sex groups
+                tmp_pred_c_all = c(tmp_pred_c_all, pred_val) # combine predicted recaptures for a given age sex pooled group
+                tmp_obs_c_all  = c(tmp_obs_c_all,  obs_val) # combine observed recaptures for a given age sex pooled group
+              } # end r loop
+
             } # end a loop
           } # end s loop
 
@@ -729,11 +722,12 @@ SPoCK_rtmb = function(pars, data) {
           # Add in observed and predicted non-recaptures
           tmp_pred = c(tmp_pred_c_all, 1 - sum(tmp_pred_c_all))
           tmp_obs = c(tmp_obs_c_all, 1 - sum(tmp_obs_c_all))
-          Tag_nLL[ry,tc,1,1,1] = -tmp_n_tags_released * sum((tmp_obs) * log(tmp_pred)) # multinomial
+          if(Tag_LikeType == 2) Tag_nLL[ry,tc,1,1,1] = -tmp_n_tags_released * sum((tmp_obs) * log(tmp_pred)) # multinomial
+          if(Tag_LikeType == 4) Tag_nLL[ry,tc,1,1,1] =  -1 * ddirmult(obs = tmp_obs, pred = tmp_pred, Ntotal = tmp_n_tags_released, ln_theta = ln_tag_theta, TRUE) # Dirichlet Multinomial
         } # end if release conditioned
 
-        # Multinomial likelihood (recapture conditioned)
-        if(Tag_LikeType == 3) {
+        # Recapture Conditioned (Multinomial or Dirichlet-Multinomial)
+        if(Tag_LikeType %in% c(3,5)) {
           # Temporary vectors for recaptured individuals
           tmp_pred_all = vector()
           tmp_obs_all = vector()
@@ -746,17 +740,23 @@ SPoCK_rtmb = function(pars, data) {
             for(s in 1:n_move_sex_tag_pool) {
               move_age_pool_idx = move_age_tag_pool[[a]] # extract movement age pool indices
               move_sex_pool_idx = move_sex_tag_pool[[s]] # extract movement sex pool indices
-              tmp_pred = apply(Pred_Tag_Recap[ry,tc,,move_age_pool_idx,move_sex_pool_idx] + 1e-10, 1, sum) # sum across age and sex groups
-              tmp_obs = apply(Obs_Tag_Recap[ry,tc,,move_age_pool_idx,move_sex_pool_idx] + 1e-10, 1, sum) # sum across age and sex groups
-              tmp_pred_all = c(tmp_pred_all, tmp_pred) # combine predicted recaptures for a given age sex pooled group
-              tmp_obs_all = c(tmp_obs_all, tmp_obs) # combine observed recaptures for a given age sex pooled group
+
+              for (r in 1:n_regions) {
+                pred_val = sum(Pred_Tag_Recap[ry, tc, r, move_age_pool_idx, move_sex_pool_idx] + 1e-10) # sum across age and sex groups
+                obs_val  = sum(Obs_Tag_Recap[ry, tc, r, move_age_pool_idx, move_sex_pool_idx] + 1e-10) # sum across age and sex groups
+                tmp_pred_all = c(tmp_pred_all, pred_val) # combine predicted recaptures for a given age sex pooled group
+                tmp_obs_all  = c(tmp_obs_all,  obs_val) # combine observed recaptures for a given age sex pooled group
+              } # end r loop
+
             } # end a loop
           } # end s loop
 
           # Normalize observed and predicted recaptures
           tmp_pred_all = tmp_pred_all / sum(tmp_pred_all)
           tmp_obs_all = tmp_obs_all / tmp_n_tags_recap
-          Tag_nLL[ry,tc,1,1,1] = -1 * tmp_n_tags_recap * sum(((tmp_obs_all) * log(tmp_pred_all))) # recapture likelihood
+          if(Tag_LikeType == 3) Tag_nLL[ry,tc,1,1,1] = -1 * tmp_n_tags_recap * sum(((tmp_obs_all) * log(tmp_pred_all))) # Multinomial
+          if(Tag_LikeType == 5) Tag_nLL[ry,tc,1,1,1] =  -1 * ddirmult(obs = tmp_obs_all, pred = tmp_pred_all, Ntotal = tmp_n_tags_recap, ln_theta = ln_tag_theta, TRUE) # Dirichlet Multinomial
+
         } # end if multinomial recapture conditioned
       } # end ry loop
 
@@ -893,7 +893,19 @@ SPoCK_rtmb = function(pars, data) {
   } # end if using steepness prior
 
 
+  ### Movement Rates (Penalty) ------------------------------------------------
+  if(cont_vary_movement > 0) {
+    Movement_nLL = Movement_nLL + - Get_move_PE_loglik(PE_model = cont_vary_movement,
+                                                       PE_pars = move_pe_pars,
+                                                       logit_devs = logit_move_devs,
+                                                       map_move_devs = map_logit_move_devs,
+                                                       do_recruits_move = do_recruits_move
+                                                       )
+  }
+
   ### Movement Rates (Prior) ------------------------------------------------
+  # NOTE: If continuous varying movement is estimated, there should only be one set of movement parameters
+  # estimated (i.e., the base, mean movement parameters), such that the prior is applied onto the base parameters
   if(Use_Movement_Prior == 1) {
     unique_movement_pars = sort(unique(as.vector(map_Movement_Pars))) # Figure out unique movement parameters estimated
     for(i in 1:length(unique_movement_pars)) {
@@ -934,7 +946,7 @@ SPoCK_rtmb = function(pars, data) {
     sum(FishLenComps_nLL) + # Fishery Length likelihood
     sum(SrvAgeComps_nLL) + # Survey Age likelihood
     sum(SrvLenComps_nLL) + # Survey Length likelihood
-    sum(Tag_nLL) + # Tagging likelihood
+    (Wt_Tagging * sum(Tag_nLL)) + # Tagging likelihood
     (Wt_F * sum(Fmort_nLL)) + # Fishery Mortality Penalty
     (Wt_Rec * sum(Rec_nLL)) + # Recruitment Penalty
     (Wt_Rec * sum(Init_Rec_nLL)) + #  Initial Age Penalty

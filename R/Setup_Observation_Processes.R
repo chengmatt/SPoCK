@@ -73,6 +73,7 @@ Setup_Sim_Observation_Proc <- function(n_fish_fleets,
 #' @param Wt_FishLenComps Weight (lambda) applied to fishery length compositions
 #' @param Wt_SrvLenComps Weight (lambda) applied to survey length compositions
 #' @param sablefish_ADMB Numeric indicating whether to mimic calculations for the sablefish ADMB model (1) or not (0)
+#' @param Wt_Tagging Weight (lambda) applied to tagging data
 #'
 #' @export Setup_Mod_Weighting
 #'
@@ -84,6 +85,7 @@ Setup_Mod_Weighting <- function(input_list,
                                 Wt_SrvIdx = 1,
                                 Wt_Rec = 1,
                                 Wt_F = 1,
+                                Wt_Tagging = 1,
                                 Wt_FishAgeComps,
                                 Wt_SrvAgeComps,
                                 Wt_FishLenComps,
@@ -106,6 +108,7 @@ Setup_Mod_Weighting <- function(input_list,
   input_list$data$Wt_SrvAgeComps<- Wt_SrvAgeComps
   input_list$data$Wt_FishLenComps<- Wt_FishLenComps
   input_list$data$Wt_SrvLenComps<- Wt_SrvLenComps
+  input_list$data$Wt_Tagging <- Wt_Tagging
 
   # Print all messages if verbose is TRUE
   if(input_list$verbose) for(msg in messages_list) message(msg)

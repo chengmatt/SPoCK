@@ -15,10 +15,6 @@ Setup_Mod_Catch_and_F(
   sigmaC_spec = "fix",
   sigmaF_spec = "fix",
   sigmaF_agg_spec = "fix",
-  censor_regional_catch = 0,
-  ub_catch_censor = NA,
-  lb_catch_censor = NA,
-  catch_censor_sd = NA,
   ...
 )
 }
@@ -43,15 +39,7 @@ Setup_Mod_Catch_and_F(
 
 \item{sigmaF_agg_spec}{Process error specificaiotn for fishing mortality when aggregated. Default behavior is to fix it for all fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all}
 
-\item{censor_regional_catch}{Numeric for whether to censor catch if aggregated catch (0 == don't censor, 1 == censor)}
-
-\item{ub_catch_censor}{Upper bound for aggregated catch if censor_regional_catch is specified. Dimensions should be n_regions, n_years (for aggregated years), and n_fish_fleets}
-
-\item{lb_catch_censor}{Lower bound for aggregated catch if censor_regional_catch is specified. Dimensions should be n_regions, n_years (for aggregated years), and n_fish_fleets}
-
-\item{catch_censor_sd}{Catch censoring standard deviation (single value). Smaller values mean it should definitely be within the bound, larger = more flexbility.}
-
-\item{...}{Additional arguments specifying starting values for fishery parameters (ln_sigmaC, ln_F_mean, ln_F_devs, ln_F_mean_AggCatch)}
+\item{...}{Additional arguments specifying starting values for ln_sigmaC and ln_sigmaF}
 }
 \description{
 Setup fishing mortality and catch observations

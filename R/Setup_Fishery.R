@@ -108,6 +108,13 @@ Setup_Sim_FishSel <- function(n_sims = n_sims,
               fish_sel[y,r,,s,f,sim] <- 1 / (1 + exp(-k * (1:n_ages - a50)))
             } # end if logistic
 
+            if(sel_model[r,f] == 'gamma') {
+              amax <- fixed_fish_sel_pars[r,s,f,1] # get amax
+              delta <- fixed_fish_sel_pars[r,s,f,2] # get delta
+              p <- 0.5 * (sqrt( amax^2 + (4 * delta^2)) - amax)
+              fish_sel[y,r,,s,f,sim] <- (1:n_ages / amax)^(amax/p) * exp( (amax - 1:n_ages) / p )
+            } # end if gamma
+
           }
         } # end f loop
       } # end y loop
@@ -130,14 +137,10 @@ Setup_Sim_FishSel <- function(n_sims = n_sims,
 #' @param Use_F_pen Indicator number specifying whether a f penalty is applied == 0, don't apply, == 1 apply
 #' @param est_all_regional_F Indicator number specifying whether all regional fishing mortality deviates are estimated, == 0 some F's are not regional and are aggregated, == 1 all fishing mortality deviates are regional
 #' @param Catch_Constant A vector dimensioned by n_fish_fleets specifying the constant to add to catch observations
-#' @param ... Additional arguments specifying starting values for fishery parameters (ln_sigmaC, ln_F_mean, ln_F_devs, ln_F_mean_AggCatch)
 #' @param sigmaC_spec Observation error specificaiotn for catch. Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all
-#' @param censor_regional_catch Numeric for whether to censor catch if aggregated catch (0 == don't censor, 1 == censor)
-#' @param ub_catch_censor Upper bound for aggregated catch if censor_regional_catch is specified. Dimensions should be n_regions, n_years (for aggregated years), and n_fish_fleets
-#' @param lb_catch_censor Lower bound for aggregated catch if censor_regional_catch is specified. Dimensions should be n_regions, n_years (for aggregated years), and n_fish_fleets
-#' @param catch_censor_sd Catch censoring standard deviation (single value). Smaller values mean it should definitely be within the bound, larger = more flexbility.
 #' @param sigmaF_spec Process error specificaiotn for fishing mortality Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all
 #' @param sigmaF_agg_spec Process error specificaiotn for fishing mortality when aggregated. Default behavior is to fix it for all fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all
+#' @param ... Additional arguments specifying starting values for ln_sigmaC and ln_sigmaF
 #'
 #' @export Setup_Mod_Catch_and_F
 #'
@@ -151,10 +154,6 @@ Setup_Mod_Catch_and_F <- function(input_list,
                                   sigmaC_spec = "fix",
                                   sigmaF_spec = "fix",
                                   sigmaF_agg_spec = "fix",
-                                  censor_regional_catch = 0,
-                                  ub_catch_censor = NA,
-                                  lb_catch_censor = NA,
-                                  catch_censor_sd = NA,
                                   ...
                                   ) {
 
@@ -169,8 +168,6 @@ Setup_Mod_Catch_and_F <- function(input_list,
   else {
     if(est_all_regional_F == 0 && any(unique(Catch_Type) == 0)) collect_message("Catch is aggregated by region in some years, with a separate aggregated ln_F_Mean and ln_F_devs estimated in those years")
     if(est_all_regional_F == 1 && any(unique(Catch_Type) == 0)) collect_message("Catch is aggregated by region in some years, with a region specific ln_F_Mean and ln_F_devs estiamted, where these fishing mortalities are estimated using information from data (age and indices) in subsequent years")
-    if(any(unique(Catch_Type) == 0)) collect_message("Regional catch censoring is: ", ifelse(censor_regional_catch == 0, "Not Censored", "Censored"))
-    if(censor_regional_catch == 1 & is.na(catch_censor_sd)) stop("Remember to specify a single value for catch_censor_sd!")
     if(est_all_regional_F == 1 && any(unique(Catch_Type) == 1)) collect_message("Catch is region specific, with region specific ln_F_Mean and ln_F_devs")
   }
 
@@ -190,10 +187,6 @@ Setup_Mod_Catch_and_F <- function(input_list,
   if(is.null(Catch_Constant)) Catch_Constant <- rep(0, input_list$data$n_fish_fleets)
   input_list$data$Catch_Constant <- Catch_Constant
   input_list$data$Use_F_pen <- Use_F_pen
-  input_list$data$censor_regional_catch <- censor_regional_catch
-  input_list$data$ub_catch_censor <- ub_catch_censor
-  input_list$data$lb_catch_censor <- lb_catch_censor
-  input_list$data$catch_censor_sd <- catch_censor_sd
 
   # Input parameters
   starting_values <- list(...)
@@ -800,8 +793,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
 #' @param fishsel_pe_pars_spec Specification for fishery selectivity process error parameters. If cont_tv_fish_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes, options fix and none all indicate to not estimate seletivity process error parameters and treat these as fixed.
 #' @param fish_fixed_sel_pars_spec Specification for fishery selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
 #' @param fish_q_spec Specification for fishery catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.
-#' @param fish_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes
-#' @param semipar_age_block_spec Number that needs to be specified if est_shared_a variants are specified. Number represents the number of ages to share deviations for spaced evenly.
+#' @param fish_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes
 #' @param corr_opt_semipar Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correaltions to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.
 #' @param Use_fish_q_prior Integer specifying whether to use fishery q prior or not (0 dont use) (1 use)
 #' @param fish_q_prior Fishery q priors in normal space, dimensioned by region, block,  fishery fleet, and 2 (mean, and sd in the 4 dimension of array)
@@ -819,7 +811,6 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                                     fish_fixed_sel_pars_spec = NULL,
                                     fish_q_spec = NULL,
                                     fish_sel_devs_spec = NULL,
-                                    semipar_age_block_spec = NULL,
                                     corr_opt_semipar = NULL,
                                     ...
                                     ) {
@@ -1203,8 +1194,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
     for(f in 1:input_list$data$n_fish_fleets) {
 
       if(!is.null(fish_sel_devs_spec)) {
-        if(!fish_sel_devs_spec[f] %in% c("none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s", "est_shared_a", "est_shared_r_a", "est_shared_a_s", "est_shared_r_a_s"))
-          stop("fish_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_a, est_shared_r_a, est_shared_a_s, est_shared_r_a_s, none")
+        if(!fish_sel_devs_spec[f] %in% c("none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s"))
+          stop("fish_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, none")
       }
 
     # Figure out max number of selectivity parameters for a given region and fleet
@@ -1232,12 +1223,12 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
                 # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
-                if(fish_sel_devs_spec[f] == 'est_shared_s' && r == 1) {
+                if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
                   map_fishsel_devs[r,y,i,,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
                 # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
-                if(fish_sel_devs_spec[f] == 'est_shared_s' && r == 1 && s == 1) {
+                if(fish_sel_devs_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
                   map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
@@ -1259,12 +1250,12 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                     fishsel_devs_counter <- fishsel_devs_counter + 1
                   }
                   # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
-                  if(fish_sel_devs_spec[f] == 'est_shared_s' && r == 1) {
+                  if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
                     map_fishsel_devs[r,y,i,,f] <- fishsel_devs_counter
                     fishsel_devs_counter <- fishsel_devs_counter + 1
                   }
                   # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
-                  if(fish_sel_devs_spec[f] == 'est_shared_s' && r == 1 && s == 1) {
+                  if(fish_sel_devs_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
                     map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
                     fishsel_devs_counter <- fishsel_devs_counter + 1
                   }
@@ -1292,48 +1283,12 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                 }
 
                 # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes and regions
-                if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1 && r == 1) {
+                if(fish_sel_devs_spec[f] == 'est_shared_r_s' && s == 1 && r == 1) {
                   map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
 
               } # end i loop
-
-              # Estimating selectivity deviations across years, but blocking structure / pooling across ages
-              if(fish_sel_devs_spec[f] == 'est_shared_a') {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_fishsel_devs[r,y,which(age_block_index == i),s,f] <- fishsel_devs_counter
-                  fishsel_devs_counter <- fishsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks
-
-              # Estimating selectivity deviations across years, but blocking structure / pooling across ages and sharing across regions
-              if(fish_sel_devs_spec[f] == 'est_shared_r_a' && r == 1) {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_fishsel_devs[,y,which(age_block_index == i),s,f] <- fishsel_devs_counter
-                  fishsel_devs_counter <- fishsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks and regions
-
-              # Estimating selectivity deviations across years, but blocking and sharing across ages, and sharing across sexes
-              if(fish_sel_devs_spec[f] == 'est_shared_a_s' && s == 1) {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_fishsel_devs[r,y,which(age_block_index == i),,f] <- fishsel_devs_counter
-                  fishsel_devs_counter <- fishsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks and sexes
-
-              # Estimating selectivity deviations across years, but blocking and sharing across ages, and sharing across sexes  and regions
-              if(fish_sel_devs_spec[f] == 'est_shared_r_a_s' && r == 1 && s == 1) {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_fishsel_devs[,y,which(age_block_index == i),,f] <- fishsel_devs_counter
-                  fishsel_devs_counter <- fishsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks and sexes and regions
             } # end 3d gmrf
 
           } # end else

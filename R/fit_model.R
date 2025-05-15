@@ -6,6 +6,7 @@
 #' @param random Character of random effects to integrate out
 #' @param newton_loops Number of newton loops to run to get gradients down
 #' @param silent Boolean on whether or not model run is silent
+#' @param ... additional arguments taken by MakeADFUN
 #'
 #' @return Returns a list object that is optimized, with results outputted from the RTMB model
 #' @export fit_model
@@ -23,12 +24,13 @@ fit_model <- function(data,
                       mapping,
                       random = NULL,
                       newton_loops = 3,
-                      silent = FALSE
+                      silent = FALSE,
+                      ...
                       ) {
 
   # make AD model function
   obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters,
-                         map = mapping, random = random, silent = silent)
+                         map = mapping, random = random, silent = silent, ...)
 
   # Now, optimize the function
   optim <- stats::nlminb(obj$par, obj$fn, obj$gr,

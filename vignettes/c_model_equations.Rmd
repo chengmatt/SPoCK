@@ -72,7 +72,7 @@ Following recruitment processes, the population can then be projected forward. M
 where $\boldsymbol{M}{_{y,a,s}}$ is a first-order Markov matrix representing movement. In a single-region case, no movement occurs (i.e., $\boldsymbol{M}{_{y,a,s}}$ is an identity matrix). Movement for a given year, age, and sex combination is constrained by a multinomial logit transformation:
 
 \begin{equation}
-M_{k,j,y,a,s} = \frac{\exp(\omega_{k,j,y,a,s})}{\sum_{k=1}^J\exp(\omega_{k,j,y,a,s})}, \omega_{j,j,y,a,s} = 0
+M_{k,j,y,a,s} = \frac{\exp(\omega_{k,j,y,a,s})}{\sum_{k=1}^J\exp(\omega_{k,j,y,a,s})}, \omega_{j,1,y,a,s} = 0
 \end{equation}
 
 where $\omega_{k,j,y,a,s}$ are movement parameters in multinomial logit space. Given that movement parameters must sum to 1 across rows, only $n_r - 1$ movement parameters are estiamted for a given year, age, and sex combination. After the population undergoes movement, individuals then experience mortality and ageing processes following an exponential mortality model:
@@ -336,17 +336,7 @@ where $\text{ObsCatch}_{r,y,f}$ represent the observed catches and $\sigma^{2^{\
 L(log(\text{ObsCatch}_{y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{y,f}) - log(\sum_r \text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
 \end{equation}
 
-where a lognormal likelihood is still assumed, but the expected catches are summed across regions to derive spatially-aggregated catch. Additionally, users have the option to use a censored likelihood for catch data in periods where only spatially-aggregated catches are available. This approach essentially allows the model to better predict regional-catch values when only spatially-aggregated catch information are availiable and ensures that the model predicts values within the specified bounds: 
-
-\begin{align*}
-L(\text{CensoredCatch}_{r,y,f}) = 
-& \left(0.9 \cdot \phi_N\left[\frac{\log(U_{r,y,f}/\text{Catch}_{r,y,f})}{\sigma_{\text{CensoredCatch}}}\right] 
-- \phi_N\left[\frac{\log(L_{r,y,f}/\text{Catch}_{r,y,f})}{\sigma_{\text{CensoredCatch}}}\right]\right) \\
-& + \left(0.1 \cdot \phi_N\left[\frac{\log(U_{r,y,f}/\text{Catch}_{r,y,f})}{0.075 \cdot \sigma_{\text{CensoredCatch}}}\right] 
-- \phi_N\left[\frac{\log(L_{r,y,f}/\text{Catch}_{r,y,f})}{0.075 \cdot \sigma_{\text{CensoredCatch}}}\right]\right)
-\end{align*}
-
-The censored likelihood here represents a mixture of two cumulative normal distribution functions ($\phi_N$), where $U_{r,y,f}$ are the regional upper bound values (can be specified as the aggregate catch), and $L_{r,y,f}$ are the lower bound values (should ideally be specified at values larger than 0 if used). $\sigma_{\text{CensoredCatch}}$ represents the standard deviation (not estimable and is user-specific), where smaller values forces the model to predict values strictly within the specified range. 
+where a lognormal likelihood is still assumed, but the expected catches are summed across regions to derive spatially-aggregated catch. 
 
 #### Fishery and Survey Indices
 
@@ -694,7 +684,18 @@ Lastly, semi-parametric deviations can also be specified to vary across years an
 
 \begin{equation}
 \boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}^{-1}) \\
-\textbf{Q}^{-1} = \sigma^2_{Sel}\textbf{R}_y \otimes \textbf{R}_a \\ 
+\textbf{Q}^{-1} = \frac{\sigma^2_{Sel}}{(1-\rho_y)^2(1-\rho_a)^2}\textbf{R}_y \otimes \textbf{R}_a \\ 
 \end{equation}
 
 where \textbf{Q} is determined by the Kronecker product of a first-order autoregressive process across ages $\textbf{R}_a$ and across years $\textbf{R}_y$. 
+
+#### Movement Deviations {#movepen}
+Continuous movement deviations can also be estimated under a random effects or penalized likelihood framework. Currently, only iid deviations are allowed, where deviations are placed upon fixed-effects movement parameters in logit space:
+
+\begin{equation}
+\exp(\omega_{k,-1,y,a,s}) = \omega_{k,-1} + \epsilon^{\text{Move}}_{k,j,y,a} \\
+\epsilon^{\text{Move}}_{k,j,y,a,s} \sim N(0,\sigma^2_{k,a})
+\end{equation}
+
+where $\epsilon^{\text{Move}}_{k,j,y,a}$ are movement deviatons in logit space. Because of the sum to 1 constraint, movement deviations are only estimated for $n_r - 1$. Deviations then arise from a normal distribution with process variation constrained by $\sigma^2_{k,a}$. Thus, process variance can be distinct by the origin region and age (although other parameterizations that share all parameters across origin region and ages are also allowed). 
+

@@ -227,8 +227,8 @@ case, no movement occurs (i.e.,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐌</mi><msub><mi></mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\boldsymbol{M}{_{y,a,s}}</annotation></semantics></math>
 is an identity matrix). Movement for a given year, age, and sex
 combination is constrained by a multinomial logit transformation:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>M</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo><msub><mi>ω</mi><mrow><mi>j</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\begin{equation}
-M_{k,j,y,a,s} = \frac{\exp(\omega_{k,j,y,a,s})}{\sum_{k=1}^J\exp(\omega_{k,j,y,a,s})}, \omega_{j,j,y,a,s} = 0
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>M</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo><msub><mi>ω</mi><mrow><mi>j</mi><mo>,</mo><mn>1</mn><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\begin{equation}
+M_{k,j,y,a,s} = \frac{\exp(\omega_{k,j,y,a,s})}{\sum_{k=1}^J\exp(\omega_{k,j,y,a,s})}, \omega_{j,1,y,a,s} = 0
 \end{equation}</annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ω</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">\omega_{k,j,y,a,s}</annotation></semantics></math>
@@ -665,34 +665,8 @@ those defined periods:</p>
 L(log(\text{ObsCatch}_{y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{y,f}) - log(\sum_r \text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
 \end{equation}</annotation></semantics></math></p>
 <p>where a lognormal likelihood is still assumed, but the expected
-catches are summed across regions to derive spatially-aggregated catch.
-Additionally, users have the option to use a censored likelihood for
-catch data in periods where only spatially-aggregated catches are
-available. This approach essentially allows the model to better predict
-regional-catch values when only spatially-aggregated catch information
-are availiable and ensures that the model predicts values within the
-specified bounds:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mtext mathvariant="normal">CensoredCatch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.9</mn><mo>⋅</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>L</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>+</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.1</mn><mo>⋅</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>0.075</mn><mo>⋅</mo><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><msub><mi>ϕ</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>L</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mtext mathvariant="normal">Catch</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>0.075</mn><mo>⋅</mo><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align*}
-L(\text{CensoredCatch}_{r,y,f}) = 
-&amp; \left(0.9 \cdot \phi_N\left[\frac{\log(U_{r,y,f}/\text{Catch}_{r,y,f})}{\sigma_{\text{CensoredCatch}}}\right] 
-- \phi_N\left[\frac{\log(L_{r,y,f}/\text{Catch}_{r,y,f})}{\sigma_{\text{CensoredCatch}}}\right]\right) \\
-&amp; + \left(0.1 \cdot \phi_N\left[\frac{\log(U_{r,y,f}/\text{Catch}_{r,y,f})}{0.075 \cdot \sigma_{\text{CensoredCatch}}}\right] 
-- \phi_N\left[\frac{\log(L_{r,y,f}/\text{Catch}_{r,y,f})}{0.075 \cdot \sigma_{\text{CensoredCatch}}}\right]\right)
-\end{align*}</annotation></semantics></math></p>
-<p>The censored likelihood here represents a mixture of two cumulative
-normal distribution functions
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\phi_N</annotation></semantics></math>),
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">U_{r,y,f}</annotation></semantics></math>
-are the regional upper bound values (can be specified as the aggregate
-catch), and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">L_{r,y,f}</annotation></semantics></math>
-are the lower bound values (should ideally be specified at values larger
-than 0 if used).
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mtext mathvariant="normal">CensoredCatch</mtext></msub><annotation encoding="application/x-tex">\sigma_{\text{CensoredCatch}}</annotation></semantics></math>
-represents the standard deviation (not estimable and is user-specific),
-where smaller values forces the model to predict values strictly within
-the specified range.</p>
+catches are summed across regions to derive spatially-aggregated
+catch.</p>
 </div>
 <div class="section level4">
 <h4 id="fishery-and-survey-indices">Fishery and Survey Indices<a class="anchor" aria-label="anchor" href="#fishery-and-survey-indices"></a>
@@ -1358,13 +1332,39 @@ following a multivarite normal process:</p>
 <p><span class="math display">$$\begin{equation}
 \boldsymbol{\epsilon}_{r,s,f}^{Sel} \sim \text{MVN}(0,\textbf{Q}^{-1})
 \\
-\textbf{Q}^{-1} = \sigma^2_{Sel}\textbf{R}_y \otimes \textbf{R}_a \\
+\textbf{Q}^{-1} =
+\frac{\sigma^2_{Sel}}{(1-\rho_y)^2(1-\rho_a)^2}\textbf{R}_y \otimes
+\textbf{R}_a \\
 \end{equation}$$</span></p>
 <p>where is determined by the Kronecker product of a first-order
 autoregressive process across ages
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="bold">𝐑</mtext><mi>a</mi></msub><annotation encoding="application/x-tex">\textbf{R}_a</annotation></semantics></math>
 and across years
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="bold">𝐑</mtext><mi>y</mi></msub><annotation encoding="application/x-tex">\textbf{R}_y</annotation></semantics></math>.</p>
+</div>
+<div class="section level4">
+<h4 id="movepen">Movement Deviations<a class="anchor" aria-label="anchor" href="#movepen"></a>
+</h4>
+<p>Continuous movement deviations can also be estimated under a random
+effects or penalized likelihood framework. Currently, only iid
+deviations are allowed, where deviations are placed upon fixed-effects
+movement parameters in logit space:</p>
+<p><span class="math display">$$\begin{equation}
+\exp(\omega_{k,-1,y,a,s}) = \omega_{k,-1} +
+\epsilon^{\text{Move}}_{k,j,y,a} \\
+\epsilon^{\text{Move}}_{k,j,y,a,s} \sim N(0,\sigma^2_{k,a})
+\end{equation}$$</span></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>k</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">Move</mtext></msubsup><annotation encoding="application/x-tex">\epsilon^{\text{Move}}_{k,j,y,a}</annotation></semantics></math>
+are movement deviatons in logit space. Because of the sum to 1
+constraint, movement deviations are only estimated for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>r</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_r - 1</annotation></semantics></math>.
+Deviations then arise from a normal distribution with process variation
+constrained by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>k</mi><mo>,</mo><mi>a</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{k,a}</annotation></semantics></math>.
+Thus, process variance can be distinct by the origin region and age
+(although other parameterizations that share all parameters across
+origin region and ages are also allowed).</p>
 </div>
 </div>
 </div>

@@ -79,6 +79,10 @@
 <span>  Movement_ageblk_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Movement_yearblk_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Movement_sexblk_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cont_vary_movement <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  Movement_cont_age_spec <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  Movement_cont_year_spec <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  Movement_cont_pe_pars_spec <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -124,6 +128,22 @@ The default behavior is to estimate unique movement parameters for all years To 
 <dt id="arg-movement-sexblk-spec">Movement_sexblk_spec<a class="anchor" aria-label="anchor" href="#arg-movement-sexblk-spec"></a></dt>
 <dd><p>Either a character string specifiying "constant" sex movement, list object specifying which sexes to group together and block (i.e., which sexes to share parameters for). Each element in the list should be a vector specifying the range of sexes for which to share or block parameters for. For example, list(1, 2) has 2 sex blocks, where each sex has unique parameters
 The default behavior is to estimate unique movement parameters for all sexes. To estimate sex-invariant movement this list would be specified as: list(c(1:n_sexes)).</p></dd>
+
+
+<dt id="arg-cont-vary-movement">cont_vary_movement<a class="anchor" aria-label="anchor" href="#arg-cont-vary-movement"></a></dt>
+<dd><p>Continuous varying movement 0 (not continuous), 1 (continuous)</p></dd>
+
+
+<dt id="arg-movement-cont-age-spec">Movement_cont_age_spec<a class="anchor" aria-label="anchor" href="#arg-movement-cont-age-spec"></a></dt>
+<dd><p>Continuous age deviations as random effects. A character specified at est_all or none (i.e., no age deviations uses none, vs all ages uses est_all)</p></dd>
+
+
+<dt id="arg-movement-cont-year-spec">Movement_cont_year_spec<a class="anchor" aria-label="anchor" href="#arg-movement-cont-year-spec"></a></dt>
+<dd><p>Continuous year deviations as random effects. A character specified at est_all or none (i.e., no year deviations uses none, vs all years uses est_all)</p></dd>
+
+
+<dt id="arg-movement-cont-pe-pars-spec">Movement_cont_pe_pars_spec<a class="anchor" aria-label="anchor" href="#arg-movement-cont-pe-pars-spec"></a></dt>
+<dd><p>Specification of process error parameters. Character string where options are est_shared_r, est_shared_a, est_shared_r_a, est_all, fix, none</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

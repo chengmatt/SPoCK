@@ -6,7 +6,7 @@
 #' @source 2024 Federal Alaska Sablefish Assessment
 "sgl_rg_sable_data"
 
-#' Sablefish data for multi region case study
+#' Sablefish data for multi region (5 area) case study
 #'
 #' A dataset containing the necessary elements for the Alaska sablefish spatial case study.
 #'
@@ -22,3 +22,10 @@
 #' @source 2024 Federal EBS Walleye Pollock Assessment
 "sgl_rg_ebswp_data"
 
+#' Sablefish data for multi region (3 area) case study
+#'
+#' A dataset containing the necessary elements for the Alaska sablefish spatial case study.
+#'
+#' @format A list with multiple components needed for the multi (3) region sablefish model
+#' @source Cheng et al. 2025, In review; Panmictic Panacea? Demonstrating Good Practices for Developing Spatial Stock Assessments through Application to Alaska Sablefish (Anoplopoma fimbria)
+"three_rg_sable_data"

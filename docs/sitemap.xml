@@ -18,6 +18,7 @@
 <url><loc>/reference/Get_Reference_Points.html</loc></url>
 <url><loc>/reference/Get_Selex.html</loc></url>
 <url><loc>/reference/Get_Tagging_Mortality.html</loc></url>
+<url><loc>/reference/Get_move_PE_loglik.html</loc></url>
 <url><loc>/reference/Get_sel_PE_loglik.html</loc></url>
 <url><loc>/reference/Restrc_Comps.html</loc></url>
 <url><loc>/reference/SPoCK_rtmb.html</loc></url>
@@ -84,5 +85,6 @@
 <url><loc>/reference/sgl_rg_sable_mod_results.html</loc></url>
 <url><loc>/reference/single_region_SPR.html</loc></url>
 <url><loc>/reference/theme_sablefish.html</loc></url>
+<url><loc>/reference/three_rg_sable_data.html</loc></url>
 </urlset>
 

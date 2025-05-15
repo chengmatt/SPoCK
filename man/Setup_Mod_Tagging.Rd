@@ -42,7 +42,7 @@ Setup_Mod_Tagging(
 
 \item{Obs_Tag_Recap}{Observed tag recaptures dimensioned by max_tag_liberty, n_tag_cohorts, n_regions, n_ages, n_sexes}
 
-\item{Tag_LikeType}{Numeric indicating tag likelihood type, == 0 Poisson, == 1 Negative Binomial, == 2 Multinomial Release Conditioned, == 3 Multinomial recapture conditioned}
+\item{Tag_LikeType}{Numeric indicating tag likelihood type, == 0 Poisson, == 1 Negative Binomial, == 2 Multinomial Release Conditioned, == 3 Multinomial recapture conditioned, == 4 Dirichlet-Multinomial_Release, == 5 Dirichlet-Multinomial_Recapture}
 
 \item{mixing_period}{Numeric indicating mixing period such that any year < mixing period for a given tag cohort is not fit to}
 

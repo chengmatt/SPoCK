@@ -68,6 +68,8 @@ Name | Description
 `Use_Movement_Prior` | Value specifying whether or not to use movement priors. 0: Don’t use movement prior, 1: Use movement prior
 `Movement_prior` | Array dimensioned by n_regions, n_regions, n_years, n_ages, n_sexes specifying values for a Dirichlet prior
 `map_Movement_Pars` | Array by n_regions, n_regions, n_years, n_ages, n_sexes specifying which movement parameters are shared and mapped off
+`cont_vary_movement` | Integer indicating whether movement is continuously varying across regions, years, and ages (0 = none, 1 = iid deviations)
+`map_logit_move_devs` | Array dimensioned by n_regions, n_regions - 1, n_years, n_ages specifying which movement parameters are shared and mapped off
 
 ## Table 5. Data Inputs for Defining Tagging Processes
 Name | Description
@@ -100,10 +102,6 @@ Name | Description
 `UseCatch` |	Array dimensioned by n_regions, n_years, n_fish_fleets describing whether to fit to catch data in a given year for a given fleet. 0: Don’t fit catch, 1: Fit catch
 `est_all_regional_F` | Value specifying whether regional fishing mortality deviations are all estimated or only a subset are. 0: A subset of fishing mortality deviations are spatially aggregated, 1: All fishing mortality deviations are spatially explicit, irrespective of whether catch is aggregated across regions in certain periods
 `Catch_Constant` |	Vector dimensioned by n_fish_fleets specifying robustifying constants to add to catch data
-`censor_regional_catch` | Whether or not to censor regional catch 0 == don't censor, 1 == censor (can be used in years where catch is aggregated across regions and not spatially explicit)
-`ub_catch_censor` | Upper bound of catch censoring to use, dimensioned by n_regions, n_years, and n_fish_fleets
-`lb_catch_censor` | Lower bound of catch censoring to use, dimensioned by n_regions, n_years, and n_fish_fleets
-`catch_censor_sd` | Standard deviation to use for catch censoring. Smaller values indicate that predictions should be within the defined bounds, larger values allow for more deviations and penalize predictions outside of the bounds less
 `Use_F_pen` |	Value specifying whether to use a fishing mortality penalty to regularize fishing mortality deviations. 0: Don’t use regularity penalty, 1: Use regularity penalty
 
 ## Table 7. Data Inputs for Defining Fishery Indices and Compositions

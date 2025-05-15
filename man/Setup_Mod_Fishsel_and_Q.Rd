@@ -16,7 +16,6 @@ Setup_Mod_Fishsel_and_Q(
   fish_fixed_sel_pars_spec = NULL,
   fish_q_spec = NULL,
   fish_sel_devs_spec = NULL,
-  semipar_age_block_spec = NULL,
   corr_opt_semipar = NULL,
   ...
 )
@@ -42,9 +41,7 @@ Setup_Mod_Fishsel_and_Q(
 
 \item{fish_q_spec}{Specification for fishery catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.}
 
-\item{fish_sel_devs_spec}{Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes}
-
-\item{semipar_age_block_spec}{Number that needs to be specified if est_shared_a variants are specified. Number represents the number of ages to share deviations for spaced evenly.}
+\item{fish_sel_devs_spec}{Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes}
 
 \item{corr_opt_semipar}{Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correaltions to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.}
 

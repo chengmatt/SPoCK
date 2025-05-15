@@ -81,7 +81,6 @@
 <span>  <span class="va">srv_fixed_sel_pars_spec</span>,</span>
 <span>  srv_q_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  srv_sel_devs_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  semipar_age_block_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  corr_opt_semipar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -132,11 +131,7 @@
 
 
 <dt id="arg-srv-sel-devs-spec">srv_sel_devs_spec<a class="anchor" aria-label="anchor" href="#arg-srv-sel-devs-spec"></a></dt>
-<dd><p>Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes, or none, which indicates there aren't any estimated</p></dd>
-
-
-<dt id="arg-semipar-age-block-spec">semipar_age_block_spec<a class="anchor" aria-label="anchor" href="#arg-semipar-age-block-spec"></a></dt>
-<dd><p>Number (length 1) that needs to be specified if est_shared_a variants are specified. Number represents the number of ages to share deviations for spaced evenly.</p></dd>
+<dd><p>Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes</p></dd>
 
 
 <dt id="arg-corr-opt-semipar">corr_opt_semipar<a class="anchor" aria-label="anchor" href="#arg-corr-opt-semipar"></a></dt>

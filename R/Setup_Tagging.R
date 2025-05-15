@@ -69,7 +69,7 @@ Setup_Sim_Tagging <- function(n_sims = n_sims,
 #' @param max_tag_liberty Maximum number of years to track a tagged cohort
 #' @param Tagged_Fish Array dimensioned by n_tag_cohorts, n_ages, n_sexes describing the tag released fish
 #' @param Obs_Tag_Recap Observed tag recaptures dimensioned by max_tag_liberty, n_tag_cohorts, n_regions, n_ages, n_sexes
-#' @param Tag_LikeType Numeric indicating tag likelihood type, == 0 Poisson, == 1 Negative Binomial, == 2 Multinomial Release Conditioned, == 3 Multinomial recapture conditioned
+#' @param Tag_LikeType Numeric indicating tag likelihood type, == 0 Poisson, == 1 Negative Binomial, == 2 Multinomial Release Conditioned, == 3 Multinomial recapture conditioned, == 4 Dirichlet-Multinomial_Release, == 5 Dirichlet-Multinomial_Recapture
 #' @param mixing_period Numeric indicating mixing period such that any year < mixing period for a given tag cohort is not fit to
 #' @param t_tagging Fractional year in which tag releases happen
 #' @param tag_selex Numeric indicating how tag recovery selectivity is parameterized, == 0 uniform selectivity, == 1 sex-averaged fishery selectivity from dominant fleet (fleet 1), == 2 sex-specific selectivity from dominant fleet (fleet 1)
@@ -115,10 +115,10 @@ Setup_Mod_Tagging <- function(input_list,
   messages_list <<- character(0) # string to attach to for printing messages
 
   # Setup tagging likelihood
-  tag_like_map <- data.frame(type = c("Poisson", "NegBin", "Multinomial_Release", "Multinomial_Recapture"), num = c(0,1,2,3))
+  tag_like_map <- data.frame(type = c("Poisson", "NegBin", "Multinomial_Release", "Multinomial_Recapture", "Dirichlet-Multinomial_Release", "Dirichlet-Multinomial_Recapture"), num = c(0,1,2,3,4,5))
   if(is.na(Tag_LikeType)) Tag_LikeType_vals <- 999
   else {
-    if(!Tag_LikeType %in% c(tag_like_map$type)) stop("Tag Likelihood not correctly specified. Should be one of these: Poisson, NegBin, Multinomial_Release, Multinomial_Recapture")
+    if(!Tag_LikeType %in% c(tag_like_map$type)) stop("Tag Likelihood not correctly specified. Should be one of these: Poisson, NegBin, Multinomial_Release, Multinomial_Recapture, Dirichlet-Multinomial_Release, Dirichlet-Multinomial_Recapture")
     Tag_LikeType_vals <- tag_like_map$num[tag_like_map$type == Tag_LikeType]
     collect_message("Tag Likelihood specified as: ", Tag_LikeType)
   }
@@ -249,7 +249,7 @@ Setup_Mod_Tagging <- function(input_list,
 
     # Tag Overdispersion
     if(input_list$data$Tag_LikeType %in% c(0,2,3)) input_list$map$ln_tag_theta <- factor(NA)
-    if(input_list$data$Tag_LikeType %in% c(1)) input_list$map$ln_tag_theta <- factor(1)
+    if(input_list$data$Tag_LikeType %in% c(1,4,5)) input_list$map$ln_tag_theta <- factor(1)
 
     # Tag Reporting Rates
     # Initialize arrays and counters
@@ -257,8 +257,8 @@ Setup_Mod_Tagging <- function(input_list,
     map_TagRep[] <- NA
     tagrep_counter <- 1
 
-    # If this is a poisson, negative binomial, or multinomial release conditioned
-    if(input_list$data$Tag_LikeType %in% c(0,1,2)) {
+    # If this is a poisson, negative binomial, multinomial or dirichlet-multinomial release conditioned
+    if(input_list$data$Tag_LikeType %in% c(0,1,2,4)) {
       for(r in 1:input_list$data$n_regions) {
         if(!is.null(TagRep_spec)) if(!TagRep_spec %in% c("est_all", "est_shared_r", "fix")) stop("Tag Reporting Specificaiton is not correctly specified. Needs to be fix, est_all, or est_shared_r")
         # Get number of tag reporting rate blocks

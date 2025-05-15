@@ -528,8 +528,7 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
 #' @param srvsel_pe_pars_spec Specification for survey selectivity process error parameters. If cont_tv_srv_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes. Other options are fix and none which indicate to not estimate these parameters
 #' @param srv_fixed_sel_pars_spec Specification for survey selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
 #' @param srv_q_spec Specification for survey catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.
-#' @param srv_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes, and est_shared_a, which shares them across age blocks (need to define a number in semipar_age_block_spec), est_shared_r_a, which shares them across regions and age blocks (need to define semipar_age_block_spec), and est_shared_r_a_s, which shares them across regions, ages, and sexes, or none, which indicates there aren't any estimated
-#' @param semipar_age_block_spec Number (length 1) that needs to be specified if est_shared_a variants are specified. Number represents the number of ages to share deviations for spaced evenly.
+#' @param srv_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes
 #' @param cont_tv_srv_sel Specificaiton for continuous time-varying selectivity, character vector dimensioned by n_srv_fleets, where the character is time variation type, _, Fleet, fleet number. time variation types include (none, iid, rw, 3dmarg, 3dcond, 2dar1), and so if we were to specify iid for fleet 1, this would be iid_Fleet_1.
 #' @param corr_opt_semipar Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correlations to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.
 #' @param Use_srv_q_prior Integer specifying whether to use survey q prior or not (0 dont use) (1 use)
@@ -548,7 +547,6 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                                    srv_fixed_sel_pars_spec,
                                    srv_q_spec = NULL,
                                    srv_sel_devs_spec = NULL,
-                                   semipar_age_block_spec = NULL,
                                    corr_opt_semipar = NULL,
                                    ...
                                    ) {
@@ -932,8 +930,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
     for(f in 1:input_list$data$n_srv_fleets) {
 
       if(!is.null(srv_sel_devs_spec)) {
-        if(!srv_sel_devs_spec[f] %in% c("none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s", "est_shared_a", "est_shared_r_a", "est_shared_a_s", "est_shared_r_a_s"))
-          stop("srv_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_a, est_shared_r_a, est_shared_a_s, est_shared_r_a_s, none")
+        if(!srv_sel_devs_spec[f] %in% c("none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s"))
+          stop("srv_sel_devs_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, none")
       }
 
       # Figure out max number of selectivity parameters for a given region and fleet
@@ -966,7 +964,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
                 # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
-                if(srv_sel_devs_spec[f] == 'est_shared_s' && r == 1 && s == 1) {
+                if(srv_sel_devs_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
                   map_srvsel_devs[,y,i,,f] <- srvsel_devs_counter
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
@@ -988,12 +986,12 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                     srvsel_devs_counter <- srvsel_devs_counter + 1
                   }
                   # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
-                  if(srv_sel_devs_spec[f] == 'est_shared_s' && r == 1) {
+                  if(srv_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
                     map_srvsel_devs[r,y,i,,f] <- srvsel_devs_counter
                     srvsel_devs_counter <- srvsel_devs_counter + 1
                   }
                   # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
-                  if(srv_sel_devs_spec[f] == 'est_shared_s' && r == 1 && s == 1) {
+                  if(srv_sel_devs_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
                     map_srvsel_devs[,y,i,,f] <- srvsel_devs_counter
                     srvsel_devs_counter <- srvsel_devs_counter + 1
                   }
@@ -1015,42 +1013,6 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
               } # end i loop
-
-              # Estimating selectivity deviations across years, but blocking structure / pooling across ages
-              if(srv_sel_devs_spec[f] == 'est_shared_a') {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_srvsel_devs[r,y,which(age_block_index == i),s,f] <- srvsel_devs_counter
-                  srvsel_devs_counter <- srvsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks
-
-              # Estimating selectivity deviations across years, but blocking structure / pooling across ages and sharing across regions
-              if(srv_sel_devs_spec[f] == 'est_shared_r_a' && r == 1) {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_srvsel_devs[,y,which(age_block_index == i),s,f] <- srvsel_devs_counter
-                  srvsel_devs_counter <- srvsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks
-
-              # Estimating selectivity deviations across years, but blocking and sharing across ages, and sharing across sexes
-              if(srv_sel_devs_spec[f] == 'est_shared_a_s' && s == 1) {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_srvsel_devs[r,y,which(age_block_index == i),,f] <- srvsel_devs_counter
-                  srvsel_devs_counter <- srvsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks and sexes
-
-              # Estimating selectivity deviations across years, but blocking and sharing across ages, and sharing across sexes  and regions
-              if(srv_sel_devs_spec[f] == 'est_shared_r_a_s' && r == 1 && s == 1) {
-                age_block_index <- ceiling(input_list$data$ages / semipar_age_block_spec) # get age block indexing
-                for(i in 1:length(unique(age_block_index))) {
-                  map_srvsel_devs[,y,which(age_block_index == i),,f] <- srvsel_devs_counter
-                  srvsel_devs_counter <- srvsel_devs_counter + 1
-                } # end i loop
-              } # end if sharing age blocks and sexes and regions
             } # end 3d gmrf
 
           } # end else

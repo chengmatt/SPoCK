@@ -39,7 +39,7 @@ Get_Comp_Likelihoods = function(Exp,
                                 AgeingError,
                                 use,
                                 comp_agg_type
-) {
+                                ) {
 
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")

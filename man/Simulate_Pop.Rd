@@ -20,7 +20,7 @@ Simulates a spatial, sex, and age-structured population and takes a variety of i
 library(here)
 # Setup Simulation Parameters --------------------------------------------
 # Set up model dimensions
-Setup_Sim_Dim(n_sims = 100,
+Setup_Sim_Dim(n_sims = 150,
               n_yrs = 30,
               n_regions = 2,
               n_ages = 10,

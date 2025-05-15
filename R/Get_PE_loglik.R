@@ -90,17 +90,17 @@ Get_sel_PE_loglik <- function(PE_model,
 
         # Extract out varaibles and transform into appropriate space
         eps_ya = ln_devs[r,,,s,1] # needs to be in matrix format for dseparable
-        rho_a = rho_trans(PE_pars[r,1,s,1]) # correaltion across ages
-        rho_y = rho_trans(PE_pars[r,2,s,1]) # correaltion across ages
+        rho_a = rho_trans(PE_pars[r,1,s,1]) # correlation across ages
+        rho_y = rho_trans(PE_pars[r,2,s,1]) # correlation across years
         sigma2 = exp(PE_pars[r,4,s,1])^2 # get sigma
 
-        # Define 2d unit variance
-        unit_var = sqrt(sigma2) / sqrt(1 - rho_y^2) / sqrt(1 - rho_a^2)
+        # Define 2d scale
+        scale = sqrt(sigma2) / sqrt(1 - rho_y^2) / sqrt(1 - rho_a^2)
 
         # Define ar1 separable functions
         f1 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_y, log = TRUE)
         f2 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_a, log = TRUE)
-        ll = ll + RTMB::dseparable(f1, f2)(eps_ya, scale = unit_var)
+        ll = ll + RTMB::dseparable(f1, f2)(eps_ya, scale = scale)
       } # end if
 
       # Now, apply some regularity on selectivity age deviations
@@ -118,3 +118,93 @@ Get_sel_PE_loglik <- function(PE_model,
 
   return(ll)
 } # return log likelihood
+
+#' Title Get Movement Process Error Likelihoods
+#'
+#' @param PE_model Process error model values
+#' @param PE_pars Process error parameters
+#' @param logit_devs Deviations
+#' @param map_move_devs movement deviations to share
+#' @param do_recruits_move Whether recruits move (0, don't move, 1 move)
+#'
+#' @returns numeric value of log likelihood (in positive space)
+#' @keywords internal
+#' @import RTMB
+Get_move_PE_loglik <- function(PE_model,
+                               PE_pars,
+                               logit_devs,
+                               map_move_devs,
+                               do_recruits_move
+                               ) {
+
+  "c" <- RTMB::ADoverload("c")
+  "[<-" <- RTMB::ADoverload("[<-")
+
+  # Function to constrain values between -1 and 1
+  rho_trans = function(x) 2/(1+ exp(-2 * x)) - 1
+
+  # Note that the likelihood calculations are positive within the function,
+  # because it gets converted to negative outside the wrapper function
+
+  ll = 0 # initialize likelihood
+
+  # find unique movement deviations to penalize (sort drops NAs)
+  unique_move_devs = sort(unique(as.vector(map_move_devs)))
+
+  # Get dimensions for curvature penalty
+  n_regions_from = dim(map_move_devs)[1]
+  n_regions_to = dim(map_move_devs)[2]
+  n_yrs = dim(map_move_devs)[3]
+  n_ages = dim(map_move_devs)[4]
+
+  # Penalize Deviations
+  for(rr in 1:n_regions_to) {
+    for(r in 1:n_regions_from) {
+      for(y in 1:n_yrs) {
+
+        if(PE_model == 1) {
+
+          if(n_ages >= 1) {
+            for (aa in 2:(n_ages - 1)) {
+              age_curvature = logit_devs[r,rr,y,aa+1] -
+                2 * logit_devs[r,rr,y,aa] + logit_devs[r,rr,y,aa-1]
+              ll = ll - age_curvature^2
+            } # end aa loop
+          } # end if
+
+          for(a in 1:n_ages) {
+            ll = ll + RTMB::dnorm(logit_devs[r,rr,y,a], 0, exp(PE_pars[r,a]), TRUE)
+          } # end a loop
+        } # iid process error
+
+      } # end y loop
+
+    } # end r loop
+
+    # if(PE_model == 2) {
+    #
+    #   # Transform process error parameters
+    #   rho_a = rho_trans(PE_pars[1,1]) # correlation across ages
+    #   rho_y = rho_trans(PE_pars[1,2]) # correaltion across years
+    #   rho_r = rho_trans(PE_pars[1,3]) # correaltion across regions
+    #   sigma2 = exp(PE_pars[1,4])^2 # get sigma
+    #
+    #   # Extract out logit deviations to a given region
+    #   if(do_recruits_move == 0) eps_rya = logit_devs[,rr,,-1]
+    #   else eps_rya = logit_devs[,rr,,]
+    #
+    #   # Define 3d scale
+    #   scale = sqrt(sigma2) / sqrt(1 - rho_y^2) / sqrt(1 - rho_a^2) / sqrt(1 - rho_r^2)
+    #
+    #   # Define ar1 separable functions
+    #   f1 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_r, log = TRUE)
+    #   f2 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_y, log = TRUE)
+    #   f3 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_a, log = TRUE)
+    #   ll = ll + RTMB::dseparable(f1, f2, f3)(eps_rya, scale = scale)
+    #
+    # } # 3d process error
+
+  } # end rr loop
+
+  return(ll)
+}

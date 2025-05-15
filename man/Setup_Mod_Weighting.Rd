@@ -13,6 +13,7 @@ Setup_Mod_Weighting(
   Wt_SrvIdx = 1,
   Wt_Rec = 1,
   Wt_F = 1,
+  Wt_Tagging = 1,
   Wt_FishAgeComps,
   Wt_SrvAgeComps,
   Wt_FishLenComps,
@@ -35,6 +36,8 @@ Setup_Mod_Weighting(
 \item{Wt_Rec}{Weight (lambda) applied to recruitment penalty}
 
 \item{Wt_F}{Weight (lambda) applied to fishing mortality penalty}
+
+\item{Wt_Tagging}{Weight (lambda) applied to tagging data}
 
 \item{Wt_FishAgeComps}{Weight (lambda) applied to fishery age compositions}
 

@@ -10,7 +10,8 @@ fit_model(
   mapping,
   random = NULL,
   newton_loops = 3,
-  silent = FALSE
+  silent = FALSE,
+  ...
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ fit_model(
 \item{newton_loops}{Number of newton loops to run to get gradients down}
 
 \item{silent}{Boolean on whether or not model run is silent}
+
+\item{...}{additional arguments taken by MakeADFUN}
 }
 \value{
 Returns a list object that is optimized, with results outputted from the RTMB model
