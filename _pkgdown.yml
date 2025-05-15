@@ -1,0 +1,4 @@
+template:
+  bootstrap: 5
+destination: docs
+url: https://chengmatt.github.io/SPoCK
