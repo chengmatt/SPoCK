@@ -2,13 +2,15 @@
 #'
 #' @param n_fish_fleets Number of fishery fleets
 #' @param n_srv_fleets Number of survey fleets
-#' @param Comp_Structure Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion, JntSex_JntRegion)
+#' @param Comp_Structure Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion)
 #' @param Comp_Srv_Like Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
 #' @param Srv_Like_Pars Parameters for Survey Composition Likelihoods
 #' @param Comp_Fish_Like Fishery Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
 #' @param Fish_Like_Pars Parameters for Fishery Composition Likelihoods
 #' @param Tag_Like Tag Likelihoods (Poisson, NegBin, Multinomial_Release, Multinomial_Recapture)
 #' @param Tag_Like_Pars Tag Likelihood Parameters
+#' @param ISS_SrvAge Input sample size for survey ages
+#' @param ISS_FishAge Input sample size for fishery ages
 #'
 #' @export Setup_Sim_Observation_Proc
 #'
@@ -16,8 +18,10 @@ Setup_Sim_Observation_Proc <- function(n_fish_fleets,
                                        n_srv_fleets,
                                        Comp_Structure,
                                        Comp_Srv_Like,
+                                       ISS_SrvAge,
                                        Srv_Like_Pars,
                                        Comp_Fish_Like,
+                                       ISS_FishAge,
                                        Fish_Like_Pars,
                                        Tag_Like,
                                        Tag_Like_Pars) {
@@ -28,7 +32,6 @@ Setup_Sim_Observation_Proc <- function(n_fish_fleets,
   # Set up composition structure
   if(Comp_Structure == "SpltSex_SpltRegion") comp_strc <<- 0
   if(Comp_Structure == "JntSex_SpltRegion") comp_strc <<- 1
-  if(Comp_Structure == "JntSex_JntRegion") comp_strc <<- 2
 
   # Set up survey composition likelihoods
   for(sf in 1:n_srv_fleets) {
@@ -57,6 +60,8 @@ Setup_Sim_Observation_Proc <- function(n_fish_fleets,
   Srv_Like_Pars <<- Srv_Like_Pars
   comp_srv_like <<- comp_srv_like
   comp_fish_like <<- comp_fish_like
+  ISS_FishAge <<- ISS_FishAge
+  ISS_SrvAge <<- ISS_SrvAge
 }
 
 #' Title

@@ -2,8 +2,6 @@
 title: "Description of Model and Data Dimensions"
 output:
   rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{a_model_dimensions}
   %\VignetteEngine{knitr::rmarkdown}
@@ -120,8 +118,8 @@ Name | Description
 `ISS_FishLenComps` |	Array dimensioned by n_regions, n_years, n_fish_fleets specifying the input sample size for a multinomial or Dirichlet-multinomial likelihood. This is used in conjunction with `Wt_FishLenComps` or `ln_FishLen_theta` if a Dirichlet-multinomial is used 
 `FishAgeComps_LikeType` |	Vector dimensioned by n_fish_fleets specifying the likelihood to use for fitting fishery age compositions. 0: Multinomial, 1: Dirichlet-multinomial, 2: Logistic-normal with iid covariance. More options and details can be found in `Get_Comp_Likelihoods.R`
 `FishLenComps_LikeType` |	Vector dimensioned by n_fish_fleets specifying the likelihood to use for fitting fishery length compositions. 0: Multinomial, 1: Dirichlet-multinomial, 2: Logistic-normal with iid covariance. More options and details can be found in `Get_Comp_Likelihoods.R`
-`FishAgeComps_Type` |	Matrix dimensioned by n_years, n_fish_fleets specifying how age composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region, 3: Joint by sex and region. More options and details can be found in `Get_Comp_Likelihoods.R`
-`FishLenComps_Type` |	Matrix dimensioned by n_years, n_fish_fleets specifying how length composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region, 3: Joint by sex and region. More options and details can be found in `Get_Comp_Likelihoods.R`
+`FishAgeComps_Type` |	Matrix dimensioned by n_years, n_fish_fleets specifying how age composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
+`FishLenComps_Type` |	Matrix dimensioned by n_years, n_fish_fleets specifying how length composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
 
 ## Table 8. Data Inputs for Defining Survey Indices and Compositions
 Name | Description
@@ -139,8 +137,8 @@ Name | Description
 `ISS_SrvLenComps` |	Array dimensioned by n_regions, n_years, n_srv_fleets specifying the input sample size for a multinomial or Dirichlet-multinomial likelihood. This is used in conjunction with `Wt_SrvLenComps` or `ln_SrvLen_theta` if a Dirichlet-multinomial is used 
 `SrvAgeComps_LikeType` |	Vector dimensioned by n_srv_fleets specifying the likelihood to use for fitting survey age compositions. 0: Multinomial, 1: Dirichlet-multinomial, 2: Logistic-normal with iid covariance. More options and details can be found in `Get_Comp_Likelihoods.R`
 `SrvLenComps_LikeType` |	Vector dimensioned by n_srv_fleets specifying the likelihood to use for fitting survey length compositions. 0: Multinomial, 1: Dirichlet-multinomial, 2: Logistic-normal with iid covariance. More options and details can be found in `Get_Comp_Likelihoods.R`
-`SrvAgeComps_Type` |	Matrix dimensioned by n_years, n_srv_fleets specifying how age composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region, 3: Joint by sex and region. More options and details can be found in `Get_Comp_Likelihoods.R`
-`SrvLenComps_Type` |	Matrix dimensioned by n_years, n_srv_fleets specifying how length composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region, 3: Joint by sex and region. More options and details can be found in `Get_Comp_Likelihoods.R`
+`SrvAgeComps_Type` |	Matrix dimensioned by n_years, n_srv_fleets specifying how age composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
+`SrvLenComps_Type` |	Matrix dimensioned by n_years, n_srv_fleets specifying how length composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
 
 ## Table 9. Data Inputs for Defining Fishery Selectivity and Catchability
 Name | Description

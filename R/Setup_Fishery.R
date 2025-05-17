@@ -341,8 +341,8 @@ Setup_Mod_Catch_and_F <- function(input_list,
 #' @param UseFishLenComps  Indicator variables specifying whether or not to fit fishery lengths as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit
 #' @param FishAgeComps_LikeType Vector of character strings dimensioned by n_fish_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.
 #' @param FishLenComps_LikeType Vector of character strings dimensioned by n_fish_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.
-#' @param FishAgeComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, jntRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "jntRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, joint by region and sex in years 11 - 20 for fleet 1.
-#' @param FishLenComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, jntRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "jntRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, joint by region and sex in years 11 - 20 for fleet 1.
+#' @param FishAgeComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - 20 for fleet 1.
+#' @param FishLenComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - 20 for fleet 1.
 #' @param FishAge_comp_agg_type Vector dimensioned by n_fish_fleets specifying how to aggregate age composition data if FishAgeComps_Type == 0, if comp_agg_type == 0 normalize, aggregate, ageing erorr then normalize, == 1 aggregate, normalize, then ageing error (for age compositions). Default is specify at NULL
 #' @param FishLen_comp_agg_type Vector dimensioned by n_fish_fleets specifying how to aggregate age composition data if FishLenComps_Type == 1, if comp_agg_type == 0 length compositions are not normalized prior to application of size age transition, == 1 length compositions are normalized and then a size-age transition is applied (for length compositions). Default is specify at NULL
 #' @param fish_idx_type Fishery index type dimensioned by n_fish_fleets, character string for abundance (abd) or biomass (biom), "none" if not availabile or used
@@ -395,12 +395,6 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
   if(!all(FishLenComps_LikeType %in% c("none", "Multinomial", "Dirichlet-Multinomial", "iid-Logistic-Normal", "1d-Logistic-Normal", "2d-Logistic-Normal", "3d-Logistic-Normal")))
     stop("Invalid specification for FishLenComps_LikeType Should be either none, Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal, 1d-Logistic-Normal, 2d-Logistic-Normal, 3d-Logistic-Normal")
 
-  # Checking whether or not data are avalilable for all regions if jntR is specified
-  if(!all(unique(as.vector(apply(UseFishAgeComps, 2, sum))) %in% c(0, input_list$data$n_regions)) &&
-     any(str_detect(FishAgeComps_Type, "jntR"))) warning("Age composition data are not availiable in certain regions for a given year. It is not recommended to structure composition data as jntR because the bin sizes change, which could impact inference")
-  if(!all(unique(as.vector(apply(UseFishLenComps, 2, sum))) %in% c(0, input_list$data$n_regions)) &&
-     any(str_detect(FishLenComps_Type, "jntR"))) warning("Length composition data are not availiable in certain regions for a given year. It is not recommended to structure composition data as jntR because the bin sizes change, which could impact inference")
-
   # Specifying fishery index type
   fish_idx_type_vals <- array(NA, dim = c(input_list$data$n_regions, input_list$data$n_fish_fleets))
   for(f in 1:ncol(fish_idx_type_vals)) {
@@ -449,13 +443,12 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
     fleet <- as.numeric(tmp_vec[5]) # extract fleet index
 
     # Checking character string
-    if(!comps_type_tmp %in% c("agg", "spltRspltS", "spltRjntS", "jntRjntS", 'none')) stop("FishAgeComps_Type not specified correctly. Must be one of: agg, spltRspltS, spltRjntS, jntRjntS, none")
+    if(!comps_type_tmp %in% c("agg", "spltRspltS", "spltRjntS", 'none')) stop("FishAgeComps_Type not specified correctly. Must be one of: agg, spltRspltS, spltRjntS, none")
     if(!fleet %in% c(1:input_list$data$n_fish_fleets)) stop("Invalid fleet specified for FishAgeComps_Type. This needs to be specified as CompType_Year_x-y_Fleet_x")
 
     if(comps_type_tmp == "agg") comps_type_val <- 0
     if(comps_type_tmp == "spltRspltS") comps_type_val <- 1
     if(comps_type_tmp == "spltRjntS") comps_type_val <- 2
-    if(comps_type_tmp == "jntRjntS") comps_type_val <- 3
     if(comps_type_tmp == "none") comps_type_val <- 999
 
     # input into matrix
@@ -476,14 +469,13 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
     fleet <- as.numeric(tmp_vec[5]) # extract fleet index
 
     # define composition types
-    if(!comps_type_tmp %in% c("agg", "spltRspltS", "spltRjntS", "jntRjntS", 'none')) stop("FishLenComps_Type not specified correctly. Must be one of: agg, spltRspltS, spltRjntS, jntRjntS, none")
+    if(!comps_type_tmp %in% c("agg", "spltRspltS", "spltRjntS", 'none')) stop("FishLenComps_Type not specified correctly. Must be one of: agg, spltRspltS, spltRjntS, none")
     if(!fleet %in% c(1:input_list$data$n_fish_fleets)) stop("Invalid fleet specified for FishLenComps_Type This needs to be specified as CompType_Year_x-y_Fleet_x")
 
     # define composition types
     if(comps_type_tmp == "agg") comps_type_val <- 0
     if(comps_type_tmp == "spltRspltS") comps_type_val <- 1
     if(comps_type_tmp == "spltRjntS") comps_type_val <- 2
-    if(comps_type_tmp == "jntRjntS") comps_type_val <- 3
     if(comps_type_tmp == "none") comps_type_val <- 999
 
     # input into matrix
@@ -655,40 +647,6 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
         map_FishLen_corr_pars_agg[f] <- counter_fishlen_corr_agg
         counter_fishlen_corr_agg <- counter_fishlen_corr_agg + 1 # aggregated
       }
-    }
-
-    # joint by sex and region (ages)
-    if(any(fishage_comp_type == 3) && input_list$data$FishAgeComps_LikeType[f] != 0) {
-      map_FishAge_theta[1,1,f] <- counter_fishage
-      counter_fishage <- counter_fishage + 1 # joint by sex and region
-
-      if(input_list$data$FishAgeComps_LikeType[f] %in% 3:4) stop("Joint Region and Sex Composition Structure does not currently support 1d and 2d Logistic Normal Versions!")
-
-      # if this is logistic normal, with 3d correlation
-      if(input_list$data$FishAgeComps_LikeType[f] == 5) {
-        for(i in 1:3) {
-          if(i == 2 && input_list$data$n_sexes == 1) next # skip if we only have 1 sex
-          map_FishAge_corr_pars[1,1,f,i] <- counter_fishage_corr
-          counter_fishage_corr <- counter_fishage_corr + 1
-        } # end i
-      } # end if 3d
-    }
-
-    # joint by sex and region (lengths)
-    if(any(fishlen_comp_type == 3) && input_list$data$FishLenComps_LikeType[f] != 0) {
-      map_FishLen_theta[1,1,f] <- counter_fishlen
-      counter_fishlen <- counter_fishlen + 1 # joint by sex and region
-
-      if(input_list$data$FishLenComps_LikeType[f] %in% 3:4) stop("Joint Region and Sex Composition Structure does not currently support 1d and 2d Logistic Normal Versions!")
-
-      # if this is logistic normal, with 3d correlation
-      if(input_list$data$FishLenComps_LikeType[f] == 5) {
-        for(i in 1:3) {
-          if(i == 2 && input_list$data$n_sexes == 1) next # skip if we only have 1 sex
-          map_FishLen_corr_pars[1,1,f,i] <- counter_fishlen_corr
-          counter_fishlen_corr <- counter_fishlen_corr + 1
-        } # end i
-      } # end if 3d
     }
 
     # Loop through to make sure mapping stuff off correctly

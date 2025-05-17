@@ -5,7 +5,7 @@
 #' @param ISS Input sample size indexed for a given year and fleet (structured as a vector w/ sexes)
 #' @param Wt_Mltnml Mutlinomial weight (if any) for a given fleet (structured as a vector w/ sexes)
 #' @param Comp_Type Composition Parameterization Type (== 0, aggregated comps by sex, == 1, split comps by sex and region (no implicit sex and region ratio information),
-#' == 2, joint comps across sexes but split by region (implicit sex ratio information, but not region information)), == 3, joint comps across sexes and regions (implicit sex and region ratio information)
+#' == 2, joint comps across sexes but split by region (implicit sex ratio information, but not region information))
 #' @param Likelihood_Type Composition Likelihood Type (== 0, Multinomial, == 1 Dirichlet Multinomial)
 #' @param n_sexes Number of sexes modeled
 #' @param age_or_len Age or length comps (== 0, Age, == 1, Length)
@@ -196,52 +196,6 @@ Get_Comp_Likelihoods = function(Exp,
 
     } # end r loop
   } # end if 'Joint' comps by sex, but 'Split' by region
-
-  # Joint by sex and region
-  if(Comp_Type == 3) {
-    tmp_Exp = aperm(Exp, perm = c(2,3,1)) # Reformat expected values so it's ordered by ages, sexes, and then regions
-    tmp_Obs = aperm(Obs, perm = c(2,3,1)) # Reformat observed values so it's ordered by ages, sexes, and then regions
-
-    # Expected values
-    if(age_or_len == 0) { # if ages
-      tmp_Exp = t(as.vector((tmp_Exp) / sum(tmp_Exp))) %*% kronecker(diag(n_regions_obs_use * n_sexes), AgeingError) # apply ageing error
-      tmp_Exp = as.vector((tmp_Exp)/ sum(tmp_Exp)) # renormalize to make sure sum to 1
-    } # if ages
-
-    if(age_or_len == 1) tmp_Exp = as.vector((Exp) / sum(Exp)) # Normalize temporary variable (lengths)
-
-    # Multinomial likelihood
-    if(Likelihood_Type == 0) { # Indexing by 1,1 because Joint by sex and regions
-      tmp_Obs = as.vector((tmp_Obs) / sum(tmp_Obs)) # Normalize observed temporary variable
-      ESS = ISS[1,1] * Wt_Mltnml[1,1] # Effective sample size
-      comp_nLL[1,1] = -1 * ESS * sum(((tmp_Obs + const) * log(tmp_Exp + const))) # ADMB multinomial likelihood
-      comp_nLL[1,1] = comp_nLL[1,1] - -1 * ESS * sum(((tmp_Obs + const) * log(tmp_Obs + const))) # Multinomial offset (subtract offset from actual likelihood)
-    } # end if multinomial likelihood
-
-    if(Likelihood_Type == 1)  {
-      tmp_Obs = as.vector((tmp_Obs + const) / sum(tmp_Obs + const)) # Normalize temporary variable
-      tmp_Exp = (tmp_Exp + const) / sum(tmp_Exp + const) # normalize temporary expected variable
-      comp_nLL[1,1] = -1 * ddirmult(tmp_Obs, tmp_Exp, ISS[1,1], ln_theta[1,1], TRUE) # Dirichlet Multinomial likelihood
-    } # end if Dirichlet multinomial
-
-    if(Likelihood_Type == 2) {
-      Sigma = diag(length(tmp_Obs)-1) * exp(ln_theta[1,1])^2
-      comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood
-    } # Logistic normal likelihood (iid)
-
-    if(Likelihood_Type == 5) {
-      LN_corr_b = rho_trans(LN_corr_pars[1,1,1]) # correlation by age / length
-      LN_corr_s = rho_trans(LN_corr_pars[1,1,2]) # correlation by sex
-      LN_corr_r = rho_trans(LN_corr_pars[1,1,3]) # correlation by region
-      # Create covariance
-      Sigma = kronecker(
-        kronecker(get_AR1_CorrMat(n_bins, LN_corr_b), get_Constant_CorrMat(n_sexes, LN_corr_s)),
-        get_Constant_CorrMat(n_regions_obs_use, LN_corr_r))
-      Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[1,1])^2 # remove last row and column
-      comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1 by age, constant corr by sex and constant corr by region)
-    } # end if logistic normal (1dar1 by age, constant corr by sex and constant corr by region)
-
-  } # end if comps are joint by sex and regions
 
   return(comp_nLL) # return negative log likelihood
 } # end function

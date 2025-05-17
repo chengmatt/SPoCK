@@ -3,7 +3,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">SPoCK</a>
 
@@ -51,8 +51,10 @@
 <span>  <span class="va">n_srv_fleets</span>,</span>
 <span>  <span class="va">Comp_Structure</span>,</span>
 <span>  <span class="va">Comp_Srv_Like</span>,</span>
+<span>  <span class="va">ISS_SrvAge</span>,</span>
 <span>  <span class="va">Srv_Like_Pars</span>,</span>
 <span>  <span class="va">Comp_Fish_Like</span>,</span>
+<span>  <span class="va">ISS_FishAge</span>,</span>
 <span>  <span class="va">Fish_Like_Pars</span>,</span>
 <span>  <span class="va">Tag_Like</span>,</span>
 <span>  <span class="va">Tag_Like_Pars</span></span>
@@ -72,11 +74,15 @@
 
 
 <dt id="arg-comp-structure">Comp_Structure<a class="anchor" aria-label="anchor" href="#arg-comp-structure"></a></dt>
-<dd><p>Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion, JntSex_JntRegion)</p></dd>
+<dd><p>Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion)</p></dd>
 
 
 <dt id="arg-comp-srv-like">Comp_Srv_Like<a class="anchor" aria-label="anchor" href="#arg-comp-srv-like"></a></dt>
 <dd><p>Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)</p></dd>
+
+
+<dt id="arg-iss-srvage">ISS_SrvAge<a class="anchor" aria-label="anchor" href="#arg-iss-srvage"></a></dt>
+<dd><p>Input sample size for survey ages</p></dd>
 
 
 <dt id="arg-srv-like-pars">Srv_Like_Pars<a class="anchor" aria-label="anchor" href="#arg-srv-like-pars"></a></dt>
@@ -85,6 +91,10 @@
 
 <dt id="arg-comp-fish-like">Comp_Fish_Like<a class="anchor" aria-label="anchor" href="#arg-comp-fish-like"></a></dt>
 <dd><p>Fishery Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)</p></dd>
+
+
+<dt id="arg-iss-fishage">ISS_FishAge<a class="anchor" aria-label="anchor" href="#arg-iss-fishage"></a></dt>
+<dd><p>Input sample size for fishery ages</p></dd>
 
 
 <dt id="arg-fish-like-pars">Fish_Like_Pars<a class="anchor" aria-label="anchor" href="#arg-fish-like-pars"></a></dt>

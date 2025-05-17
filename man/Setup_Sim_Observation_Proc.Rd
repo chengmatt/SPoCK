@@ -9,8 +9,10 @@ Setup_Sim_Observation_Proc(
   n_srv_fleets,
   Comp_Structure,
   Comp_Srv_Like,
+  ISS_SrvAge,
   Srv_Like_Pars,
   Comp_Fish_Like,
+  ISS_FishAge,
   Fish_Like_Pars,
   Tag_Like,
   Tag_Like_Pars
@@ -21,13 +23,17 @@ Setup_Sim_Observation_Proc(
 
 \item{n_srv_fleets}{Number of survey fleets}
 
-\item{Comp_Structure}{Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion, JntSex_JntRegion)}
+\item{Comp_Structure}{Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion)}
 
 \item{Comp_Srv_Like}{Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)}
+
+\item{ISS_SrvAge}{Input sample size for survey ages}
 
 \item{Srv_Like_Pars}{Parameters for Survey Composition Likelihoods}
 
 \item{Comp_Fish_Like}{Fishery Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)}
+
+\item{ISS_FishAge}{Input sample size for fishery ages}
 
 \item{Fish_Like_Pars}{Parameters for Fishery Composition Likelihoods}
 

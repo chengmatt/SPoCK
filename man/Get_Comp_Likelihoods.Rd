@@ -42,7 +42,7 @@ Get_Comp_Likelihoods(
 \item{LN_corr_pars_agg}{Logistic normal correlation parameters if comps are aggregated (just dimensioned by length of 1 value)}
 
 \item{Comp_Type}{Composition Parameterization Type (== 0, aggregated comps by sex, == 1, split comps by sex and region (no implicit sex and region ratio information),
-== 2, joint comps across sexes but split by region (implicit sex ratio information, but not region information)), == 3, joint comps across sexes and regions (implicit sex and region ratio information)}
+== 2, joint comps across sexes but split by region (implicit sex ratio information, but not region information))}
 
 \item{Likelihood_Type}{Composition Likelihood Type (== 0, Multinomial, == 1 Dirichlet Multinomial)}
 

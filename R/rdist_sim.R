@@ -56,10 +56,19 @@ rlogistnormal <- function(exp,
 #'
 #' @keywords internal
 rdirM <- function(n, N, alpha) {
-  rd1 <- function(alpha) {
-    x <- rgamma(length(alpha), alpha)
-    p <- x/sum(x)
-    p
+
+  # Get dirichlet draws
+  rdirichlet <- function(alpha) {
+    x <- rgamma(length(alpha), shape = alpha, scale = 1)
+    return(x / sum(x))
   }
-  replicate(n, as.vector(stats::rmultinom(1, N, rd1(alpha))))
+
+  # Generate DM samples
+  result <- replicate(n, {
+    p <- rdirichlet(alpha)
+    counts <- stats::rmultinom(1, size = N, prob = p)
+    as.vector(counts)
+  })
+
+  return(result)
 }
