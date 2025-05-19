@@ -35,7 +35,7 @@ To initially set the model up, an input list containing a data list, parameter l
 ```{r Setup Model Dimensions, message = FALSE,  eval = FALSE}
 input_list <- Setup_Mod_Dim(years = 1:length(mlt_rg_sable_data$years), 
                             # vector of years (1 - 62)
-                            ages = mlt_rg_sable_data$ages,
+                            ages = 1:length(mlt_rg_sable_data$ages),
                             # vector of ages (1 - 30)
                             lens = mlt_rg_sable_data$lens, 
                             # number of lengths (41 - 99)
@@ -532,7 +532,7 @@ sabie_rtmb_model <- fit_model(data,
 sabie_rtmb_model$sd_rep <- RTMB::sdreport(sabie_rtmb_model)
 ```
 
-Inspecting results from our spatial model, it appears that the highest spawning biomass occurs in the CGOA, followed by the EGOA. Western regions generally demonstrate relatively comparable levels of spawning biomass. By contrast, western regions (BS and AI) along with the CGOA appear to exhibit the highest recruitment levels. 
+Inspecting results from our spatial model, it appears that the highest spawning biomass occurs in the CGOA, followed by the EGOA. Western regions generally demonstrate relatively comparable levels of spawning biomass. Additionally, western regions (BS and AI) along with the CGOA appear to exhibit the highest recruitment levels. 
 ```{r, fig.width = 12, fig.height = 5.5, message = FALSE, warning = FALSE, eval = FALSE}
 # Get recruitment time-series
 rec_series <- reshape2::melt((sabie_rtmb_model$rep$Rec))

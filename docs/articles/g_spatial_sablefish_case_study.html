@@ -103,7 +103,7 @@ of survey fleets (n_srv_fleets)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Setup_Mod_Dim.html">Setup_Mod_Dim</a></span><span class="op">(</span>years <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mlt_rg_sable_data</span><span class="op">$</span><span class="va">years</span><span class="op">)</span>, </span>
 <span>                            <span class="co"># vector of years (1 - 62)</span></span>
-<span>                            ages <span class="op">=</span> <span class="va">mlt_rg_sable_data</span><span class="op">$</span><span class="va">ages</span>,</span>
+<span>                            ages <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mlt_rg_sable_data</span><span class="op">$</span><span class="va">ages</span><span class="op">)</span>,</span>
 <span>                            <span class="co"># vector of ages (1 - 30)</span></span>
 <span>                            lens <span class="op">=</span> <span class="va">mlt_rg_sable_data</span><span class="op">$</span><span class="va">lens</span>, </span>
 <span>                            <span class="co"># number of lengths (41 - 99)</span></span>
@@ -773,7 +773,7 @@ take a while to run!</p>
 <p>Inspecting results from our spatial model, it appears that the
 highest spawning biomass occurs in the CGOA, followed by the EGOA.
 Western regions generally demonstrate relatively comparable levels of
-spawning biomass. By contrast, western regions (BS and AI) along with
+spawning biomass. Additionally, western regions (BS and AI) along with
 the CGOA appear to exhibit the highest recruitment levels.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get recruitment time-series</span></span>
