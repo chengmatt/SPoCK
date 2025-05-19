@@ -52,9 +52,9 @@ Setup_Mod_SrvIdx_and_Comps(
 
 \item{SrvLenComps_LikeType}{Vector of character strings dimensioned by n_srv_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.}
 
-\item{SrvAgeComps_Type}{Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - 20 for fleet 1.}
+\item{SrvAgeComps_Type}{Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.}
 
-\item{SrvLenComps_Type}{Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - 20 for fleet 1.}
+\item{SrvLenComps_Type}{Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.}
 
 \item{SrvAge_comp_agg_type}{Vector dimensioned by n_srv_fleets specifying how to aggregate age composition data if SrvAgeComps_Type == 0, if comp_agg_type == 0 normalize, aggregate, ageing erorr then normalize, == 1 aggregate, normalize, then ageing error (for age compositions). Default is specify at NULL}
 

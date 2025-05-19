@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_likelihood_profile.R
 \name{do_likelihood_profile}
 \alias{do_likelihood_profile}
-\title{Function to do likelihood profile on a parameter}
+\title{Run Likelihood Profile}
 \usage{
 do_likelihood_profile(
   data,
@@ -39,5 +39,5 @@ do_likelihood_profile(
 Returns a list of likelihood profiled values for each data component with their respective dimensions (e.g., likelihood profiles by fleet, region, year, etc.) as well likelihood profiles for each data component, aggregated across all their respective dimensions.
 }
 \description{
-Function to do likelihood profile on a parameter
+Run Likelihood Profile
 }

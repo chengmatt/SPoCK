@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/a_model_dimensions.html">Description of Model and Data Dimensions</a></li>
     <li><a class="dropdown-item" href="../articles/b_model_parameters.html">Description of Model Parameters</a></li>
     <li><a class="dropdown-item" href="../articles/c_model_equations.html">Description of Model Equations</a></li>
+    <li><a class="dropdown-item" href="../articles/d_model_report.html">Description of Model Report</a></li>
     <li><a class="dropdown-item" href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
@@ -69,11 +70,10 @@
     
     
 <p>The following table describes all elements contained within
-<code>input_list$pars</code>, which is generated using the
-<code>SPoCK::Setup_x</code> functions.</p>
-<div class="section level3">
-<h3 id="table-1--description-of-model-parameters">Table 1. Description of Model Parameters<a class="anchor" aria-label="anchor" href="#table-1--description-of-model-parameters"></a>
-</h3>
+<code>input_list$pars</code>, which are generated using the
+<code>SPoCK::Setup_x</code> functions. Note that when
+<code>n_sexes &gt; 1</code>, the first dimension will always be females
+and the second dimension will always be males.</p>
 <table class="table">
 <colgroup>
 <col width="14%">
@@ -245,6 +245,23 @@
 <td>Movement logit parameters</td>
 </tr>
 <tr class="odd">
+<td><code>logit_move_devs</code></td>
+<td>
+<code>n_regions</code>, <code>n_regions – 1</code>,
+<code>n_years</code>, <code>n_ages</code>
+</td>
+<td>Movement</td>
+<td>Logit movement deviations</td>
+</tr>
+<tr class="even">
+<td><code>move_pe_pars</code></td>
+<td>
+<code>n_regions</code>, <code>n_ages</code>
+</td>
+<td>Movement</td>
+<td>Log process error parameters</td>
+</tr>
+<tr class="odd">
 <td><code>ln_Init_Tag_Mort</code></td>
 <td><code>1</code></td>
 <td>Tagging</td>
@@ -269,9 +286,7 @@
 <td>Log overdispersion for tagging</td>
 </tr>
 </tbody>
-</table>
-</div>
-  </main>
+</table></main>
 </div>
 
 

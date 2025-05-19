@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/a_model_dimensions.html">Description of Model and Data Dimensions</a></li>
     <li><a class="dropdown-item" href="../articles/b_model_parameters.html">Description of Model Parameters</a></li>
     <li><a class="dropdown-item" href="../articles/c_model_equations.html">Description of Model Equations</a></li>
+    <li><a class="dropdown-item" href="../articles/d_model_report.html">Description of Model Report</a></li>
     <li><a class="dropdown-item" href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
@@ -364,15 +365,15 @@ has fishery age compositions available. Thus, the
 specified as Multinomial. Currently, Alaska sablefish is a
 sex-structured model but age-compositions are not sex-specific. This is
 specified using
-<code>FishAgeComps_Type = c("agg_Year_1-65_Fleet_1", "none_Year_1-65_Fleet_2")</code>,
+<code>FishAgeComps_Type = c("agg_Year_1-terminal_Fleet_1", "none_Year_1-terminal_Fleet_2")</code>,
 which indicates to the model that these data should be fit to as
 aggregated across sexes for all years and for fleet 1 (fixed-gear)
 (i.e., the Multinomial expected proportions are summed across sexes).
-The <code>none_Year_1-65_Fleet_2</code> character indicates to not do
-anything with the age compositions for the trawl fishery, since these
+The <code>none_Year_1-terminal_Fleet_2</code> character indicates to not
+do anything with the age compositions for the trawl fishery, since these
 are not availiable. For fishery length compositions, these are specified
 as
-<code>FishLenComps_Type = c("spltRspltS_Year_1-65_Fleet_1", "spltRspltS_Year_1-65_Fleet_2")</code>
+<code>FishLenComps_Type = c("spltRspltS_Year_1-terminal_Fleet_1", "spltRspltS_Year_1-terminal_Fleet_2")</code>
 because both fleets have length composition data that are sex-specific.
 Here, the <code>spltRspltS</code> character indicates to the model that
 these data sum to 1 for each sex and each region, and no implicit
@@ -404,12 +405,12 @@ version of the model).</p>
 <span>                                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multinomial"</span>, <span class="st">"Multinomial"</span><span class="op">)</span>, </span>
 <span>                                          <span class="co"># length comp likelihoods for fishery fleet 1 and 2</span></span>
 <span>                                          FishAgeComps_Type <span class="op">=</span>  </span>
-<span>                                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agg_Year_1-65_Fleet_1"</span>,</span>
-<span>                                              <span class="st">"none_Year_1-65_Fleet_2"</span><span class="op">)</span>, </span>
+<span>                                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agg_Year_1-terminal_Fleet_1"</span>,</span>
+<span>                                              <span class="st">"none_Year_1-terminal_Fleet_2"</span><span class="op">)</span>, </span>
 <span>                                          <span class="co"># age comp structure for fishery fleet 1 and 2</span></span>
 <span>                                          FishLenComps_Type <span class="op">=</span>  </span>
-<span>                                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spltRspltS_Year_1-65_Fleet_1"</span>,</span>
-<span>                                              <span class="st">"spltRspltS_Year_1-65_Fleet_2"</span><span class="op">)</span>,  </span>
+<span>                                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spltRspltS_Year_1-terminal_Fleet_1"</span>,</span>
+<span>                                              <span class="st">"spltRspltS_Year_1-terminal_Fleet_2"</span><span class="op">)</span>,  </span>
 <span>                                          <span class="co"># length comp structure for fishery fleet 1 and 2</span></span>
 <span>                                          FishAge_comp_agg_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span>, </span>
 <span>                                          <span class="co"># ADMB aggregation quirks, ideally get rid of this</span></span>
@@ -447,13 +448,13 @@ a Mulinomial likelihood.</p>
 <span>                                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multinomial"</span>, <span class="st">"Multinomial"</span>, <span class="st">"Multinomial"</span><span class="op">)</span>, </span>
 <span>                                         <span class="co">#  survey length composition likelihood for survey fleet </span></span>
 <span>                                         <span class="co"># 1, 2, and 3</span></span>
-<span>                                         SrvAgeComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agg_Year_1-65_Fleet_1"</span>,</span>
-<span>                                                              <span class="st">"none_Year_1-65_Fleet_2"</span>,</span>
-<span>                                                              <span class="st">"agg_Year_1-65_Fleet_3"</span><span class="op">)</span>, </span>
+<span>                                         SrvAgeComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agg_Year_1-terminal_Fleet_1"</span>,</span>
+<span>                                                              <span class="st">"none_Year_1-terminal_Fleet_2"</span>,</span>
+<span>                                                              <span class="st">"agg_Year_1-terminal_Fleet_3"</span><span class="op">)</span>, </span>
 <span>                                         <span class="co"># survey age comp type</span></span>
-<span>                                         SrvLenComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spltRspltS_Year_1-65_Fleet_1"</span>,</span>
-<span>                                                              <span class="st">"spltRspltS_Year_1-65_Fleet_2"</span>,</span>
-<span>                                                              <span class="st">"spltRspltS_Year_1-65_Fleet_3"</span><span class="op">)</span>, </span>
+<span>                                         SrvLenComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spltRspltS_Year_1-terminal_Fleet_1"</span>,</span>
+<span>                                                              <span class="st">"spltRspltS_Year_1-terminal_Fleet_2"</span>,</span>
+<span>                                                              <span class="st">"spltRspltS_Year_1-terminal_Fleet_3"</span><span class="op">)</span>, </span>
 <span>                                         <span class="co"># survey length comp type</span></span>
 <span>                                         SrvAge_comp_agg_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="cn">NA</span>,<span class="fl">1</span><span class="op">)</span>, </span>
 <span>                                         <span class="co"># ADMB aggregation quirks, ideally get rid of this</span></span>
@@ -520,7 +521,7 @@ available).</li>
 <span>                                          <span class="co"># block 1, fishery ll selex</span></span>
 <span>                                          <span class="st">"Block_2_Year_36-56_Fleet_1"</span>, </span>
 <span>                                          <span class="co"># block 2 fishery ll selex</span></span>
-<span>                                          <span class="st">"Block_3_Year_57-65_Fleet_1"</span>,  </span>
+<span>                                          <span class="st">"Block_3_Year_57-terminal_Fleet_1"</span>,  </span>
 <span>                                          <span class="co"># block 3 fishery ll selex</span></span>
 <span>                                          <span class="st">"none_Fleet_2"</span><span class="op">)</span>, </span>
 <span>                                          <span class="co"># no blocks for trawl fishery</span></span>
@@ -536,7 +537,7 @@ available).</li>
 <span>                                          <span class="co"># block 1, fishery ll selex</span></span>
 <span>                                          <span class="st">"Block_2_Year_36-56_Fleet_1"</span>, </span>
 <span>                                          <span class="co"># block 2 fishery ll selex</span></span>
-<span>                                          <span class="st">"Block_3_Year_57-65_Fleet_1"</span>,  </span>
+<span>                                          <span class="st">"Block_3_Year_57-terminal_Fleet_1"</span>,  </span>
 <span>                                          <span class="co"># block 3 fishery ll selex</span></span>
 <span>                                          <span class="st">"none_Fleet_2"</span><span class="op">)</span>,</span>
 <span>                                          <span class="co"># no blocks for trawl fishery</span></span>
@@ -574,7 +575,7 @@ sharing to help facilitate model stability.</p>
 <span>                                     srv_sel_blocks <span class="op">=</span> </span>
 <span>                                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Block_1_Year_1-56_Fleet_1"</span>, </span>
 <span>                                         <span class="co"># block 1 for domestic ll survey</span></span>
-<span>                                         <span class="st">"Block_2_Year_57-65_Fleet_1"</span>, </span>
+<span>                                         <span class="st">"Block_2_Year_57-terminal_Fleet_1"</span>, </span>
 <span>                                         <span class="co"># block 2 for domestic ll survey</span></span>
 <span>                                         <span class="st">"none_Fleet_2"</span>,</span>
 <span>                                         <span class="st">"none_Fleet_3"</span></span>
@@ -736,6 +737,7 @@ most likely be removed.</p>
 <span>                                  Wt_SrvIdx <span class="op">=</span> <span class="fl">0.448</span>,</span>
 <span>                                  Wt_Rec <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>                                  Wt_F <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>                                  Wt_Tagging <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                                  Wt_FishAgeComps <span class="op">=</span> <span class="va">Wt_FishAgeComps</span>,</span>
 <span>                                  Wt_FishLenComps <span class="op">=</span> <span class="va">Wt_FishLenComps</span>,</span>
 <span>                                  Wt_SrvAgeComps <span class="op">=</span> <span class="va">Wt_SrvAgeComps</span>,</span>

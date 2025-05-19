@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_mcmc.R
 \name{mcmc_diag}
 \alias{mcmc_diag}
-\title{Traditional model diagnostics for MCMC}
+\title{Model diagnostics for MCMC}
 \usage{
 mcmc_diag(mcmc_obj, tmb_sdrep, plot = TRUE, pars = NULL)
 }
@@ -19,7 +19,7 @@ mcmc_diag(mcmc_obj, tmb_sdrep, plot = TRUE, pars = NULL)
 A list of plots with traditional MCMC diagnostics
 }
 \description{
-Traditional model diagnostics for MCMC
+Model diagnostics for MCMC
 }
 \examples{
 \dontrun{

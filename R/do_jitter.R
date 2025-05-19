@@ -1,4 +1,4 @@
-#' Function to conduct jitter analysis
+#' Run Jitter Analysis
 #'
 #' @param data Data list to make obj
 #' @param parameters Parameter list to make obj

@@ -38,6 +38,7 @@
 <li><a class="dropdown-item" href="articles/a_model_dimensions.html">Description of Model and Data Dimensions</a></li>
     <li><a class="dropdown-item" href="articles/b_model_parameters.html">Description of Model Parameters</a></li>
     <li><a class="dropdown-item" href="articles/c_model_equations.html">Description of Model Equations</a></li>
+    <li><a class="dropdown-item" href="articles/d_model_report.html">Description of Model Report</a></li>
     <li><a class="dropdown-item" href="articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
@@ -59,20 +60,24 @@
 <div class="page-header"><h1 id="spock-spatial-s-population-po-model-with-connectivity-c-across-generalized-komponents-k">SPoCK: Spatial (S) Population (Po) Model with Connectivity (C) across generalized Komponents (K)<a class="anchor" aria-label="anchor" href="#spock-spatial-s-population-po-model-with-connectivity-c-across-generalized-komponents-k"></a>
 </h1></div>
 <div class="section level4">
-<h4 id="matt-cheng-lhchengalaskaedu-dan-goethel-pete-hulson-curry-cunningham">Matt Cheng (<a href="mailto:lhcheng@alaska.edu" class="email">lhcheng@alaska.edu</a>), Dan Goethel, Pete Hulson, Curry Cunningham<a class="anchor" aria-label="anchor" href="#matt-cheng-lhchengalaskaedu-dan-goethel-pete-hulson-curry-cunningham"></a>
+<h4 id="matt-cheng-dan-goethel-pete-hulson-curry-cunningham">Matt Cheng, Dan Goethel, Pete Hulson, Curry Cunningham<a class="anchor" aria-label="anchor" href="#matt-cheng-dan-goethel-pete-hulson-curry-cunningham"></a>
 </h4>
-<p>A generalized spatial stock assessment model written in RTMB, than be extended to represent any number of regions, ages, sexes, and fleets.</p>
+<p>A generalized stock assessment model written in RTMB, that can be extended to represent any number of regions, ages, sexes, and fleets.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p><code>SPoCK</code> is a package written in RTMB, and optionally relies on several packages for plotting and model diagnostics purposes. To install the package, users should have <code>devtools</code> installed. It is also generally recommended to also install the packaged listed below, but need not be if users do not want functionality with one-step ahead residuals.</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"TMB"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"RTMB"</span><span class="op">)</span></span>
-<span><span class="fu">TMB</span><span class="fu">:::</span><span class="fu">install.contrib</span><span class="op">(</span><span class="st">"https://github.com/vtrijoulet/OSA_multivariate_dists/archive/main.zip"</span><span class="op">)</span></span>
+<p><code>SPoCK</code> is a package written in RTMB and optionally relies on several packages for plotting and model diagnostics purposes. To install the package, users should have <code>devtools</code> installed. It is also generally recommended to install the packages listed below, but need not be if users do not want functionality with one-step ahead residuals.</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span> <span class="co"># install dev tools</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"TMB"</span><span class="op">)</span> <span class="co"># install TMB</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"RTMB"</span><span class="op">)</span> <span class="co"># install RTMB</span></span>
+<span><span class="fu">TMB</span><span class="fu">:::</span><span class="fu">install.contrib</span><span class="op">(</span><span class="st">"https://github.com/vtrijoulet/OSA_multivariate_dists/archive/main.zip"</span><span class="op">)</span> <span class="co"># get multivariate OSA distributions</span></span>
+<span></span>
+<span><span class="co"># optional packages to install</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"fishfollower/compResidual/compResidual"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"noaa-afsc/afscOSA"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># install SPoCK</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chengmatt/SPoCK"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
 <p>Some users may experience installation issues regarding permissions. This can potentially be circumvented with the following code:</p>
 <pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chengmatt/SPoCK"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>, lib <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"R_LIBS_USER"</span><span class="op">)</span><span class="op">)</span></span></code></pre>

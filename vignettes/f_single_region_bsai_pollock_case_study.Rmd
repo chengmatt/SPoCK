@@ -31,9 +31,9 @@ data("sgl_rg_ebswp_data") # load in data
 
 ```{r, eval = FALSE}
 input_list <- Setup_Mod_Dim(
-    years = sgl_rg_ebswp_data$years,
+    years = 1:length(sgl_rg_ebswp_data$years),
     # vector of years
-    ages = sgl_rg_ebswp_data$ages,
+    ages = 1:length(sgl_rg_ebswp_data$ages),
     # vector of ages
     lens = NA,
     # number of lengths
@@ -153,9 +153,9 @@ input_list <- Setup_Mod_FishIdx_and_Comps(
   # age comp likelihoods for fishery fleet
   FishLenComps_LikeType = c("none"),
   # length comp likelihoods for fishery
-  FishAgeComps_Type = c("agg_Year_1-61_Fleet_1"),
+  FishAgeComps_Type = c("agg_Year_1-terminal_Fleet_1"),
   # age comp structure for fishery
-  FishLenComps_Type = c("none_Year_1-61_Fleet_1"),
+  FishLenComps_Type = c("none_Year_1-terminal_Fleet_1"),
   # length comp structure for fishery
   FishAge_comp_agg_type = c(0),
   # ADMB aggregation quirks, ideally get rid of this
@@ -189,16 +189,16 @@ input_list <- Setup_Mod_SrvIdx_and_Comps(
     SrvLenComps_LikeType = c("none", "none", "none"),
     #  survey length composition likelihood for survey fleet 1, 2, and 3
     SrvAgeComps_Type = c(
-      "agg_Year_1-61_Fleet_1",
-      "agg_Year_1-61_Fleet_2",
-      "none_Year_1-61_Fleet_3"
+      "agg_Year_1-terminal_Fleet_1",
+      "agg_Year_1-terminal_Fleet_2",
+      "none_Year_1-terminal_Fleet_3"
     ),
     # survey age comp type
 
     SrvLenComps_Type = c(
-      "none_Year_1-61_Fleet_1",
-      "none_Year_1-61_Fleet_2",
-      "none_Year_1-61_Fleet_3"
+      "none_Year_1-terminal_Fleet_1",
+      "none_Year_1-terminal_Fleet_2",
+      "none_Year_1-terminal_Fleet_3"
     ),
     # survey length comp type
 
@@ -292,6 +292,7 @@ input_list <- Setup_Mod_Weighting(
   Wt_SrvIdx = 1,
   Wt_Rec = 1,
   Wt_F = 1,
+  Wt_Tagging = 0,
   Wt_FishAgeComps = array(1, dim = c(input_list$data$n_regions,
                                      length(input_list$data$years),
                                      input_list$data$n_sexes,

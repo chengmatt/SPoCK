@@ -76,8 +76,8 @@ Setup_Sim_Survey <- function(n_sims = n_sims,
 #' @param UseSrvLenComps  Indicator variables specifying whether or not to fit survey lengths as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
 #' @param SrvAgeComps_LikeType Vector of character strings dimensioned by n_srv_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.
 #' @param SrvLenComps_LikeType Vector of character strings dimensioned by n_srv_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.
-#' @param SrvAgeComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - 20 for fleet 1.
-#' @param SrvLenComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-20_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - 20 for fleet 1.
+#' @param SrvAgeComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.
+#' @param SrvLenComps_Type Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.
 #' @param SrvAge_comp_agg_type Vector dimensioned by n_srv_fleets specifying how to aggregate age composition data if SrvAgeComps_Type == 0, if comp_agg_type == 0 normalize, aggregate, ageing erorr then normalize, == 1 aggregate, normalize, then ageing error (for age compositions). Default is specify at NULL
 #' @param SrvLen_comp_agg_type Vector dimensioned by n_srv_fleets specifying how to aggregate age composition data if SrvLenComps_Type == 1, if comp_agg_type == 0 length compositions are not normalized prior to application of size age transition, == 1 length compositions are normalized and then a size-age transition is applied (for length compositions). Default is specify at NULL
 #' @param srv_idx_type Survey index type dimensioned by n_srv_fleets, character string for abundance (abd) or biomass (biom), "none" if not availabile or used
@@ -86,7 +86,7 @@ Setup_Sim_Survey <- function(n_sims = n_sims,
 #' @param ISS_SrvLenComps Input sample size for survey comps. Dimensioned by n_regions, n_years, n_sexes, n_fleets. Can be left as is if numbers are defined for the observed comps because the function sums them up interally to get an ISS. However, if observed comps are input as proportions, be sure to specify an ISS so the model doesn't incorrectly weight it as a value of ISS = 1.
 #'
 #' @export Setup_Mod_SrvIdx_and_Comps
-#' @import stringr
+#' @importFrom stringr str_detect
 Setup_Mod_SrvIdx_and_Comps <- function(input_list,
                                        ObsSrvIdx,
                                        ObsSrvIdx_SE,
@@ -173,8 +173,16 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
     tmp <- SrvAgeComps_Type[i]
     tmp_vec <- unlist(strsplit(tmp, "_"))
     comps_type_tmp <- tmp_vec[1] # get composition type
-    year_range <- as.numeric(unlist(strsplit(tmp_vec[3], "-"))) # get year range
-    years <- year_range[1]:year_range[2] # get sequence of years
+
+    # get year ranges
+    if(!str_detect(tmp, "terminal")) { # if not terminal year
+      year_range <- as.numeric(unlist(strsplit(tmp_vec[3], "-")))
+      years <- year_range[1]:year_range[2] # get sequence of years
+    } else { # if terminal year
+      year_range <- unlist(strsplit(tmp_vec[3], '-'))[1] # get year range
+      years <- as.numeric(year_range):length(input_list$data$years) # get sequence of years
+    }
+
     fleet <- as.numeric(tmp_vec[5]) # extract fleet index
 
     # Checking character string
@@ -200,8 +208,16 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
     tmp <- SrvLenComps_Type[i]
     tmp_vec <- unlist(strsplit(tmp, "_"))
     comps_type_tmp <- tmp_vec[1] # get composition type
-    year_range <- as.numeric(unlist(strsplit(tmp_vec[3], "-"))) # get year range
-    years <- year_range[1]:year_range[2] # get sequence of years
+
+    # get year ranges
+    if(!str_detect(tmp, "terminal")) { # if not terminal year
+      year_range <- as.numeric(unlist(strsplit(tmp_vec[3], "-")))
+      years <- year_range[1]:year_range[2] # get sequence of years
+    } else { # if terminal year
+      year_range <- unlist(strsplit(tmp_vec[3], '-'))[1] # get year range
+      years <- as.numeric(year_range):length(input_list$data$years) # get sequence of years
+    }
+
     fleet <- as.numeric(tmp_vec[5]) # extract fleet index
 
     # Checking character string
@@ -493,7 +509,7 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
 #' @param srv_q_prior Survey q priors in normal space, dimensioned by region, block, survey fleet, and 2 (mean, and sd in the 4 dimension of array)
 #'
 #' @export Setup_Mod_Srvsel_and_Q
-#'
+#' @importFrom stringr str_detect
 Setup_Mod_Srvsel_and_Q <- function(input_list,
                                    cont_tv_srv_sel,
                                    srv_sel_blocks,
@@ -548,9 +564,17 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
     }
     if(tmp_vec[1] == "Block") {
       block_val <- as.numeric(tmp_vec[2]) # get block value
-      year_range <- as.numeric(unlist(strsplit(tmp_vec[4], "-"))) # get year range
-      years <- year_range[1]:year_range[2] # get sequence of years
-      fleet <- as.numeric(tmp_vec[6]) # get fleet number
+
+      # get year ranges
+      if(!str_detect(tmp, "terminal")) { # if not terminal year
+        year_range <- as.numeric(unlist(strsplit(tmp_vec[4], "-")))
+        years <- year_range[1]:year_range[2] # get sequence of years
+      } else { # if terminal year
+        year_range <- unlist(strsplit(tmp_vec[4], '-'))[1] # get year range
+        years <- as.numeric(year_range):length(input_list$data$years) # get sequence of years
+      }
+
+      fleet <- as.numeric(tmp_vec[6]) # extract fleet index
       srv_sel_blocks_arr[,years,fleet] <- block_val
     }
   }
@@ -589,8 +613,16 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
     }
     if(tmp_vec[1] == "Block") {
       block_val <- as.numeric(tmp_vec[2]) # get block value
-      year_range <- as.numeric(unlist(strsplit(tmp_vec[4], "-"))) # get year range
-      years <- year_range[1]:year_range[2] # get sequence of years
+
+      # get year ranges
+      if(!str_detect(tmp, "terminal")) { # if not terminal year
+        year_range <- as.numeric(unlist(strsplit(tmp_vec[4], "-")))
+        years <- year_range[1]:year_range[2] # get sequence of years
+      } else { # if terminal year
+        year_range <- unlist(strsplit(tmp_vec[4], '-'))[1] # get year range
+        years <- as.numeric(year_range):length(input_list$data$years) # get sequence of years
+      }
+
       fleet <- as.numeric(tmp_vec[6]) # get fleet number
       srv_q_blocks_arr[,years,fleet] <- block_val # input catchability time block
     }

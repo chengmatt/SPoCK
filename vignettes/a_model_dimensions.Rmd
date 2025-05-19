@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-The following tables describes all elements contained within `input_list$data`, which is generated using the `SPoCK::Setup_x` functions.
+The following tables describes all elements contained within `input_list$data`, which is generated using the `SPoCK::Setup_x` functions. Note that when `n_sexes > 1`, the first dimension will always be females and the second dimension will always be males.
 
-## Table 1. Data Inputs for Defining Model Dimensions
+## Data Inputs for Defining Model Dimensions
 
 Name | Description
 |-------------------------|------------------------------------------------------|
@@ -29,7 +29,7 @@ Name | Description
 `n_fish_fleets` |	Value specifying number of fishery fleets to model
 `n_srv_fleets` |	Value specifying number of survey fleets to model
 
-## Table 2. Data Inputs for Defining Recruitment Processes
+## Data Inputs for Defining Recruitment Processes
 Name | Description
 |-------------------------|------------------------------------------------------|
 `rec_lag`	| Value specifying the delay between spawning and when recruits enter the population. For example, if recruits enter the population as age 2, rec_lag would be specified as 2, such that the spawning biomass from year – 2 produces these recruits
@@ -46,7 +46,7 @@ Name | Description
 `rec_model` | Value specifying the recruitment model. 0 == Mean Recruitment, 1 == Beverton-Holt with steepness parameterization
 `rec_dd` | Value specifying the recruitment density dependence (only used when there is a stock recruitment relationship) 0 == local density, 1 == global density, 999 == no density dependent stock recruitment form is used
 
-## Table 3. Data Inputs for Defining Biological Processes
+## Data Inputs for Defining Biological Processes
 Name | Description
 |-------------------------|------------------------------------------------------|
 `WAA`	| Weight-at-age values dimensioned by n_regions, n_years, n_ages, n_sexes
@@ -57,7 +57,7 @@ Name | Description
 `Use_M_prior` | Value specifying whether natural mortality priors are used. 0: Don’t use prior, 1: Use prior
 `M_prior`	| Vector specifying the mean and standard deviation of natural mortality in normal space. Element 1 should be the mean and element 2 should be the standard deviation. The prior is applied to the M parameter and not the offset 
 
-## Table 4. Data Inputs for Defining Movement Processes
+## Data Inputs for Defining Movement Processes
 Name | Description
 |-------------------------|------------------------------------------------------|
 `do_recruits_move` | Value specifying whether recruits are allowed to move. 0: Recruits don’t move, 1: Recruits move
@@ -69,7 +69,7 @@ Name | Description
 `cont_vary_movement` | Integer indicating whether movement is continuously varying across regions, years, and ages (0 = none, 1 = iid deviations)
 `map_logit_move_devs` | Array dimensioned by n_regions, n_regions - 1, n_years, n_ages specifying which movement parameters are shared and mapped off
 
-## Table 5. Data Inputs for Defining Tagging Processes
+## Data Inputs for Defining Tagging Processes
 Name | Description
 |-------------------------|------------------------------------------------------|
 `UseTagging` | Value indicating whether to use tagging data. 0: Don’t use tagging data, 1: Use tagging data
@@ -86,13 +86,13 @@ Name | Description
 `TagRep_mu` |	Value specifying the mean of the tag reporting prior. This is not required if TagRep_PriorType = 0, but is required if TagRep_PriorType = 1
 `TagRep_sd` |	Value specifying the standard deviation of the tag reporting prior 
 `tag_selex` | Value specifying how tag selectivity is specified. 0 == Uniform with F resulting from Fleet 1, 1 == Sex Aggregated Selectivity with F resulting from Fleet 1, 2 == Sex-Specific Selectivity with F resulting from Fleet 1, 3 == Uniform with F resulting from a weighted sum of all fleets, 4 == Sex Aggregated Selectivity with F resulting from a weighted sum of all fleets, 5 == Sex-Specific Selectivity with F resulting from a weighted sum of all fleets
-`tag_natmort` | Value specifying how tag natural mortality is specified. 0 == Natural mortality agrregated across ages and sexes, 1 == Natural mortality is age-specific but sex-aggregated, 2 == Natural mortality is age aggregated but sex-specific, 3 == Natural mortlaity is age and sex-specific
+`tag_natmort` | Value specifying how tag natural mortality is specified. 0 == Natural mortality aggregated across ages and sexes, 1 == Natural mortality is age-specific but sex-aggregated, 2 == Natural mortality is age aggregated but sex-specific, 3 == Natural mortality is age and sex-specific
 `move_age_tag_pool` |	Data list object detailing how tag recaptures along the age axis should be pooled. If we have age information for tagging data, but are fitting two age blocks (10 total ages) and want to pool these two age blocks together when fitting to reduce computational cost, this can be specified as: `move_age_tag_pool <- list(c(1:5), c(6:10))` where the first element in the list specifies the ages to sum or pool across when, while the second element in the list specifies the age groups to pool across when fitting. Conversely, if we don’t have an age information, this list would be specified as: `move_age_tag_pool <- list(c(1:30))` where we are summing across all ages for the observed and predicted tag recaptures when fitting to these data
-`move_sex_tag_pool` |	Data list object detailing how tag recaptures along the sex axis should be pooled. If we have sex information for tagging data and are estimating sex-specific movement (2 sexes in this case), this would be specified as: `move_sex_tag_pool <- list(1, 2)` where the first element in the list specifies the first sex and the second element in the list species the second sex (i.e., no pooling in this case). Conversely, if we don’t have sex information, this list would be specified as: `move_sex_tag_pool <- list(c(1:2))` where we are summing across all sexes for the observed and predicted tag recaptures when fitting to these data
+`move_sex_tag_pool` |	Data list object detailing how tag recaptures along the sex axis should be pooled. If we have sex information for tagging data and are estimating sex-specific movement (2 sexes in this case), this would be specified as: `move_sex_tag_pool <- list(1, 2)` where the first element in the list specifies the first sex and the second element in the list specifies the second sex (i.e., no pooling in this case). Conversely, if we don’t have sex information, this list would be specified as: `move_sex_tag_pool <- list(c(1:2))` where we are summing across all sexes for the observed and predicted tag recaptures when fitting to these data
 `Tag_Reporting_blocks` | Array dimensioned by n_regions and n_years indicating the regions and years for which a block is specified as
 `map_Tag_Reporting_Pars` | Array dimensioned by n_regions and n_years indicating the regions and years for which a block is specified and which tagging parameters are mapped of / shared
 
-## Table 6. Data Inputs for Defining Catch and Fishing Mortality Processes
+## Data Inputs for Defining Catch and Fishing Mortality Processes
 Name | Description
 |-------------------------|------------------------------------------------------|
 `ObsCatch` |	Observed catch data dimensioned by n_regions, n_years, n_fish_fleets
@@ -102,7 +102,7 @@ Name | Description
 `Catch_Constant` |	Vector dimensioned by n_fish_fleets specifying robustifying constants to add to catch data
 `Use_F_pen` |	Value specifying whether to use a fishing mortality penalty to regularize fishing mortality deviations. 0: Don’t use regularity penalty, 1: Use regularity penalty
 
-## Table 7. Data Inputs for Defining Fishery Indices and Compositions
+## Data Inputs for Defining Fishery Indices and Compositions
 Name | Description
 |-------------------------|------------------------------------------------------|
 `ObsFishIdx` | Fishery index dimensioned by n_regions, n_years, n_fish_fleets
@@ -121,7 +121,7 @@ Name | Description
 `FishAgeComps_Type` |	Matrix dimensioned by n_years, n_fish_fleets specifying how age composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
 `FishLenComps_Type` |	Matrix dimensioned by n_years, n_fish_fleets specifying how length composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
 
-## Table 8. Data Inputs for Defining Survey Indices and Compositions
+## Data Inputs for Defining Survey Indices and Compositions
 Name | Description
 |-------------------------|------------------------------------------------------|
 `ObsSrvIdx` | Survey index dimensioned by n_regions, n_years, n_srv_fleets
@@ -140,31 +140,31 @@ Name | Description
 `SrvAgeComps_Type` |	Matrix dimensioned by n_years, n_srv_fleets specifying how age composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
 `SrvLenComps_Type` |	Matrix dimensioned by n_years, n_srv_fleets specifying how length composition data should be structured and fit to. 0: Aggregated across sexes and regions, 1: Split by sexes and regions, 2: Joint by sex but split by region. More options and details can be found in `Get_Comp_Likelihoods.R`
 
-## Table 9. Data Inputs for Defining Fishery Selectivity and Catchability
+## Data Inputs for Defining Fishery Selectivity and Catchability
 Name | Description
 |-------------------------|------------------------------------------------------|
 `cont_tv_fish_sel` | Matrix dimensioned by n_regions, n_fish_fleets specifying whether or not to do continuous time-varying selectivity, and the type of continuous time-varying selectivity to do. 0: Don’t do continuous time-varying selectivity, 1: iid continuous time-varying selectivity, 2: random walk time-varying selectivity, 3: 3d gmrf continuous time-varying selectivity with marginal variance (semi-parametric), 4: 3d gmrf continuous time-varying selectivity with conditional variance (semi-parametric). More options and details on this can be found in `Get_PE_loglik.R`, `Get_3d_precision.R,` and `Get_Selex.R`
 `fish_sel_blocks` |	Array dimensioned by n_regions, n_years, n_fish_fleets specifying when a new selectivity might be specified. Unique numbers denote when a given fishery selectivity block should be specified. For example, if we have 1 region, 1 fishery fleet and 10 years, and we have two evenly spaced time blocks, this would be specified as: `fish_sel_blocks <- array(c(rep(0,5),rep(1,5)), dim = c(n_regions, n_years, n_fish_fleets))` where each unique number represents the selectivity block pattern to apply in that given period.
 `fish_sel_model` | Array dimensioned by n_regions, n_years, n_fish_fleets specifying the selectivity pattern for a given region, year, and fishery fleet. It is possible to switch selectivity forms mid-period for a given fleet, if a new time block is specified. Several selectivity forms are currently available. 0: Logistic with a50 and slope, 1: Gamma dome-shaped, 2: Power function, 3: Logistic with a50 and a95. If two evenly spaced time blocks are specified for the fishery (10 years), and we have logistic selectivity in the first time block, and gamma selectivity in the second time block, this would be specified as: `fish_sel_model <- array(c(rep(0,5),rep(1,5)), dim = c(n_regions, n_years, n_fish_fleets))` where 0 from years 1 – 5 corresponds to logistic selectivity, and 1 from years 6 – 10 corresponds to gamma selectivity. More options and details can be found in `Get_Selex.R`
 `fish_q_blocks` |	Array dimensioned by n_regions, n_years, n_fish_fleets specifying when a catchability block might be specified. Unique numbers denote when a new catchability block should be specified. For example, if we have 1 region, 1 fishery fleet and 10 years, and we have two evenly spaced catchability blocks, this would be specified as: `fish_q_blocks <- array(c(rep(0,5),rep(1,5)), dim = c(n_regions, n_years, n_fish_fleets))` where each unique number represents the unique catchability estimate to apply in that given period.
-`Use_fish_q_prior` | Fishery catchabiltiy prior indicator 0 == don't use, 1 == use
-`fish_q_prior` | Fishery catchabiltiy prior values by region, time blocks, fishery fleet, and 2 (mean, and sd in the 4 dimension of array)
+`Use_fish_q_prior` | Fishery catchability prior indicator 0 == don't use, 1 == use
+`fish_q_prior` | Fishery catchability prior values by region, time blocks, fishery fleet, and 2 (mean, and sd in the 4 dimension of array)
 `map_ln_fishsel_devs` | Array of values dimensioned by n_regions, n_years, n_ages, n_sexes, and n_fish_fleets indicating which values are mapped off
 `map_fish_q` | Array of values dimensioned by n_regions, n_q_time_blocks, and n_fish_fleets indicating which values are mapped off
 
-## Table 10. Data Inputs for Defining Survey Selectivity and Catchability
+## Data Inputs for Defining Survey Selectivity and Catchability
 Name | Description
 |-------------------------|------------------------------------------------------|
 `cont_tv_srv_sel` | Matrix dimensioned by n_regions, n_srv_fleets specifying whether or not to do continuous time-varying selectivity, and the type of continuous time-varying selectivity to do. 0: Don’t do continuous time-varying selectivity, 1: iid continuous time-varying selectivity, 2: random walk time-varying selectivity, 3: 3d gmrf continuous time-varying selectivity with marginal variance (semi-parametric), 4: 3d gmrf continuous time-varying selectivity with conditional variance (semi-parametric). More options and details on this can be found in `Get_PE_loglik.R`, `Get_3d_precision.R,` and `Get_Selex.R`
 `srv_sel_blocks` |	Array dimensioned by n_regions, n_years, n_srv_fleets specifying when a new selectivity might be specified. Unique numbers denote when a given survey selectivity block should be specified. For example, if we have 1 region, 1 survey fleet and 10 years, and we have two evenly spaced time blocks, this would be specified as: `srv_sel_blocks <- array(c(rep(0,5),rep(1,5)), dim = c(n_regions, n_years, n_srv_fleets))` where each unique number represents the selectivity block pattern to apply in that given period.
 `srv_sel_model` | Array dimensioned by n_regions, n_years, n_srv_fleets specifying the selectivity pattern for a given region, year, and survey fleet. It is possible to switch selectivity forms mid-period for a given fleet, if a new time block is specified. Several selectivity forms are currently available. 0: Logistic with a50 and slope, 1: Gamma dome-shaped, 2: Power function, 3: Logistic with a50 and a95. If two evenly spaced time blocks are specified for the survey (10 years), and we have logistic selectivity in the first time block, and gamma selectivity in the second time block, this would be specified as: `srv_sel_model <- array(c(rep(0,5),rep(1,5)), dim = c(n_regions, n_years, n_srv_fleets))` where 0 from years 1 – 5 corresponds to logistic selectivity, and 1 from years 6 – 10 corresponds to gamma selectivity. More options and details can be found in `Get_Selex.R`
 `srv_q_blocks` |	Array dimensioned by n_regions, n_years, n_srv_fleets specifying when a catchability block might be specified. Unique numbers denote when a new catchability block should be specified. For example, if we have 1 region, 1 survey fleet and 10 years, and we have two evenly spaced catchability blocks, this would be specified as: `srv_q_blocks <- array(c(rep(0,5),rep(1,5)), dim = c(n_regions, n_years, n_srv_fleets))` where each unique number represents the unique catchability estimate to apply in that given period.
-`Use_srv_q_prior` | Survey catchabiltiy prior indicator 0 == don't use, 1 == use
-`srv_q_prior` | Survey catchabiltiy prior values by region, time blocks, survey fleet, and 2 (mean, and sd in the 4 dimension of array)
+`Use_srv_q_prior` | Survey catchability prior indicator 0 == don't use, 1 == use
+`srv_q_prior` | Survey catchability prior values by region, time blocks, survey fleet, and 2 (mean, and sd in the 4 dimension of array)
 `map_ln_srvsel_devs` | Array of values dimensioned by n_regions, n_years, n_ages, n_sexes, and n_srv_fleets indicating which values are mapped off
 `map_srv_q` | Array of values dimensioned by n_regions, n_q_time_blocks, and n_srv_fleets indicating which values are mapped off
 
-## Table 11. Data Inputs for Defining Model Weighting
+## Data Inputs for Defining Model Weighting
 Name | Description
 |-------------------------|------------------------------------------------------|
 `sablefish_ADMB` | Value specific to bridging exercise for sablefish ADMB assessment. 0: Don’t mimic sablefish ADMB assessment for calculating and normalizing length composition data, 1: Mimic sablefish ADMB assessment 
@@ -174,7 +174,8 @@ Name | Description
 `Wt_SrvIdx`	| Weight applied to survey index likelihoods. 
 `Wt_Rec` |	Weight applied to initial age deviations and recruitment deviations. 
 `Wt_F` |	Weight applied to fishing mortality deviations.
+`Wt_Tagging` |	Weight applied to tagging data.
 `Wt_FishAgeComps` |	Array dimensioned by n_regions, n_years, n_sexes, n_fish_fleets specifying a multinomial weight to apply to fishery age compositions, which should ideally be derived using Francis re-weighting methods
 `Wt_FishLenComps` |	Array dimensioned by n_regions, n_years, n_sexes, n_fish_fleets specifying a multinomial weight to apply to fishery length compositions, which should ideally be derived using Francis re-weighting methods
 `Wt_SrvAgeComps` |	Array dimensioned by n_regions, n_years, n_sexes, n_srv_fleets specifying a multinomial weight to apply to survey age compositions, which should ideally be derived using Francis re-weighting methods
-`Wt_SrvLenComps` |	Array dimensioned by n_regions, n_years, n_sexes, n_fish_fleets specifying a multinomial weight to apply to survey length compositions, which should ideally be derived using Francis re-weighting methods
+`Wt_SrvLenComps` |	Array dimensioned by n_regions, n_years, n_sexes, n_srv_fleets specifying a multinomial weight to apply to survey length compositions, which should ideally be derived using Francis re-weighting methods

@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_jitter.R
 \name{do_jitter}
 \alias{do_jitter}
-\title{Function to conduct jitter analysis}
+\title{Run Jitter Analysis}
 \usage{
 do_jitter(
   data,
@@ -39,7 +39,7 @@ do_jitter(
 Dataframe of jitter values
 }
 \description{
-Function to conduct jitter analysis
+Run Jitter Analysis
 }
 \examples{
 \dontrun{

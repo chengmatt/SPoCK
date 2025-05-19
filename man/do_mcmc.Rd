@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_mcmc.R
 \name{do_mcmc}
 \alias{do_mcmc}
-\title{To run MCMC for a RTMB object using tmbstan}
+\title{Run MCMC using rtmbstan}
 \usage{
 do_mcmc(obj, chains, cores, iter, thin, bounds = Inf, laplace = FALSE, ...)
 }
@@ -27,7 +27,7 @@ do_mcmc(obj, chains, cores, iter, thin, bounds = Inf, laplace = FALSE, ...)
 MCMC list object from rtmbstan
 }
 \description{
-To run MCMC for a RTMB object using tmbstan
+Run MCMC using rtmbstan
 }
 \examples{
 \dontrun{

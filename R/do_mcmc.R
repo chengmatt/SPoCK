@@ -1,4 +1,4 @@
-#' To run MCMC for a RTMB object using tmbstan
+#' Run MCMC using rtmbstan
 #'
 #' @param obj Object built from ADFUN via RTMB
 #' @param chains Number of chains to run
@@ -85,7 +85,7 @@ mcmc_par_names <- function(mcmc_obj) {
 }
 
 
-#' Traditional model diagnostics for MCMC
+#' Model diagnostics for MCMC
 #'
 #' @param mcmc_obj MCMC object from tmbstan
 #' @param tmb_sdrep SD report fomr TMB
@@ -217,7 +217,7 @@ mcmc_diag <- function(mcmc_obj,
 }
 
 
-#' Get ssb and recruitment from MCMC using posterior samples
+#' Derive SSB and Recruitment from MCMC using posterior samples
 #'
 #' @param mcmc_obj MCMC object from tmbstan
 #' @param tmb_obj RTMB object from MakeADFUN

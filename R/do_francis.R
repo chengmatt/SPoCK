@@ -1,4 +1,4 @@
-#' Function to compute francis weights, which is used internally by do_francis_reweighting
+#' Computes Francis weights, which is used internally by do_francis_reweighting
 #'
 #' @param n_regions Number of regions
 #' @param n_sexes Number of sexes
@@ -138,7 +138,7 @@ get_francis_weights <- function(n_regions,
   return(weights)
 } # end function
 
-#' Function to run Francis reweighting
+#' Run Francis Reweighting
 #'
 #' @param rep Report file list
 #' @param age_labels Age labels

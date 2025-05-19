@@ -1,0 +1,68 @@
+---
+title: "Description of Model Report"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{d_model_report}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The following tables describes all elements contained within `obj$rep`, which is generated after a model is run. Note that when `n_sexes > 1`, the first dimension will always be females and the second dimension will always be males.
+
+| Name               | Description                                                                 |
+|--------------------|-----------------------------------------------------------------------------|
+| `R0`               | Mean or virgin recruitment parameter by region                              |
+| `h_trans`          | Steepness parameter by region; not used if mean recruitment is specified     |
+| `NAA`              | Numbers-at-age array: `n_regions × n_years × n_ages × n_sexes`              |
+| `ZAA`              | Total instantaneous mortality: `n_regions × n_years × n_ages × n_sexes`     |
+| `natmort`          | Instantaneous natural mortality: `n_regions × n_years × n_ages × n_sexes`   |
+| `bias_ramp`        | Vector of bias ramp values: `n_years`                                       |
+| `Movement`         | Movement array: `n_regions × n_regions × n_years × n_ages × n_sexes`        |
+| `init_F`           | Initial fishing mortality applied to equilibrium age structure              |
+| `Fmort`            | Fishing mortality rate: `n_regions × n_years × n_fish_fleets`               |
+| `FAA`              | Fishing mortality at age: `n_regions × n_years × n_ages × n_sexes × n_fish_fleets` |
+| `CAA`              | Catch-at-age: `n_regions × n_years × n_ages × n_sexes × n_fish_fleets`      |
+| `CAL`              | Catch-at-length: `n_regions × n_years × n_lens × n_fish_fleets`             |
+| `PredCatch`        | Predicted catch: `n_regions × n_years × n_fish_fleets`                      |
+| `PredFishIdx`      | Predicted fishery index: `n_regions × n_years × n_fish_fleets`              |
+| `fish_sel`         | Fishery selectivity: `n_regions × n_years × n_ages × n_sexes × n_fish_fleets` |
+| `fish_q`           | Fishery catchability: `n_regions × n_years × n_fish_fleets`                 |
+| `PredSrvIdx`       | Predicted survey index: `n_regions × n_years × n_srv_fleets`                |
+| `srv_sel`          | Survey selectivity: `n_regions × n_years × n_ages × n_srv_fleets × n_sexes` |
+| `srv_q`            | Survey catchability: `n_regions × n_years × n_srv_fleets`                   |
+| `SrvIAA`           | Survey index-at-age: `n_regions × n_years × n_ages × n_sexes × n_srv_fleets` |
+| `SrvIAL`           | Survey index-at-length: `n_regions × n_years × n_lens × n_sexes × n_srv_fleets` |
+| `Pred_Tag_Recap`   | Predicted tag recaptures: `n_tag_liberty × n_years × n_regions × n_ages × n_sexes` |
+| `Tags_Avail`       | Available tags: `(n_tag_liberty + 1) × n_years × n_regions × n_ages × n_sexes` |
+| `Tag_Reporting`    | Tag reporting rate: `n_regions × n_years`                                   |
+| `Catch_nLL`        | Negative log-likelihood for catch: `n_regions × n_years × n_fish_fleets`    |
+| `FishIdx_nLL`      | Negative log-likelihood for fishery index: `n_regions × n_years × n_fish_fleets` |
+| `SrvIdx_nLL`       | Negative log-likelihood for survey index: `n_regions × n_years × n_srv_fleets` |
+| `FishAgeComps_nLL` | Negative log-likelihood for fish age composition: `n_regions × n_years × n_sexes × n_fish_fleets` |
+| `SrvAgeComps_nLL`  | Negative log-likelihood for survey age composition: `n_regions × n_years × n_sexes × n_srv_fleets` |
+| `FishLenComps_nLL` | Negative log-likelihood for fish length composition: `n_regions × n_years × n_sexes × n_fish_fleets` |
+| `SrvLenComps_nLL`  | Negative log-likelihood for survey length composition: `n_regions × n_years × n_sexes × n_srv_fleets` |
+| `M_nLL`            | Negative log-likelihood for natural mortality                               |
+| `Fmort_nLL`        | Negative log-likelihood for fishing mortality: `n_regions × n_years × n_fish_fleets` |
+| `Rec_nLL`          | Negative log-likelihood for recruitment: `n_regions × n_years`              |
+| `Init_Rec_nLL`     | Negative log-likelihood for initial recruitment: `n_regions × (n_ages - 2)` |
+| `Tag_nLL`          | Negative log-likelihood for tag recapture: `n_tag_liberty × n_years × n_regions × n_ages × n_sexes` |
+| `h_nLL`            | Negative log-likelihood for steepness                                       |
+| `fish_q_nLL`       | Negative log-likelihood for fishery catchability                            |
+| `sel_nLL`          | Negative log-likelihood for selectivity                                     |
+| `srv_q_nLL`        | Negative log-likelihood for survey catchability                             |
+| `Movement_nLL`     | Negative log-likelihood for movement                                        |
+| `TagRep_nLL`       | Negative log-likelihood for tag reporting                                   |
+| `jnLL`             | Joint negative log-likelihood                                               |
+| `Total_Biom`       | Total biomass: `n_regions × n_years`                                        |
+| `SSB`              | Spawning stock biomass: `n_regions × n_years`                               |
+| `Rec`              | Recruitment: `n_regions × n_years`                                          |
+
+

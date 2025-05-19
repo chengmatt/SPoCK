@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/a_model_dimensions.html">Description of Model and Data Dimensions</a></li>
     <li><a class="dropdown-item" href="../articles/b_model_parameters.html">Description of Model Parameters</a></li>
     <li><a class="dropdown-item" href="../articles/c_model_equations.html">Description of Model Equations</a></li>
+    <li><a class="dropdown-item" href="../articles/d_model_report.html">Description of Model Report</a></li>
     <li><a class="dropdown-item" href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
@@ -81,9 +82,9 @@
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Setup_Mod_Dim.html">Setup_Mod_Dim</a></span><span class="op">(</span></span>
-<span>    years <span class="op">=</span> <span class="va">sgl_rg_ebswp_data</span><span class="op">$</span><span class="va">years</span>,</span>
+<span>    years <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sgl_rg_ebswp_data</span><span class="op">$</span><span class="va">years</span><span class="op">)</span>,</span>
 <span>    <span class="co"># vector of years</span></span>
-<span>    ages <span class="op">=</span> <span class="va">sgl_rg_ebswp_data</span><span class="op">$</span><span class="va">ages</span>,</span>
+<span>    ages <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sgl_rg_ebswp_data</span><span class="op">$</span><span class="va">ages</span><span class="op">)</span>,</span>
 <span>    <span class="co"># vector of ages</span></span>
 <span>    lens <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>    <span class="co"># number of lengths</span></span>
@@ -204,9 +205,9 @@
 <span>  <span class="co"># age comp likelihoods for fishery fleet</span></span>
 <span>  FishLenComps_LikeType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  <span class="co"># length comp likelihoods for fishery</span></span>
-<span>  FishAgeComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agg_Year_1-61_Fleet_1"</span><span class="op">)</span>,</span>
+<span>  FishAgeComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agg_Year_1-terminal_Fleet_1"</span><span class="op">)</span>,</span>
 <span>  <span class="co"># age comp structure for fishery</span></span>
-<span>  FishLenComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Year_1-61_Fleet_1"</span><span class="op">)</span>,</span>
+<span>  FishLenComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Year_1-terminal_Fleet_1"</span><span class="op">)</span>,</span>
 <span>  <span class="co"># length comp structure for fishery</span></span>
 <span>  FishAge_comp_agg_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="co"># ADMB aggregation quirks, ideally get rid of this</span></span>
@@ -241,16 +242,16 @@
 <span>    SrvLenComps_LikeType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"none"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>    <span class="co">#  survey length composition likelihood for survey fleet 1, 2, and 3</span></span>
 <span>    SrvAgeComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="st">"agg_Year_1-61_Fleet_1"</span>,</span>
-<span>      <span class="st">"agg_Year_1-61_Fleet_2"</span>,</span>
-<span>      <span class="st">"none_Year_1-61_Fleet_3"</span></span>
+<span>      <span class="st">"agg_Year_1-terminal_Fleet_1"</span>,</span>
+<span>      <span class="st">"agg_Year_1-terminal_Fleet_2"</span>,</span>
+<span>      <span class="st">"none_Year_1-terminal_Fleet_3"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    <span class="co"># survey age comp type</span></span>
 <span></span>
 <span>    SrvLenComps_Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="st">"none_Year_1-61_Fleet_1"</span>,</span>
-<span>      <span class="st">"none_Year_1-61_Fleet_2"</span>,</span>
-<span>      <span class="st">"none_Year_1-61_Fleet_3"</span></span>
+<span>      <span class="st">"none_Year_1-terminal_Fleet_1"</span>,</span>
+<span>      <span class="st">"none_Year_1-terminal_Fleet_2"</span>,</span>
+<span>      <span class="st">"none_Year_1-terminal_Fleet_3"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    <span class="co"># survey length comp type</span></span>
 <span></span>
@@ -347,6 +348,7 @@
 <span>  Wt_SrvIdx <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  Wt_Rec <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  Wt_F <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  Wt_Tagging <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  Wt_FishAgeComps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">1</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">input_list</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">n_regions</span>,</span>
 <span>                                     <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">input_list</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">years</span><span class="op">)</span>,</span>
 <span>                                     <span class="va">input_list</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">n_sexes</span>,</span>

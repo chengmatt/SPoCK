@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_francis.R
 \name{do_francis_reweighting}
 \alias{do_francis_reweighting}
-\title{Function to run Francis reweighting}
+\title{Run Francis Reweighting}
 \usage{
 do_francis_reweighting(data, rep, age_labels, len_labels, year_labels)
 }
@@ -21,7 +21,7 @@ do_francis_reweighting(data, rep, age_labels, len_labels, year_labels)
 A list object of francis weights (note that it will be NAs for some, if using jnt composition approaches - i.e., only uses one dimension)
 }
 \description{
-Function to run Francis reweighting
+Run Francis Reweighting
 }
 \examples{
 \dontrun{

@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/a_model_dimensions.html">Description of Model and Data Dimensions</a></li>
     <li><a class="dropdown-item" href="../articles/b_model_parameters.html">Description of Model Parameters</a></li>
     <li><a class="dropdown-item" href="../articles/c_model_equations.html">Description of Model Equations</a></li>
+    <li><a class="dropdown-item" href="../articles/d_model_report.html">Description of Model Report</a></li>
     <li><a class="dropdown-item" href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
@@ -70,9 +71,11 @@
     
 <p>The following tables describes all elements contained within
 <code>input_list$data</code>, which is generated using the
-<code>SPoCK::Setup_x</code> functions.</p>
+<code>SPoCK::Setup_x</code> functions. Note that when
+<code>n_sexes &gt; 1</code>, the first dimension will always be females
+and the second dimension will always be males.</p>
 <div class="section level2">
-<h2 id="table-1--data-inputs-for-defining-model-dimensions">Table 1. Data Inputs for Defining Model Dimensions<a class="anchor" aria-label="anchor" href="#table-1--data-inputs-for-defining-model-dimensions"></a>
+<h2 id="data-inputs-for-defining-model-dimensions">Data Inputs for Defining Model Dimensions<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-model-dimensions"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -116,7 +119,7 @@
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-2--data-inputs-for-defining-recruitment-processes">Table 2. Data Inputs for Defining Recruitment Processes<a class="anchor" aria-label="anchor" href="#table-2--data-inputs-for-defining-recruitment-processes"></a>
+<h2 id="data-inputs-for-defining-recruitment-processes">Data Inputs for Defining Recruitment Processes<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-recruitment-processes"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -205,7 +208,7 @@ used</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-3--data-inputs-for-defining-biological-processes">Table 3. Data Inputs for Defining Biological Processes<a class="anchor" aria-label="anchor" href="#table-3--data-inputs-for-defining-biological-processes"></a>
+<h2 id="data-inputs-for-defining-biological-processes">Data Inputs for Defining Biological Processes<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-biological-processes"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -259,7 +262,7 @@ parameter and not the offset</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-4--data-inputs-for-defining-movement-processes">Table 4. Data Inputs for Defining Movement Processes<a class="anchor" aria-label="anchor" href="#table-4--data-inputs-for-defining-movement-processes"></a>
+<h2 id="data-inputs-for-defining-movement-processes">Data Inputs for Defining Movement Processes<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-movement-processes"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -315,7 +318,7 @@ specifying which movement parameters are shared and mapped off</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-5--data-inputs-for-defining-tagging-processes">Table 5. Data Inputs for Defining Tagging Processes<a class="anchor" aria-label="anchor" href="#table-5--data-inputs-for-defining-tagging-processes"></a>
+<h2 id="data-inputs-for-defining-tagging-processes">Data Inputs for Defining Tagging Processes<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-tagging-processes"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -416,9 +419,9 @@ weighted sum of all fleets</td>
 <tr class="odd">
 <td><code>tag_natmort</code></td>
 <td>Value specifying how tag natural mortality is specified. 0 ==
-Natural mortality agrregated across ages and sexes, 1 == Natural
+Natural mortality aggregated across ages and sexes, 1 == Natural
 mortality is age-specific but sex-aggregated, 2 == Natural mortality is
-age aggregated but sex-specific, 3 == Natural mortlaity is age and
+age aggregated but sex-specific, 3 == Natural mortality is age and
 sex-specific</td>
 </tr>
 <tr class="even">
@@ -443,7 +446,7 @@ should be pooled. If we have sex information for tagging data and are
 estimating sex-specific movement (2 sexes in this case), this would be
 specified as: <code>move_sex_tag_pool &lt;- list(1, 2)</code> where the
 first element in the list specifies the first sex and the second element
-in the list species the second sex (i.e., no pooling in this case).
+in the list specifies the second sex (i.e., no pooling in this case).
 Conversely, if we don’t have sex information, this list would be
 specified as: <code>move_sex_tag_pool &lt;- list(c(1:2))</code> where we
 are summing across all sexes for the observed and predicted tag
@@ -464,8 +467,7 @@ are mapped of / shared</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-6--data-inputs-for-defining-catch-and-fishing-mortality-processes">Table 6. Data Inputs for Defining Catch and Fishing Mortality
-Processes<a class="anchor" aria-label="anchor" href="#table-6--data-inputs-for-defining-catch-and-fishing-mortality-processes"></a>
+<h2 id="data-inputs-for-defining-catch-and-fishing-mortality-processes">Data Inputs for Defining Catch and Fishing Mortality Processes<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-catch-and-fishing-mortality-processes"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -522,8 +524,7 @@ penalty, 1: Use regularity penalty</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-7--data-inputs-for-defining-fishery-indices-and-compositions">Table 7. Data Inputs for Defining Fishery Indices and
-Compositions<a class="anchor" aria-label="anchor" href="#table-7--data-inputs-for-defining-fishery-indices-and-compositions"></a>
+<h2 id="data-inputs-for-defining-fishery-indices-and-compositions">Data Inputs for Defining Fishery Indices and Compositions<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-fishery-indices-and-compositions"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -643,8 +644,7 @@ split by region. More options and details can be found in
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-8--data-inputs-for-defining-survey-indices-and-compositions">Table 8. Data Inputs for Defining Survey Indices and
-Compositions<a class="anchor" aria-label="anchor" href="#table-8--data-inputs-for-defining-survey-indices-and-compositions"></a>
+<h2 id="data-inputs-for-defining-survey-indices-and-compositions">Data Inputs for Defining Survey Indices and Compositions<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-survey-indices-and-compositions"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -762,8 +762,7 @@ split by region. More options and details can be found in
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-9--data-inputs-for-defining-fishery-selectivity-and-catchability">Table 9. Data Inputs for Defining Fishery Selectivity and
-Catchability<a class="anchor" aria-label="anchor" href="#table-9--data-inputs-for-defining-fishery-selectivity-and-catchability"></a>
+<h2 id="data-inputs-for-defining-fishery-selectivity-and-catchability">Data Inputs for Defining Fishery Selectivity and Catchability<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-fishery-selectivity-and-catchability"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -830,11 +829,11 @@ apply in that given period.</td>
 </tr>
 <tr class="odd">
 <td><code>Use_fish_q_prior</code></td>
-<td>Fishery catchabiltiy prior indicator 0 == don’t use, 1 == use</td>
+<td>Fishery catchability prior indicator 0 == don’t use, 1 == use</td>
 </tr>
 <tr class="even">
 <td><code>fish_q_prior</code></td>
-<td>Fishery catchabiltiy prior values by region, time blocks, fishery
+<td>Fishery catchability prior values by region, time blocks, fishery
 fleet, and 2 (mean, and sd in the 4 dimension of array)</td>
 </tr>
 <tr class="odd">
@@ -851,8 +850,7 @@ n_fish_fleets indicating which values are mapped off</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-10--data-inputs-for-defining-survey-selectivity-and-catchability">Table 10. Data Inputs for Defining Survey Selectivity and
-Catchability<a class="anchor" aria-label="anchor" href="#table-10--data-inputs-for-defining-survey-selectivity-and-catchability"></a>
+<h2 id="data-inputs-for-defining-survey-selectivity-and-catchability">Data Inputs for Defining Survey Selectivity and Catchability<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-survey-selectivity-and-catchability"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -919,11 +917,11 @@ apply in that given period.</td>
 </tr>
 <tr class="odd">
 <td><code>Use_srv_q_prior</code></td>
-<td>Survey catchabiltiy prior indicator 0 == don’t use, 1 == use</td>
+<td>Survey catchability prior indicator 0 == don’t use, 1 == use</td>
 </tr>
 <tr class="even">
 <td><code>srv_q_prior</code></td>
-<td>Survey catchabiltiy prior values by region, time blocks, survey
+<td>Survey catchability prior values by region, time blocks, survey
 fleet, and 2 (mean, and sd in the 4 dimension of array)</td>
 </tr>
 <tr class="odd">
@@ -940,7 +938,7 @@ n_srv_fleets indicating which values are mapped off</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="table-11--data-inputs-for-defining-model-weighting">Table 11. Data Inputs for Defining Model Weighting<a class="anchor" aria-label="anchor" href="#table-11--data-inputs-for-defining-model-weighting"></a>
+<h2 id="data-inputs-for-defining-model-weighting">Data Inputs for Defining Model Weighting<a class="anchor" aria-label="anchor" href="#data-inputs-for-defining-model-weighting"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -987,26 +985,30 @@ deviations.</td>
 <td>Weight applied to fishing mortality deviations.</td>
 </tr>
 <tr class="even">
+<td><code>Wt_Tagging</code></td>
+<td>Weight applied to tagging data.</td>
+</tr>
+<tr class="odd">
 <td><code>Wt_FishAgeComps</code></td>
 <td>Array dimensioned by n_regions, n_years, n_sexes, n_fish_fleets
 specifying a multinomial weight to apply to fishery age compositions,
 which should ideally be derived using Francis re-weighting methods</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Wt_FishLenComps</code></td>
 <td>Array dimensioned by n_regions, n_years, n_sexes, n_fish_fleets
 specifying a multinomial weight to apply to fishery length compositions,
 which should ideally be derived using Francis re-weighting methods</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Wt_SrvAgeComps</code></td>
 <td>Array dimensioned by n_regions, n_years, n_sexes, n_srv_fleets
 specifying a multinomial weight to apply to survey age compositions,
 which should ideally be derived using Francis re-weighting methods</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Wt_SrvLenComps</code></td>
-<td>Array dimensioned by n_regions, n_years, n_sexes, n_fish_fleets
+<td>Array dimensioned by n_regions, n_years, n_sexes, n_srv_fleets
 specifying a multinomial weight to apply to survey length compositions,
 which should ideally be derived using Francis re-weighting methods</td>
 </tr>

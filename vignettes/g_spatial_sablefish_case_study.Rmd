@@ -182,7 +182,7 @@ input_list <- Setup_Mod_Tagging(input_list = input_list,
                                 Tag_Reporting_blocks = c(
                                   paste("Block_1_Year_1-35_Region_", 
                                         c(1:input_list$data$n_regions), sep = ''),
-                                  paste("Block_2_Year_36-62_Region_",
+                                  paste("Block_2_Year_36-terminal_Region_",
                                         c(1:input_list$data$n_regions), sep = '')
                                   ),
 
@@ -262,12 +262,12 @@ input_list <- Setup_Mod_FishIdx_and_Comps(input_list = input_list,
                                             c("Multinomial", "Multinomial"),
                                           # length comp likelihoods for fishery fleet 1 and 2
                                           FishAgeComps_Type =
-                                            c("spltRjntS_Year_1-62_Fleet_1",
-                                              "none_Year_1-62_Fleet_2"),
+                                            c("spltRjntS_Year_1-terminal_Fleet_1",
+                                              "none_Year_1-terminal_Fleet_2"),
                                           # age comp structure for fishery fleet 1 and 2
                                           FishLenComps_Type =
-                                            c("spltRjntS_Year_1-62_Fleet_1",
-                                              "spltRjntS_Year_1-62_Fleet_2"),
+                                            c("spltRjntS_Year_1-terminal_Fleet_1",
+                                              "spltRjntS_Year_1-terminal_Fleet_2"),
                                           # length comp structure for fishery fleet 1 and 2
                                           FishAge_comp_agg_type = c(NA,NA),
                                           # ADMB aggregation quirks, ideally get rid of this
@@ -301,11 +301,11 @@ input_list <- Setup_Mod_SrvIdx_and_Comps(input_list = input_list,
                                          SrvLenComps_LikeType =
                                            c("none", "none"),
                                          #  no length compositions used for survey
-                                         SrvAgeComps_Type = c("spltRjntS_Year_1-62_Fleet_1",
-                                                              "spltRjntS_Year_1-62_Fleet_2"),
+                                         SrvAgeComps_Type = c("spltRjntS_Year_1-terminal_Fleet_1",
+                                                              "spltRjntS_Year_1-terminal_Fleet_2"),
                                          # survey age comp type
-                                         SrvLenComps_Type = c("none_Year_1-62_Fleet_1",
-                                                              "none_Year_1-62_Fleet_2"),
+                                         SrvLenComps_Type = c("none_Year_1-terminal_Fleet_1",
+                                                              "none_Year_1-terminal_Fleet_2"),
                                          # survey length comp type
                                          SrvAge_comp_agg_type = c(NA, NA),
                                          # ADMB aggregation quirks, ideally get rid of this
@@ -336,7 +336,7 @@ input_list <- Setup_Mod_Fishsel_and_Q(input_list = input_list,
                                       fish_sel_blocks =
                                         c("Block_1_Year_1-56_Fleet_1",
                                           # block 1, fishery ll selex
-                                          "Block_2_Year_57-62_Fleet_1",
+                                          "Block_2_Year_57-terminal_Fleet_1",
                                           # block 3 fishery ll selex
                                           "none_Fleet_2"),
                                       # no blocks for trawl fishery
@@ -484,6 +484,7 @@ input_list <- Setup_Mod_Weighting(input_list = input_list,
                                   Wt_SrvIdx = 1,
                                   Wt_Rec = 1,
                                   Wt_F = 1,
+                                  Wt_Tagging = 1,
                                   # Composition model weighting
                                   Wt_FishAgeComps =
                                     array(1, dim = c(input_list$data$n_regions,

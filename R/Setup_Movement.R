@@ -1,4 +1,4 @@
-#' Setup model movement processes
+#' Setup Movement Processes for SPoCK
 #'
 #' @param input_list List containing a data list, parameter list, and map list
 #' @param do_recruits_move Whether recruits move, 1 (they move), 0 (they don't move), default is 0

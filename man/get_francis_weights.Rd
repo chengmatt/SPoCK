@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_francis.R
 \name{get_francis_weights}
 \alias{get_francis_weights}
-\title{Function to compute francis weights, which is used internally by do_francis_reweighting}
+\title{Computes Francis weights, which is used internally by do_francis_reweighting}
 \usage{
 get_francis_weights(
   n_regions,
@@ -42,7 +42,7 @@ get_francis_weights(
 Value for calculated francis weight
 }
 \description{
-Function to compute francis weights, which is used internally by do_francis_reweighting
+Computes Francis weights, which is used internally by do_francis_reweighting
 }
 \examples{
 \dontrun{

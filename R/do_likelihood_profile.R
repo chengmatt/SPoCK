@@ -1,4 +1,4 @@
-#' Function to do likelihood profile on a parameter
+#' Run Likelihood Profile
 #'
 #' @param data data list from model
 #' @param parameters parameter list from model

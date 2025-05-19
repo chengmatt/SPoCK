@@ -175,7 +175,7 @@ Some of the more involved helper functions used to set up the single region mode
 
 To set up fishery indices and composition data, users will need to supply arrays of observed fishery indices and their associated standard errors (`ObsFishIdx` and `ObsFishIdx_SE`), which are dimensioned by by `n_regions`, `n_years`, `n_fish_fleets`. If fleets do not have data, this can be input as `NA` and the `UseFishIdx` argument (also dimensioned by `n_regions`, `n_years`, `n_fish_fleets`) can be used to ensure that these data are not fit to. Similarly, users will need to supply both fishery age composition data and length composition data. Both `ObsFishAgeComps` and `ObsFishLenComps` are dimensioned by `n_regions`, `n_years`, `n_bins (n_ages | n_lens)`, `n_sexes`, `n_fish_fleets`. Data inputs are also required to denote whether composition data are used or available for thos regions, years, and fleets. This can be specified using both `UseFishAgeComps` and `UseFishLenComps`, which expects values of 0 (don't fit) or 1 (fit), and are dimensioned by `n_regions`, `n_years`, and `n_fish_fleets`. Users can optionally supply `ISS_FishAgeComps` and `ISS_FishLenComps` data inputs which specify the input sample size for these composition data, and are dimensioned by `n_regions`, `n_years`, `n_sexes`, and `n_fish_fleets`. If this is not specified (i.e., left NULL), the helper function will automatically sum up the `ObsFishAgeComps` and `ObsFishLenComps` by their partitions and use the those sums as the input sample size. Thus, if observed composition data are input as proportions, the model will potentially incorrectly assume an input sample size of 1 for these data. 
 
-For Alaska sablefish, fishery indices are currently utilized for the fixed-gear fleet (dominant fleet), which are biomass based, while the trawl fleet does not fit to fishery indices. This can be specified using the `fish_idx_type` argument, where `biom` represents biomass indices, and `none` indicates not fishery indices are available. Multinomial likelihoods are also assumed for fishery ages, which are specified with `FishAgeComps_LikeType`. However, only the fixed-gear fleet has fishery age compositions available. Thus, the `FishAgeComps_LikeType` is specified as `c("Multinomial", "none")`. Fishery length compositions `FishLenComps_LikeType` are available for both fleets and are specified as Multinomial. Currently, Alaska sablefish is a sex-structured model but age-compositions are not sex-specific. This is specified using `FishAgeComps_Type = c("agg_Year_1-65_Fleet_1", "none_Year_1-65_Fleet_2")`, which indicates to the model that these data should be fit to as aggregated across sexes for all years and for fleet 1 (fixed-gear) (i.e., the Multinomial expected proportions are summed across sexes). The `none_Year_1-65_Fleet_2` character indicates to not do anything with the age compositions for the trawl fishery, since these are not availiable. For fishery length compositions, these are specified as `FishLenComps_Type = c("spltRspltS_Year_1-65_Fleet_1", "spltRspltS_Year_1-65_Fleet_2")` because both fleets have length composition data that are sex-specific. Here, the `spltRspltS` character indicates to the model that these data sum to 1 for each sex and each region, and no implicit sex-ratios can be inferred using these composition data from the model. Lastly, there are some ADMB aggregation quirks specific to Alaska sablefish that can be ignored by the user (and will be removed in later version of the model). 
+For Alaska sablefish, fishery indices are currently utilized for the fixed-gear fleet (dominant fleet), which are biomass based, while the trawl fleet does not fit to fishery indices. This can be specified using the `fish_idx_type` argument, where `biom` represents biomass indices, and `none` indicates not fishery indices are available. Multinomial likelihoods are also assumed for fishery ages, which are specified with `FishAgeComps_LikeType`. However, only the fixed-gear fleet has fishery age compositions available. Thus, the `FishAgeComps_LikeType` is specified as `c("Multinomial", "none")`. Fishery length compositions `FishLenComps_LikeType` are available for both fleets and are specified as Multinomial. Currently, Alaska sablefish is a sex-structured model but age-compositions are not sex-specific. This is specified using `FishAgeComps_Type = c("agg_Year_1-terminal_Fleet_1", "none_Year_1-terminal_Fleet_2")`, which indicates to the model that these data should be fit to as aggregated across sexes for all years and for fleet 1 (fixed-gear) (i.e., the Multinomial expected proportions are summed across sexes). The `none_Year_1-terminal_Fleet_2` character indicates to not do anything with the age compositions for the trawl fishery, since these are not availiable. For fishery length compositions, these are specified as `FishLenComps_Type = c("spltRspltS_Year_1-terminal_Fleet_1", "spltRspltS_Year_1-terminal_Fleet_2")` because both fleets have length composition data that are sex-specific. Here, the `spltRspltS` character indicates to the model that these data sum to 1 for each sex and each region, and no implicit sex-ratios can be inferred using these composition data from the model. Lastly, there are some ADMB aggregation quirks specific to Alaska sablefish that can be ignored by the user (and will be removed in later version of the model). 
 
 ```{r Setup Fishery Indices and Compositions, message = FALSE,  eval = FALSE}
 input_list <- Setup_Mod_FishIdx_and_Comps(input_list = input_list,
@@ -201,12 +201,12 @@ input_list <- Setup_Mod_FishIdx_and_Comps(input_list = input_list,
                                             c("Multinomial", "Multinomial"), 
                                           # length comp likelihoods for fishery fleet 1 and 2
                                           FishAgeComps_Type =  
-                                            c("agg_Year_1-65_Fleet_1",
-                                              "none_Year_1-65_Fleet_2"), 
+                                            c("agg_Year_1-terminal_Fleet_1",
+                                              "none_Year_1-terminal_Fleet_2"), 
                                           # age comp structure for fishery fleet 1 and 2
                                           FishLenComps_Type =  
-                                            c("spltRspltS_Year_1-65_Fleet_1",
-                                              "spltRspltS_Year_1-65_Fleet_2"),  
+                                            c("spltRspltS_Year_1-terminal_Fleet_1",
+                                              "spltRspltS_Year_1-terminal_Fleet_2"),  
                                           # length comp structure for fishery fleet 1 and 2
                                           FishAge_comp_agg_type = c(0,NA), 
                                           # ADMB aggregation quirks, ideally get rid of this
@@ -241,13 +241,13 @@ input_list <- Setup_Mod_SrvIdx_and_Comps(input_list = input_list,
                                            c("Multinomial", "Multinomial", "Multinomial"), 
                                          #  survey length composition likelihood for survey fleet 
                                          # 1, 2, and 3
-                                         SrvAgeComps_Type = c("agg_Year_1-65_Fleet_1",
-                                                              "none_Year_1-65_Fleet_2",
-                                                              "agg_Year_1-65_Fleet_3"), 
+                                         SrvAgeComps_Type = c("agg_Year_1-terminal_Fleet_1",
+                                                              "none_Year_1-terminal_Fleet_2",
+                                                              "agg_Year_1-terminal_Fleet_3"), 
                                          # survey age comp type
-                                         SrvLenComps_Type = c("spltRspltS_Year_1-65_Fleet_1",
-                                                              "spltRspltS_Year_1-65_Fleet_2",
-                                                              "spltRspltS_Year_1-65_Fleet_3"), 
+                                         SrvLenComps_Type = c("spltRspltS_Year_1-terminal_Fleet_1",
+                                                              "spltRspltS_Year_1-terminal_Fleet_2",
+                                                              "spltRspltS_Year_1-terminal_Fleet_3"), 
                                          # survey length comp type
                                          SrvAge_comp_agg_type = c(1,NA,1), 
                                          # ADMB aggregation quirks, ideally get rid of this
@@ -280,7 +280,7 @@ input_list <- Setup_Mod_Fishsel_and_Q(input_list = input_list,
                                           # block 1, fishery ll selex
                                           "Block_2_Year_36-56_Fleet_1", 
                                           # block 2 fishery ll selex
-                                          "Block_3_Year_57-65_Fleet_1",  
+                                          "Block_3_Year_57-terminal_Fleet_1",  
                                           # block 3 fishery ll selex
                                           "none_Fleet_2"), 
                                           # no blocks for trawl fishery
@@ -296,7 +296,7 @@ input_list <- Setup_Mod_Fishsel_and_Q(input_list = input_list,
                                           # block 1, fishery ll selex
                                           "Block_2_Year_36-56_Fleet_1", 
                                           # block 2 fishery ll selex
-                                          "Block_3_Year_57-65_Fleet_1",  
+                                          "Block_3_Year_57-terminal_Fleet_1",  
                                           # block 3 fishery ll selex
                                           "none_Fleet_2"),
                                           # no blocks for trawl fishery
@@ -335,7 +335,7 @@ input_list <- Setup_Mod_Srvsel_and_Q(input_list = input_list,
                                      srv_sel_blocks = 
                                        c("Block_1_Year_1-56_Fleet_1", 
                                          # block 1 for domestic ll survey
-                                         "Block_2_Year_57-65_Fleet_1", 
+                                         "Block_2_Year_57-terminal_Fleet_1", 
                                          # block 2 for domestic ll survey
                                          "none_Fleet_2",
                                          "none_Fleet_3"
@@ -450,6 +450,7 @@ input_list <- Setup_Mod_Weighting(input_list = input_list,
                                   Wt_SrvIdx = 0.448,
                                   Wt_Rec = 1.5,
                                   Wt_F = 0.1,
+                                  Wt_Tagging = 0,
                                   Wt_FishAgeComps = Wt_FishAgeComps,
                                   Wt_FishLenComps = Wt_FishLenComps,
                                   Wt_SrvAgeComps = Wt_SrvAgeComps,

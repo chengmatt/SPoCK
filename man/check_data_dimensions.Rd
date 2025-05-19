@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_data_dimensions.R
 \name{check_data_dimensions}
 \alias{check_data_dimensions}
-\title{Helper function used within the setup functions to check data dimensions to ensure they are correct}
+\title{Helper function used to check data dimensions to ensure they are correct}
 \usage{
 check_data_dimensions(
   x,
@@ -36,5 +36,5 @@ check_data_dimensions(
 \item{what}{charcter specifying what to be evaluated}
 }
 \description{
-Helper function used within the setup functions to check data dimensions to ensure they are correct
+Helper function used to check data dimensions to ensure they are correct
 }

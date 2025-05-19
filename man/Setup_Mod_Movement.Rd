@@ -2,7 +2,7 @@
 % Please edit documentation in R/Setup_Movement.R
 \name{Setup_Mod_Movement}
 \alias{Setup_Mod_Movement}
-\title{Setup model movement processes}
+\title{Setup Movement Processes for SPoCK}
 \usage{
 Setup_Mod_Movement(
   input_list,
@@ -54,5 +54,5 @@ The default behavior is to estimate unique movement parameters for all sexes. To
 \item{...}{Additional inputs for starting values for movement parameters (move_pars)}
 }
 \description{
-Setup model movement processes
+Setup Movement Processes for SPoCK
 }

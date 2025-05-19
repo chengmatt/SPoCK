@@ -17,9 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The following table describes all elements contained within `input_list$pars`, which is generated using the `SPoCK::Setup_x` functions.
-
-### Table 1. Description of Model Parameters
+The following table describes all elements contained within `input_list$pars`, which are generated using the `SPoCK::Setup_x` functions. Note that when `n_sexes > 1`, the first dimension will always be females and the second dimension will always be males.
 
 | Parameter               | Dimension                                            | Component             | Description                                                              |
 |-------------------------|------------------------------------------------------|------------------------|-------------------------------------------------------------------------|
@@ -40,7 +38,7 @@ The following table describes all elements contained within `input_list$pars`, w
 | `M_offset`              | `1`                                                  | Natural Mortality      | Offset for M                                                            |
 | `ln_global_R0`          | `1`                                                  | Recruitment            | Log virgin/mean recruitment                                             |
 | `R0_prop`               | `n_regions – 1`                                      | Recruitment            | Proportions for R0                                                      |
-| `steepness_h`                     | `n_regions`                                          | Recruitment            | Steepness parameters (bounded logit space)                              |
+| `steepness_h`           | `n_regions`                                          | Recruitment            | Steepness parameters (bounded logit space)                              |
 | `ln_InitDevs`           | `n_regions, n_ages - 2`                              | Recruitment            | Log initial age deviations                                              |
 | `ln_RecDevs`            | `n_regions, n_recdev_years`                          | Recruitment            | Log recruitment deviations                                              |
 | `ln_sigmaR`             | `2`                                                  | Recruitment            | SD for initial and recruitment deviations                               |
@@ -49,6 +47,8 @@ The following table describes all elements contained within `input_list$pars`, w
 | `ln_SrvAge_theta`       | `n_regions, n_srv_fleets, n_sexes`                   | Survey Compositions    | Log overdispersion (survey age comp)                                    |
 | `ln_SrvLen_theta`       | `n_regions, n_srv_fleets, n_sexes`                   | Survey Compositions    | Log overdispersion (survey length comp)                                 |
 | `move_pars`             | `n_regions, n_regions – 1, n_years, n_ages, n_sexes` | Movement               | Movement logit parameters                                               |
+| `logit_move_devs`       | `n_regions`, `n_regions – 1`, `n_years`, `n_ages`    | Movement               | Logit movement deviations                                               |
+| `move_pe_pars`          | `n_regions`, `n_ages`                                | Movement               | Log process error parameters                                            |
 | `ln_Init_Tag_Mort`      | `1`                                                  | Tagging                | Log tag mortality                                                       |
 | `ln_Tag_Shed`           | `1`                                                  | Tagging                | Log chronic tag shedding                                                |
 | `Tag_Reporting_Pars`    | `n_regions, n_years`                                 | Tagging                | Logit tag reporting rate parameters                                     |

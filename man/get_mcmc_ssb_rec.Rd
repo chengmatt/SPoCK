@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_mcmc.R
 \name{get_mcmc_ssb_rec}
 \alias{get_mcmc_ssb_rec}
-\title{Get ssb and recruitment from MCMC using posterior samples}
+\title{Derive SSB and Recruitment from MCMC using posterior samples}
 \usage{
 get_mcmc_ssb_rec(mcmc_obj, tmb_obj)
 }
@@ -15,5 +15,5 @@ get_mcmc_ssb_rec(mcmc_obj, tmb_obj)
 returns a dataframe of recruitment and ssb posterior samples and a plot of ssb and recruitment with mean, lwr 95 quantile, and upr 95 quantile.
 }
 \description{
-Get ssb and recruitment from MCMC using posterior samples
+Derive SSB and Recruitment from MCMC using posterior samples
 }

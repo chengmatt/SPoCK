@@ -170,8 +170,16 @@ Setup_Mod_Tagging <- function(input_list,
       if(tmp_vec[1] == "Block") {
         block_val <- as.numeric(tmp_vec[2]) # get block value
         region <- as.numeric(tmp_vec[6]) # get region value
-        year_range <- as.numeric(unlist(strsplit(tmp_vec[4], "-"))) # get year range
-        years <- year_range[1]:year_range[2] # get sequence of years
+
+        # get year ranges
+        if(!str_detect(tmp, "terminal")) { # if not terminal year
+          year_range <- as.numeric(unlist(strsplit(tmp_vec[4], "-")))
+          years <- year_range[1]:year_range[2] # get sequence of years
+        } else { # if terminal year
+          year_range <- unlist(strsplit(tmp_vec[4], '-'))[1] # get year range
+          years <- as.numeric(year_range):length(input_list$data$years) # get sequence of years
+        }
+
         Tag_Reporting_blocks_mat[region,years] <- block_val # input tag reporting time block
       }
     }

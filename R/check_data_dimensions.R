@@ -1,4 +1,4 @@
-#' Helper function used within the setup functions to check data dimensions to ensure they are correct
+#' Helper function used to check data dimensions to ensure they are correct
 #'
 #' @param x Object to evaluate
 #' @param n_regions Number of regions
