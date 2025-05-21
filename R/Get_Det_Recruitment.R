@@ -13,7 +13,7 @@
 #' @param recruitment_dd Recruitment density dependence (0 == local, 1 == global)
 #' @param Rec_Prop Recruitment proportions to allocate global R0 if local density dependence
 #' @param n_regions Number of regions
-#'
+#' @export Get_Det_Recruitment
 #' @returns Vector of n_regions of deterministic recruitment values from mean recruitment or beverton holt
 #' @keywords internal
 #'

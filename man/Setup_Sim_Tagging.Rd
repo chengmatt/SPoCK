@@ -5,11 +5,6 @@
 \title{Set up simulated tagging dynamics}
 \usage{
 Setup_Sim_Tagging(
-  n_sims = n_sims,
-  n_yrs = n_yrs,
-  n_regions = n_regions,
-  n_ages = n_ages,
-  n_sexes = n_sexes,
   n_tags,
   max_liberty,
   tag_years,
@@ -17,20 +12,11 @@ Setup_Sim_Tagging(
   base_Tag_Reporting,
   Tag_Reporting_pattern,
   Tag_Ind_Mort,
-  Tag_Shed
+  Tag_Shed,
+  sim_list
 )
 }
 \arguments{
-\item{n_sims}{Number of simulations}
-
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_ages}{Number of ages}
-
-\item{n_sexes}{Number of sexes}
-
 \item{n_tags}{Number of tags to release in a given year}
 
 \item{max_liberty}{Maximum liberty to track cohorts for}
@@ -46,6 +32,8 @@ Setup_Sim_Tagging(
 \item{Tag_Ind_Mort}{Initial tag induced mortality}
 
 \item{Tag_Shed}{Chronic tag shedding rate}
+
+\item{sim_list}{Simulation list}
 }
 \description{
 Set up simulated tagging dynamics

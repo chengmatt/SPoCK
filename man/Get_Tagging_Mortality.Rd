@@ -14,6 +14,7 @@ Get_Tagging_Mortality(
   n_regions,
   n_ages,
   n_sexes,
+  n_fish_fleets,
   y,
   what
 )
@@ -36,6 +37,8 @@ Get_Tagging_Mortality(
 \item{n_ages}{Number of ages}
 
 \item{n_sexes}{Number of sexes}
+
+\item{n_fish_fleets}{Number of fishery fleets}
 
 \item{y}{Year index}
 

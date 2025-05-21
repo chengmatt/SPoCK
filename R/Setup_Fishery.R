@@ -1,9 +1,5 @@
 #' Setup values and dimensions of fishing mortality
 #'
-#' @param n_sims Number of simulations
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_fish_fleets Number of fleets
 #' @param sigmaC Observation error for catch
 #' @param Fmort_pattern Fishing mortality pattern as a matrix dimensioned by region and fleet (constant, linear, one-way, two-way)
 #' @param Fmort_start Fishing mortality start values as a matrix dimensioned by region and fleet
@@ -11,13 +7,11 @@
 #' @param proc_error If we want to add process error to fishing mortality
 #' @param proc_error_sd value of logrnomal sd for process error to fishing mortality
 #' @param init_F_vals Initial F values dimensioend by region and fleet
+#' @param sim_list Simulation list objects
 #'
 #' @export Setup_Sim_FishMort
 #' @importFrom stats rnorm
-Setup_Sim_FishMort <- function(n_sims = n_sims,
-                               n_yrs = n_yrs,
-                               n_regions = n_regions,
-                               n_fish_fleets = n_fish_fleets,
+Setup_Sim_FishMort <- function(sim_list,
                                sigmaC,
                                init_F_vals,
                                Fmort_pattern,
@@ -28,12 +22,12 @@ Setup_Sim_FishMort <- function(n_sims = n_sims,
                                 ) {
 
   # Fishing mortality stuff
-  init_F <- array(0, dim = c(1, n_regions, n_fish_fleets, n_sims))
-  Fmort <- array(0, dim = c(n_yrs, n_regions, n_fish_fleets, n_sims))
+  init_F <- array(0, dim = c(1, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+  Fmort <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
 
-  for(r in 1:n_regions) {
-    for(f in 1:n_fish_fleets) {
-      for(sim in 1:n_sims) {
+  for(r in 1:sim_list$n_regions) {
+    for(f in 1:sim_list$n_fish_fleets) {
+      for(sim in 1:sim_list$n_sims) {
 
         # Set up initial F values
         init_F[1,r,f,sim] <- init_F_vals[r,f]
@@ -43,17 +37,17 @@ Setup_Sim_FishMort <- function(n_sims = n_sims,
         } # end if Fmort is constant
 
         if(Fmort_pattern[r,f] == "linear") {
-          Fmort[,r,f,sim] <- seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = n_yrs)
+          Fmort[,r,f,sim] <- seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = sim_list$n_yrs)
         } # end if Fmort is linear increase of decrease
 
         if(Fmort_pattern[r,f] == "one-way") {
-          Fmort[,r,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(n_yrs / 2)),
+          Fmort[,r,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(sim_list$n_yrs / 2)),
                                rep(Fmort_start[r,f] * Fmort_fct[r,f], floor(n_yrs / 2)))
         } # end if Fmort is a one way trip
 
         if(Fmort_pattern[r,f] == "two-way") {
-          Fmort[,r,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(n_yrs / 2)),
-                               seq(Fmort_start[r,f] * Fmort_fct[r,f], max(Fmort_start[r,f], Fmort_start[r,f] * 0.75), length.out = round(n_yrs / 2)))
+          Fmort[,r,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(sim_list$n_yrs / 2)),
+                               seq(Fmort_start[r,f] * Fmort_fct[r,f], max(Fmort_start[r,f], Fmort_start[r,f] * 0.75), length.out = round(sim_list$n_yrs / 2)))
         } # end if Fmort is a two way trip
 
       } # end sim loop
@@ -62,57 +56,49 @@ Setup_Sim_FishMort <- function(n_sims = n_sims,
 
   if(proc_error == TRUE) Fmort <- Fmort * exp(stats::rnorm(prod(dim(Fmort)), 0, proc_error_sd))
 
-  # output variables into global environment
-  sigmaC <<- sigmaC # Observation sd for catch
-  Fmort <<- Fmort # fishing mortlaity pattern
-  init_F <<- init_F # initial F value
+  # output variables into list
+  sim_list$sigmaC <- sigmaC # Observation sd for catch
+  sim_list$Fmort <- Fmort # fishing mortlaity pattern
+  sim_list$init_F <- init_F # initial F value
+
+  return(sim_list)
 
 }
 
 #' Setup fishery selectivity
 #'
-#' @param n_sims Number of simulations
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_ages Number of ages
-#' @param n_sexes Number of sexes
-#' @param n_fish_fleets Number of fishery fleets
 #' @param sel_model Fishery selectivity model dimensioned by region and fleet. Options include: logistic
 #' @param fixed_fish_sel_pars Fixed parameters of fishery selectivity, dimensioned by region, sex, fishery fleet, and the max number of parameters needed for
 #' for a defined fishery selectivity functional form out of all defined functional forms for the fishery
+#' @param sim_list Simulation list
 #'
 #' @export Setup_Sim_FishSel
 #'
-Setup_Sim_FishSel <- function(n_sims = n_sims,
-                              n_yrs = n_yrs,
-                              n_regions = n_regions,
-                              n_ages = n_ages,
-                              n_sexes = n_sexes,
-                              n_fish_fleets = n_fish_fleets,
+Setup_Sim_FishSel <- function(sim_list,
                               sel_model,
                               fixed_fish_sel_pars
                               ) {
 
   # create fishery selectivity container
-  fish_sel <- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_fish_fleets, n_sims))
+  fish_sel <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets, sim_list$n_sims))
 
-  for(sim in 1:n_sims) {
-    for(r in 1:n_regions) {
-      for(y in 1:n_yrs) {
-        for(f in 1:n_fish_fleets) {
-          for(s in 1:n_sexes) {
+  for(sim in 1:sim_list$n_sims) {
+    for(r in 1:sim_list$n_regions) {
+      for(y in 1:sim_list$n_yrs) {
+        for(f in 1:sim_list$n_fish_fleets) {
+          for(s in 1:sim_list$n_sexes) {
 
             if(sel_model[r,f] == 'logistic') {
               a50 <- fixed_fish_sel_pars[r,s,f,1] # get a50
               k <- fixed_fish_sel_pars[r,s,f,2] # get k
-              fish_sel[y,r,,s,f,sim] <- 1 / (1 + exp(-k * (1:n_ages - a50)))
+              fish_sel[y,r,,s,f,sim] <- 1 / (1 + exp(-k * (1:sim_list$n_ages - a50)))
             } # end if logistic
 
             if(sel_model[r,f] == 'gamma') {
               amax <- fixed_fish_sel_pars[r,s,f,1] # get amax
               delta <- fixed_fish_sel_pars[r,s,f,2] # get delta
               p <- 0.5 * (sqrt( amax^2 + (4 * delta^2)) - amax)
-              fish_sel[y,r,,s,f,sim] <- (1:n_ages / amax)^(amax/p) * exp( (amax - 1:n_ages) / p )
+              fish_sel[y,r,,s,f,sim] <- (1:n_ages / amax)^(amax/p) * exp( (amax - 1:sim_list$n_ages) / p )
             } # end if gamma
 
           }
@@ -123,7 +109,9 @@ Setup_Sim_FishSel <- function(n_sims = n_sims,
 
 
   # output fishery selectiviy
-  fish_sel <<- fish_sel
+  sim_list$fish_sel <- fish_sel
+
+  return(sim_list)
 
 }
 

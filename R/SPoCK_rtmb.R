@@ -428,13 +428,13 @@ SPoCK_rtmb = function(pars, data) {
         tmp_Z = Get_Tagging_Mortality(tag_selex = tag_selex, tag_natmort = tag_natmort,
                                       Fmort = Fmort, natmort = natmort, fish_sel = fish_sel,
                                       Tag_Shed = Tag_Shed, n_regions = n_regions, n_ages = n_ages,
-                                      n_sexes = n_sexes, y = y, what = "Z")
+                                      n_sexes = n_sexes, n_fish_fleets = n_fish_fleets, y = y, what = "Z")
 
         # Get fishing mortality
         tmp_F = Get_Tagging_Mortality(tag_selex = tag_selex, tag_natmort = tag_natmort,
                                       Fmort = Fmort, natmort = natmort, fish_sel = fish_sel,
                                       Tag_Shed = Tag_Shed, n_regions = n_regions, n_ages = n_ages,
-                                      n_sexes = n_sexes, y = y, what = "F")
+                                      n_sexes = n_sexes, n_fish_fleets = n_fish_fleets, y = y, what = "F")
 
         # Handle tagging dynamics
         if(ry == 1) {

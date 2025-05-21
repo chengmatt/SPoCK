@@ -1,47 +1,52 @@
 #' Set up simulation observaiton processes
 #'
-#' @param n_fish_fleets Number of fishery fleets
-#' @param n_srv_fleets Number of survey fleets
-#' @param Comp_Structure Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion)
+#' @param Comp_Structure Composition Structure (spltR_spltS, spltR_jntS)
 #' @param Comp_Srv_Like Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
 #' @param Srv_Like_Pars Parameters for Survey Composition Likelihoods
 #' @param Comp_Fish_Like Fishery Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
 #' @param Fish_Like_Pars Parameters for Fishery Composition Likelihoods
 #' @param Tag_Like Tag Likelihoods (Poisson, NegBin, Multinomial_Release, Multinomial_Recapture)
 #' @param Tag_Like_Pars Tag Likelihood Parameters
-#' @param ISS_SrvAge Input sample size for survey ages
-#' @param ISS_FishAge Input sample size for fishery ages
+#' @param base_ISS_FishAge Base Input sample size for fishery ages
+#' @param sim_list Simulation list
+#' @param base_ISS_SrvAge Input sample size for survey ages
+#' @param ISS_FishAge_Pattern Input sample size pattern for fishery ages. Either "constant" or follows an f pattern ("F_pattern")
+#' @param SrvAgeTheta Survey Age Composition Overdispersion Parameter
+#' @param FishAgeTheta Fishery Age Composition Overdispersion Parameter
 #'
 #' @export Setup_Sim_Observation_Proc
 #'
-Setup_Sim_Observation_Proc <- function(n_fish_fleets,
-                                       n_srv_fleets,
-                                       Comp_Structure,
+Setup_Sim_Observation_Proc <- function(Comp_Structure,
                                        Comp_Srv_Like,
-                                       ISS_SrvAge,
+                                       base_ISS_SrvAge,
                                        Srv_Like_Pars,
                                        Comp_Fish_Like,
-                                       ISS_FishAge,
+                                       base_ISS_FishAge,
+                                       ISS_FishAge_Pattern,
                                        Fish_Like_Pars,
                                        Tag_Like,
-                                       Tag_Like_Pars) {
+                                       Tag_Like_Pars,
+                                       SrvAgeTheta,
+                                       FishAgeTheta,
+                                       sim_list
+                                       ) {
   # Create empty containers
   comp_srv_like <- vector()
   comp_fish_like <- vector()
 
   # Set up composition structure
-  if(Comp_Structure == "SpltSex_SpltRegion") comp_strc <<- 0
-  if(Comp_Structure == "JntSex_SpltRegion") comp_strc <<- 1
+  if(Comp_Structure == "spltR_spltS") sim_list$comp_strc <- 0
+  if(Comp_Structure == "spltR_jntS") sim_list$comp_strc <- 1
 
   # Set up survey composition likelihoods
-  for(sf in 1:n_srv_fleets) {
+  for(sf in 1:sim_list$n_srv_fleets) {
     if(Comp_Srv_Like[sf] == "Multinomial") comp_srv_like <- c(comp_srv_like, 0)
     if(Comp_Srv_Like[sf] == "Dirichlet-Multinomial") comp_srv_like <- c(comp_srv_like, 1)
   } # end sf loop
 
 
   # Set up fishery composition likelihoods
-  for(f in 1:n_fish_fleets) {
+  for(f in 1:sim_list$n_fish_fleets) {
     if(Comp_Fish_Like[f] == "Multinomial") comp_fish_like <- c(comp_fish_like, 0)
     if(Comp_Fish_Like[f] == "Dirichlet-Multinomial") comp_fish_like <- c(comp_fish_like, 1)
     if(Comp_Fish_Like[f] == "iid-Logistic-Normal") comp_fish_like <- c(comp_fish_like, 2)
@@ -49,19 +54,28 @@ Setup_Sim_Observation_Proc <- function(n_fish_fleets,
   } # end f loop
 
   # Set up tagging likelihoods
-  if(Tag_Like == "Poisson") tag_like <<- 0
-  if(Tag_Like == "NegBin") tag_like <<- 1
-  if(Tag_Like == "Multinomial_Release") tag_like <<- 2
-  if(Tag_Like == "Multinomial_Recapture") tag_like <<- 3
+  if(Tag_Like == "Poisson") sim_list$tag_like <- 0
+  if(Tag_Like == "NegBin") sim_list$tag_like <- 1
+  if(Tag_Like == "Multinomial_Release") sim_list$tag_like <- 2
+  if(Tag_Like == "Multinomial_Recapture") sim_list$tag_like <- 3
 
-  # output into globals
-  Tag_Like_Pars <<- Tag_Like_Pars
-  Fish_Like_Pars <<- Fish_Like_Pars
-  Srv_Like_Pars <<- Srv_Like_Pars
-  comp_srv_like <<- comp_srv_like
-  comp_fish_like <<- comp_fish_like
-  ISS_FishAge <<- ISS_FishAge
-  ISS_SrvAge <<- ISS_SrvAge
+  # setup variance and overdispersion parameters for composition and tagging data
+  if(ISS_FishAge_Pattern == 'constant') ISS_FishAge <- array(base_ISS_FishAge, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+  if(ISS_FishAge_Pattern == 'F_pattern') ISS_FishAge <- array(base_ISS_FishAge * apply(sim_list$Fmort, c(2,3,4), function(x) x / max(x)),
+                                                              dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+
+  # output into list
+  sim_list$Tag_Like_Pars <- Tag_Like_Pars
+  sim_list$Fish_Like_Pars <- Fish_Like_Pars
+  sim_list$Srv_Like_Pars <- Srv_Like_Pars
+  sim_list$comp_srv_like <- comp_srv_like
+  sim_list$comp_fish_like <- comp_fish_like
+  sim_list$ISS_FishAge <- ISS_FishAge
+  sim_list$ISS_SrvAge <- base_ISS_SrvAge
+  sim_list$FishAgeTheta <- FishAgeTheta
+  sim_list$SrvAgeTheta <- SrvAgeTheta
+
+  return(sim_list)
 }
 
 #' Title

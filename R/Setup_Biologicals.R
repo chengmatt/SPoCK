@@ -1,40 +1,33 @@
 #' Set up simulation stuff for biologicals
 #'
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_sexes Number of sexes
-#' @param n_sims Number of simulations
-#' @param n_ages Number of ages
 #' @param base_M_value Base natural mortality value dimensioned by regions, ages, sexes
 #' @param M_pattern Natural mortality pattern. Options include: constant
 #' @param base_WAA_values Base weight-at-age values dimensioned by regions, ages, sexes
 #' @param WAA_pattern Weight-at-age pattern. Options include: constant
 #' @param base_Maturity_AA_values Base maturity values dimensioned by regions, ages, sexes
 #' @param Maturity_AA_pattern Maturity pattern. Options include: constant
+#' @param sim_list Simulation list objects
 #'
 #' @export Setup_Sim_Biologicals
-Setup_Sim_Biologicals <- function(n_sims = n_sims,
-                                  n_yrs = n_yrs,
-                                  n_regions = n_regions,
-                                  n_ages = n_ages,
-                                  n_sexes = n_sexes,
+Setup_Sim_Biologicals <- function(
                                   base_M_value,
                                   M_pattern,
                                   base_WAA_values,
                                   WAA_pattern,
                                   base_Maturity_AA_values,
-                                  Maturity_AA_pattern
+                                  Maturity_AA_pattern,
+                                  sim_list
                                   ) {
 
   # Create containers to store values
-  M <- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_sims))
-  WAA <- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_sims))
-  Maturity_AA <- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_sims))
+  M <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  WAA <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  Maturity_AA <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
 
-  for(sim in 1:n_sims) {
-    for(r in 1:n_regions) {
-      for(y in 1:n_yrs) {
-        for(s in 1:n_sexes) {
+  for(sim in 1:sim_list$n_sims) {
+    for(r in 1:sim_list$n_regions) {
+      for(y in 1:sim_list$n_yrs) {
+        for(s in 1:sim_list$n_sexes) {
 
           # Natural mortality constant
           if(M_pattern == "constant") M[y,r,,s,sim] <- base_M_value[r,,s]
@@ -50,10 +43,12 @@ Setup_Sim_Biologicals <- function(n_sims = n_sims,
     } # end r loop
   } # end sim loop
 
-  # output into global environment
-  M <<- M
-  WAA <<- WAA
-  Maturity_AA <<- Maturity_AA
+  # output into list
+  sim_list$M <- M
+  sim_list$WAA <- WAA
+  sim_list$Maturity_AA <- Maturity_AA
+
+  return(sim_list)
 
 }
 

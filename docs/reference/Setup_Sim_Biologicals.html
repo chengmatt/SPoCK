@@ -48,17 +48,13 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Setup_Sim_Biologicals</span><span class="op">(</span></span>
-<span>  n_sims <span class="op">=</span> <span class="va">n_sims</span>,</span>
-<span>  n_yrs <span class="op">=</span> <span class="va">n_yrs</span>,</span>
-<span>  n_regions <span class="op">=</span> <span class="va">n_regions</span>,</span>
-<span>  n_ages <span class="op">=</span> <span class="va">n_ages</span>,</span>
-<span>  n_sexes <span class="op">=</span> <span class="va">n_sexes</span>,</span>
 <span>  <span class="va">base_M_value</span>,</span>
 <span>  <span class="va">M_pattern</span>,</span>
 <span>  <span class="va">base_WAA_values</span>,</span>
 <span>  <span class="va">WAA_pattern</span>,</span>
 <span>  <span class="va">base_Maturity_AA_values</span>,</span>
-<span>  <span class="va">Maturity_AA_pattern</span></span>
+<span>  <span class="va">Maturity_AA_pattern</span>,</span>
+<span>  <span class="va">sim_list</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -66,27 +62,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-n-sims">n_sims<a class="anchor" aria-label="anchor" href="#arg-n-sims"></a></dt>
-<dd><p>Number of simulations</p></dd>
-
-
-<dt id="arg-n-yrs">n_yrs<a class="anchor" aria-label="anchor" href="#arg-n-yrs"></a></dt>
-<dd><p>Number of years</p></dd>
-
-
-<dt id="arg-n-regions">n_regions<a class="anchor" aria-label="anchor" href="#arg-n-regions"></a></dt>
-<dd><p>Number of regions</p></dd>
-
-
-<dt id="arg-n-ages">n_ages<a class="anchor" aria-label="anchor" href="#arg-n-ages"></a></dt>
-<dd><p>Number of ages</p></dd>
-
-
-<dt id="arg-n-sexes">n_sexes<a class="anchor" aria-label="anchor" href="#arg-n-sexes"></a></dt>
-<dd><p>Number of sexes</p></dd>
-
-
-<dt id="arg-base-m-value">base_M_value<a class="anchor" aria-label="anchor" href="#arg-base-m-value"></a></dt>
+<dl><dt id="arg-base-m-value">base_M_value<a class="anchor" aria-label="anchor" href="#arg-base-m-value"></a></dt>
 <dd><p>Base natural mortality value dimensioned by regions, ages, sexes</p></dd>
 
 
@@ -108,6 +84,10 @@
 
 <dt id="arg-maturity-aa-pattern">Maturity_AA_pattern<a class="anchor" aria-label="anchor" href="#arg-maturity-aa-pattern"></a></dt>
 <dd><p>Maturity pattern. Options include: constant</p></dd>
+
+
+<dt id="arg-sim-list">sim_list<a class="anchor" aria-label="anchor" href="#arg-sim-list"></a></dt>
+<dd><p>Simulation list objects</p></dd>
 
 </dl></div>
 

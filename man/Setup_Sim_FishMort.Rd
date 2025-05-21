@@ -5,10 +5,7 @@
 \title{Setup values and dimensions of fishing mortality}
 \usage{
 Setup_Sim_FishMort(
-  n_sims = n_sims,
-  n_yrs = n_yrs,
-  n_regions = n_regions,
-  n_fish_fleets = n_fish_fleets,
+  sim_list,
   sigmaC,
   init_F_vals,
   Fmort_pattern,
@@ -19,13 +16,7 @@ Setup_Sim_FishMort(
 )
 }
 \arguments{
-\item{n_sims}{Number of simulations}
-
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_fish_fleets}{Number of fleets}
+\item{sim_list}{Simulation list objects}
 
 \item{sigmaC}{Observation error for catch}
 

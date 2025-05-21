@@ -11,6 +11,7 @@
 #' @param n_sexes Number of sexes
 #' @param y Year index
 #' @param what Whether to return Z or F (total or fishing mortality)
+#' @param n_fish_fleets Number of fishery fleets
 #'
 #' @returns Z or F values from tagging specifications
 #' @keywords internal
@@ -24,6 +25,7 @@ Get_Tagging_Mortality <- function(tag_selex,
                                   n_regions,
                                   n_ages,
                                   n_sexes,
+                                  n_fish_fleets,
                                   y,
                                   what
                                   ) {

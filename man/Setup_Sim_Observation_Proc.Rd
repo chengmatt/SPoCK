@@ -5,41 +5,47 @@
 \title{Set up simulation observaiton processes}
 \usage{
 Setup_Sim_Observation_Proc(
-  n_fish_fleets,
-  n_srv_fleets,
   Comp_Structure,
   Comp_Srv_Like,
-  ISS_SrvAge,
+  base_ISS_SrvAge,
   Srv_Like_Pars,
   Comp_Fish_Like,
-  ISS_FishAge,
+  base_ISS_FishAge,
+  ISS_FishAge_Pattern,
   Fish_Like_Pars,
   Tag_Like,
-  Tag_Like_Pars
+  Tag_Like_Pars,
+  SrvAgeTheta,
+  FishAgeTheta,
+  sim_list
 )
 }
 \arguments{
-\item{n_fish_fleets}{Number of fishery fleets}
-
-\item{n_srv_fleets}{Number of survey fleets}
-
-\item{Comp_Structure}{Composition Structure (SpltSex_SpltRegion, JntSex_SpltRegion)}
+\item{Comp_Structure}{Composition Structure (spltR_spltS, spltR_jntS)}
 
 \item{Comp_Srv_Like}{Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)}
 
-\item{ISS_SrvAge}{Input sample size for survey ages}
+\item{base_ISS_SrvAge}{Input sample size for survey ages}
 
 \item{Srv_Like_Pars}{Parameters for Survey Composition Likelihoods}
 
 \item{Comp_Fish_Like}{Fishery Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)}
 
-\item{ISS_FishAge}{Input sample size for fishery ages}
+\item{base_ISS_FishAge}{Base Input sample size for fishery ages}
+
+\item{ISS_FishAge_Pattern}{Input sample size pattern for fishery ages. Either "constant" or follows an f pattern ("F_pattern")}
 
 \item{Fish_Like_Pars}{Parameters for Fishery Composition Likelihoods}
 
 \item{Tag_Like}{Tag Likelihoods (Poisson, NegBin, Multinomial_Release, Multinomial_Recapture)}
 
 \item{Tag_Like_Pars}{Tag Likelihood Parameters}
+
+\item{SrvAgeTheta}{Survey Age Composition Overdispersion Parameter}
+
+\item{FishAgeTheta}{Fishery Age Composition Overdispersion Parameter}
+
+\item{sim_list}{Simulation list}
 }
 \description{
 Set up simulation observaiton processes

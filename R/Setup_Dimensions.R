@@ -16,17 +16,22 @@ Setup_Sim_Dim <- function(n_sims,
                           n_ages,
                           n_sexes,
                           n_fish_fleets,
-                          n_srv_fleets) {
+                          n_srv_fleets
+                          ) {
 
-  # ouput variables into global environment
-  n_sims <<- n_sims
-  n_yrs <<- n_yrs
-  n_regions <<- n_regions
-  n_ages <<- n_ages
-  n_sexes <<- n_sexes
-  n_fish_fleets <<- n_fish_fleets
-  n_srv_fleets <<- n_srv_fleets
-  init_iter <<- n_ages * 10
+  sim_list <- list() # setup empty list
+
+  # output dimensions into list
+  sim_list$n_sims <- n_sims
+  sim_list$n_yrs <- n_yrs
+  sim_list$n_regions <- n_regions
+  sim_list$n_ages <- n_ages
+  sim_list$n_sexes <- n_sexes
+  sim_list$n_fish_fleets <- n_fish_fleets
+  sim_list$n_srv_fleets <- n_srv_fleets
+  sim_list$init_iter <- n_ages * 10
+
+  return(sim_list)
 
 }
 

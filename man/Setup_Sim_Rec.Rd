@@ -5,10 +5,6 @@
 \title{Set up recruitment dynamics for simulation}
 \usage{
 Setup_Sim_Rec(
-  n_yrs,
-  n_regions,
-  n_sexes,
-  n_sims,
   do_recruits_move,
   base_rec_sexratio,
   rec_sexratio_vary,
@@ -18,19 +14,14 @@ Setup_Sim_Rec(
   init_sigmaR,
   sigmaR,
   recruitment_opt,
-  recdev_opt
+  rec_dd,
+  init_dd,
+  sim_list,
+  rec_lag
 )
 }
 \arguments{
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_sexes}{Number of sexes}
-
-\item{n_sims}{Number of simulations}
-
-\item{do_recruits_move}{whether recruits move == 0, don't move, == 1 move}
+\item{do_recruits_move}{whether recruits move. Character string either specified as 'dont_move', or 'move'}
 
 \item{base_rec_sexratio}{base recruitment sex-ratio value}
 
@@ -46,9 +37,15 @@ Setup_Sim_Rec(
 
 \item{sigmaR}{Sigma R for everything else}
 
-\item{recruitment_opt}{== 0, mean recruitment}
+\item{recruitment_opt}{character string as either "mean_rec" or "bh_rec"}
 
-\item{recdev_opt}{== 0, global rec devs, == 1, local rec devs}
+\item{rec_dd}{recruitment density dependence; character string as either "global" or "local"}
+
+\item{init_dd}{initial age density dependence; character string as either "global" or "local"}
+
+\item{sim_list}{Simulation list}
+
+\item{rec_lag}{Numeric, recruitment lag value}
 }
 \description{
 Set up recruitment dynamics for simulation

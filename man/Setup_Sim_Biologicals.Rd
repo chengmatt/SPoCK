@@ -5,30 +5,16 @@
 \title{Set up simulation stuff for biologicals}
 \usage{
 Setup_Sim_Biologicals(
-  n_sims = n_sims,
-  n_yrs = n_yrs,
-  n_regions = n_regions,
-  n_ages = n_ages,
-  n_sexes = n_sexes,
   base_M_value,
   M_pattern,
   base_WAA_values,
   WAA_pattern,
   base_Maturity_AA_values,
-  Maturity_AA_pattern
+  Maturity_AA_pattern,
+  sim_list
 )
 }
 \arguments{
-\item{n_sims}{Number of simulations}
-
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_ages}{Number of ages}
-
-\item{n_sexes}{Number of sexes}
-
 \item{base_M_value}{Base natural mortality value dimensioned by regions, ages, sexes}
 
 \item{M_pattern}{Natural mortality pattern. Options include: constant}
@@ -40,6 +26,8 @@ Setup_Sim_Biologicals(
 \item{base_Maturity_AA_values}{Base maturity values dimensioned by regions, ages, sexes}
 
 \item{Maturity_AA_pattern}{Maturity pattern. Options include: constant}
+
+\item{sim_list}{Simulation list objects}
 }
 \description{
 Set up simulation stuff for biologicals

@@ -48,11 +48,6 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Setup_Sim_Tagging</span><span class="op">(</span></span>
-<span>  n_sims <span class="op">=</span> <span class="va">n_sims</span>,</span>
-<span>  n_yrs <span class="op">=</span> <span class="va">n_yrs</span>,</span>
-<span>  n_regions <span class="op">=</span> <span class="va">n_regions</span>,</span>
-<span>  n_ages <span class="op">=</span> <span class="va">n_ages</span>,</span>
-<span>  n_sexes <span class="op">=</span> <span class="va">n_sexes</span>,</span>
 <span>  <span class="va">n_tags</span>,</span>
 <span>  <span class="va">max_liberty</span>,</span>
 <span>  <span class="va">tag_years</span>,</span>
@@ -60,7 +55,8 @@
 <span>  <span class="va">base_Tag_Reporting</span>,</span>
 <span>  <span class="va">Tag_Reporting_pattern</span>,</span>
 <span>  <span class="va">Tag_Ind_Mort</span>,</span>
-<span>  <span class="va">Tag_Shed</span></span>
+<span>  <span class="va">Tag_Shed</span>,</span>
+<span>  <span class="va">sim_list</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -68,27 +64,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-n-sims">n_sims<a class="anchor" aria-label="anchor" href="#arg-n-sims"></a></dt>
-<dd><p>Number of simulations</p></dd>
-
-
-<dt id="arg-n-yrs">n_yrs<a class="anchor" aria-label="anchor" href="#arg-n-yrs"></a></dt>
-<dd><p>Number of years</p></dd>
-
-
-<dt id="arg-n-regions">n_regions<a class="anchor" aria-label="anchor" href="#arg-n-regions"></a></dt>
-<dd><p>Number of regions</p></dd>
-
-
-<dt id="arg-n-ages">n_ages<a class="anchor" aria-label="anchor" href="#arg-n-ages"></a></dt>
-<dd><p>Number of ages</p></dd>
-
-
-<dt id="arg-n-sexes">n_sexes<a class="anchor" aria-label="anchor" href="#arg-n-sexes"></a></dt>
-<dd><p>Number of sexes</p></dd>
-
-
-<dt id="arg-n-tags">n_tags<a class="anchor" aria-label="anchor" href="#arg-n-tags"></a></dt>
+<dl><dt id="arg-n-tags">n_tags<a class="anchor" aria-label="anchor" href="#arg-n-tags"></a></dt>
 <dd><p>Number of tags to release in a given year</p></dd>
 
 
@@ -118,6 +94,10 @@
 
 <dt id="arg-tag-shed">Tag_Shed<a class="anchor" aria-label="anchor" href="#arg-tag-shed"></a></dt>
 <dd><p>Chronic tag shedding rate</p></dd>
+
+
+<dt id="arg-sim-list">sim_list<a class="anchor" aria-label="anchor" href="#arg-sim-list"></a></dt>
+<dd><p>Simulation list</p></dd>
 
 </dl></div>
 

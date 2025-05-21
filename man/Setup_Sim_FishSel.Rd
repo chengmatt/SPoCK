@@ -4,29 +4,10 @@
 \alias{Setup_Sim_FishSel}
 \title{Setup fishery selectivity}
 \usage{
-Setup_Sim_FishSel(
-  n_sims = n_sims,
-  n_yrs = n_yrs,
-  n_regions = n_regions,
-  n_ages = n_ages,
-  n_sexes = n_sexes,
-  n_fish_fleets = n_fish_fleets,
-  sel_model,
-  fixed_fish_sel_pars
-)
+Setup_Sim_FishSel(sim_list, sel_model, fixed_fish_sel_pars)
 }
 \arguments{
-\item{n_sims}{Number of simulations}
-
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_ages}{Number of ages}
-
-\item{n_sexes}{Number of sexes}
-
-\item{n_fish_fleets}{Number of fishery fleets}
+\item{sim_list}{Simulation list}
 
 \item{sel_model}{Fishery selectivity model dimensioned by region and fleet. Options include: logistic}
 

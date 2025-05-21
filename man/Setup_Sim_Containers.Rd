@@ -4,30 +4,10 @@
 \alias{Setup_Sim_Containers}
 \title{Setup containers for simulation and output into global environment}
 \usage{
-Setup_Sim_Containers(
-  n_sims = n_sims,
-  n_yrs = n_yrs,
-  n_regions = n_regions,
-  n_ages = n_ages,
-  n_sexes = n_sexes,
-  n_fish_fleets = n_fish_fleets,
-  n_srv_fleets = n_srv_fleets
-)
+Setup_Sim_Containers(sim_list)
 }
 \arguments{
-\item{n_sims}{Number of simulations}
-
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_ages}{Number of ages}
-
-\item{n_sexes}{Number of sexes}
-
-\item{n_fish_fleets}{Number of fishery fleets}
-
-\item{n_srv_fleets}{Number of survey fleets}
+\item{sim_list}{List object containing simulation components (should have n_regions, n_ages, n_sexes, n_sims, sim_list$n_fish_fleets, sim_list$n_srv_fleets)}
 }
 \description{
 Setup containers for simulation and output into global environment

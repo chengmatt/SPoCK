@@ -1,43 +1,32 @@
 #' Setup containers for simulation and output into global environment
 #'
-#' @param n_sims Number of simulations
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_ages Number of ages
-#' @param n_sexes Number of sexes
-#' @param n_fish_fleets Number of fishery fleets
-#' @param n_srv_fleets Number of survey fleets
+#' @param sim_list List object containing simulation components (should have n_regions, n_ages, n_sexes, n_sims, sim_list$n_fish_fleets, sim_list$n_srv_fleets)
 #'
 #' @export Setup_Sim_Containers
 #'
-Setup_Sim_Containers <- function(n_sims = n_sims,
-                                 n_yrs = n_yrs,
-                                 n_regions = n_regions,
-                                 n_ages = n_ages,
-                                 n_sexes = n_sexes,
-                                 n_fish_fleets = n_fish_fleets,
-                                 n_srv_fleets = n_srv_fleets) {
+Setup_Sim_Containers <- function(sim_list) {
 
   # Biological Containers
-  Init_NAA <<- array(0, dim = c(n_regions, n_ages, n_sexes, n_sims))
-  Init_NAA_next_year <<- Init_NAA
-  NAA <<- array(0, dim = c(n_yrs+1, n_regions, n_ages, n_sexes, n_sims))
-  Z <<- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_sims))
-  SSB <<- array(0, dim = c(n_yrs, n_regions, n_sims))
-  Total_Biom <<- array(0, dim = c(n_yrs, n_regions, n_sims))
-  ln_rec_devs <<- array(0, dim = c(n_yrs, n_regions, n_sims))
+  sim_list$Init_NAA <- array(0, dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  sim_list$Init_NAA_next_year <- sim_list$Init_NAA
+  sim_list$NAA <- array(0, dim = c(sim_list$n_yrs+1, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  sim_list$Z <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  sim_list$SSB <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
+  sim_list$Total_Biom <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
+  sim_list$ln_rec_devs <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
 
   # Fishery Containers
-  Obs_Catch <<- array(0, dim = c(n_yrs, n_regions, n_fish_fleets, n_sims))
-  Obs_FishAgeComps <<- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_fish_fleets, n_sims))
-  CAA <<- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_fish_fleets, n_sims))
-  True_Catch <<- array(0, dim = c(n_yrs, n_regions, n_fish_fleets, n_sims))
-  Obs_Catch <<- array(0, dim = c(n_yrs, n_regions, n_fish_fleets, n_sims))
+  sim_list$Obs_Catch <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+  sim_list$Obs_FishAgeComps <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets, sim_list$n_sims))
+  sim_list$CAA <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets, sim_list$n_sims))
+  sim_list$True_Catch <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+  sim_list$Obs_Catch <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
 
   # Survey Containers
-  Obs_SrvIdx <<- array(0, dim = c(n_yrs, n_regions, n_srv_fleets, n_sims))
-  True_SrvIdx <<- array(0, dim = c(n_yrs, n_regions, n_srv_fleets, n_sims))
-  Obs_SrvAgeComps <<- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_srv_fleets, n_sims))
-  Srv_IAA <<- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_srv_fleets, n_sims))
+  sim_list$Obs_SrvIdx <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_srv_fleets, sim_list$n_sims))
+  sim_list$True_SrvIdx <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_srv_fleets, sim_list$n_sims))
+  sim_list$Obs_SrvAgeComps <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_srv_fleets, sim_list$n_sims))
+  sim_list$Srv_IAA <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_srv_fleets, sim_list$n_sims))
 
+  return(sim_list)
 }

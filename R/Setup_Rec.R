@@ -1,10 +1,6 @@
 #' Set up recruitment dynamics for simulation
 #'
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_sexes Number of sexes
-#' @param n_sims Number of simulations
-#' @param do_recruits_move whether recruits move == 0, don't move, == 1 move
+#' @param do_recruits_move whether recruits move. Character string either specified as 'dont_move', or 'move'
 #' @param base_rec_sexratio base recruitment sex-ratio value
 #' @param rec_sexratio_vary whether recruitment sex-ratio varies. Options include: constant
 #' @param base_r0 base R0 or mean recruitment value
@@ -12,15 +8,15 @@
 #' @param base_h base steepness value
 #' @param init_sigmaR Sigma R for initial devs
 #' @param sigmaR Sigma R for everything else
-#' @param recruitment_opt == 0, mean recruitment
-#' @param recdev_opt == 0, global rec devs, == 1, local rec devs
+#' @param recruitment_opt character string as either "mean_rec" or "bh_rec"
+#' @param rec_dd recruitment density dependence; character string as either "global" or "local"
+#' @param sim_list Simulation list
+#' @param init_dd initial age density dependence; character string as either "global" or "local"
+#' @param rec_lag Numeric, recruitment lag value
 #'
 #' @export Setup_Sim_Rec
 #'
-Setup_Sim_Rec <- function(n_yrs,
-                          n_regions,
-                          n_sexes,
-                          n_sims,
+Setup_Sim_Rec <- function(
                           do_recruits_move,
                           base_rec_sexratio,
                           rec_sexratio_vary,
@@ -30,40 +26,54 @@ Setup_Sim_Rec <- function(n_yrs,
                           init_sigmaR,
                           sigmaR,
                           recruitment_opt,
-                          recdev_opt) {
+                          rec_dd,
+                          init_dd,
+                          sim_list,
+                          rec_lag
+                          ) {
 
 
-  do_recruits_move <<- do_recruits_move # whether recruits move == 0, don't move, == 1 move
-  if(do_recruits_move == 0) move_age <<- 2 else move_age <<- 1 # what age to start movement of individuals
-  recruitment_opt <<- recruitment_opt # mean recruitment == 0
-  recdev_opt <<- recdev_opt # == 0, global rec devs, == 1, local rec devs
+  if(do_recruits_move == 'dont_move') sim_list$do_recruits_move <- 0
+  if(do_recruits_move == 'move') sim_list$do_recruits_move <- 1
+  if(sim_list$do_recruits_move == 0) sim_list$move_age <- 2 else sim_list$move_age <- 1 # what age to start movement of individuals
+
+  if(recruitment_opt == "mean_rec") sim_list$recruitment_opt <- 0
+  if(recruitment_opt == "bh_rec") sim_list$recruitment_opt <- 1
+
+  if(rec_dd == "global") sim_list$rec_dd <- 0
+  if(rec_dd == "local") sim_list$rec_dd <- 1
+  if(init_dd == "global") sim_list$init_dd <- 0
+  if(init_dd == "local") sim_list$init_dd <- 1
 
   # recruitment variability
-  init_sigmaR <<- array(init_sigmaR, dim = c(1, n_regions))
-  sigmaR <<- array(sigmaR, dim = c(n_yrs, n_regions))
+  sim_list$init_sigmaR <- array(init_sigmaR, dim = c(1, sim_list$n_regions))
+  sim_list$sigmaR <- array(sigmaR, dim = c(sim_list$n_yrs, sim_list$n_regions))
 
   # Set up containers for r0, h, init_sigmaR, sigmaR, and recruitment sex ratio
-  r0 <- array(0, dim = c(n_yrs, n_regions, n_sims))
-  h <- array(0, dim = c(n_yrs, n_regions, n_sims))
-  rec_sexratio <- array(0, dim = c(n_yrs, n_regions, n_sexes, n_sims))
+  r0 <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
+  h <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
+  rec_sexratio <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sexes, sim_list$n_sims))
 
-  for(sim in 1:n_sims) {
-    for(r in 1:n_regions) {
-      for(y in 1:n_yrs) {
+  for(sim in 1:sim_list$n_sims) {
+    for(r in 1:sim_list$n_regions) {
+      for(y in 1:sim_list$n_yrs) {
 
         # Fill in values
         h[y,r,sim] <- base_h[r] # fill in steepness
         if(r0_vary == "constant") r0[y,r,sim] <- base_r0[r] # fill in r0 constant
-        if(rec_sexratio_vary == "constant") for(s in 1:n_sexes) rec_sexratio[y,r,s,sim] <- base_rec_sexratio[s] # fill in constant recruitment sex-ratio
+        if(rec_sexratio_vary == "constant") for(s in 1:sim_list$n_sexes) rec_sexratio[y,r,s,sim] <- base_rec_sexratio[s] # fill in constant recruitment sex-ratio
 
       } # end y loop
     } # end r loop
   } # end sim loop
 
   # output these into environment
-  h <<- h
-  r0 <<- r0
-  rec_sexratio <<- rec_sexratio
+  sim_list$h <- h
+  sim_list$r0 <- r0
+  sim_list$rec_sexratio <- rec_sexratio
+  sim_list$rec_lag <- rec_lag
+
+  return(sim_list)
 
 }
 
@@ -180,7 +190,7 @@ Setup_Mod_Rec <- function(input_list,
   else input_list$par$Rec_prop <- array(rep(0, input_list$data$n_regions - 1))
 
   # Steepness in bounded logit space (0.2 and 1)
-  if("h" %in% names(starting_values)) input_list$par$steepness_h <- starting_values$steepness_h
+  if("steepness_h" %in% names(starting_values)) input_list$par$steepness_h <- starting_values$steepness_h
   else input_list$par$steepness_h <- rep(0, input_list$data$n_regions)
 
   # Initial age deviations
@@ -240,7 +250,7 @@ Setup_Mod_Rec <- function(input_list,
   # Steepness
   if(input_list$data$rec_model == 0) input_list$map$steepness_h <- factor(rep(NA, length(input_list$par$steepness_h)))
   if(!is.null(h_spec)) {
-    if(rec_dd == 'global' && h_spec != "est_shared_r" && input_list$data$n_regions > 1) stop("Please specify a valid steepness option for global recruitment density dependence (should be est_shared_r)!")
+    if(rec_dd == 'global' && !h_spec %in% c("est_shared_r", "fix") && input_list$data$n_regions > 1) stop("Please specify a valid steepness option for global recruitment density dependence (should be est_shared_r or fix)!")
     # Share across regions and estimate
     if(h_spec == "est_shared_r") input_list$map$steepness_h <- factor(rep(1, length(input_list$par$steepness_h)))
     # Fix all steepness values

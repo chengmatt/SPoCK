@@ -1,10 +1,5 @@
 #' Set up simulated tagging dynamics
 #'
-#' @param n_sims Number of simulations
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_ages Number of ages
-#' @param n_sexes Number of sexes
 #' @param n_tags Number of tags to release in a given year
 #' @param max_liberty Maximum liberty to track cohorts for
 #' @param tag_years Years to release tags for
@@ -13,14 +8,11 @@
 #' @param Tag_Reporting_pattern Tag reporting pattern. Options include: constant
 #' @param Tag_Ind_Mort Initial tag induced mortality
 #' @param Tag_Shed Chronic tag shedding rate
+#' @param sim_list Simulation list
 #'
 #' @export Setup_Sim_Tagging
 #'
-Setup_Sim_Tagging <- function(n_sims = n_sims,
-                              n_yrs = n_yrs,
-                              n_regions = n_regions,
-                              n_ages = n_ages,
-                              n_sexes = n_sexes,
+Setup_Sim_Tagging <- function(
                               n_tags,
                               max_liberty,
                               tag_years,
@@ -28,37 +20,39 @@ Setup_Sim_Tagging <- function(n_sims = n_sims,
                               base_Tag_Reporting,
                               Tag_Reporting_pattern,
                               Tag_Ind_Mort,
-                              Tag_Shed
+                              Tag_Shed,
+                              sim_list
                               ) {
 
-  # Output variables into global environment
-  n_tags <<- n_tags
-  max_liberty <<- max_liberty
-  tag_years <<- tag_years
-  n_tag_yrs <<- length(tag_years)
-  t_tagging <<- t_tagging
-  Tag_Ind_Mort <<- Tag_Ind_Mort
-  Tag_Shed <<- Tag_Shed
-  n_tag_rel_events <<- n_tag_yrs * n_regions # number of tag release events - tag years x tag region (tag cohorts)
-  tag_rel_indicator <<- expand.grid(regions = 1:n_regions, tag_yrs = tag_years) # get tag release indicator (by tag years and regions = a tag cohort)
+  # Output variables into list
+  sim_list$n_tags <- n_tags
+  sim_list$max_liberty <- max_liberty
+  sim_list$tag_years <- tag_years
+  sim_list$n_tag_yrs <- length(tag_years)
+  sim_list$t_tagging <- t_tagging
+  sim_list$Tag_Ind_Mort <- Tag_Ind_Mort
+  sim_list$Tag_Shed <- Tag_Shed
+  sim_list$n_tag_rel_events <- sim_list$n_tag_yrs * sim_list$n_regions # number of tag release events - tag years x tag region (tag cohorts)
+  sim_list$tag_rel_indicator <- expand.grid(regions = 1:sim_list$n_regions, tag_yrs = tag_years) # get tag release indicator (by tag years and regions = a tag cohort)
 
   # Containers
-  Tag_Reporting <- array(0, dim = c(n_yrs, n_regions, n_sims)) # populated later on
-  Tag_Fish <<- array(0, dim = c(n_tag_rel_events, n_ages, n_sexes, n_sims)) # number of tagged fish
-  Tag_Avail <<- array(0, dim = c(max_liberty + 1, n_tag_rel_events, n_regions, n_ages, n_sexes, n_sims)) # tags availiable for recapture every year
-  Pred_Tag_Recap <<- array(0, dim = c(max_liberty, n_tag_rel_events, n_regions, n_ages, n_sexes, n_sims)) # predicted tag recaptures
-  Obs_Tag_Recap <<- array(0, dim = c(max_liberty, n_tag_rel_events, n_regions, n_ages, n_sexes, n_sims)) # observed tag recaptures
+  Tag_Reporting <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims)) # populated later on
+  sim_list$Tag_Fish <- array(0, dim = c(sim_list$n_tag_rel_events, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # number of tagged fish
+  sim_list$Tag_Avail <- array(0, dim = c(sim_list$max_liberty + 1, sim_list$n_tag_rel_events, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # tags availiable for recapture every year
+  sim_list$Pred_Tag_Recap <- array(0, dim = c(sim_list$max_liberty, sim_list$n_tag_rel_events, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # predicted tag recaptures
+  sim_list$Obs_Tag_Recap <- array(0, dim = c(sim_list$max_liberty, sim_list$n_tag_rel_events, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # observed tag recaptures
 
-  for(sim in 1:n_sims) {
-    for(r in 1:n_regions) {
-      for(y in 1:n_yrs) {
+  for(sim in 1:sim_list$n_sims) {
+    for(r in 1:sim_list$n_regions) {
+      for(y in 1:sim_list$n_yrs) {
         if(Tag_Reporting_pattern == "constant") Tag_Reporting[y,r,sim] <- base_Tag_Reporting[r]
       } # end y loop
     } # end r loop
   } # end sim loop
 
-  Tag_Reporting <<- Tag_Reporting # output this lastly into environment
+  sim_list$Tag_Reporting <- Tag_Reporting # output this into list
 
+  return(sim_list)
 }
 
 #' Setup tagging processes and parameters

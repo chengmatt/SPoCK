@@ -1,54 +1,44 @@
 #' Setup values for survey parameterization
 #'
-#' @param n_sims Number of simulations
-#' @param n_yrs Number of years
-#' @param n_regions Number of regions
-#' @param n_ages Number of ages
-#' @param n_sexes Number of sexes
-#' @param n_srv_fleets Number of survey fleets
 #' @param sigmaSrvIdx Survey index observation error, dimensioned by region and fleet
 #' @param base_srv_q Base survey catchability value, dimensioned by region and fleet
 #' @param srv_q_pattern Survey catchability pattern, dimensioned by region and fleet. Options include: constant
 #' @param sel_model Survey selectivity model dimensioned by region and fleet. Options include: logistic
 #' @param fixed_srv_sel_pars Fixed parameters of survey selectivity, dimensioned by region, sex, survey fleet, and the max number of parameters needed for
 #' for a defined survey selectivity functional form out of all defined functional forms for the survey.
+#' @param sim_list Simulation list object
 #'
 #' @export Setup_Sim_Survey
 #'
-Setup_Sim_Survey <- function(n_sims = n_sims,
-                             n_yrs = n_yrs,
-                             n_regions = n_regions,
-                             n_ages = n_ages,
-                             n_sexes = n_sexes,
-                             n_srv_fleets = n_srv_fleets,
-                             sigmaSrvIdx,
+Setup_Sim_Survey <- function(sigmaSrvIdx,
                              base_srv_q,
                              srv_q_pattern,
                              sel_model,
-                             fixed_srv_sel_pars
+                             fixed_srv_sel_pars,
+                             sim_list
                              ) {
 
-  # otuput survey sigma into globals
-  sigmaSrvIdx <<- sigmaSrvIdx
+  # otuput survey sigma into simulation list
+  sim_list$sigmaSrvIdx <- sigmaSrvIdx
 
   # create containers to loop through and populate
-  srv_sel <- array(0, dim = c(n_yrs, n_regions, n_ages, n_sexes, n_srv_fleets, n_sims)) # survey selectivity
-  srv_q <- array(1, dim = c(n_yrs, n_regions, n_srv_fleets, n_sims)) # survey catchability
+  srv_sel <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_srv_fleets, sim_list$n_sims)) # survey selectivity
+  srv_q <- array(1, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_srv_fleets, sim_list$n_sims)) # survey catchability
 
-  for(sim in 1:n_sims) {
-    for(r in 1:n_regions) {
-      for(y in 1:n_yrs) {
-        for(sf in 1:n_srv_fleets) {
+  for(sim in 1:sim_list$n_sims) {
+    for(r in 1:sim_list$n_regions) {
+      for(y in 1:sim_list$n_yrs) {
+        for(sf in 1:sim_list$n_srv_fleets) {
 
           # Survey catchability if constant
           if(srv_q_pattern[r,sf] == 'constant') srv_q[y,r,sf,sim] <- base_srv_q[r,sf]
 
-          for(s in 1:n_sexes) {
+          for(s in 1:sim_list$n_sexes) {
 
             if(sel_model[r,sf] == 'logistic') {
               a50 <- fixed_srv_sel_pars[r,s,sf,1] # get a50
               k <- fixed_srv_sel_pars[r,s,sf,2] # get k
-              srv_sel[y,r,,s,sf,sim] <- 1 / (1 + exp(-k * (1:n_ages - a50)))
+              srv_sel[y,r,,s,sf,sim] <- 1 / (1 + exp(-k * (1:sim_list$n_ages - a50)))
             } # end if logistic
 
           }
@@ -57,10 +47,11 @@ Setup_Sim_Survey <- function(n_sims = n_sims,
     } # end r loop
   } # end sim loop
 
-  # output into global environment
-  srv_sel <<- srv_sel
-  srv_q <<- srv_q
+  # output into list
+  sim_list$srv_sel <- srv_sel
+  sim_list$srv_q <- srv_q
 
+  return(sim_list)
 
 } # end function
 

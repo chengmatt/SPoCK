@@ -5,32 +5,15 @@
 \title{Setup values for survey parameterization}
 \usage{
 Setup_Sim_Survey(
-  n_sims = n_sims,
-  n_yrs = n_yrs,
-  n_regions = n_regions,
-  n_ages = n_ages,
-  n_sexes = n_sexes,
-  n_srv_fleets = n_srv_fleets,
   sigmaSrvIdx,
   base_srv_q,
   srv_q_pattern,
   sel_model,
-  fixed_srv_sel_pars
+  fixed_srv_sel_pars,
+  sim_list
 )
 }
 \arguments{
-\item{n_sims}{Number of simulations}
-
-\item{n_yrs}{Number of years}
-
-\item{n_regions}{Number of regions}
-
-\item{n_ages}{Number of ages}
-
-\item{n_sexes}{Number of sexes}
-
-\item{n_srv_fleets}{Number of survey fleets}
-
 \item{sigmaSrvIdx}{Survey index observation error, dimensioned by region and fleet}
 
 \item{base_srv_q}{Base survey catchability value, dimensioned by region and fleet}
@@ -41,6 +24,8 @@ Setup_Sim_Survey(
 
 \item{fixed_srv_sel_pars}{Fixed parameters of survey selectivity, dimensioned by region, sex, survey fleet, and the max number of parameters needed for
 for a defined survey selectivity functional form out of all defined functional forms for the survey.}
+
+\item{sim_list}{Simulation list object}
 }
 \description{
 Setup values for survey parameterization
