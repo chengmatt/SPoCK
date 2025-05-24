@@ -9,6 +9,7 @@
 #' @param Var_Type variance type == 0, marginal (stationary and slower run time), == 1 conditional (non-statationary, faster run time)
 #'
 #' @importFrom Matrix sparseMatrix
+#' @importFrom methods as
 #' @returns Sparse precision matrix dimensioned by n_ages * n_years, n_ages * n_years
 #' @keywords internal
 #'

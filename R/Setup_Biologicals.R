@@ -20,9 +20,9 @@ Setup_Sim_Biologicals <- function(
                                   ) {
 
   # Create containers to store values
-  M <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
-  WAA <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
-  Maturity_AA <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  M <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  WAA <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  Maturity_AA <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
 
   for(sim in 1:sim_list$n_sims) {
     for(r in 1:sim_list$n_regions) {
@@ -30,13 +30,13 @@ Setup_Sim_Biologicals <- function(
         for(s in 1:sim_list$n_sexes) {
 
           # Natural mortality constant
-          if(M_pattern == "constant") M[y,r,,s,sim] <- base_M_value[r,,s]
+          if(M_pattern == "constant") M[r,y,,s,sim] <- base_M_value[r,,s]
 
           # WAA constant
-          if(WAA_pattern == "constant") WAA[y,r,,s,sim] <- base_WAA_values[r,,s]
+          if(WAA_pattern == "constant") WAA[r,y,,s,sim] <- base_WAA_values[r,,s]
 
           # Maturity constant
-          if(Maturity_AA_pattern == "constant") Maturity_AA[y,r,,s,sim] <- base_Maturity_AA_values[r,,s]
+          if(Maturity_AA_pattern == "constant") Maturity_AA[r,y,,s,sim] <- base_Maturity_AA_values[r,,s]
 
         } # end s loop
       } # end y loop

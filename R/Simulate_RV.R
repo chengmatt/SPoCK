@@ -53,13 +53,13 @@ rlogistnormal <- function(exp,
 #' @param n Number of sims
 #' @param N Sum of observations
 #' @param alpha Concentration parameter
-#'
+#' @importFrom stats rgamma rmultinom
 #' @keywords internal
 rdirM <- function(n, N, alpha) {
 
   # Get dirichlet draws
   rdirichlet <- function(alpha) {
-    x <- rgamma(length(alpha), shape = alpha, scale = 1)
+    x <- stats::rgamma(length(alpha), shape = alpha, scale = 1)
     return(x / sum(x))
   }
 
@@ -72,3 +72,36 @@ rdirM <- function(n, N, alpha) {
 
   return(result)
 }
+
+#' Title Generate Recruitment Values based on Inverse Gaussian Distribution
+#'
+#' @param sims Number of Simulations
+#' @param recruitment Recruitment vector
+#' @importFrom stats rnorm runif
+#' @returns Random variables following an inverse gaussian
+#' @keywords internal
+rinvgauss_rec <- function(sims,
+                          recruitment
+                          ) {
+
+  AMeanRec <- mean(recruitment) # get arithmetic mean recruitment
+  HMeanRec <- 1 / mean(1 / recruitment) # get harmonic mean recruitment
+
+  # define parameters for inverse gaussian
+  gamma <- AMeanRec / HMeanRec
+  gi_beta <- AMeanRec
+  delta <- 1 / (gamma - 1)
+  cvrec <- sqrt(1 / delta)
+
+  # Generate random variables with transformation
+  psi <- stats::rnorm(sims,0,1)^2 # generate squared random normal
+  omega <- gi_beta * (1 + (psi - sqrt(4 * delta * psi + psi^2)) / (2 * delta))
+  zeta <- gi_beta * (1 + (psi + sqrt(4 * delta * psi + psi^2)) / (2 * delta))
+  gtheta <- gi_beta / (gi_beta + omega)
+
+  unifs <- stats::runif(sims) # generate uniform
+  rv <- ifelse(unifs <= gtheta, omega, zeta) # generate random draws based on mixture
+
+  return(rv)
+}
+

@@ -11,7 +11,7 @@
 #'
 #' @import tmbstan
 #' @import RTMB
-#' @importFrom stats rnorm nlminb
+#' @importFrom stats rnorm nlminb optimHess
 #' @returns MCMC list object from rtmbstan
 #' @export do_mcmc
 #'

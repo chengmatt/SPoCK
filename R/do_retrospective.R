@@ -13,11 +13,10 @@
 #' retro_list <- retro_truncate_year(j = 0, data, parameters, mapping) # does not remove any data
 #' retro_list <- retro_truncate_year(j = 1, data, parameters, mapping) # removes last year of data
 #' }
-retro_truncate_yr <- function(j,
-                              data,
-                              parameters,
-                              mapping
-                              ) {
+truncate_yr <- function(j,
+                        data,
+                        parameters,
+                        mapping) {
 
   # set up retro data, parameters, and mapping
   retro_data <- data
@@ -58,7 +57,6 @@ retro_truncate_yr <- function(j,
   retro_mapping$ln_fish_q <- factor(array(mapping$ln_fish_q, dim = dim(parameters$ln_fish_q))[,1:max(retro_data$fish_q_blocks),,drop = FALSE])
   retro_mapping$ln_fish_fixed_sel_pars <- factor(array(mapping$ln_fish_fixed_sel_pars, dim = dim(parameters$ln_fish_fixed_sel_pars))[,,1:max(retro_data$fish_sel_blocks),,,drop = FALSE])
 
-
 # Survey ------------------------------------------------------------------
 
   # Survey selectivity deviations
@@ -78,13 +76,14 @@ retro_truncate_yr <- function(j,
   retro_mapping$ln_srv_q <- factor(array(mapping$ln_srv_q, dim = dim(parameters$ln_srv_q))[,1:max(retro_data$srv_q_blocks),,drop = FALSE])
   retro_mapping$ln_srv_fixed_sel_pars <- factor(array(mapping$ln_srv_fixed_sel_pars, dim = dim(parameters$ln_srv_fixed_sel_pars))[,,1:max(retro_data$srv_sel_blocks),,,drop = FALSE])
 
-
 # Movement ----------------------------------------------------------------
 
   if(data$n_regions > 1) {
     # Movement stuff
     retro_parameters$move_pars <- parameters$move_pars[,,1:(length(data$years) - j),,,drop = FALSE]
+    retro_parameters$logit_move_devs <- parameters$logit_move_devs[,,1:(length(data$years) - j),,drop = FALSE]
     retro_mapping$move_pars <- factor(array(mapping$move_pars, dim = dim(parameters$move_pars))[,,1:(length(data$years) - j),,,drop = FALSE])
+    retro_mapping$logit_move_devs <- factor(array(mapping$logit_move_devs, dim = dim(parameters$logit_move_devs))[,,1:(length(data$years) - j),,drop = FALSE])
     retro_data$map_Movement_Pars <- data$map_Movement_Pars[,,1:(length(data$years) - j),,,drop = FALSE]
     retro_data$Fixed_Movement <- data$Fixed_Movement[,,1:(length(data$years) - j),,,drop = FALSE]
   }
@@ -99,12 +98,11 @@ retro_truncate_yr <- function(j,
     retro_data$map_Tag_Reporting_Pars <- data$map_Tag_Reporting_Pars[,1:max(data$Tag_Reporting_blocks),drop = FALSE]
 
     # Tag cohort stuff
-    if(length(which(data$tag_release_indicator[,2] >= length(data$years) - j)) != 0) { # only remove data if applicable
-      retro_data$tag_release_indicator <- data$tag_release_indicator[-which(data$tag_release_indicator[,2] >= length(data$years) - j),,drop = FALSE]
-      retro_data$n_tag_cohorts <- nrow(retro_data$tag_release_indicator)
-      retro_data$Tagged_Fish <- data$Tagged_Fish[-which(data$tag_release_indicator[,2] >= length(data$years) - j),,,drop = FALSE] # remove data (not necessary, but helps with computational cost if using tagging)
-      retro_data$Obs_Tag_Recap <- data$Obs_Tag_Recap[,-which(data$tag_release_indicator[,2] >= length(data$years) - j),,,,drop = FALSE] # remove data (not necessary, but helps with computational cost)
-    }
+    Tag_Release_Ind <- as.matrix(data$tag_release_indicator)
+    retro_data$tag_release_indicator <- as.matrix(Tag_Release_Ind[which(Tag_Release_Ind[,2] %in% 1:(length(data$years) - j)), ])
+    retro_data$n_tag_cohorts <- nrow(retro_data$tag_release_indicator)
+    retro_data$Tagged_Fish <- data$Tagged_Fish[1:nrow(retro_data$tag_release_indicator),,,drop = FALSE] # remove data (not necessary, but helps with computational cost if using tagging)
+    retro_data$Obs_Tag_Recap <- data$Obs_Tag_Recap[,1:nrow(retro_data$tag_release_indicator),,,,drop = FALSE] # remove data (not necessary, but helps with computational cost)
   }
 
 
@@ -148,7 +146,7 @@ retro_truncate_yr <- function(j,
 #' @param do_francis Whether to do francis reweighitng within a given retrospective peel, boolean
 #' @param n_francis_iter Number of francis iterations to do
 #' @param n_cores Number of cores to use for parrallelization
-#'
+#' @importFrom stats nlminb optimHess
 #' @returns Dataframe of retrospective estiamtes of SSB and recruitment
 #' @export do_retrospective
 #'
@@ -201,7 +199,7 @@ do_retrospective <- function(n_retro,
     for(j in 0:n_retro) {
 
       # truncate data
-      init <- retro_truncate_yr(j = j, data = data, parameters = parameters, mapping = mapping)
+      init <- truncate_yr(j = j, data = data, parameters = parameters, mapping = mapping)
 
       if(do_francis == FALSE) { # don't do francis within retrospective loop
 
@@ -283,25 +281,18 @@ do_retrospective <- function(n_retro,
 
       retro_all <- future_lapply(0:n_retro, function(j) {
 
-        init <- retro_truncate_yr(j = j, data = data, parameters = parameters, mapping = mapping)
+        init <- truncate_yr(j = j, data = data, parameters = parameters, mapping = mapping)
 
         if(do_francis == FALSE) { # don't do francis within retrospective loop
 
           # make AD model function
-          SPoCK_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, init$retro_data), parameters = init$retro_parameters, map = init$retro_mapping, random = random, silent = T)
-
-          # Now, optimize the function
-          SPoCK_optim <- stats::nlminb(SPoCK_rtmb_model$par, SPoCK_rtmb_model$fn, SPoCK_rtmb_model$gr,
-                                       control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
-          # newton steps
-          try_improve <- tryCatch(expr =
-                                    for(i in 1:3) {
-                                      g = as.numeric(SPoCK_rtmb_model$gr(SPoCK_optim$par))
-                                      h = optimHess(SPoCK_optim$par, fn = SPoCK_rtmb_model$fn, gr = SPoCK_rtmb_model$gr)
-                                      SPoCK_optim$par = SPoCK_optim$par - solve(h,g)
-                                      SPoCK_optim$objective = SPoCK_rtmb_model$fn(SPoCK_optim$par)
-                                    }
-                                  , error = function(e){e}, warning = function(w){w})
+          SPoCK_rtmb_model <- fit_model(init$retro_data,
+                                        init$retro_parameters,
+                                        init$retro_mapping,
+                                        random = random,
+                                        newton_loops = 3,
+                                        silent = T
+                                        )
 
           rep <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best) # Get report
 
@@ -324,20 +315,13 @@ do_retrospective <- function(n_retro,
             }
 
             # make AD model function
-            SPoCK_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, init$retro_data), parameters = init$retro_parameters, map = init$retro_mapping, random = random, silent = T)
-
-            # Now, optimize the function
-            SPoCK_optim <- stats::nlminb(SPoCK_rtmb_model$par, SPoCK_rtmb_model$fn, SPoCK_rtmb_model$gr,
-                                         control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
-            # newton steps
-            try_improve <- tryCatch(expr =
-                                      for(i in 1:3) {
-                                        g = as.numeric(SPoCK_rtmb_model$gr(SPoCK_optim$par))
-                                        h = optimHess(SPoCK_optim$par, fn = SPoCK_rtmb_model$fn, gr = SPoCK_rtmb_model$gr)
-                                        SPoCK_optim$par = SPoCK_optim$par - solve(h,g)
-                                        SPoCK_optim$objective = SPoCK_rtmb_model$fn(SPoCK_optim$par)
-                                      }
-                                    , error = function(e){e}, warning = function(w){w})
+            SPoCK_rtmb_model <- fit_model(init$retro_data,
+                                          init$retro_parameters,
+                                          init$retro_mapping,
+                                          random = random,
+                                          newton_loops = 3,
+                                          silent = T
+            )
 
             rep <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best) # Get report
 

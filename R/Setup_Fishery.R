@@ -22,32 +22,35 @@ Setup_Sim_FishMort <- function(sim_list,
                                 ) {
 
   # Fishing mortality stuff
-  init_F <- array(0, dim = c(1, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
-  Fmort <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+  init_F <- array(0, dim = c(sim_list$n_regions, 1, sim_list$n_fish_fleets, sim_list$n_sims))
+  Fmort <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs + 1, sim_list$n_fish_fleets, sim_list$n_sims))
+
+  if(sim_list$run_feedback == TRUE) f_yrs <- sim_list$feedback_start_yr
+  else f_yrs <- sim_list$n_yrs
 
   for(r in 1:sim_list$n_regions) {
     for(f in 1:sim_list$n_fish_fleets) {
       for(sim in 1:sim_list$n_sims) {
 
         # Set up initial F values
-        init_F[1,r,f,sim] <- init_F_vals[r,f]
+        init_F[r,1,f,sim] <- init_F_vals[r,f]
 
         if(Fmort_pattern[r,f] == 'constant') {
-          Fmort[,r,f,sim] <- Fmort_start[r,f]
+          Fmort[r,1:f_yrs,f,sim] <- Fmort_start[r,f]
         } # end if Fmort is constant
 
         if(Fmort_pattern[r,f] == "linear") {
-          Fmort[,r,f,sim] <- seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = sim_list$n_yrs)
+          Fmort[r,1:f_yrs,f,sim] <- seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = f_yrs)
         } # end if Fmort is linear increase of decrease
 
         if(Fmort_pattern[r,f] == "one-way") {
-          Fmort[,r,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(sim_list$n_yrs / 2)),
-                               rep(Fmort_start[r,f] * Fmort_fct[r,f], floor(n_yrs / 2)))
+          Fmort[r,1:f_yrs,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(f_yrs / 2)),
+                               rep(Fmort_start[r,f] * Fmort_fct[r,f], ceiling(f_yrs / 2)))
         } # end if Fmort is a one way trip
 
         if(Fmort_pattern[r,f] == "two-way") {
-          Fmort[,r,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(sim_list$n_yrs / 2)),
-                               seq(Fmort_start[r,f] * Fmort_fct[r,f], max(Fmort_start[r,f], Fmort_start[r,f] * 0.75), length.out = round(sim_list$n_yrs / 2)))
+          Fmort[r,1:f_yrs,f,sim] <- c(seq(Fmort_start[r,f], Fmort_start[r,f] * Fmort_fct[r,f], length.out = round(f_yrs / 2)),
+                               seq(Fmort_start[r,f] * Fmort_fct[r,f], max(Fmort_start[r,f], Fmort_start[r,f] * 0.75), length.out = ceiling(f_yrs / 2)))
         } # end if Fmort is a two way trip
 
       } # end sim loop
@@ -80,7 +83,7 @@ Setup_Sim_FishSel <- function(sim_list,
                               ) {
 
   # create fishery selectivity container
-  fish_sel <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets, sim_list$n_sims))
+  fish_sel <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets, sim_list$n_sims))
 
   for(sim in 1:sim_list$n_sims) {
     for(r in 1:sim_list$n_regions) {
@@ -91,14 +94,14 @@ Setup_Sim_FishSel <- function(sim_list,
             if(sel_model[r,f] == 'logistic') {
               a50 <- fixed_fish_sel_pars[r,s,f,1] # get a50
               k <- fixed_fish_sel_pars[r,s,f,2] # get k
-              fish_sel[y,r,,s,f,sim] <- 1 / (1 + exp(-k * (1:sim_list$n_ages - a50)))
+              fish_sel[r,y,,s,f,sim] <- 1 / (1 + exp(-k * (1:sim_list$n_ages - a50)))
             } # end if logistic
 
             if(sel_model[r,f] == 'gamma') {
               amax <- fixed_fish_sel_pars[r,s,f,1] # get amax
               delta <- fixed_fish_sel_pars[r,s,f,2] # get delta
               p <- 0.5 * (sqrt( amax^2 + (4 * delta^2)) - amax)
-              fish_sel[y,r,,s,f,sim] <- (1:n_ages / amax)^(amax/p) * exp( (amax - 1:sim_list$n_ages) / p )
+              fish_sel[r,y,,s,f,sim] <- (1:n_ages / amax)^(amax/p) * exp( (amax - 1:sim_list$n_ages) / p )
             } # end if gamma
 
           }
@@ -295,7 +298,6 @@ Setup_Mod_Catch_and_F <- function(input_list,
     } # end f loop
   }
 
-  F_dev_map <<- F_dev_map
   input_list$map$ln_F_devs <- factor(F_dev_map)
 
   # If we are estimating some aggregated F devs

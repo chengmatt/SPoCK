@@ -22,8 +22,8 @@ Setup_Sim_Survey <- function(sigmaSrvIdx,
   sim_list$sigmaSrvIdx <- sigmaSrvIdx
 
   # create containers to loop through and populate
-  srv_sel <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_srv_fleets, sim_list$n_sims)) # survey selectivity
-  srv_q <- array(1, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_srv_fleets, sim_list$n_sims)) # survey catchability
+  srv_sel <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_srv_fleets, sim_list$n_sims)) # survey selectivity
+  srv_q <- array(1, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_srv_fleets, sim_list$n_sims)) # survey catchability
 
   for(sim in 1:sim_list$n_sims) {
     for(r in 1:sim_list$n_regions) {
@@ -31,14 +31,14 @@ Setup_Sim_Survey <- function(sigmaSrvIdx,
         for(sf in 1:sim_list$n_srv_fleets) {
 
           # Survey catchability if constant
-          if(srv_q_pattern[r,sf] == 'constant') srv_q[y,r,sf,sim] <- base_srv_q[r,sf]
+          if(srv_q_pattern[r,sf] == 'constant') srv_q[r,y,sf,sim] <- base_srv_q[r,sf]
 
           for(s in 1:sim_list$n_sexes) {
 
             if(sel_model[r,sf] == 'logistic') {
               a50 <- fixed_srv_sel_pars[r,s,sf,1] # get a50
               k <- fixed_srv_sel_pars[r,s,sf,2] # get k
-              srv_sel[y,r,,s,sf,sim] <- 1 / (1 + exp(-k * (1:sim_list$n_ages - a50)))
+              srv_sel[r,y,,s,sf,sim] <- 1 / (1 + exp(-k * (1:sim_list$n_ages - a50)))
             } # end if logistic
 
           }

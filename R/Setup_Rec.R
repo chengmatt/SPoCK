@@ -46,22 +46,22 @@ Setup_Sim_Rec <- function(
   if(init_dd == "local") sim_list$init_dd <- 1
 
   # recruitment variability
-  sim_list$init_sigmaR <- array(init_sigmaR, dim = c(1, sim_list$n_regions))
-  sim_list$sigmaR <- array(sigmaR, dim = c(sim_list$n_yrs, sim_list$n_regions))
+  sim_list$init_sigmaR <- array(init_sigmaR, dim = c(sim_list$n_regions, 1))
+  sim_list$sigmaR <- array(sigmaR, dim = c(sim_list$n_regions, sim_list$n_yrs))
 
   # Set up containers for r0, h, init_sigmaR, sigmaR, and recruitment sex ratio
-  r0 <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
-  h <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims))
-  rec_sexratio <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sexes, sim_list$n_sims))
+  r0 <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_sims))
+  h <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_sims))
+  rec_sexratio <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_sexes, sim_list$n_sims))
 
   for(sim in 1:sim_list$n_sims) {
     for(r in 1:sim_list$n_regions) {
       for(y in 1:sim_list$n_yrs) {
 
         # Fill in values
-        h[y,r,sim] <- base_h[r] # fill in steepness
-        if(r0_vary == "constant") r0[y,r,sim] <- base_r0[r] # fill in r0 constant
-        if(rec_sexratio_vary == "constant") for(s in 1:sim_list$n_sexes) rec_sexratio[y,r,s,sim] <- base_rec_sexratio[s] # fill in constant recruitment sex-ratio
+        h[r,y,sim] <- base_h[r] # fill in steepness
+        if(r0_vary == "constant") r0[r,y,sim] <- base_r0[r] # fill in r0 constant
+        if(rec_sexratio_vary == "constant") for(s in 1:sim_list$n_sexes) rec_sexratio[r,y,s,sim] <- base_rec_sexratio[s] # fill in constant recruitment sex-ratio
 
       } # end y loop
     } # end r loop

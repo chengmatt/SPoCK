@@ -12,7 +12,6 @@ Setup_Sim_Observation_Proc(
   Comp_Fish_Like,
   base_ISS_FishAge,
   ISS_FishAge_Pattern,
-  Fish_Like_Pars,
   Tag_Like,
   Tag_Like_Pars,
   SrvAgeTheta,
@@ -34,8 +33,6 @@ Setup_Sim_Observation_Proc(
 \item{base_ISS_FishAge}{Base Input sample size for fishery ages}
 
 \item{ISS_FishAge_Pattern}{Input sample size pattern for fishery ages. Either "constant" or follows an f pattern ("F_pattern")}
-
-\item{Fish_Like_Pars}{Parameters for Fishery Composition Likelihoods}
 
 \item{Tag_Like}{Tag Likelihoods (Poisson, NegBin, Multinomial_Release, Multinomial_Recapture)}
 

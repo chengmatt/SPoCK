@@ -11,7 +11,9 @@ Setup_Sim_Dim(
   n_ages,
   n_sexes,
   n_fish_fleets,
-  n_srv_fleets
+  n_srv_fleets,
+  run_feedback,
+  feedback_start_yr
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ Setup_Sim_Dim(
 \item{n_fish_fleets}{Number of fishery fleets}
 
 \item{n_srv_fleets}{Number of survey fleets}
+
+\item{run_feedback}{Boolean for whether to run or not run feedback management loop}
+
+\item{feedback_start_yr}{If MSE is run, when is the first year feedback starts}
 }
 \description{
 Set up simulation dimensions

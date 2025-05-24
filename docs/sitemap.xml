@@ -8,14 +8,17 @@
 <url><loc>https://chengmatt.github.io/SPoCK/articles/e_single_region_sablefish_case_study.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/articles/f_single_region_bsai_pollock_case_study.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/articles/g_spatial_sablefish_case_study.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/articles/h_closed_loop_simulations.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/articles/h_simulation_self_test.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/articles/index.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/authors.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/index.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/Do_Population_Projection.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Equilibrium_PopSim_Iter.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Get_3d_precision.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Get_Comp_Likelihoods.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Get_Det_Recruitment.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/Get_Feedback_Data.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Get_Reference_Points.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Get_Selex.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Get_Tagging_Mortality.html</loc></url>
@@ -43,7 +46,10 @@
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Setup_Sim_Rec.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Setup_Sim_Survey.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Setup_Sim_Tagging.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/Setup_sim_env.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/Simulate_Pop.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/Simulate_Pop_Static.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/bisection_F.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/check_data_dimensions.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/cmb.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/collect_message.html</loc></url>
@@ -72,6 +78,7 @@
 <url><loc>https://chengmatt.github.io/SPoCK/reference/has_dependencies.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/index.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/install_spock_dependencies.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/is_package_available.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/mcmc_diag.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/mcmc_par_names.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/mlt_rg_sable_data.html</loc></url>
@@ -79,7 +86,9 @@
 <url><loc>https://chengmatt.github.io/SPoCK/reference/plot_resids.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/rdirM.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/retro_truncate_yr.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/rinvgauss_rec.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/rlogistnormal.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/run_annual_cycle.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/sgl_rg_ebswp_data.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/sgl_rg_ebswp_mod_results.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/sgl_rg_sable_data.html</loc></url>
@@ -87,5 +96,6 @@
 <url><loc>https://chengmatt.github.io/SPoCK/reference/single_region_SPR.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/theme_sablefish.html</loc></url>
 <url><loc>https://chengmatt.github.io/SPoCK/reference/three_rg_sable_data.html</loc></url>
+<url><loc>https://chengmatt.github.io/SPoCK/reference/truncate_yr.html</loc></url>
 </urlset>
 

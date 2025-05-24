@@ -81,3 +81,62 @@ cmb <- function(f, d) {
 collect_message <- function(...) {
   messages_list <<- c(messages_list, paste(..., sep = ""))
 }
+
+#' Title Helper function to check package availbility
+#'
+#' @param pkg package name character
+#' @keywords internal
+is_package_available <- function(pkg) {
+  nzchar(system.file(package = pkg))
+}
+
+#' Title Go from TAC to Fishing Mortality using bisection
+#'
+#' @param f_guess Initial guess of F
+#' @param catch Provided catch values
+#' @param NAA Numbers, dimensioned by ages, and sexes
+#' @param WAA Weight, dimensioned by ages and sexes
+#' @param natmort Natural mortality dimensioned by ages and sex
+#' @param fish_sel Fishery selectivity, dimesnioned by ages and sex
+#' @param n.iter Number of iterations for bisection
+#' @param lb Lower bound of F
+#' @param ub Upper bound of F
+#'
+#' @returns Fishing mortality values
+#' @export bisection_F
+bisection_F <- function(f_guess,
+                        catch,
+                        NAA,
+                        WAA,
+                        natmort,
+                        fish_sel,
+                        n.iter = 20,
+                        lb = 0,
+                        ub = 2) {
+
+  range <- vector(length=2) # F range
+  range[1] <- lb # Lower bound
+  range[2] <- ub # Upper bound
+
+  for(i in 1:n.iter) {
+
+    # Get midpoint of range
+    midpoint <- mean(range)
+
+    # Caclulate baranov's
+    FAA <- (midpoint * fish_sel)
+    ZAA <- FAA + natmort
+    pred_catch <- sum((FAA / ZAA * NAA * (1 - exp(-ZAA))) * WAA)
+
+    if(pred_catch < catch) {
+      range[1] <- midpoint
+      range[2] <- range[2]
+    }else {
+      range[1] <- range[1]
+      range[2] <- midpoint
+    }
+
+  } # end i loop
+
+  return(midpoint)
+}

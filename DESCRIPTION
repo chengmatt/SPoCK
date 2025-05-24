@@ -12,6 +12,7 @@ Depends:
     R (>= 3.5),
     RTMB
 Imports: 
+    afscOSA,
     bayesplot,
     cowplot,
     data.table,
@@ -22,6 +23,7 @@ Imports:
     ggplot2,
     MASS,
     Matrix,
+    methods,
     parallel,
     progressr,
     randtests,
@@ -34,9 +36,7 @@ Imports:
 Suggests: 
     here,
     knitr,
-    rmarkdown,
-    afscOSA,
-    compResidual
+    rmarkdown
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

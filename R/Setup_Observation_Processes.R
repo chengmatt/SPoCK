@@ -4,7 +4,6 @@
 #' @param Comp_Srv_Like Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
 #' @param Srv_Like_Pars Parameters for Survey Composition Likelihoods
 #' @param Comp_Fish_Like Fishery Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
-#' @param Fish_Like_Pars Parameters for Fishery Composition Likelihoods
 #' @param Tag_Like Tag Likelihoods (Poisson, NegBin, Multinomial_Release, Multinomial_Recapture)
 #' @param Tag_Like_Pars Tag Likelihood Parameters
 #' @param base_ISS_FishAge Base Input sample size for fishery ages
@@ -23,7 +22,6 @@ Setup_Sim_Observation_Proc <- function(Comp_Structure,
                                        Comp_Fish_Like,
                                        base_ISS_FishAge,
                                        ISS_FishAge_Pattern,
-                                       Fish_Like_Pars,
                                        Tag_Like,
                                        Tag_Like_Pars,
                                        SrvAgeTheta,
@@ -60,13 +58,10 @@ Setup_Sim_Observation_Proc <- function(Comp_Structure,
   if(Tag_Like == "Multinomial_Recapture") sim_list$tag_like <- 3
 
   # setup variance and overdispersion parameters for composition and tagging data
-  if(ISS_FishAge_Pattern == 'constant') ISS_FishAge <- array(base_ISS_FishAge, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
-  if(ISS_FishAge_Pattern == 'F_pattern') ISS_FishAge <- array(base_ISS_FishAge * apply(sim_list$Fmort, c(2,3,4), function(x) x / max(x)),
-                                                              dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_fish_fleets, sim_list$n_sims))
+  if(ISS_FishAge_Pattern == 'constant') ISS_FishAge <- array(base_ISS_FishAge, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_fish_fleets, sim_list$n_sims))
 
   # output into list
   sim_list$Tag_Like_Pars <- Tag_Like_Pars
-  sim_list$Fish_Like_Pars <- Fish_Like_Pars
   sim_list$Srv_Like_Pars <- Srv_Like_Pars
   sim_list$comp_srv_like <- comp_srv_like
   sim_list$comp_fish_like <- comp_fish_like

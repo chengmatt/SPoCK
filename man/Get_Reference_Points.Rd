@@ -9,6 +9,9 @@ Get_Reference_Points(
   rep,
   SPR_x = NULL,
   t_spwn = 0,
+  sex_ratio_f = 0.5,
+  calc_rec_st_yr = 1,
+  rec_age = 1,
   type = "single_region",
   what = "SPR"
 )
@@ -22,12 +25,18 @@ Get_Reference_Points(
 
 \item{t_spwn}{specified mortality time up until spawning}
 
-\item{type}{Whether this is a "single_region" reference point (options are being developed)}
+\item{sex_ratio_f}{Sex ratio for females used to compute biological reference points}
 
-\item{what}{What kind of reference point "SPR" (options are being developed)}
+\item{calc_rec_st_yr}{The first year in which mean recruitment is computed for}
+
+\item{rec_age}{Actual recruitment age value}
+
+\item{type}{Whether this is a "single_region" reference point or "multi_region"}
+
+\item{what}{What kind of reference point "SPR" and "SPR_independent" (used for multi region, where SPR is calcualted for each region independently)}
 }
 \value{
-A RTMB list object with report information on estiamted reference points
+A list object of fishing and biological reference points
 }
 \description{
 Wrapper function to get reference points
@@ -40,6 +49,6 @@ SPR_x = 0.4,
 t_spwn = 0,
 type = "single_region",
 what = "SPR")
-f_40$rep$F_x # estimated reference point
+f_40$F_x # estimated reference point
 }
 }

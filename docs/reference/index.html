@@ -25,6 +25,7 @@
     <li><a class="dropdown-item" href="../articles/e_single_region_sablefish_case_study.html">Setting up a Single Region Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
+    <li><a class="dropdown-item" href="../articles/h_closed_loop_simulations.html">Run Closed Loop Simulations</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -51,6 +52,18 @@
 
 
       <dl><dt>
+
+          <code><a href="Do_Population_Projection.html">Do_Population_Projection()</a></code>
+
+        </dt>
+        <dd>Title Do Population Projections</dd>
+      </dl><dl><dt>
+
+          <code><a href="Get_Feedback_Data.html">Get_Feedback_Data()</a></code>
+
+        </dt>
+        <dd>Title Truncates data to feedback simulation loop year</dd>
+      </dl><dl><dt>
 
           <code><a href="Get_Reference_Points.html">Get_Reference_Points()</a></code>
 
@@ -178,10 +191,22 @@
         <dd>Set up simulated tagging dynamics</dd>
       </dl><dl><dt>
 
-          <code><a href="Simulate_Pop.html">Simulate_Pop()</a></code>
+          <code><a href="Setup_sim_env.html">Setup_sim_env()</a></code>
 
         </dt>
-        <dd>Simulates a spatial, sex, and age-structured population</dd>
+        <dd>Title Constructs simulation objects in a new simulation environment for use in simulation functions</dd>
+      </dl><dl><dt>
+
+          <code><a href="Simulate_Pop_Static.html">Simulate_Pop_Static()</a></code>
+
+        </dt>
+        <dd>Simulates a static spatial, sex, and age-structured population (no feedback loop)</dd>
+      </dl><dl><dt>
+
+          <code><a href="bisection_F.html">bisection_F()</a></code>
+
+        </dt>
+        <dd>Title Go from TAC to Fishing Mortality using bisection</dd>
       </dl><dl><dt>
 
           <code><a href="check_data_dimensions.html">check_data_dimensions()</a></code>
@@ -290,6 +315,12 @@
 
         </dt>
         <dd>Plots OSA residuals from outputs from get_osa. Much of this code is taken from the afscOM package, but with modificaitons to plot features.</dd>
+      </dl><dl><dt>
+
+          <code><a href="run_annual_cycle.html">run_annual_cycle()</a></code>
+
+        </dt>
+        <dd>Title Ruin Annual Cycle in Simulation Environment</dd>
       </dl><dl><dt>
 
           <code><a href="sgl_rg_ebswp_data.html">sgl_rg_ebswp_data</a></code>

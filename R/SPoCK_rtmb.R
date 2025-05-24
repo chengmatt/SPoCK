@@ -498,17 +498,27 @@ SPoCK_rtmb = function(pars, data) {
 
 
   ### Fishery Indices ---------------------------------------------------------
-  # ADMB likelihoods
-  if(likelihoods == 0) {
-    FishIdx_nLL[UseFishIdx == 1] = (log(ObsFishIdx[UseFishIdx == 1] + 1e-4) - log(PredFishIdx[UseFishIdx == 1] + 1e-4))^2 /
-                                    (2 * (ObsFishIdx_SE[UseFishIdx == 1] / ObsFishIdx[UseFishIdx == 1])^2) # lognormal fishery index
-    }
+  for(y in 1:n_yrs) {
+    for(r in 1:n_regions) {
+      for(f in 1:n_fish_fleets) {
 
-  # TMB likelihoods
-  if(likelihoods == 1) {
-    FishIdx_nLL[UseFishIdx == 1] = -1 * RTMB::dnorm(log(ObsFishIdx[UseFishIdx == 1] + 1e-10), log(PredFishIdx[UseFishIdx == 1] + 1e-10),
-                                                    ObsFishIdx_SE[UseFishIdx == 1], TRUE)
-  }
+        # ADMB likelihoods
+        if(UseFishIdx[r,y,f] == 1) {
+          if(likelihoods == 0) {
+            FishIdx_nLL[r,y,f] = (log(ObsFishIdx[r,y,f] + 1e-4) - log(PredFishIdx[r,y,f] + 1e-4))^2 /
+              (2 * (ObsFishIdx_SE[r,y,f] / ObsFishIdx[r,y,f])^2) # lognormal Fishery index
+          }
+
+          # TMB likelihoods
+          if(likelihoods == 1) {
+            FishIdx_nLL[r,y,f] = -1 * RTMB::dnorm(log(ObsFishIdx[r,y,f] + 1e-10), log(PredFishIdx[r,y,f] + 1e-10),
+                                                  ObsFishIdx_SE[r,y,f], TRUE)
+          }
+        }
+
+      } # end f loop
+    } # end r loop
+  } # end y loop
 
   ### Fishery Compositions ------------------------------------------------
   for(y in 1:n_yrs) {
@@ -577,17 +587,27 @@ SPoCK_rtmb = function(pars, data) {
 
   ## Survey Likelihoods ------------------------------------------------------
   ### Survey Indices ---------------------------------------------------------
-  # ADMB likelihoods
-  if(likelihoods == 0) {
-    SrvIdx_nLL[UseSrvIdx == 1] = (log(ObsSrvIdx[UseSrvIdx == 1] + 1e-4) - log(PredSrvIdx[UseSrvIdx == 1] + 1e-4))^2 /
-      (2 * (ObsSrvIdx_SE[UseSrvIdx == 1] / ObsSrvIdx[UseSrvIdx == 1])^2) # lognormal Srvery index
-  }
+  for(y in 1:n_yrs) {
+    for(r in 1:n_regions) {
+      for(sf in 1:n_srv_fleets) {
 
-  # TMB likelihoods
-  if(likelihoods == 1) {
-    SrvIdx_nLL[UseSrvIdx == 1] = -1 * RTMB::dnorm(log(ObsSrvIdx[UseSrvIdx == 1] + 1e-10), log(PredSrvIdx[UseSrvIdx == 1] + 1e-10),
-                                                  ObsSrvIdx_SE[UseSrvIdx == 1], TRUE)
-  }
+        # ADMB likelihoods
+        if(UseSrvIdx[r,y,sf] == 1) {
+          if(likelihoods == 0) {
+            SrvIdx_nLL[r,y,sf] = (log(ObsSrvIdx[r,y,sf] + 1e-4) - log(PredSrvIdx[r,y,sf] + 1e-4))^2 /
+              (2 * (ObsSrvIdx_SE[r,y,sf] / ObsSrvIdx[r,y,sf])^2) # lognormal Survey index
+          }
+
+          # TMB likelihoods
+          if(likelihoods == 1) {
+            SrvIdx_nLL[r,y,sf] = -1 * RTMB::dnorm(log(ObsSrvIdx[r,y,sf] + 1e-10), log(PredSrvIdx[r,y,sf] + 1e-10),
+                                                  ObsSrvIdx_SE[r,y,sf], TRUE)
+          }
+        }
+
+      } # end sf loop
+    } # end r loop
+  } # end y loop
 
   ### Survey Compositions ---------------------------------------------------------
   for(y in 1:n_yrs) {

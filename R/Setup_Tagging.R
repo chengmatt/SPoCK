@@ -36,7 +36,7 @@ Setup_Sim_Tagging <- function(
   sim_list$tag_rel_indicator <- expand.grid(regions = 1:sim_list$n_regions, tag_yrs = tag_years) # get tag release indicator (by tag years and regions = a tag cohort)
 
   # Containers
-  Tag_Reporting <- array(0, dim = c(sim_list$n_yrs, sim_list$n_regions, sim_list$n_sims)) # populated later on
+  Tag_Reporting <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_sims)) # populated later on
   sim_list$Tag_Fish <- array(0, dim = c(sim_list$n_tag_rel_events, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # number of tagged fish
   sim_list$Tag_Avail <- array(0, dim = c(sim_list$max_liberty + 1, sim_list$n_tag_rel_events, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # tags availiable for recapture every year
   sim_list$Pred_Tag_Recap <- array(0, dim = c(sim_list$max_liberty, sim_list$n_tag_rel_events, sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # predicted tag recaptures
@@ -45,7 +45,7 @@ Setup_Sim_Tagging <- function(
   for(sim in 1:sim_list$n_sims) {
     for(r in 1:sim_list$n_regions) {
       for(y in 1:sim_list$n_yrs) {
-        if(Tag_Reporting_pattern == "constant") Tag_Reporting[y,r,sim] <- base_Tag_Reporting[r]
+        if(Tag_Reporting_pattern == "constant") Tag_Reporting[r,y,sim] <- base_Tag_Reporting[r]
       } # end y loop
     } # end r loop
   } # end sim loop
@@ -287,8 +287,6 @@ Setup_Mod_Tagging <- function(input_list,
       if(TagRep_spec == 'fix') map_TagRep[] <- NA
       collect_message("Tag Reporting is specified as: ", TagRep_spec)
     } # end if
-
-    map_TagRep <<- map_TagRep
 
     # input tag reporting rates into mapping list
     input_list$map$Tag_Reporting_Pars <- factor(map_TagRep) # tag reporting rates

@@ -15,7 +15,7 @@
 #' @import progressr
 #' @importFrom reshape2 melt
 #' @import dplyr
-#' @importFrom stats rnorm nlminb
+#' @importFrom stats rnorm nlminb optimHess
 #' @returns Dataframe of jitter values
 #' @export do_jitter
 #'

@@ -33,14 +33,14 @@
 #' }
 single_region_SPR <- function(pars,
                               data
-) {
+                              ) {
 
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")
 
   RTMB::getAll(pars, data) # get parameters and data
 
-  n_ages = dim(fish_sel)[1] # get dimensions
+  n_ages = dim(fish_sel)[1] # number of ages
 
   # exponentitate reference points to "estimate"
   F_x = exp(log_F_x)
@@ -92,13 +92,16 @@ single_region_SPR <- function(pars,
 #' @param rep Report list from RTMB
 #' @param SPR_x SPR percentage to target
 #' @param t_spwn specified mortality time up until spawning
-#' @param type Whether this is a "single_region" reference point (options are being developed)
-#' @param what What kind of reference point "SPR" (options are being developed)
+#' @param type Whether this is a "single_region" reference point or "multi_region"
+#' @param what What kind of reference point "SPR" and "SPR_independent" (used for multi region, where SPR is calcualted for each region independently)
+#' @param sex_ratio_f Sex ratio for females used to compute biological reference points
+#' @param calc_rec_st_yr The first year in which mean recruitment is computed for
+#' @param rec_age Actual recruitment age value
 #'
 #' @importFrom stats nlminb
 #' @import RTMB
 #'
-#' @returns A RTMB list object with report information on estiamted reference points
+#' @returns A list object of fishing and biological reference points
 #' @export Get_Reference_Points
 #'
 #' @examples
@@ -109,23 +112,30 @@ single_region_SPR <- function(pars,
 #' t_spwn = 0,
 #' type = "single_region",
 #' what = "SPR")
-#' f_40$rep$F_x # estimated reference point
+#' f_40$F_x # estimated reference point
 #' }
 Get_Reference_Points <- function(data,
                                  rep,
                                  SPR_x = NULL,
                                  t_spwn = 0,
+                                 sex_ratio_f = 0.5,
+                                 calc_rec_st_yr = 1,
+                                 rec_age = 1,
                                  type = "single_region",
                                  what = "SPR"
-) {
+                                 ) {
+
+  f_ref_pt <- vector() # set up storage
+  b_ref_pt <- vector() # set up storage
 
   if(type == "single_region") {
 
     data_list <- list() # set up data list
     # Extract out relevant elements
+    n_ages <- length(data$ages) # number of ages
     n_years <- length(data$years) # number of years
     data_list$F_fract_flt <- rep$Fmort[1,n_years,] / sum(rep$Fmort[1,n_years,]) # get fleet F fraction to derive population level selectivity
-    data_list$fish_sel <- rep$fish_sel[1,n_years,,1,] # get female selectivity for all fleets
+    data_list$fish_sel <- array(rep$fish_sel[1,n_years,,1,], dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
     data_list$natmort <- rep$natmort[1,n_years,,1] # get female natural mortality
     data_list$t_spwn <- t_spwn # specified mortality time up until spawning
     data_list$WAA <- data$WAA[1,n_years,,1] # weight-at-age for females
@@ -135,17 +145,57 @@ Get_Reference_Points <- function(data,
       data_list$SPR_x <- SPR_x # SPR fraction
 
       par_list <- list() # set up parameter list
-      par_list$log_F_x <- log(0.1) # F_x to derive
+      par_list$log_F_x <- log(0.1) # F_x starting value
 
       # Make adfun object
       spr_ad <- RTMB::MakeADFun(cmb(single_region_SPR, data_list), parameters = par_list, map = NULL, silent = TRUE)
       spr_ad$optim <- stats::nlminb(spr_ad$par, spr_ad$fn, spr_ad$gr, control = list(iter.max = 1e6, eval.max = 1e6, rel.tol = 1e-15))
       spr_ad$rep <- spr_ad$report(spr_ad$env$last.par.best) # get report
-      spr_ad$sd_rep <- RTMB::sdreport(spr_ad) # get sd report
+
+      # Output reference points
+      f_ref_pt[1] <- spr_ad$rep$F_x
+      b_ref_pt[1] <- spr_ad$rep$SB_F_x * sex_ratio_f * mean(rep$Rec[1,calc_rec_st_yr:(n_years - rec_age)])
 
     } # end SPR reference points
-
   }
-  return(spr_ad)
+
+  if(type == 'multi_region') {
+
+    data_list <- list() # set up data list
+
+    if(what == "independent_SPR") {
+      for(r in 1:data$n_regions) {
+
+        # Extract out relevant elements for a given region
+        n_years <- length(data$years) # number of years
+        n_ages <- length(data$ages) # number of ages
+        data_list$F_fract_flt <- rep$Fmort[r,n_years,] / sum(rep$Fmort[r,n_years,]) # get fleet F fraction to derive population level selectivity
+        data_list$fish_sel <- array(rep$fish_sel[r,n_years,,1,], dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
+        data_list$natmort <- rep$natmort[r,n_years,,1] # get female natural mortality
+        data_list$t_spwn <- t_spwn # specified mortality time up until spawning
+        data_list$WAA <- data$WAA[r,n_years,,1] # weight-at-age for females
+        data_list$MatAA <- data$MatAA[r,n_years,,1] # maturity at age for males
+
+        data_list$SPR_x <- SPR_x # SPR fraction
+
+        par_list <- list() # set up parameter list
+        par_list$log_F_x <- log(0.1) # F_x starting value
+
+        # Make adfun object
+        tmp_spr_ad <- RTMB::MakeADFun(cmb(single_region_SPR, data_list), parameters = par_list, map = NULL, silent = TRUE)
+        tmp_spr_ad$optim <- stats::nlminb(tmp_spr_ad$par, tmp_spr_ad$fn, tmp_spr_ad$gr, control = list(iter.max = 1e6, eval.max = 1e6, rel.tol = 1e-15))
+        tmp_spr_ad$rep <- tmp_spr_ad$report(tmp_spr_ad$env$last.par.best) # get report
+
+        # Output reference points
+        f_ref_pt[r] <- tmp_spr_ad$rep$F_x
+        b_ref_pt[r] <- tmp_spr_ad$rep$SB_F_x * sex_ratio_f * mean(rep$Rec[r,calc_rec_st_yr:(n_years - rec_age)])
+
+      } # end r loop
+    } # end independent_SPR
+
+  } # end multi region
+
+  return(list(f_ref_pt = f_ref_pt,
+              b_ref_pt = b_ref_pt))
 }
 

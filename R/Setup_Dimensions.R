@@ -7,6 +7,8 @@
 #' @param n_sexes Number of sexes
 #' @param n_fish_fleets Number of fishery fleets
 #' @param n_srv_fleets Number of survey fleets
+#' @param run_feedback Boolean for whether to run or not run feedback management loop
+#' @param feedback_start_yr If MSE is run, when is the first year feedback starts
 #'
 #' @export Setup_Sim_Dim
 #'
@@ -16,7 +18,9 @@ Setup_Sim_Dim <- function(n_sims,
                           n_ages,
                           n_sexes,
                           n_fish_fleets,
-                          n_srv_fleets
+                          n_srv_fleets,
+                          run_feedback,
+                          feedback_start_yr
                           ) {
 
   sim_list <- list() # setup empty list
@@ -30,6 +34,8 @@ Setup_Sim_Dim <- function(n_sims,
   sim_list$n_fish_fleets <- n_fish_fleets
   sim_list$n_srv_fleets <- n_srv_fleets
   sim_list$init_iter <- n_ages * 10
+  sim_list$feedback_start_yr <- feedback_start_yr
+  sim_list$run_feedback <- run_feedback
 
   return(sim_list)
 
