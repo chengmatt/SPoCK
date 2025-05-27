@@ -496,15 +496,20 @@ ssb_series <- data.frame(Par = "SSB",
                          ADMB = sgl_rg_sable_data$admb_spbiom)
 
 ts_df <- rbind(ssb_series,rec_series) # bind together
+```
 
-# plot!
+```{r Plot Relative Difference, eval = F}
 ggplot(ts_df, aes(x = Year, y = ((RTMB - ADMB) / ADMB))) +
   geom_line(size = 2) +
   geom_hline(yintercept = 0, lty = 2, size = 1.3) +
   facet_wrap(~Par, scales = "free_y") +
   labs(y = "Relative difference (%)")  +
   SPoCK::theme_sablefish()
+```
 
+![](figures/e_ts_comparison_re.png)
+
+```{r Plot Absolute, eval = F}
 ggplot() +
   geom_line(ts_df, mapping = aes(x = Year, y = RTMB, color = 'RTMB'), size = 1.3, lty = 1) +
   geom_line(ts_df, mapping = aes(x = Year, y = ADMB, color = 'ADMB'), size = 1.3, lty = 2) +
@@ -514,3 +519,4 @@ ggplot() +
   SPoCK::theme_sablefish()
 ```
 
+![](figures/e_ts_comparison.png)

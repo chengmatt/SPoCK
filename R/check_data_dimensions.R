@@ -26,7 +26,7 @@ check_data_dimensions <- function(x,
 # Biologicals -------------------------------------------------------------
 
   # Weight at age
-  if(what %in% c('WAA', 'MatAA')) {
+  if(what %in% c('WAA', 'MatAA', "Fixed_natmort")) {
     if(sum(dim(x) == c(n_regions, n_years, n_ages, n_sexes)) != 4)
       stop(paste("Dimensions of", what, "are not correct. Should be n_regions, n_years, n_ages, and n_sexes"))
   }
@@ -44,7 +44,7 @@ check_data_dimensions <- function(x,
   if(what == 'Fixed_Movement') {
     if(sum(dim(x) == c(n_regions, n_regions, n_years, n_ages, n_sexes)) != 5)
       stop("Fixed Movement Matrix does not have the correct dimensions. This should be n_regions, n_regions, n_years, n_ages, n_sexes")
-    }
+  }
 
 
 # Fishery Stuff -----------------------------------------------------------------

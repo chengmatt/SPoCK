@@ -1189,8 +1189,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
           if(input_list$data$cont_tv_fish_sel[r,f] == 0) {
             map_fishsel_devs[r,y,,s,f] <- NA
           } else {
-            # If iid time-variation for this fleet
-            if(input_list$data$cont_tv_fish_sel[r,f] == 1) {
+            # If iid or random walk time-variation for this fleet
+            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(1,2) && y >= min(which(input_list$data$UseCatch[,,f] == 1))) {
               for(i in 1:max_sel_pars) {
                 # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
                 if(fish_sel_devs_spec[f] == 'est_all') {
@@ -1213,38 +1213,10 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
               } # end i loop
-            } # end iid variation
-
-            # If random walk time-variation for this fleet
-            if(y > 1) {
-              if(input_list$data$cont_tv_fish_sel[r,f] == 2) {
-                for(i in 1:max_sel_pars) {
-                  # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
-                  if(fish_sel_devs_spec[f] == 'est_all') {
-                    map_fishsel_devs[r,y,i,s,f] <- fishsel_devs_counter
-                    fishsel_devs_counter <- fishsel_devs_counter + 1
-                  }
-                  # Estimating selectivity deviations across sexes, fleets, and parameters, but shared across regions
-                  if(fish_sel_devs_spec[f] == 'est_shared_r' && r == 1) {
-                    map_fishsel_devs[,y,i,s,f] <- fishsel_devs_counter
-                    fishsel_devs_counter <- fishsel_devs_counter + 1
-                  }
-                  # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
-                  if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
-                    map_fishsel_devs[r,y,i,,f] <- fishsel_devs_counter
-                    fishsel_devs_counter <- fishsel_devs_counter + 1
-                  }
-                  # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
-                  if(fish_sel_devs_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
-                    map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
-                    fishsel_devs_counter <- fishsel_devs_counter + 1
-                  }
-                } # end i loop
-              } # end random walk variation
-            } # only estimate values if y > 1, devs set to 0 otherwise
+            } # end iid or random walk variation
 
             # If 3d gmrf for this fleet
-            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4,5)) {
+            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4,5) && y >= min(which(input_list$data$UseCatch[,,f] == 1))) {
               for(i in 1:length(input_list$data$ages)) {
                 # Estimating all selectivity deviations across regions, years and ages (also cohorts baked in year x age)
                 if(fish_sel_devs_spec[f] == 'est_all') {
@@ -1280,6 +1252,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
     } # end f loop
   } # end r loop
 
+  map_fishsel_devs <<- map_fishsel_devs
+
   # input into mapping list
   input_list$map$fishsel_pe_pars <- factor(map_fishsel_pe_pars)
   input_list$map$ln_fish_fixed_sel_pars <- factor(map_fish_fixed_sel_pars)
@@ -1289,7 +1263,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   input_list$data$map_fish_q <- map_fish_q
 
   # Checking whether fishery q dimensions are correct
-  if(!is.na(fish_q_prior) || Use_fish_q_prior == 1) if(sum(dim(fish_q_prior) == c(dim(map_fish_q), 2)) != 4) stop("Fishery catchability dimensions are not correct. Should be n_regions, max n_blocks, n_fish_fleets, and 2 (where 2 represents the 2 prior parameters - the mean and sd). You can input an NA if not availiable for certain regions or fleets.")
+  if(Use_fish_q_prior == 1) if(sum(dim(fish_q_prior) == c(dim(map_fish_q), 2)) != 4) stop("Fishery catchability dimensions are not correct. Should be n_regions, max n_blocks, n_fish_fleets, and 2 (where 2 represents the 2 prior parameters - the mean and sd). You can input an NA if not availiable for certain regions or fleets.")
 
   # Print all messages if verbose is TRUE
   if(input_list$verbose) for(msg in messages_list) message(msg)

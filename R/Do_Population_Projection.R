@@ -18,7 +18,7 @@
 #' @param f_ref_pt Fishing mortality reference point dimensioned by n_regions
 #' @param b_ref_pt Biological reference point dimensioned by n_regions
 #' @param HCR_function Function describing a harvest control rule. The function should always have the following arguments: x, which represents SSB, frp, which takes inputs of fishery reference points, and brp, which takes inputs of biological reference points. Any additional arguments should be specified with defaults or hard coded / fixed within the function. e
-#' @param recruitment_opt Recruitment simulation option, where options are "inv_gauss", which simulates future recruitment based on the the recruitment values supplied using an inverse gaussian distribution, or "mean_rec", which takes the mean of the recruitment values supplied for a given region
+#' @param recruitment_opt Recruitment simulation option, where options are "inv_gauss", which simulates future recruitment based on the the recruitment values supplied using an inverse gaussian distribution, "mean_rec", which takes the mean of the recruitment values supplied for a given region, and "zero", which assumes that future recruitment does not occur
 #' @param fmort_opt Fishing Mortality option, which includes "HCR", which modifies the F reference point using a user supplied HCR_function, or "Input", which uses projected F values supplied by the user.
 #' @param t_spawn Fraction time of spawning used to compute projected SSB
 #' @param F_input Projected fishing mortality input, dimensioned by n_regions, n_proj_yrs
@@ -199,6 +199,14 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
           proj_NAA[r,y,1,] <- tmp_rec[r] * sexratio # input into projected NAA
         } # end r loop
       }
+
+      # Zero Recruitment
+      if(recruitment_opt == "zero") {
+        for(r in 1:n_regions) {
+          proj_NAA[r,y,1,] <- 0 # input into projected NAA
+        } # end r loop
+      }
+
     }
 
 # Movement Processes ------------------------------------------------------
@@ -254,7 +262,8 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
   return(list(proj_F = proj_F,
               proj_Catch = proj_Catch,
               proj_SSB = proj_SSB,
-              proj_NAA = proj_NAA)
+              proj_NAA = proj_NAA,
+              proj_ZAA = proj_ZAA)
   )
 
 } # end function

@@ -621,7 +621,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
 
   if(any(is.na(srv_q_blocks_arr))) stop("Survey Catchability Blocks are returning an NA. Did you update the year range of srv_q_blocks?")
 
-  for(f in 1:input_list$data$n_srv_fleets) collect_message(paste("Survey Catchability Time Blocks for fishery", f, "is specified at:", length(unique(srv_q_blocks_arr[,,f]))))
+  for(f in 1:input_list$data$n_srv_fleets) collect_message(paste("Survey Catchability Time Blocks for survey", f, "is specified at:", length(unique(srv_q_blocks_arr[,,f]))))
 
   # Setup data input list
   input_list$data$cont_tv_srv_sel <- cont_tv_srv_sel_mat
@@ -926,8 +926,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
           if(input_list$data$cont_tv_srv_sel[r,f] == 0) {
             map_srvsel_devs[r,y,,s,f] <- NA
           } else {
-            # If iid time-variation for this fleet
-            if(input_list$data$cont_tv_srv_sel[r,f] == 1) {
+            # If iid or random walk time-variation for this fleet
+            if(input_list$data$cont_tv_srv_sel[r,f] %in% c(1,2) && y >= min(which(input_list$data$UseSrvIdx[,,f] == 1))) {
               for(i in 1:max_sel_pars) {
                 # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
                 if(srv_sel_devs_spec[f] == 'est_all') {
@@ -950,39 +950,12 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
               } # end i loop
-            } # end iid variation
-
-            # If random walk time-variation for this fleet
-            if(y > 1) {
-              if(input_list$data$cont_tv_srv_sel[r,f] == 2) {
-                for(i in 1:max_sel_pars) {
-                  # Estimating all selectivity deviations across regions, sexes, fleets, and parameter
-                  if(srv_sel_devs_spec[f] == 'est_all') {
-                    map_srvsel_devs[r,y,i,s,f] <- srvsel_devs_counter
-                    srvsel_devs_counter <- srvsel_devs_counter + 1
-                  }
-                  # Estimating selectivity deviations across sexes, fleets, and parameters, but shared across regions
-                  if(srv_sel_devs_spec[f] == 'est_shared_r' && r == 1) {
-                    map_srvsel_devs[,y,i,s,f] <- srvsel_devs_counter
-                    srvsel_devs_counter <- srvsel_devs_counter + 1
-                  }
-                  # Estimating selectivity deviations across regions, fleets, and parameters, but shared across sexes
-                  if(srv_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
-                    map_srvsel_devs[r,y,i,,f] <- srvsel_devs_counter
-                    srvsel_devs_counter <- srvsel_devs_counter + 1
-                  }
-                  # Estimating selectivity deviations across fleets, and parameters, but shared across sexes and regions
-                  if(srv_sel_devs_spec[f] == 'est_shared_r_s' && r == 1 && s == 1) {
-                    map_srvsel_devs[,y,i,,f] <- srvsel_devs_counter
-                    srvsel_devs_counter <- srvsel_devs_counter + 1
-                  }
-                } # end i loop
-              } # end random walk variation
-            } # only estimate values if y > 1, devs set to 0 otherwise
+            } # end iid or random walk variation
 
             # If 3d gmrf for this fleet
-            if(input_list$data$cont_tv_srv_sel[r,f] %in% c(3,4,5)) {
+            if(input_list$data$cont_tv_srv_sel[r,f] %in% c(3,4,5) && y >= min(which(input_list$data$UseSrvIdx[,,f] == 1))) {
               for(i in 1:length(input_list$data$ages)) {
+
                 # Estimating all selectivity deviations across regions, years and ages (also cohorts baked in year x age)
                 if(srv_sel_devs_spec[f] == 'est_all') {
                   map_srvsel_devs[r,y,i,s,f] <- srvsel_devs_counter
@@ -991,6 +964,17 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                 # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across regions
                 if(srv_sel_devs_spec[f] == 'est_shared_r' && r == 1) {
                   map_srvsel_devs[,y,i,s,f] <- srvsel_devs_counter
+                  srvsel_devs_counter <- srvsel_devs_counter + 1
+                }
+                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes
+                if(srv_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
+                  map_srvsel_devs[r,y,i,,f] <- srvsel_devs_counter
+                  srvsel_devs_counter <- srvsel_devs_counter + 1
+                }
+
+                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes and regions
+                if(srv_sel_devs_spec[f] == 'est_shared_r_s' && s == 1 && r == 1) {
+                  map_srvsel_devs[,y,i,,f] <- srvsel_devs_counter
                   srvsel_devs_counter <- srvsel_devs_counter + 1
                 }
               } # end i loop
@@ -1013,8 +997,10 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   input_list$data$map_ln_srvsel_devs <- array(as.numeric(input_list$map$ln_srvsel_devs), dim = dim(input_list$par$ln_srvsel_devs))
   input_list$data$map_srv_q <- map_srv_q
 
+  map_srvsel_devs <<- map_srvsel_devs
+
   # Checking whether survey q dimensions are correct
-  if(!is.na(srv_q_prior) || Use_srv_q_prior == 1) if(sum(dim(srv_q_prior) == c(dim(map_srv_q), 2)) != 4) stop("Survey catchability dimensions are not correct. Should be n_regions, max n_blocks, n_srv_fleets, and 2 (where 2 represents the 2 prior parameters - the mean and sd). You can input an NA if not availiable for certain regions or fleets")
+  if(Use_srv_q_prior == 1) if(sum(dim(srv_q_prior) == c(dim(map_srv_q), 2)) != 4) stop("Survey catchability dimensions are not correct. Should be n_regions, max n_blocks, n_srv_fleets, and 2 (where 2 represents the 2 prior parameters - the mean and sd). You can input an NA if not availiable for certain regions or fleets")
 
   # Print all messages if verbose is TRUE
   if(input_list$verbose) for(msg in messages_list) message(msg)

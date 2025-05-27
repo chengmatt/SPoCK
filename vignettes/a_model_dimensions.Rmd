@@ -45,6 +45,7 @@ Name | Description
 `init_F_prop`	| Value specifying the proportion of fishing mortality to apply to the initial age deviations relative to the mean fishing mortality parameter for fishery fleet 1 (the dominant fleet)
 `rec_model` | Value specifying the recruitment model. 0 == Mean Recruitment, 1 == Beverton-Holt with steepness parameterization
 `rec_dd` | Value specifying the recruitment density dependence (only used when there is a stock recruitment relationship) 0 == local density, 1 == global density, 999 == no density dependent stock recruitment form is used
+`t_spawn` | Fraction of year in which spawning occurs
 
 ## Data Inputs for Defining Biological Processes
 Name | Description
@@ -56,6 +57,8 @@ Name | Description
 `SizeAgeTrans`	| Size-age transition matrix dimensioned by n_regions, n_years, n_lens, n_ages, n_sexes. Can be specified as NA if length compositions are not fit
 `Use_M_prior` | Value specifying whether natural mortality priors are used. 0: Don’t use prior, 1: Use prior
 `M_prior`	| Vector specifying the mean and standard deviation of natural mortality in normal space. Element 1 should be the mean and element 2 should be the standard deviation. The prior is applied to the M parameter and not the offset 
+`use_fixed_natmort` | Value specifying whether a fixed mortality array is used. 0: Don't use and estimate M, 1: Use 
+`Fixed_natmort` | Natural mortality array dimensioned by n_regions, n_years, n_ages, and n_sexes.
 
 ## Data Inputs for Defining Movement Processes
 Name | Description
@@ -90,7 +93,7 @@ Name | Description
 `move_age_tag_pool` |	Data list object detailing how tag recaptures along the age axis should be pooled. If we have age information for tagging data, but are fitting two age blocks (10 total ages) and want to pool these two age blocks together when fitting to reduce computational cost, this can be specified as: `move_age_tag_pool <- list(c(1:5), c(6:10))` where the first element in the list specifies the ages to sum or pool across when, while the second element in the list specifies the age groups to pool across when fitting. Conversely, if we don’t have an age information, this list would be specified as: `move_age_tag_pool <- list(c(1:30))` where we are summing across all ages for the observed and predicted tag recaptures when fitting to these data
 `move_sex_tag_pool` |	Data list object detailing how tag recaptures along the sex axis should be pooled. If we have sex information for tagging data and are estimating sex-specific movement (2 sexes in this case), this would be specified as: `move_sex_tag_pool <- list(1, 2)` where the first element in the list specifies the first sex and the second element in the list specifies the second sex (i.e., no pooling in this case). Conversely, if we don’t have sex information, this list would be specified as: `move_sex_tag_pool <- list(c(1:2))` where we are summing across all sexes for the observed and predicted tag recaptures when fitting to these data
 `Tag_Reporting_blocks` | Array dimensioned by n_regions and n_years indicating the regions and years for which a block is specified as
-`map_Tag_Reporting_Pars` | Array dimensioned by n_regions and n_years indicating the regions and years for which a block is specified and which tagging parameters are mapped of / shared
+`map_Tag_Reporting_Pars` | Array dimensioned by n_regions and n_years indicating the regions and years for which a block is specified and which tagging parameters are mapped of / shared.
 
 ## Data Inputs for Defining Catch and Fishing Mortality Processes
 Name | Description

@@ -23,6 +23,7 @@ Setup_Mod_Rec(
   InitDevs_spec = NULL,
   RecDevs_spec = NULL,
   h_spec = NULL,
+  t_spawn = 0,
   ...
 )
 }
@@ -62,6 +63,8 @@ Setup_Mod_Rec(
 \item{RecDevs_spec}{Specification for recruitment deviations. Default is NULL such that it is estimated for all regions and years. Other options include "est_shared_r" which estimates deviations for all years, but shares them across regions (global recruitment deviaitons), or "fix" which fixes all values.}
 
 \item{h_spec}{Specification for steepness. Default is NULL, such that it is estimated for all reigons if rec_model == 1 (Beverton-Holt). Other options include "est_shared_r" which estimates h but shares across regions, or "fix" which fixes all steepness values. If rec_model == 0, h is fixed.}
+
+\item{t_spawn}{Spawn timing fraction}
 
 \item{...}{Additional arguments for starting values for recruitment parameters (ln_global_R0, Rec_prop, h, ln_InitDevs, ln_RecDevs, ln_sigmaR)}
 }

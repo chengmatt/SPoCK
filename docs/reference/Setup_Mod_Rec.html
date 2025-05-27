@@ -67,6 +67,7 @@
 <span>  InitDevs_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  RecDevs_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  h_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_spawn <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -145,6 +146,10 @@
 
 <dt id="arg-h-spec">h_spec<a class="anchor" aria-label="anchor" href="#arg-h-spec"></a></dt>
 <dd><p>Specification for steepness. Default is NULL, such that it is estimated for all reigons if rec_model == 1 (Beverton-Holt). Other options include "est_shared_r" which estimates h but shares across regions, or "fix" which fixes all steepness values. If rec_model == 0, h is fixed.</p></dd>
+
+
+<dt id="arg-t-spawn">t_spawn<a class="anchor" aria-label="anchor" href="#arg-t-spawn"></a></dt>
+<dd><p>Spawn timing fraction</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

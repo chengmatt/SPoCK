@@ -201,8 +201,14 @@ SPoCK_rtmb = function(pars, data) {
       } # f loop
 
       # Population Mortality and Survival
-      natmort[r,y,,1] = exp(ln_M) # get natural mortality (females or single-sex)
-      if(n_sexes == 2) natmort[r,y,,2] = exp(ln_M) + M_offset # natural mortality with offset (males)
+      # estimating natural mortality (base parameter, with a sex offset)
+      if(use_fixed_natmort == 0) {
+        natmort[r,y,,1] = exp(ln_M) # get natural mortality (females or single-sex)
+        if(n_sexes == 2) natmort[r,y,,2] = exp(ln_M) + M_offset # natural mortality with offset (males)
+      }
+
+      if(use_fixed_natmort == 1) natmort[r,y,,] = Fixed_natmort[r,y,,] # Using fixed natural mortality
+
       ZAA[r,y,,] = apply(FAA[r,y,,,,drop = FALSE],3:4,sum) + natmort[r,y,,] # Total Mortality at age
       SAA_mid[r,y,,] = exp(-0.5 * ZAA[r,y,,]) # Survival at age at midpoint of year
 
@@ -264,7 +270,7 @@ SPoCK_rtmb = function(pars, data) {
         Init_NAA_next_year[,2:n_ages,s] = Init_NAA[,1:(n_ages-1),s] * exp(-(natmort[,1,1:(n_ages-1),s] + (init_F * fish_sel[,1,1:(n_ages-1),s,1])))
         # accumulate plus group
         Init_NAA_next_year[,n_ages,s] = (Init_NAA_next_year[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1])))) +
-                                        (Init_NAA[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1]))))
+          (Init_NAA[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1]))))
         Init_NAA = Init_NAA_next_year # iterate to next cycle
       } # end s loop
     } # end i loop
@@ -284,10 +290,10 @@ SPoCK_rtmb = function(pars, data) {
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
         NAA[r,1,init_age_idx + 1,s] = R0 * exp(ln_InitDevs[r,init_age_idx] - (init_age_idx * (natmort[r,1, init_age_idx + 1, s] +
-                                      (init_F * fish_sel[r,1, init_age_idx + 1, s, 1])))) * sexratio[s] *  Rec_trans_prop[r] # not plus group
+                                                                                                (init_F * fish_sel[r,1, init_age_idx + 1, s, 1])))) * sexratio[s] *  Rec_trans_prop[r] # not plus group
         # Plus group calculations
         NAA[r,1,n_ages,s] = R0 * exp( - ((n_ages - 1) * (natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1]))) ) /
-                            (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) * sexratio[s] * Rec_trans_prop[r]
+          (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) * sexratio[s] * Rec_trans_prop[r]
 
       } # end s loop
     } # end r loop
@@ -312,7 +318,7 @@ SPoCK_rtmb = function(pars, data) {
                                       SSB_vals = SSB,
                                       y = y,
                                       rec_lag = rec_lag
-                                      )
+    )
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
         if(y < sigmaR_switch) NAA[r,y,1,s] = tmp_Det_Rec[r] * exp(ln_RecDevs[r,y] - (sigmaR2_early/2 * bias_ramp[y])) * sexratio[s] # early period recruitment
@@ -342,7 +348,7 @@ SPoCK_rtmb = function(pars, data) {
 
     ### Compute Biomass Quantities ----------------------------------------------
     Total_Biom[,y] = apply(NAA[,y,,,drop = FALSE] * WAA[,y,,,drop = FALSE], 1, sum) # Total biomass
-    SSB[,y] = apply(NAA[,y,,1,drop = FALSE] * WAA[,y,,1,drop = FALSE] * MatAA[,y,,1,drop = FALSE], 1, sum) # Spawning Stock Biomass
+    SSB[,y] = apply(NAA[,y,,1,drop = FALSE] * WAA[,y,,1,drop = FALSE] * MatAA[,y,,1,drop = FALSE] * exp(-ZAA[,y,,1,drop = FALSE] * t_spawn), 1, sum)
     if(n_sexes == 1) SSB[,y] = SSB[,y] * 0.5 # If single sex model, multiply SSB calculations by 0.5
 
   } # end y loop
@@ -810,31 +816,36 @@ SPoCK_rtmb = function(pars, data) {
 
   ### Selectivity (Penalty) ---------------------------------------------------
   for(r in 1:n_regions) {
+
     # Fishery Selectivity Deviations
     for(f in 1:n_fish_fleets) {
+
       if(cont_tv_fish_sel[r,f] > 0) {
         sel_nLL = sel_nLL + - Get_sel_PE_loglik(PE_model = cont_tv_fish_sel[r,f], # process error model
-                                                PE_pars = fishsel_pe_pars[,,,f, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
-                                                ln_devs = ln_fishsel_devs[,,,,f, drop = FALSE], # extract out process error deviations for a given fleet
-                                                map_sel_devs = map_ln_fishsel_devs[,,,,f, drop = FALSE])
+                                                PE_pars = fishsel_pe_pars[r,,,f, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
+                                                ln_devs = ln_fishsel_devs[r,,,,f, drop = FALSE], # extract out process error deviations for a given fleet
+                                                map_sel_devs = map_ln_fishsel_devs[r,,,,f, drop = FALSE],
+                                                sel_vals = fish_sel[r,,,,f, drop = FALSE])
       } # end if
 
       # Mean Standardizing to help with interpretability
-      if(cont_tv_fish_sel[r,f] %in% 3:5) for(s in 1:n_sexes) fish_sel[r,,,s,f] = fish_sel[r,,,s,f] / mean(fish_sel[r,,,s,f])
+      if(cont_tv_fish_sel[r,f] %in% 3:5) for(s in 1:n_sexes) fish_sel[r,,,s,f] = exp(log(fish_sel[r,,,s,f]) - log(mean(fish_sel[r,,,s,f])))
 
     } # end f loop
 
     # Survey Selectivity Deviations
     for(sf in 1:n_srv_fleets) {
+
       if(cont_tv_srv_sel[r,sf] > 0) {
-        sel_nLL = sel_nLL + - Get_sel_PE_loglik(PE_model = cont_tv_srv_sel[r,f], # process error model
-                                                PE_pars = srvsel_pe_pars[,,,sf, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
-                                                ln_devs = ln_srvsel_devs[,,,,sf, drop = FALSE], # extract out process error deviations for a given fleet
-                                                map_sel_devs = map_ln_srvsel_devs[,,,,sf, drop = FALSE])
+        sel_nLL = sel_nLL + - Get_sel_PE_loglik(PE_model = cont_tv_srv_sel[r,sf], # process error model
+                                                PE_pars = srvsel_pe_pars[r,,,sf, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
+                                                ln_devs = ln_srvsel_devs[r,,,,sf, drop = FALSE], # extract out process error deviations for a given fleet
+                                                map_sel_devs = map_ln_srvsel_devs[r,,,,sf, drop = FALSE],
+                                                sel_vals = srv_sel[r,,,,sf, drop = FALSE])
       } # end if
 
       # Mean Standardizing to help with interpretability
-      if(cont_tv_srv_sel[r,sf] %in% 3:5) for(s in 1:n_sexes) srv_sel[r,,,s,sf] = srv_sel[r,,,s,sf] / mean(srv_sel[r,,,s,sf])
+      if(cont_tv_srv_sel[r,sf] %in% 3:5) for(s in 1:n_sexes) srv_sel[r,,,s,sf] = exp(log(srv_sel[r,,,s,sf]) - log(mean(srv_sel[r,,,s,sf])))
 
     } # end sf loop
   } # end r loop
@@ -876,8 +887,10 @@ SPoCK_rtmb = function(pars, data) {
       b = par_idx[2] # get block index
       f = par_idx[3] # get fleet index
       ln_fish_q_val = ln_fish_q[r,b,f] # extract tag reporting rate value
-      if(likelihoods == 0) fish_q_nLL = fish_q_nLL + (ln_fish_q_val - log(fish_q_prior[r,b,f,1]))^2 / (2 * (fish_q_prior[r,b,f,2])^2) # ADMB likelihood
-      if(likelihoods == 1) fish_q_nLL = fish_q_nLL -RTMB::dnorm(ln_fish_q_val, log(fish_q_prior[r,b,f,1]), fish_q_prior[r,b,f,2], TRUE) # TMB likelihood
+      if(!is.na(fish_q_prior[r,b,f,1] ) || !is.na(fish_q_prior[r,b,f,2] )) {
+        if(likelihoods == 0) fish_q_nLL = fish_q_nLL + (ln_fish_q_val - log(fish_q_prior[r,b,f,1]))^2 / (2 * (fish_q_prior[r,b,f,2])^2) # ADMB likelihood
+        if(likelihoods == 1) fish_q_nLL = fish_q_nLL -RTMB::dnorm(ln_fish_q_val, log(fish_q_prior[r,b,f,1]), fish_q_prior[r,b,f,2], TRUE) # TMB likelihood
+      } # if there are values for priors
     } # end i loop
   }
 
@@ -890,8 +903,10 @@ SPoCK_rtmb = function(pars, data) {
       b = par_idx[2] # get block index
       sf = par_idx[3] # get fleet index
       ln_srv_q_val = ln_srv_q[r,b,sf] # extract tag reporting rate value
-      if(likelihoods == 0) srv_q_nLL = srv_q_nLL + (ln_srv_q_val - log(srv_q_prior[r,b,sf,1]))^2 / (2 * (srv_q_prior[r,b,sf,2])^2) # ADMB likelihood
-      if(likelihoods == 1) srv_q_nLL = srv_q_nLL -RTMB::dnorm(ln_srv_q_val, log(srv_q_prior[r,b,sf,1]), srv_q_prior[r,b,sf,2], TRUE) # TMB likelihood
+      if(!is.na(srv_q_prior[r,b,sf,1] ) || !is.na(srv_q_prior[r,b,sf,2] )) {
+        if(likelihoods == 0) srv_q_nLL = srv_q_nLL + (ln_srv_q_val - log(srv_q_prior[r,b,sf,1]))^2 / (2 * (srv_q_prior[r,b,sf,2])^2) # ADMB likelihood
+        if(likelihoods == 1) srv_q_nLL = srv_q_nLL -RTMB::dnorm(ln_srv_q_val, log(srv_q_prior[r,b,sf,1]), srv_q_prior[r,b,sf,2], TRUE) # TMB likelihood
+      } # if there are values for priors
     } # end i loop
   }
 
@@ -920,7 +935,7 @@ SPoCK_rtmb = function(pars, data) {
                                                        logit_devs = logit_move_devs,
                                                        map_move_devs = map_logit_move_devs,
                                                        do_recruits_move = do_recruits_move
-                                                       )
+    )
   }
 
   ### Movement Rates (Prior) ------------------------------------------------

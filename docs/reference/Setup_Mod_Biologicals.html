@@ -58,6 +58,7 @@
 <span>  fit_lengths <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  SizeAgeTrans <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  M_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Fixed_natmort <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -102,8 +103,12 @@
 <dd><p>Character specifying options for how to estimate natural mortality. Default is NULL such that it is estimated for 2 sexes or only estimated for a single sex if it is a single sex model. Other options include "est_shared_s" which estimates the same natural mortality rate if n_sexes == 2. The other option is "fix" which fixes all natural mortality parameters.</p></dd>
 
 
+<dt id="arg-fixed-natmort">Fixed_natmort<a class="anchor" aria-label="anchor" href="#arg-fixed-natmort"></a></dt>
+<dd><p>Fixed natural mortality array, dimensionsed by n_regions, n_yrs, n_ages, and n_sexes</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Parameter starting values for ln_M and M_offset if not using default</p></dd>
+<dd><p>Additional arguments for starting values of ln_M and M_offset (note that when M_spec is specified at 'fix', these will not be used. Instead, a user must supply a fixed natural mortality array using Fixed_natmort)</p></dd>
 
 </dl></div>
 

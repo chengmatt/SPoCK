@@ -24,8 +24,9 @@ In addition to being an estimation model, `SPoCK` also has the capacity to condu
 
 Let us first load in the `SPoCK` package.
 
-```{r setup}
+```{r setup, eval = FALSE}
 library(SPoCK)
+library(ggplot2)
 ```
 
 # Define Operating Model
@@ -33,8 +34,8 @@ We can then define an operating model we want to condition a population on. Para
 
 ```{r, eval = FALSE}
 # Set up model dimensions
-sim_list <- Setup_Sim_Dim(n_sims = 20, # number of simulations to conduct
-                          n_yrs = 100, # number of years
+sim_list <- Setup_Sim_Dim(n_sims = 5, # number of simulations to conduct
+                          n_yrs = 50, # number of years
                           n_regions = 2, # number of regions
                           n_ages = 8, # number of ages
                           n_sexes = 1, # number of sexes
@@ -59,7 +60,7 @@ sim_list <- Setup_Sim_FishMort(sim_list = sim_list, # simulation list defined fr
                                init_F_vals = matrix(0, nrow = sim_list$n_regions, ncol = sim_list$n_fish_fleets), # initial F values to impose on initial age structure
                                Fmort_pattern = matrix(c('one-way', "one-way"), nrow = sim_list$n_regions, ncol = sim_list$n_fish_fleets), # fishing mortality pattern
                                Fmort_start = matrix(c(0.01, 0.01), nrow = sim_list$n_regions, ncol = sim_list$n_fish_fleets), # start value of fishing mortality
-                               Fmort_fct = matrix(c(15, 15), nrow = sim_list$n_regions, ncol = sim_list$n_fish_fleets), # factor to multiply fmort_start by to reach apicial F
+                               Fmort_fct = matrix(c(50, 50), nrow = sim_list$n_regions, ncol = sim_list$n_fish_fleets), # factor to multiply fmort_start by to reach apicial F
                                proc_error = FALSE, # whether or not to have fishing mortality process error
                                proc_error_sd = 0 # process error on fishing mortality
 )
@@ -86,7 +87,7 @@ sim_list <- Setup_Sim_Survey(sim_list = sim_list,
 )
 ```
 
-Recruitment dynamics can be defined with the code chunk below, where various options are available, including whether recruits move, the recruitment sex-ratio, recruitment parameters and recruitment functional forms, as well as whether recruitment occurs globally or locally (only applicable in a spatial context). 
+Recruitment dynamics can be defined with the code chunk below, where various options are available, including whether recruits move, the recruitment sex-ratio, recruitment parameters and recruitment functional forms, as well as whether recruitment occurs globally or locally (only applicable in a spatial context). Here, region 1 is assumed to be more productive than region 2.
 ```{r, eval = FALSE}
 # Setup recruitment stuff
 sim_list <- Setup_Sim_Rec(
@@ -94,7 +95,7 @@ sim_list <- Setup_Sim_Rec(
   do_recruits_move = "dont_move", # == 0, recruits don't move , == 1 recruits move
   base_rec_sexratio = 1, # single sex
   rec_sexratio_vary = "constant", # sex ratio type
-  base_r0 = c(50, 50), # base R0 values (or mean)
+  base_r0 = c(100, 50),
   r0_vary = "constant", # R0 type
   base_h = c(0.8, 0.8), # base steepness values
   init_sigmaR = 0.5, # inital deviations variability
@@ -122,11 +123,11 @@ sim_list <- Setup_Sim_Biologicals(
 )
 ```
 
-Because movement dynamics can be incredibly complex, we have designed it such that users supply their own defined movement "matrix". This matrix then needs to be input into the `sim_list` object for use. Here, we are defining uniform movement for simplicity. 
+Because movement dynamics can be incredibly complex, we have designed it such that users supply their own defined movement "matrix". This matrix then needs to be input into the `sim_list` object for use. Here, we are defining movement such that individuals move from the more productive region (region 1) to the less  
 ```{r, eval = FALSE}
 ref <- 1
 movement_matrix <- array(0, dim = c(sim_list$n_regions, sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims)) # From, To
-base <- matrix(0, sim_list$n_regions, sim_list$n_regions)
+base <- matrix(c(0, 1), sim_list$n_regions, sim_list$n_regions, byrow = TRUE)
 
 # Plug in movement process error
 for(sim in 1:sim_list$n_sims) {
@@ -387,6 +388,7 @@ sim_env <- Setup_sim_env(sim_list)
 # Run Closed Loop
 Our closed loop can then be defined with the following code chunk. The first loop characterizes a given simulation, while the second loop characterizes the a given year and simulation. The `run_annual_cycle` function is then utilized to run population dynamics for a given year. Following that, if we are in a year where we want to begin management feedback, we first obtain the necessary data from years `1:y` for a given simulation using the function `Get_Feedback_Data`, which truncates the skeleton data, parameters, and mapping list to the correct years. We then feed these lists to the estimation model using the `fit_model` function. Next, we will extract the necessary inputs into the reference point functions and projection functions. Reference points can then derived using `Get_Reference_Points` and the associated catch from said reference point is then derived using a 1 year population projection using the `Do_Population_Projection` function. Lastly, the catch associated with the reference point is then input back into the simulated population. This is then by converting the estimated catch to fishing mortality rates using the `bisection_F` function, which is based on the true underlying population dynamics simulated from the operating model. 
 ```{r, eval = FALSE}
+set.seed(123) # to reproduce
 # Start Simulation
 for (sim in 1:sim_env$n_sims) {
   for (y in 1:sim_env$n_yrs) {
@@ -501,3 +503,31 @@ for (sim in 1:sim_env$n_sims) {
 } # end sim loop
 ```
 
+We can then inspect some outputs from the MSE. Plotted below are trajectories of regional fishing mortality and spawning stock biomass for a given simulation. The dotted vertical line indicates when the feedback loop first started.
+```{r, eval = FALSE}
+# Trajectories of spawning biomass
+reshape2::melt(sim_env$SSB) %>%
+  dplyr::rename(Region = Var1, Year = Var2, Sim = Var3) %>%
+  ggplot(aes(x = Year, y = value, group = Sim)) +
+  geom_line() +
+  geom_vline(xintercept = sim_env$feedback_start_yr, lty = 2) +
+  facet_wrap(~Region) +
+  theme_bw(base_size = 15) +
+  labs(y = 'SSB') +
+  ylim(0, NA)
+
+# Trajectories of observed catches
+reshape2::melt(sim_env$Obs_Catch) %>%
+  dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3, Sim = Var4) %>%
+  dplyr::filter(Year != 36) %>%
+  ggplot(aes(x = Year, y = value, group = Sim)) +
+  geom_line() +
+  geom_vline(xintercept = sim_env$feedback_start_yr, lty = 2) +
+  facet_wrap(~Region) +
+  theme_bw(base_size = 15) +
+  labs(y = 'Catch') +
+  ylim(0, NA)
+```
+
+![Regional spawning stock biomass output from the closed loop simulation](figures/h_ssb_closed_loop.png)
+![Regional catches from the closed loop simulation](figures/h_catch_closed_loop.png)

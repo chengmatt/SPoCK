@@ -163,6 +163,3 @@ get_beta_scaled_pars <- function(low, high, mu, sigma) {
   b = (1 - mean) * var
   return(c(a,b,low,scale))
 }
-
-
-

@@ -205,6 +205,10 @@ there is a stock recruitment relationship) 0 == local density, 1 ==
 global density, 999 == no density dependent stock recruitment form is
 used</td>
 </tr>
+<tr class="even">
+<td><code>t_spawn</code></td>
+<td>Fraction of year in which spawning occurs</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -258,6 +262,16 @@ use prior, 1: Use prior</td>
 mortality in normal space. Element 1 should be the mean and element 2
 should be the standard deviation. The prior is applied to the M
 parameter and not the offset</td>
+</tr>
+<tr class="even">
+<td><code>use_fixed_natmort</code></td>
+<td>Value specifying whether a fixed mortality array is used. 0: Don’t
+use and estimate M, 1: Use</td>
+</tr>
+<tr class="odd">
+<td><code>Fixed_natmort</code></td>
+<td>Natural mortality array dimensioned by n_regions, n_years, n_ages,
+and n_sexes.</td>
 </tr>
 </tbody>
 </table>
@@ -462,7 +476,7 @@ and years for which a block is specified as</td>
 <td><code>map_Tag_Reporting_Pars</code></td>
 <td>Array dimensioned by n_regions and n_years indicating the regions
 and years for which a block is specified and which tagging parameters
-are mapped of / shared</td>
+are mapped of / shared.</td>
 </tr>
 </tbody>
 </table>

@@ -14,6 +14,7 @@ Setup_Mod_Biologicals(
   fit_lengths = 0,
   SizeAgeTrans = NA,
   M_spec = NULL,
+  Fixed_natmort = NULL,
   ...
 )
 }
@@ -36,7 +37,9 @@ Setup_Mod_Biologicals(
 
 \item{M_spec}{Character specifying options for how to estimate natural mortality. Default is NULL such that it is estimated for 2 sexes or only estimated for a single sex if it is a single sex model. Other options include "est_shared_s" which estimates the same natural mortality rate if n_sexes == 2. The other option is "fix" which fixes all natural mortality parameters.}
 
-\item{...}{Parameter starting values for ln_M and M_offset if not using default}
+\item{Fixed_natmort}{Fixed natural mortality array, dimensionsed by n_regions, n_yrs, n_ages, and n_sexes}
+
+\item{...}{Additional arguments for starting values of ln_M and M_offset (note that when M_spec is specified at 'fix', these will not be used. Instead, a user must supply a fixed natural mortality array using Fixed_natmort)}
 }
 \description{
 Setup biological inputs for estimation model

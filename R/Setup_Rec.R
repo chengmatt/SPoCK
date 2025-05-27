@@ -100,6 +100,7 @@ Setup_Sim_Rec <- function(
 #' @param dont_est_recdev_last Numeric indicating the last x years to not estimate rec devs for. Default is 0.
 #' @param h_spec Specification for steepness. Default is NULL, such that it is estimated for all reigons if rec_model == 1 (Beverton-Holt). Other options include "est_shared_r" which estimates h but shares across regions, or "fix" which fixes all steepness values. If rec_model == 0, h is fixed.
 #' @param rec_dd Recruitment density dependence, Options are "local", "global", or NULL
+#' @param t_spawn Spawn timing fraction
 #'
 #' @export Setup_Mod_Rec
 #'
@@ -121,6 +122,7 @@ Setup_Mod_Rec <- function(input_list,
                           InitDevs_spec = NULL,
                           RecDevs_spec = NULL,
                           h_spec = NULL,
+                          t_spawn = 0,
                           ...
                           ) {
 
@@ -180,6 +182,7 @@ Setup_Mod_Rec <- function(input_list,
   input_list$data$sexratio <- sexratio
   input_list$data$init_age_strc <- init_age_strc
   input_list$data$init_F_prop <- init_F_prop
+  input_list$data$t_spawn <- t_spawn
 
   # Global R0
   if("ln_global_R0" %in% names(starting_values)) input_list$par$ln_global_R0 <- starting_values$ln_global_R0
@@ -248,8 +251,9 @@ Setup_Mod_Rec <- function(input_list,
   } else if(rec_dd == 'global' && rec_model == 'bh_rec' && input_list$data$n_regions > 1) stop("Please specify a valid recruitment deviations option for global recruitment density dependence (should be est_shared_r)!") else collect_message("Recruitment Deviations is estimated for all dimensions")
 
   # Steepness
-  if(input_list$data$rec_model == 0) input_list$map$steepness_h <- factor(rep(NA, length(input_list$par$steepness_h)))
-  if(!is.null(h_spec)) {
+  if(input_list$data$rec_model == 0) {
+    input_list$map$steepness_h <- factor(rep(NA, length(input_list$par$steepness_h)))
+  } else if(!is.null(h_spec)) {
     if(rec_dd == 'global' && !h_spec %in% c("est_shared_r", "fix") && input_list$data$n_regions > 1) stop("Please specify a valid steepness option for global recruitment density dependence (should be est_shared_r or fix)!")
     # Share across regions and estimate
     if(h_spec == "est_shared_r") input_list$map$steepness_h <- factor(rep(1, length(input_list$par$steepness_h)))

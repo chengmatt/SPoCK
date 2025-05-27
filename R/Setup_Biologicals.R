@@ -62,8 +62,9 @@ Setup_Sim_Biologicals <- function(
 #' @param M_prior Vector of natural mortality priors with the first element representing the mean in normal space, and the second element representing the sd.
 #' @param fit_lengths Whether or not to fit length data, == 0 dont fit, == 1 fit
 #' @param SizeAgeTrans Size age transition matrix dimensioned by n_regions, n_years, n_lens, n_ages, n_sexes
-#' @param ... Parameter starting values for ln_M and M_offset if not using default
 #' @param M_spec Character specifying options for how to estimate natural mortality. Default is NULL such that it is estimated for 2 sexes or only estimated for a single sex if it is a single sex model. Other options include "est_shared_s" which estimates the same natural mortality rate if n_sexes == 2. The other option is "fix" which fixes all natural mortality parameters.
+#' @param Fixed_natmort Fixed natural mortality array, dimensionsed by n_regions, n_yrs, n_ages, and n_sexes
+#' @param ... Additional arguments for starting values of ln_M and M_offset (note that when M_spec is specified at 'fix', these will not be used. Instead, a user must supply a fixed natural mortality array using Fixed_natmort)
 #'
 #' @export Setup_Mod_Biologicals
 Setup_Mod_Biologicals <- function(input_list,
@@ -75,7 +76,9 @@ Setup_Mod_Biologicals <- function(input_list,
                                   fit_lengths = 0,
                                   SizeAgeTrans = NA,
                                   M_spec = NULL,
-                                  ...) {
+                                  Fixed_natmort = NULL,
+                                  ...
+                                  ) {
 
   messages_list <<- character(0) # string to attach to for printing messages
 
@@ -84,6 +87,8 @@ Setup_Mod_Biologicals <- function(input_list,
   check_data_dimensions(MatAA, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'MatAA')
   if(!is.null(AgeingError)) check_data_dimensions(AgeingError, n_ages = length(input_list$data$ages), what = 'AgeingError')
   if(fit_lengths == 1) check_data_dimensions(SizeAgeTrans, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_lens = length(input_list$data$lens), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'SizeAgeTrans')
+  if(!is.null(M_spec)) if(M_spec == 'fix') if(is.null(Fixed_natmort)) stop("Please provide a fixed natural mortality array dimensioned by n_regions, n_years, n_ages, and n_sexes!")
+  if(!is.null(M_spec)) if(M_spec == 'fix') check_data_dimensions(Fixed_natmort, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'Fixed_natmort')
 
   input_list$data$WAA <- WAA
   input_list$data$MatAA <- MatAA
@@ -93,6 +98,11 @@ Setup_Mod_Biologicals <- function(input_list,
   input_list$data$SizeAgeTrans <- SizeAgeTrans
   input_list$data$Use_M_prior <- Use_M_prior
   input_list$data$M_prior <- M_prior
+  input_list$data$Fixed_natmort <- Fixed_natmort
+
+  # Input indicator for estimating or not estimating M
+  if(is.null(M_spec) || M_spec == "est_ln_M_only") input_list$data$use_fixed_natmort <- 0
+  else if(M_spec == "fix") input_list$data$use_fixed_natmort <- 1
 
   if(!fit_lengths %in% c(0,1)) stop("Values for fit_lengths are not valid. They are == 0 (not used), or == 1 (used)")
   collect_message("Length Composition data are: ", ifelse(fit_lengths == 0, "Not Used", "Used"))

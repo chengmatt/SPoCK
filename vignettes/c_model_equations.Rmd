@@ -185,7 +185,7 @@ Sel_{y,a} = \frac{Sel_{y,a}}{mean(\boldsymbol{Sel})}
 \end{aligned}
 \]
 
-where deviations are placed about the parametric form and selectivity values are mean standardized to aid with interpretability. For further details on options available, see the [selectivity process error section](#selpen).
+where deviations are placed about the parametric form and selectivity values are log mean standardized to aid with interpretability. For further details on options available, see the [selectivity process error section](#selpen).
 
 ## Observation Models and Equations
 
@@ -663,18 +663,25 @@ Parametric selectivity deviations can also be specified assuming a random walk p
 \[ 
 \begin{aligned}
 \epsilon_{r,y,i,s,f}^{Sel} \begin{cases}
-0, & \text{if } y = 1 \\
+\sim N\left(0,25\right), & \text{if } y = 1 \\
 \sim N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) & \text{if } y > 1
 \end{cases}
 \end{aligned}
 \]
 
-where the first parameter deviation is set at 0 (such that a fixed effect is estimated in the first time step) and subsequent deviations are dependent on the previous time point, constrained by an estimable variance for a given selectivity parameter ($\sigma^2_{i,Sel}$).
-
-Semi-parametric deviations can also be specified, where deviations can occur across years, ages, and cohorts. For all semi-parametric deviations, a curvature penalty is applied across ages for regularity:
+where the first parameter deviation is initialized with a broad distribution (essentially a fixed effect parameter), and subsequent deviations are dependent on the previous time point, constrained by an estimable variance for a given selectivity parameter ($\sigma^2_{i,Sel}$). For both iid and random walk deviations, a smoothness penalty is applied onto selectivity values to induce temporal stability:
 
 \[
-P_{\text{age curvature}} = \sum_{y=1}^{Y} \sum_{a=1}^{A-1} (\epsilon_{y,a+1}^{Sel} - 2\epsilon_{y,a}^{Sel} - \epsilon_{y,a-1}^{Sel})^2
+P_{\text{year smoothness}} = \sum_{s=1}^S\sum_{y=2}^{Y} \sum_{a=1}^{A} (log(Sel_{y,a,s}) - log(Sel_{y-1,a,s}))^2
+\]
+
+Semi-parametric deviations can also be specified, where deviations can occur across years, ages, and cohorts. For all semi-parametric deviations, a curvature penalty is applied on selectivity values across ages and across years for regularity:
+
+\[
+\begin{aligned}
+P_{\text{age curvature}} = \sum_{s=1}^S\sum_{y=1}^{Y} \sum_{a=2}^{A-1} (log(Sel_{y,a+1,s}) - 2log(Sel_{y,a,s}) - log(Sel_{y,a-1,s}))^2 \\
+P_{\text{year curvature}} = \sum_{s=1}^S\sum_{y=2}^{Y-1} \sum_{a=1}^{A} (log(Sel_{y+1,a,s}) - 2log(Sel_{y,a,s}) - log(Sel_{y-1,a,s}))^2 \\
+\end{aligned}
 \]
 
 Two options can be specified to allow for deviations across these three dimensions, which include a marginal stationary and a conditional non-stationary variance option. The primary difference between the two is that the marginal variance version does not have a closed form solution for $\boldsymbol{\Omega}$ (see equations below) and needs to be iteratively solved, while the conditional variance version has a closed form solution. The following equations describe the conditional variance version: 

@@ -385,9 +385,8 @@ Sel_{y,a} = \frac{Sel_{y,a}}{mean(\boldsymbol{Sel})}
 \end{aligned}
 </annotation></semantics></math></p>
 <p>where deviations are placed about the parametric form and selectivity
-values are mean standardized to aid with interpretability. For further
-details on options available, see the <a href="#selpen">selectivity
-process error section</a>.</p>
+values are log mean standardized to aid with interpretability. For
+further details on options available, see the <a href="#selpen">selectivity process error section</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -1184,25 +1183,33 @@ Using this form, selectivity is assumed to vary across time but in a
 parametric manner.</p>
 <p>Parametric selectivity deviations can also be specified assuming a
 random walk process:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex"> 
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>25</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mo>=</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>i</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>f</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr></mtable></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex"> 
 \begin{aligned}
 \epsilon_{r,y,i,s,f}^{Sel} \begin{cases}
-0, &amp; \text{if } y = 1 \\
+\sim N\left(0,25\right), &amp; \text{if } y = 1 \\
 \sim N\left(\epsilon_{r,y-1,i,s,f}^{Sel},\sigma^2_{i,Sel}\right) &amp; \text{if } y &gt; 1
 \end{cases}
 \end{aligned}
 </annotation></semantics></math></p>
-<p>where the first parameter deviation is set at 0 (such that a fixed
-effect is estimated in the first time step) and subsequent deviations
-are dependent on the previous time point, constrained by an estimable
-variance for a given selectivity parameter
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{i,Sel}</annotation></semantics></math>).</p>
+<p>where the first parameter deviation is initialized with a broad
+distribution (essentially a fixed effect parameter), and subsequent
+deviations are dependent on the previous time point, constrained by an
+estimable variance for a given selectivity parameter
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>i</mi><mo>,</mo><mi>S</mi><mi>e</mi><mi>l</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{i,Sel}</annotation></semantics></math>).
+For both iid and random walk deviations, a smoothness penalty is applied
+onto selectivity values to induce temporal stability:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">year smoothness</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><munderover><mo>∑</mo><mrow><mi>y</mi><mo>=</mo><mn>2</mn></mrow><mi>Y</mi></munderover><munderover><mo>∑</mo><mrow><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mi>A</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">
+P_{\text{year smoothness}} = \sum_{s=1}^S\sum_{y=2}^{Y} \sum_{a=1}^{A} (log(Sel_{y,a,s}) - log(Sel_{y-1,a,s}))^2
+</annotation></semantics></math></p>
 <p>Semi-parametric deviations can also be specified, where deviations
 can occur across years, ages, and cohorts. For all semi-parametric
-deviations, a curvature penalty is applied across ages for
-regularity:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">age curvature</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>y</mi><mo>=</mo><mn>1</mn></mrow><mi>Y</mi></munderover><munderover><mo>∑</mo><mrow><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>A</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>−</mo><mn>2</mn><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo>−</mo><msubsup><mi>ϵ</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>S</mi><mi>e</mi><mi>l</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">
-P_{\text{age curvature}} = \sum_{y=1}^{Y} \sum_{a=1}^{A-1} (\epsilon_{y,a+1}^{Sel} - 2\epsilon_{y,a}^{Sel} - \epsilon_{y,a-1}^{Sel})^2
+deviations, a curvature penalty is applied on selectivity values across
+ages and across years for regularity:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>P</mi><mtext mathvariant="normal">age curvature</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><munderover><mo>∑</mo><mrow><mi>y</mi><mo>=</mo><mn>1</mn></mrow><mi>Y</mi></munderover><munderover><mo>∑</mo><mrow><mi>a</mi><mo>=</mo><mn>2</mn></mrow><mrow><mi>A</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>2</mn><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>P</mi><mtext mathvariant="normal">year curvature</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><munderover><mo>∑</mo><mrow><mi>y</mi><mo>=</mo><mn>2</mn></mrow><mrow><mi>Y</mi><mo>−</mo><mn>1</mn></mrow></munderover><munderover><mo>∑</mo><mrow><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mi>A</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>2</mn><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>e</mi><msub><mi>l</mi><mrow><mi>y</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+P_{\text{age curvature}} = \sum_{s=1}^S\sum_{y=1}^{Y} \sum_{a=2}^{A-1} (log(Sel_{y,a+1,s}) - 2log(Sel_{y,a,s}) - log(Sel_{y,a-1,s}))^2 \\
+P_{\text{year curvature}} = \sum_{s=1}^S\sum_{y=2}^{Y-1} \sum_{a=1}^{A} (log(Sel_{y+1,a,s}) - 2log(Sel_{y,a,s}) - log(Sel_{y-1,a,s}))^2 \\
+\end{aligned}
 </annotation></semantics></math></p>
 <p>Two options can be specified to allow for deviations across these
 three dimensions, which include a marginal stationary and a conditional
