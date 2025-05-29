@@ -69,7 +69,6 @@
 <span>  HCR_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  recruitment_opt <span class="op">=</span> <span class="st">"inv_gauss"</span>,</span>
 <span>  fmort_opt <span class="op">=</span> <span class="st">"HCR"</span>,</span>
-<span>  F_input <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">t_spawn</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -139,11 +138,11 @@
 
 
 <dt id="arg-f-ref-pt">f_ref_pt<a class="anchor" aria-label="anchor" href="#arg-f-ref-pt"></a></dt>
-<dd><p>Fishing mortality reference point dimensioned by n_regions</p></dd>
+<dd><p>Fishing mortality reference point dimensioned by n_regions and n_proj_yrs</p></dd>
 
 
 <dt id="arg-b-ref-pt">b_ref_pt<a class="anchor" aria-label="anchor" href="#arg-b-ref-pt"></a></dt>
-<dd><p>Biological reference point dimensioned by n_regions</p></dd>
+<dd><p>Biological reference point dimensioned by n_regions and n_proj_yrs</p></dd>
 
 
 <dt id="arg-hcr-function">HCR_function<a class="anchor" aria-label="anchor" href="#arg-hcr-function"></a></dt>
@@ -156,10 +155,6 @@
 
 <dt id="arg-fmort-opt">fmort_opt<a class="anchor" aria-label="anchor" href="#arg-fmort-opt"></a></dt>
 <dd><p>Fishing Mortality option, which includes "HCR", which modifies the F reference point using a user supplied HCR_function, or "Input", which uses projected F values supplied by the user.</p></dd>
-
-
-<dt id="arg-f-input">F_input<a class="anchor" aria-label="anchor" href="#arg-f-input"></a></dt>
-<dd><p>Projected fishing mortality input, dimensioned by n_regions, n_proj_yrs</p></dd>
 
 
 <dt id="arg-t-spawn">t_spawn<a class="anchor" aria-label="anchor" href="#arg-t-spawn"></a></dt>
@@ -215,56 +210,83 @@
 <span><span class="va">f40</span> <span class="op">&lt;-</span> <span class="va">spr_40</span><span class="op">$</span><span class="va">f_ref_pt</span></span>
 <span><span class="va">f35</span> <span class="op">&lt;-</span> <span class="va">spr_35</span><span class="op">$</span><span class="va">f_ref_pt</span></span>
 <span><span class="va">f60</span> <span class="op">&lt;-</span> <span class="va">spr_60</span><span class="op">$</span><span class="va">f_ref_pt</span></span>
-<span><span class="co"># Define the F inputs for each scenario (Based on BSAI Intro Report)</span></span>
-<span> <span class="va">F_inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Scenario 1</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f40</span> <span class="op">*</span> <span class="op">(</span><span class="va">f40</span> <span class="op">/</span> <span class="fl">0.086</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Scenario 2</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">sabie_rtmb_model</span><span class="op">$</span><span class="va">rep</span><span class="op">$</span><span class="va">Fmort</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">61</span><span class="op">:</span><span class="fl">65</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,  <span class="co"># Scenario 3</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f60</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Scenario 4</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Scenario 5</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f35</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Scenario 6</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">f40</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">f35</span>, <span class="va">n_proj_yrs</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span> <span class="co"># Scenario 7</span></span>
-<span> <span class="op">)</span></span>
+<span><span class="co"># Define the F used for each scenario (Based on BSAI Intro Report)</span></span>
+<span><span class="va">proj_inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="co"># Scenario 1 - Using HCR to adjust maxFABC</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">b40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'HCR'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="co"># Scenario 2 - Using HCR to adjust maxFABC based on last year's value (constant fraction - author specified F)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f40</span> <span class="op">*</span> <span class="op">(</span><span class="va">f40</span> <span class="op">/</span> <span class="fl">0.086</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">b40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'HCR'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="co"># Scenario 3 - Using an F input of last 5 years average F, and</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">sabie_rtmb_model</span><span class="op">$</span><span class="va">rep</span><span class="op">$</span><span class="va">Fmort</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">60</span><span class="op">:</span><span class="fl">64</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'Input'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="co"># Scenario 4 - Using HCR to adjust F60</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f60</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">b40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'HCR'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="co"># Scenario 5 - F is set at 0</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'Input'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="co"># Scenario 6 - Using HCR to adjust FOFL</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">f35</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">b40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'HCR'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="co"># Scenario 7 - Using HCR to adjust FABC in first 2 projection years, and then later years are adjusting FOFL</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">f40</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">f35</span>, <span class="va">n_proj_yrs</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       b_ref_pt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">b40</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       fmort_opt <span class="op">=</span> <span class="st">'HCR'</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span> <span class="co"># store SSB outputs</span></span>
-<span> <span class="va">all_scenarios_ssb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span>, <span class="va">n_sims</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">F_inputs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span> <span class="va">all_scenarios_catch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span>, <span class="va">n_fish_fleets</span>, <span class="va">n_sims</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">F_inputs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># store outputs</span></span>
+<span><span class="va">all_scenarios_f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span>, <span class="va">n_sims</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">proj_inputs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">all_scenarios_ssb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span>, <span class="va">n_sims</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">proj_inputs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">all_scenarios_catch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_regions</span>, <span class="va">n_proj_yrs</span>, <span class="va">n_fish_fleets</span>, <span class="va">n_sims</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">proj_inputs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span> <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">F_inputs</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>   <span class="kw">for</span> <span class="op">(</span><span class="va">sim</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_sims</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">proj_inputs</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">sim</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_sims</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
-<span>     <span class="co"># do population projection</span></span>
-<span>     <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">Do_Population_Projection</span><span class="op">(</span>n_proj_yrs <span class="op">=</span> <span class="va">n_proj_yrs</span>,</span>
-<span>                                     n_regions <span class="op">=</span> <span class="va">n_regions</span>,</span>
-<span>                                     n_ages <span class="op">=</span> <span class="va">n_ages</span>,</span>
-<span>                                     n_sexes <span class="op">=</span> <span class="va">n_sexes</span>,</span>
-<span>                                     sexratio <span class="op">=</span> <span class="va">sexratio</span>,</span>
-<span>                                     n_fish_fleets <span class="op">=</span> <span class="va">n_fish_fleets</span>,</span>
-<span>                                     do_recruits_move <span class="op">=</span> <span class="va">do_recruits_move</span>,</span>
-<span>                                     recruitment <span class="op">=</span> <span class="va">recruitment</span>,</span>
-<span>                                     terminal_NAA <span class="op">=</span> <span class="va">terminal_NAA</span>,</span>
-<span>                                     terminal_F <span class="op">=</span> <span class="va">terminal_F</span>,</span>
-<span>                                     natmort <span class="op">=</span> <span class="va">natmort</span>,</span>
-<span>                                     WAA <span class="op">=</span> <span class="va">WAA</span>,</span>
-<span>                                     MatAA <span class="op">=</span> <span class="va">MatAA</span>,</span>
-<span>                                     fish_sel <span class="op">=</span> <span class="va">fish_sel</span>,</span>
-<span>                                     Movement <span class="op">=</span> <span class="va">Movement</span>,</span>
-<span>                                     f_ref_pt <span class="op">=</span> <span class="va">f_ref_pt</span>,</span>
-<span>                                     b_ref_pt <span class="op">=</span> <span class="va">b_ref_pt</span>,</span>
-<span>                                     HCR_function <span class="op">=</span> <span class="va">HCR_function</span>,</span>
-<span>                                     recruitment_opt <span class="op">=</span> <span class="st">"inv_gauss"</span>,</span>
-<span>                                     fmort_opt <span class="op">=</span> <span class="st">'Input'</span>,</span>
-<span>                                     F_input <span class="op">=</span> <span class="va">F_inputs</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>                                     t_spawn <span class="op">=</span> <span class="va">t_spawn</span></span>
-<span>     <span class="op">)</span></span>
+<span>    <span class="co"># do population projection</span></span>
+<span>    <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">Do_Population_Projection</span><span class="op">(</span>n_proj_yrs <span class="op">=</span> <span class="va">n_proj_yrs</span>,</span>
+<span>                                    n_regions <span class="op">=</span> <span class="va">n_regions</span>,</span>
+<span>                                    n_ages <span class="op">=</span> <span class="va">n_ages</span>,</span>
+<span>                                    n_sexes <span class="op">=</span> <span class="va">n_sexes</span>,</span>
+<span>                                    sexratio <span class="op">=</span> <span class="va">sexratio</span>,</span>
+<span>                                    n_fish_fleets <span class="op">=</span> <span class="va">n_fish_fleets</span>,</span>
+<span>                                    do_recruits_move <span class="op">=</span> <span class="va">do_recruits_move</span>,</span>
+<span>                                    recruitment <span class="op">=</span> <span class="va">recruitment</span>,</span>
+<span>                                    terminal_NAA <span class="op">=</span> <span class="va">terminal_NAA</span>,</span>
+<span>                                    terminal_F <span class="op">=</span> <span class="va">terminal_F</span>,</span>
+<span>                                    natmort <span class="op">=</span> <span class="va">natmort</span>,</span>
+<span>                                    WAA <span class="op">=</span> <span class="va">WAA</span>,</span>
+<span>                                    MatAA <span class="op">=</span> <span class="va">MatAA</span>,</span>
+<span>                                    fish_sel <span class="op">=</span> <span class="va">fish_sel</span>,</span>
+<span>                                    Movement <span class="op">=</span> <span class="va">Movement</span>,</span>
+<span>                                    f_ref_pt <span class="op">=</span> <span class="va">proj_inputs</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">f_ref_pt</span>,</span>
+<span>                                    b_ref_pt <span class="op">=</span> <span class="va">proj_inputs</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">b_ref_pt</span>,</span>
+<span>                                    HCR_function <span class="op">=</span> <span class="va">HCR_function</span>,</span>
+<span>                                    recruitment_opt <span class="op">=</span> <span class="st">"inv_gauss"</span>,</span>
+<span>                                    fmort_opt <span class="op">=</span> <span class="va">proj_inputs</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fmort_opt</span>,</span>
+<span>                                    t_spawn <span class="op">=</span> <span class="va">t_spawn</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
-<span>     <span class="va">all_scenarios_ssb</span><span class="op">[</span>,,<span class="va">sim</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">$</span><span class="va">proj_SSB</span></span>
-<span>     <span class="va">all_scenarios_catch</span><span class="op">[</span>,,,<span class="va">sim</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">$</span><span class="va">proj_Catch</span></span>
-<span></span>
-<span></span>
-<span>   <span class="op">}</span> <span class="co"># end sim loop</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
-<span> <span class="op">}</span> <span class="co"># end i loop</span></span>
+<span>    <span class="va">all_scenarios_ssb</span><span class="op">[</span>,,<span class="va">sim</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">$</span><span class="va">proj_SSB</span></span>
+<span>    <span class="va">all_scenarios_catch</span><span class="op">[</span>,,,<span class="va">sim</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">$</span><span class="va">proj_Catch</span></span>
+<span>    <span class="va">all_scenarios_f</span><span class="op">[</span>,,<span class="va">sim</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">$</span><span class="va">proj_F</span><span class="op">[</span>,<span class="op">-</span><span class="op">(</span><span class="va">n_proj_yrs</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span> <span class="co"># remove last year, since it's not used</span></span>
+<span>  <span class="op">}</span> <span class="co"># end sim loop</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="co"># end i loop</span></span>
 <span><span class="op">}</span> <span class="co"># }</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

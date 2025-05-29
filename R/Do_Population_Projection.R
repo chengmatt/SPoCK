@@ -15,13 +15,12 @@
 #' @param MatAA Maturity at age, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes
 #' @param fish_sel Fishery selectivity, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets
 #' @param Movement Movement, dimensioned by n_regions, n_regions, n_proj_yrs, n_ages, n_sexes
-#' @param f_ref_pt Fishing mortality reference point dimensioned by n_regions
-#' @param b_ref_pt Biological reference point dimensioned by n_regions
+#' @param f_ref_pt Fishing mortality reference point dimensioned by n_regions and n_proj_yrs
+#' @param b_ref_pt Biological reference point dimensioned by n_regions and n_proj_yrs
 #' @param HCR_function Function describing a harvest control rule. The function should always have the following arguments: x, which represents SSB, frp, which takes inputs of fishery reference points, and brp, which takes inputs of biological reference points. Any additional arguments should be specified with defaults or hard coded / fixed within the function. e
 #' @param recruitment_opt Recruitment simulation option, where options are "inv_gauss", which simulates future recruitment based on the the recruitment values supplied using an inverse gaussian distribution, "mean_rec", which takes the mean of the recruitment values supplied for a given region, and "zero", which assumes that future recruitment does not occur
 #' @param fmort_opt Fishing Mortality option, which includes "HCR", which modifies the F reference point using a user supplied HCR_function, or "Input", which uses projected F values supplied by the user.
 #' @param t_spawn Fraction time of spawning used to compute projected SSB
-#' @param F_input Projected fishing mortality input, dimensioned by n_regions, n_proj_yrs
 #'
 #' @returns A list containing projected F, catch, SSB, and Numbers at Age. (Objects are generally dimensioned in the following order: n_regions, n_yrs, n_ages, n_sexes, n_fleets)
 #' @export Do_Population_Projection
@@ -69,56 +68,83 @@
 #' f40 <- spr_40$f_ref_pt
 #' f35 <- spr_35$f_ref_pt
 #' f60 <- spr_60$f_ref_pt
-#' # Define the F inputs for each scenario (Based on BSAI Intro Report)
-#'  F_inputs <- list(
-#'    array(f40, dim = c(n_regions, n_proj_yrs)), # Scenario 1
-#'    array(f40 * (f40 / 0.086), dim = c(n_regions, n_proj_yrs)), # Scenario 2
-#'    array(mean(rowSums(sabie_rtmb_model$rep$Fmort[1, 61:65, ])), dim = c(n_regions, n_proj_yrs)),  # Scenario 3
-#'    array(f60, dim = c(n_regions, n_proj_yrs)), # Scenario 4
-#'    array(0, dim = c(n_regions, n_proj_yrs)), # Scenario 5
-#'    array(f35, dim = c(n_regions, n_proj_yrs)), # Scenario 6
-#'    array(c(rep(f40, 2), rep(f35, n_proj_yrs - 2)), dim = c(n_regions, n_proj_yrs)) # Scenario 7
-#'  )
+#' # Define the F used for each scenario (Based on BSAI Intro Report)
+#' proj_inputs <- list(
+#'   # Scenario 1 - Using HCR to adjust maxFABC
+#'   list(f_ref_pt = array(f40, dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = array(b40, dim = c(n_regions, n_proj_yrs)),
+#'        fmort_opt = 'HCR'
+#'   ),
+#'   # Scenario 2 - Using HCR to adjust maxFABC based on last year's value (constant fraction - author specified F)
+#'   list(f_ref_pt = array(f40 * (f40 / 0.086), dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = array(b40, dim = c(n_regions, n_proj_yrs)),
+#'        fmort_opt = 'HCR'
+#'   ),
+#'   # Scenario 3 - Using an F input of last 5 years average F, and
+#'   list(f_ref_pt = array(mean(rowSums(sabie_rtmb_model$rep$Fmort[1, 60:64, ])), dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = NULL,
+#'        fmort_opt = 'Input'
+#'   ),
+#'   # Scenario 4 - Using HCR to adjust F60
+#'   list(f_ref_pt = array(f60, dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = array(b40, dim = c(n_regions, n_proj_yrs)),
+#'        fmort_opt = 'HCR'
+#'   ),
+#'   # Scenario 5 - F is set at 0
+#'   list(f_ref_pt = array(0, dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = NULL,
+#'        fmort_opt = 'Input'
+#'   ),
+#'   # Scenario 6 - Using HCR to adjust FOFL
+#'   list(f_ref_pt = array(f35, dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = array(b40, dim = c(n_regions, n_proj_yrs)),
+#'        fmort_opt = 'HCR'
+#'   ),
+#'   # Scenario 7 - Using HCR to adjust FABC in first 2 projection years, and then later years are adjusting FOFL
+#'   list(f_ref_pt = array(c(rep(f40, 2), rep(f35, n_proj_yrs - 2)), dim = c(n_regions, n_proj_yrs)),
+#'        b_ref_pt = array(b40, dim = c(n_regions, n_proj_yrs)),
+#'        fmort_opt = 'HCR'
+#'   )
+#' )
 #'
-#'  # store SSB outputs
-#'  all_scenarios_ssb <- array(0, dim = c(n_regions, n_proj_yrs, n_sims, length(F_inputs)))
-#'  all_scenarios_catch <- array(0, dim = c(n_regions, n_proj_yrs, n_fish_fleets, n_sims, length(F_inputs)))
+#' # store outputs
+#' all_scenarios_f <- array(0, dim = c(n_regions, n_proj_yrs, n_sims, length(proj_inputs)))
+#' all_scenarios_ssb <- array(0, dim = c(n_regions, n_proj_yrs, n_sims, length(proj_inputs)))
+#' all_scenarios_catch <- array(0, dim = c(n_regions, n_proj_yrs, n_fish_fleets, n_sims, length(proj_inputs)))
 #'
-#'  for (i in seq_along(F_inputs)) {
-#'    for (sim in 1:n_sims) {
+#' for (i in seq_along(proj_inputs)) {
+#'   for (sim in 1:n_sims) {
 #'
-#'      # do population projection
-#'      out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs,
-#'                                      n_regions = n_regions,
-#'                                      n_ages = n_ages,
-#'                                      n_sexes = n_sexes,
-#'                                      sexratio = sexratio,
-#'                                      n_fish_fleets = n_fish_fleets,
-#'                                      do_recruits_move = do_recruits_move,
-#'                                      recruitment = recruitment,
-#'                                      terminal_NAA = terminal_NAA,
-#'                                      terminal_F = terminal_F,
-#'                                      natmort = natmort,
-#'                                      WAA = WAA,
-#'                                      MatAA = MatAA,
-#'                                      fish_sel = fish_sel,
-#'                                      Movement = Movement,
-#'                                      f_ref_pt = f_ref_pt,
-#'                                      b_ref_pt = b_ref_pt,
-#'                                      HCR_function = HCR_function,
-#'                                      recruitment_opt = "inv_gauss",
-#'                                      fmort_opt = 'Input',
-#'                                      F_input = F_inputs[[i]],
-#'                                      t_spawn = t_spawn
-#'      )
+#'     # do population projection
+#'     out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs,
+#'                                     n_regions = n_regions,
+#'                                     n_ages = n_ages,
+#'                                     n_sexes = n_sexes,
+#'                                     sexratio = sexratio,
+#'                                     n_fish_fleets = n_fish_fleets,
+#'                                     do_recruits_move = do_recruits_move,
+#'                                     recruitment = recruitment,
+#'                                     terminal_NAA = terminal_NAA,
+#'                                     terminal_F = terminal_F,
+#'                                     natmort = natmort,
+#'                                     WAA = WAA,
+#'                                     MatAA = MatAA,
+#'                                     fish_sel = fish_sel,
+#'                                     Movement = Movement,
+#'                                     f_ref_pt = proj_inputs[[i]]$f_ref_pt,
+#'                                     b_ref_pt = proj_inputs[[i]]$b_ref_pt,
+#'                                     HCR_function = HCR_function,
+#'                                     recruitment_opt = "inv_gauss",
+#'                                     fmort_opt = proj_inputs[[i]]$fmort_opt,
+#'                                     t_spawn = t_spawn
+#'     )
 #'
-#'      all_scenarios_ssb[,,sim,i] <- out$proj_SSB
-#'      all_scenarios_catch[,,,sim,i] <- out$proj_Catch
-#'
-#'
-#'    } # end sim loop
-#'    print(i)
-#'  } # end i loop
+#'     all_scenarios_ssb[,,sim,i] <- out$proj_SSB
+#'     all_scenarios_catch[,,,sim,i] <- out$proj_Catch
+#'     all_scenarios_f[,,sim,i] <- out$proj_F[,-(n_proj_yrs+1)] # remove last year, since it's not used
+#'   } # end sim loop
+#'   print(i)
+#' } # end i loop
 #' }
 Do_Population_Projection <- function(n_proj_yrs = 2,
                                      n_regions,
@@ -140,7 +166,6 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
                                      HCR_function = NULL,
                                      recruitment_opt = "inv_gauss",
                                      fmort_opt = 'HCR',
-                                     F_input = NULL,
                                      t_spawn
                                      ) {
 
@@ -245,14 +270,12 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
 # Project F using HCR and reference points -----------------------------------------------------
         if(fmort_opt == 'HCR') {
           proj_F[r,y+1] <- HCR_function(x = proj_SSB[r,y],
-                                        frp = f_ref_pt[r],
-                                        brp = b_ref_pt[r])
+                                        frp = f_ref_pt[r,y],
+                                        brp = b_ref_pt[r,y])
         }
 
 # Project F using User Inputs ---------------------------------------------
-        if(fmort_opt == 'Input') {
-          proj_F[r,y+1] <- F_input[r,y]
-        }
+        if(fmort_opt == 'Input') proj_F[r,y+1] <- f_ref_pt[r,y]
 
       } # end f loop
     } # end r loop
