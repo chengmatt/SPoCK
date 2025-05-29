@@ -27,7 +27,7 @@ do_likelihood_profile(
 
 \item{what}{parameter name we want to profile}
 
-\item{idx}{Index for an parameter array, pointing to the value we want to map off}
+\item{idx}{Index for an parameter array, pointing to the value we want to map off (index is relative to a flattened array)}
 
 \item{min_val}{minimum value of profile}
 

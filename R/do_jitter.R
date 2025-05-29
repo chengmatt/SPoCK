@@ -12,6 +12,7 @@
 #'
 #' @import RTMB
 #' @import future.apply
+#' @import future
 #' @import progressr
 #' @importFrom reshape2 melt
 #' @import dplyr
@@ -137,13 +138,13 @@ do_jitter <- function(data,
 
   if(do_par == TRUE) {
 
-    plan(multisession, workers = n_cores) # set up cores
+    future::plan(future::multisession, workers = n_cores) # set up cores
 
-    with_progress({
+    progressr::with_progress({
 
-      p <- progressor(along = 1:n_jitter) # progress bar
+      p <- progressr::progressor(along = 1:n_jitter) # progress bar
 
-      jitter_all <- future_lapply(1:n_jitter, function(i) {
+      jitter_all <- future.apply::future_lapply(1:n_jitter, function(i) {
 
         # make obj
         obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters,  map = mapping, random = random, silent = TRUE)
@@ -189,7 +190,7 @@ do_jitter <- function(data,
 
       }, future.seed = TRUE) %>% bind_rows() # bine rows to combine results
 
-      plan(sequential)  # Reset
+      future::plan(future::sequential)  # Reset
 
     })
 

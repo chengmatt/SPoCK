@@ -5,7 +5,7 @@
 #' @param mapping mapping list from model
 #' @param random character vector of random effects to estimate
 #' @param what parameter name we want to profile
-#' @param idx Index for an parameter array, pointing to the value we want to map off
+#' @param idx Index for an parameter array, pointing to the value we want to map off (index is relative to a flattened array)
 #' @param min_val minimum value of profile
 #' @param max_val maximum value of profile
 #' @param inc increment value between min and max value
@@ -100,7 +100,7 @@ do_likelihood_profile <- function(data,
       FishIdx_nLL <- rbind(FishIdx_nLL, reshape2::melt(report$FishIdx_nLL) %>% dplyr::mutate(prof_val = vals[j]))
       SrvIdx_nLL <- rbind(SrvIdx_nLL, reshape2::melt(report$SrvIdx_nLL) %>% dplyr::mutate(prof_val = vals[j]))
 
-      print(j / length(vals))
+      print(paste("Likelihood profile is at:", j / length(vals) * 100))
 
     }, error = function(e) {
       message("Failed to optimize: ", e$message)
@@ -164,7 +164,8 @@ do_likelihood_profile <- function(data,
     dplyr::mutate(type = 'Tagging')
 
   # Get likelihoods aggregated across all dimensions
-  agg_nLL <- rbind(jnLL_df, rec_nLL_df, M_nLL_df, Movement_nLL_df, h_nLL_df, TagRep_nLL_df,Fmort_nLL_df, sel_nLL_df,
+  agg_nLL <- rbind(jnLL_df, rec_nLL_df, M_nLL_df, Movement_nLL_df, h_nLL_df,
+                   TagRep_nLL_df,Fmort_nLL_df, sel_nLL_df,
                    Catch_nLL_df %>% dplyr::group_by(prof_val, type) %>%
                      dplyr::summarize(value = sum(value)),
                    Tag_nLL_df %>% dplyr::group_by(prof_val, type) %>%

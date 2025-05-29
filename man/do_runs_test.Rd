@@ -37,7 +37,7 @@ Runs test function taken from SS3 diags.
   runs_all <- data.frame()
   for(i in 1:length(unique(idx_fits$Idx))) {
     tmp <- idx_fits \%>\% filter(Idx == unique_idx[i])
-    runstest <- ssruns_sig3(x=as.numeric(tmp$resid),type="resid", mixing = "less")
+    runstest <- do_runs_test(x=as.numeric(tmp$resid),type="resid", mixing = "less")
     tmp_runs <- data.frame(p = runstest$p.runs, lwr = runstest$sig3lim[1], upr = runstest$sig3lim[2], Idx = unique_idx[i])
     runs_all <- rbind(runs_all, tmp_runs)
   } # end i

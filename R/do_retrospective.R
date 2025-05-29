@@ -153,13 +153,13 @@ truncate_yr <- function(j,
 #' @import RTMB
 #' @import dplyr
 #' @import future.apply
+#' @import future
 #' @import progressr
 #' @importFrom reshape2 melt
 #'
 #'
 #' @examples
 #' \dontrun{
-#' ret <- do_retrospective(n_retro = 7, data, parameters, mapping, random = NULL, do_par = TRUE, n_cores = 7, do_francis = TRUE, n_francis_iter = 5)
 #'  # Do retrospective here
 #'  ret <- do_retrospective(n_retro = 7, data, parameters, mapping, random = NULL, do_par = TRUE, n_cores = 7, do_francis = TRUE, n_francis_iter = 5)
 #'  ggplot(ret, aes(x = Year + 1959, y = value, group = peel, color = 2024 - peel)) +
@@ -273,13 +273,13 @@ do_retrospective <- function(n_retro,
   # Parrallelize Retrospective Loop
   if(do_par == TRUE) {
 
-    plan(multisession, workers = n_cores) # set up cores
+    future::plan(future::multisession, workers = n_cores) # set up cores
 
-    with_progress({
+    progressr::with_progress({
 
-      p <- progressor(along = 0:n_retro) # progress bar
+      p <- progressr::progressor(along = 0:n_retro) # progress bar
 
-      retro_all <- future_lapply(0:n_retro, function(j) {
+      retro_all <- future.apply::future_lapply(0:n_retro, function(j) {
 
         init <- truncate_yr(j = j, data = data, parameters = parameters, mapping = mapping)
 
@@ -337,7 +337,7 @@ do_retrospective <- function(n_retro,
 
       }, future.seed = TRUE) %>% bind_rows() # bine rows to combine results
 
-      plan(sequential)  # Reset
+      future::plan(future::sequential)  # Reset
 
     })
   } # do parrallelization for retrospective loop

@@ -129,10 +129,14 @@ mcmc_diag <- function(mcmc_obj,
                   "These parameters are:", diag_df$parnames[which(diag_df$n_eff < 400)]))
   } else message("All parameters have an effective sample size > 400. ")
 
-  if(any(diag_df$R_hat) > 1.01) {
-    message(paste("Some parameters have an Rhat > 1.01, which suggests that MCMC chains are not well-mixed and inference may not be reliable. Consider reparameterizing, increasing adapt_delta, or increasing the number of iterations.",
-                  "These parameters are: ", diag_df$parnames[which(diag_df$R_hat > 1.01)]))
-  } else message("All parameters have an Rhat < 1.01")
+  if(!is.na(any(diag_df$R_hat > 1.01))) {
+    if(any(diag_df$R_hat > 1.01)) {
+      message(paste("Some parameters have an Rhat > 1.01, which suggests that MCMC chains are not well-mixed and inference may not be reliable. Consider reparameterizing, increasing adapt_delta, or increasing the number of iterations.",
+                    "These parameters are: ", diag_df$parnames[which(diag_df$R_hat > 1.01)]))
+    } else message("All parameters have an Rhat < 1.01")
+  } else {
+    message("Some Rhats are NAs. Model is not converged!")
+  }
 
   rstan::check_hmc_diagnostics(mcmc_obj)
 

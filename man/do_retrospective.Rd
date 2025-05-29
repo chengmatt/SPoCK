@@ -43,7 +43,6 @@ Functino to run retrospective analyses
 }
 \examples{
 \dontrun{
-ret <- do_retrospective(n_retro = 7, data, parameters, mapping, random = NULL, do_par = TRUE, n_cores = 7, do_francis = TRUE, n_francis_iter = 5)
  # Do retrospective here
  ret <- do_retrospective(n_retro = 7, data, parameters, mapping, random = NULL, do_par = TRUE, n_cores = 7, do_francis = TRUE, n_francis_iter = 5)
  ggplot(ret, aes(x = Year + 1959, y = value, group = peel, color = 2024 - peel)) +

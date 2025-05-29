@@ -18,6 +18,7 @@ Imports:
     data.table,
     doSNOW,
     dplyr,
+    future,
     future.apply,
     GGally,
     ggplot2,

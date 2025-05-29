@@ -87,7 +87,7 @@ get_idx_fits <- function(data,
 #'
 #' @param Exp Expected values (catch at age or survey index at age) indexed for a given year and fleet (structured as a matrix by age and sex)
 #' @param Obs Observed values (catch at age or survey index at age) indexed for a given year and fleet (structured as a matrix by age and sex)
-#' @param Comp_Type Composition Parameterization Type (== 0, aggregated comps by sex, == 1, split comps by sex (no implicit sex ratio information), == 2, joint comps across sexes (implicit sex ratio information), == 3 joint comps across sexes and regions (implicit sex ratio and region information))
+#' @param Comp_Type Composition Parameterization Type (== 0, aggregated comps by sex, == 1, split comps by sex (no implicit sex ratio information), == 2, joint comps across sexes (implicit sex ratio information)
 #' @param age_or_len Age or length comps (== 0, Age, == 1, Length)
 #' @param AgeingError Ageing Error matrix
 #' @param comp_agg_type Composition aggregation type to mimic sablefish ADMB assessment
@@ -184,25 +184,6 @@ Restrc_Comps <- function(Exp,
       Obs_mat[r,,] = array(tmp_Obs, dim = c(n_bins, n_sexes))
     } # end r loop
   } # end if 'Joint' comps by sex
-
-  if(Comp_Type == 3) {
-    tmp_Exp = aperm(Exp, perm = c(3,4,1,2,5)) # Reformat expected values so it's ordered by ages, sexes, and then regions
-    tmp_Obs = aperm(Obs, perm = c(3,4,1,2,5)) # Reformat observed values so it's ordered by ages, sexes, and then regions
-
-    # Expected values
-    if(age_or_len == 0) { # if ages
-      tmp_Exp = t(as.vector((tmp_Exp) / sum(tmp_Exp))) %*% kronecker(diag(n_regions * n_sexes), AgeingError) # apply ageing error
-      tmp_Exp = as.vector((tmp_Exp)/ sum(tmp_Exp)) # renormalize to make sure sum to 1
-    } # if ages
-
-    if(age_or_len == 1) tmp_Exp = as.vector((Exp) / sum(Exp)) # Normalize temporary variable (lengths)
-
-    tmp_Obs = (tmp_Obs) / sum(tmp_Obs) # Normalize observed temporary variable
-
-    # Input into storage matrix
-    Exp_mat[] = aperm(array(tmp_Exp, dim = c(n_bins, n_sexes, n_regions)), perm = c(3,1,2))
-    Obs_mat[] = aperm(array(tmp_Obs, dim = c(n_bins, n_sexes, n_regions)), perm = c(3,1,2))
-  } # Joint by region and sex
 
   return(list(Exp = Exp_mat, Obs = Obs_mat))
 
@@ -461,7 +442,7 @@ get_comp_prop <- function(data,
 #'
 #' @param obs_mat Matrix of observed values, which can have NAs - gets removed with years arge (dimensioned by region, year, age, sex, fleet)
 #' @param exp_mat Matrix of expceted values, which can have NAs - gets removed with years arg (dimensioned by region, year, age, sex, fleet)
-#' @param N Input or effective sample size
+#' @param N Input or effective sample size. If aggregated, then a single number is provided. If split by region, joint by sex (comp_type == 2), then provide a matrix dimensioned by n_regions x n_sexes. If joint by sex, by split by region (comp_type == 3), then provide a vector of n_regions
 #' @param years Years we want to point to and filter to
 #' @param fleet Fleet we want to filter to
 #' @param bins Vector of age or length bins
@@ -469,7 +450,7 @@ get_comp_prop <- function(data,
 #' @param bin_label Bin label for whether these are ages or lengths
 #'
 #' @import dplyr
-#' @returns Dataframe of OSA residuals
+#' @returns OSA residuals
 #' @export get_osa
 #'
 #' @examples
@@ -521,8 +502,10 @@ get_osa <- function(obs_mat,
     tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N, years = years,
                    index = bins, fleet = as.character(fleet), index_label = bin_label)
 
+    # Doing some naming stuff
+    tmp_osa$res$region <- 1 # 1s below b/c aggregated across all dimensions
+    tmp_osa$res$sex <- 1
     tmp_osa$res$comp_type <- "Aggregated"
-    tmp_osa$agg$comp_type <- "Aggregated"
     osa_all <- tmp_osa
   }
 
@@ -539,28 +522,24 @@ get_osa <- function(obs_mat,
         tmp_exp <- exp[r,,,s,1] # get expected
 
         # compute OSA
-        tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N, years = years,
+        tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N[r,s], years = years,
                        index = bins, fleet = as.character(fleet), index_label = bin_label)
 
         # Doing some naming stuff
         tmp_osa$res$region <- r
-        tmp_osa$agg$region <- r
         tmp_osa$res$sex <- s
-        tmp_osa$agg$sex <- s
         tmp_osa$res$comp_type <- "SpltR_SpltS"
-        tmp_osa$agg$comp_type <- "SpltR_SpltS"
 
         res_all <- rbind(res_all, tmp_osa$res)
-        agg_all <- rbind(agg_all, tmp_osa$agg)
 
       } # end s loop
     } # end r loop
 
-    osa_all <- list(res = res_all, agg = agg_all)
+    osa_all <- list(res = res_all)
 
   } # end split region and sex
 
-  # if comp types are split by sex, joint by region
+  # if comp types are join by sex, split by region
   if(comp_type == 2) {
 
     # empty dataframes to bind to
@@ -579,73 +558,23 @@ get_osa <- function(obs_mat,
       } # end s loop
 
       # compute OSA
-      tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N, years = years,
+      tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N[r], years = years,
                          index = paste(rep(1:n_sexes, each = length(bins)), "_", rep(bins, times = n_sexes), sep = ""),
                          fleet = as.character(fleet), index_label = bin_label)
 
         # Doing some naming stuff
         tmp_osa$res$region <- r
-        tmp_osa$agg$region <- r
         tmp_osa$res <- tmp_osa$res %>% dplyr::mutate(split_index = str_split(index, "_"),  # Split once and store as list
                                               sex = sapply(split_index, `[`, 1),
                                               index = sapply(split_index, `[`, 2)) %>% dplyr::select(-split_index)
-        tmp_osa$agg <- tmp_osa$agg %>% dplyr::mutate(split_index = str_split(index, "_"),  # Split once and store as list
-                                             sex = sapply(split_index, `[`, 1),
-                                             index = sapply(split_index, `[`, 2)) %>% dplyr::select(-split_index)
         tmp_osa$res$comp_type <- "SpltR_JntS"
-        tmp_osa$agg$comp_type <- "SpltR_JntS"
 
         res_all <- rbind(res_all, tmp_osa$res)
-        agg_all <- rbind(agg_all, tmp_osa$agg)
-
     } # end r loop
 
-    osa_all <- list(res = res_all, agg = agg_all)
+    osa_all <- list(res = res_all)
 
   } # end split region, joint by sex
-
-  if(comp_type == 3) {
-
-    # initialize to cbind
-    tmp_obs <- NULL
-    tmp_exp <- NULL
-
-    for(r in 1:n_regions) {
-      for(s in 1:n_sexes) {
-        tmp_obs <- cbind(tmp_obs, obs[r,,,s,1]) # get observations
-        tmp_exp <- cbind(tmp_exp, exp[r,,,s,1]) # get expected
-      } # end s loop
-    } # end r loop
-
-    # compute OSA
-    tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N, years = years,
-                       index = paste(rep(1:n_sexes, each = length(bins) * n_regions), "_",
-                                     rep(bins, each = n_regions, times = n_sexes), "_",
-                                     rep(1:n_regions, times = length(bins) * n_sexes),
-                                     sep = ""),
-                       fleet = as.character(fleet), index_label = bin_label)
-
-    # Doing some naming stuff
-    tmp_osa$res <- tmp_osa$res %>%
-      dplyr::mutate(split_index = str_split(index, "_"),  # Split once and store as list
-              sex = sapply(split_index, `[`, 1),
-              index = sapply(split_index, `[`, 2),
-              region = sapply(split_index, `[`, 3)) %>%
-      dplyr::select(-split_index)
-
-    tmp_osa$agg <- tmp_osa$agg %>%
-      dplyr::mutate(split_index = str_split(index, "_"),  # Split once and store as list
-             sex = sapply(split_index, `[`, 1), # get sex
-             index = sapply(split_index, `[`, 2), # get bin
-             region = sapply(split_index, `[`, 3)) %>% # get region
-      dplyr::select(-split_index)
-
-    tmp_osa$res$comp_type <- "JntR_JntS"
-    tmp_osa$agg$comp_type <- "JntR_JntS"
-
-    osa_all <- tmp_osa
-
-  } # end joint region and sex
 
   return(osa_all)
 }
@@ -689,7 +618,6 @@ plot_resids <- function(osa_results) {
 
   # extract results
   res <- osa_results$res %>% dplyr::mutate(sign = ifelse(resid < 0, "Neg", "Pos"), Outlier = ifelse(abs(resid) > 3, "Yes", "No"))
-  agg <- osa_results$agg
 
   # Aggregated Comps
   if(unique(res$comp_type) == "Aggregated") {
@@ -702,6 +630,7 @@ plot_resids <- function(osa_results) {
       geom_abline(slope = 1, intercept = 0, lty = 2, lwd = 1.3) +
       stat_qq(data = res, aes(sample = resid), col = "blue", size = 2, alpha = 0.5) +
       theme_bw(base_size = 20) +
+      labs(x = "Theoretical quantiles", y = "Sample quantiles") +
       geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 8)
   }
 
@@ -746,25 +675,6 @@ plot_resids <- function(osa_results) {
       geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 8)
   }
 
-  # Joint Sex and Split Region
-  if(unique(res$comp_type) == "JntR_JntS") {
-
-    # Get standarized normal residuals
-    sdnr <- res %>% dplyr::summarise(sdnr = paste0("SDNR = ", formatC(round(sd(resid), 3), format = "f", digits = 2)))
-
-    # sdnr plot
-    sdnr_plot <- ggplot() +
-      geom_abline(slope = 1, intercept = 0, lty = 2, lwd = 1.3) +
-      stat_qq(data = res, aes(sample = resid), col = "blue", size = 2, alpha = 0.5) +
-      labs(x = "Theoretical quantiles", y = "Sample quantiles") +
-      facet_grid(region ~ sex, labeller = labeller(
-        region = function(x) paste0("Region ", x),
-        sex = function(x) paste0("Sex ", x)
-      )) +
-      theme_bw(base_size = 20) +
-      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 8)
-  }
-
   # bubble plot
   bubble_plot <- ggplot(data = res, aes(x = year, y = as.numeric(index),
                                         color = sign, size = abs(resid), shape = Outlier, alpha = abs(resid))) +
@@ -779,20 +689,7 @@ plot_resids <- function(osa_results) {
     theme_bw(base_size = 20) +
     theme(legend.position = 'top')
 
-  # aggregated plot
-  agg_plot <- ggplot(data = agg) +
-    geom_bar(aes(x = as.numeric(index), y = obs), stat = "identity", color = "blue", fill = "blue", alpha = 0.4) +
-    geom_point(aes(x = as.numeric(index), y = exp), color = "red") +
-    geom_line(aes(x = as.numeric(index), y = exp), color = "red") +
-    facet_grid(region ~ sex, labeller = labeller(
-      region = function(x) paste0("Region ", x),
-      sex = function(x) paste0("Sex ", x)
-    )) +
-    theme_bw(base_size = 20) +
-    theme(legend.position = 'top') +
-    labs(x = unique(res$index_label), y = "Proportion")
-
-  return(list(sdnr_plot, bubble_plot, agg_plot))
+  return(list(sdnr_plot, bubble_plot))
 
 }
 
