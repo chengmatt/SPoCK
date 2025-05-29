@@ -37,7 +37,10 @@ Imports:
 Suggests: 
     here,
     knitr,
-    rmarkdown
+    rmarkdown,
+    compResidual
+Remotes:
+    github::noaa-afsc/afscOSA
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
