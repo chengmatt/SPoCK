@@ -996,6 +996,7 @@ SPoCK_rtmb = function(pars, data) {
   # Report Section ----------------------------------------------------------
   # Biological Processes
   RTMB::REPORT(R0)
+  RTMB::REPORT(Rec_trans_prop)
   RTMB::REPORT(h_trans)
   RTMB::REPORT(NAA)
   RTMB::REPORT(ZAA)

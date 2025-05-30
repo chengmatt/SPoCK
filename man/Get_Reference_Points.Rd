@@ -12,8 +12,8 @@ Get_Reference_Points(
   sex_ratio_f = 0.5,
   calc_rec_st_yr = 1,
   rec_age = 1,
-  type = "single_region",
-  what = "SPR"
+  type,
+  what
 )
 }
 \arguments{
@@ -33,7 +33,15 @@ Get_Reference_Points(
 
 \item{type}{Whether this is a "single_region" reference point or "multi_region"}
 
-\item{what}{What kind of reference point "SPR" and "SPR_independent" (used for multi region, where SPR is calcualted for each region independently)}
+\item{what}{What kind of reference point to use:
+\describe{
+\item{SPR}{Spawning Potential Ratio for a single region model}
+\item{independent_SPR}{Spawning Potential Ratio for a multi region model, without movement }
+\item{global_SPR}{Global Spawning Potential Ratio for a multi region model, with movement }
+\item{BH_MSY}{MSY reference points derived from a Beverton-Holt for a single region model}
+\item{independent_BH_MSY}{MSY reference points derived from a Beverton-Holt, without movement }
+\item{global_BH_MSY}{MSY reference points derived from a Beverton-Holt, with movement }
+}}
 }
 \value{
 A list object of fishing and biological reference points

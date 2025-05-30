@@ -56,8 +56,8 @@
 <span>  sex_ratio_f <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  calc_rec_st_yr <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  rec_age <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"single_region"</span>,</span>
-<span>  what <span class="op">=</span> <span class="st">"SPR"</span></span>
+<span>  <span class="va">type</span>,</span>
+<span>  <span class="va">what</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -98,7 +98,23 @@
 
 
 <dt id="arg-what">what<a class="anchor" aria-label="anchor" href="#arg-what"></a></dt>
-<dd><p>What kind of reference point "SPR" and "SPR_independent" (used for multi region, where SPR is calcualted for each region independently)</p></dd>
+<dd><p>What kind of reference point to use:</p><dl><dt>SPR</dt>
+<dd><p>Spawning Potential Ratio for a single region model</p></dd>
+
+<dt>independent_SPR</dt>
+<dd><p>Spawning Potential Ratio for a multi region model, without movement</p></dd>
+
+<dt>global_SPR</dt>
+<dd><p>Global Spawning Potential Ratio for a multi region model, with movement</p></dd>
+
+<dt>BH_MSY</dt>
+<dd><p>MSY reference points derived from a Beverton-Holt for a single region model</p></dd>
+
+<dt>independent_BH_MSY</dt>
+<dd><p>MSY reference points derived from a Beverton-Holt, without movement</p></dd>
+
+
+</dl></dd>
 
 </dl></div>
     <div class="section level2">

@@ -89,247 +89,251 @@ females and the second dimension will always be males.</p>
 <td>Global mean or virgin recruitment parameter</td>
 </tr>
 <tr class="even">
+<td><code>Rec_trans_prop</code></td>
+<td>Recruitment apportionment parameters, length of n_regions</td>
+</tr>
+<tr class="odd">
 <td><code>h_trans</code></td>
 <td>Steepness parameter by region; not used if mean recruitment is
 specified</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>NAA</code></td>
 <td>Numbers-at-age array:
 <code>n_regions × n_years × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ZAA</code></td>
 <td>Total instantaneous mortality:
 <code>n_regions × n_years × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>natmort</code></td>
 <td>Instantaneous natural mortality:
 <code>n_regions × n_years × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>bias_ramp</code></td>
 <td>Vector of bias ramp values: <code>n_years</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Movement</code></td>
 <td>Movement array:
 <code>n_regions × n_regions × n_years × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>init_F</code></td>
 <td>Initial fishing mortality applied to equilibrium age structure</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Fmort</code></td>
 <td>Fishing mortality rate:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>FAA</code></td>
 <td>Fishing mortality at age:
 <code>n_regions × n_years × n_ages × n_sexes × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>CAA</code></td>
 <td>Catch-at-age:
 <code>n_regions × n_years × n_ages × n_sexes × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>CAL</code></td>
 <td>Catch-at-length:
 <code>n_regions × n_years × n_lens × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>PredCatch</code></td>
 <td>Predicted catch:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>PredFishIdx</code></td>
 <td>Predicted fishery index:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>fish_sel</code></td>
 <td>Fishery selectivity:
 <code>n_regions × n_years × n_ages × n_sexes × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>fish_q</code></td>
 <td>Fishery catchability:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>PredSrvIdx</code></td>
 <td>Predicted survey index:
 <code>n_regions × n_years × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>srv_sel</code></td>
 <td>Survey selectivity:
 <code>n_regions × n_years × n_ages × n_srv_fleets × n_sexes</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>srv_q</code></td>
 <td>Survey catchability:
 <code>n_regions × n_years × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>SrvIAA</code></td>
 <td>Survey index-at-age:
 <code>n_regions × n_years × n_ages × n_sexes × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SrvIAL</code></td>
 <td>Survey index-at-length:
 <code>n_regions × n_years × n_lens × n_sexes × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Pred_Tag_Recap</code></td>
 <td>Predicted tag recaptures:
 <code>n_tag_liberty × n_years × n_regions × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Tags_Avail</code></td>
 <td>Available tags:
 <code>(n_tag_liberty + 1) × n_years × n_regions × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Tag_Reporting</code></td>
 <td>Tag reporting rate: <code>n_regions × n_years</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Catch_nLL</code></td>
 <td>Negative log-likelihood for catch:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>FishIdx_nLL</code></td>
 <td>Negative log-likelihood for fishery index:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SrvIdx_nLL</code></td>
 <td>Negative log-likelihood for survey index:
 <code>n_regions × n_years × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>FishAgeComps_nLL</code></td>
 <td>Negative log-likelihood for fish age composition:
 <code>n_regions × n_years × n_sexes × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SrvAgeComps_nLL</code></td>
 <td>Negative log-likelihood for survey age composition:
 <code>n_regions × n_years × n_sexes × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>FishLenComps_nLL</code></td>
 <td>Negative log-likelihood for fish length composition:
 <code>n_regions × n_years × n_sexes × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SrvLenComps_nLL</code></td>
 <td>Negative log-likelihood for survey length composition:
 <code>n_regions × n_years × n_sexes × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>M_nLL</code></td>
 <td>Negative log-likelihood for natural mortality</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Fmort_nLL</code></td>
 <td>Negative log-likelihood for fishing mortality:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Rec_nLL</code></td>
 <td>Negative log-likelihood for recruitment:
 <code>n_regions × n_years</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Init_Rec_nLL</code></td>
 <td>Negative log-likelihood for initial recruitment:
 <code>n_regions × (n_ages - 2)</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Tag_nLL</code></td>
 <td>Negative log-likelihood for tag recapture:
 <code>n_tag_liberty × n_years × n_regions × n_ages × n_sexes</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>h_nLL</code></td>
 <td>Negative log-likelihood for steepness</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>fish_q_nLL</code></td>
 <td>Negative log-likelihood for fishery catchability</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>sel_nLL</code></td>
 <td>Negative log-likelihood for selectivity</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>srv_q_nLL</code></td>
 <td>Negative log-likelihood for survey catchability</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Movement_nLL</code></td>
 <td>Negative log-likelihood for movement</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>TagRep_nLL</code></td>
 <td>Negative log-likelihood for tag reporting</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>jnLL</code></td>
 <td>Joint negative log-likelihood</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Total_Biom</code></td>
 <td>Total biomass: <code>n_regions × n_years</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SSB</code></td>
 <td>Spawning stock biomass: <code>n_regions × n_years</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Rec</code></td>
 <td>Recruitment: <code>n_regions × n_years</code>
 </td>

@@ -19,6 +19,7 @@ The following tables describes all elements contained within `obj$rep`, which is
 | Name               | Description                                                                 |
 |--------------------|-----------------------------------------------------------------------------|
 | `R0`               | Global mean or virgin recruitment parameter                                  |
+| `Rec_trans_prop`   | Recruitment apportionment parameters, length of n_regions                    |  
 | `h_trans`          | Steepness parameter by region; not used if mean recruitment is specified     |
 | `NAA`              | Numbers-at-age array: `n_regions × n_years × n_ages × n_sexes`              |
 | `ZAA`              | Total instantaneous mortality: `n_regions × n_years × n_ages × n_sexes`     |

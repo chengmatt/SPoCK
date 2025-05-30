@@ -27,6 +27,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' rep <- obj$report(obj$env$last.par.best) # need to have an RTMB object first
 #' # Setup necessary inputs
 #' n_sims <- 1000
 #' t_spawn <- 0
@@ -37,14 +38,14 @@
 #' n_sexes <- data$n_sexes
 #' n_fish_fleets <- 2
 #' do_recruits_move <- 0
-#' terminal_NAA <- array(sabie_rtmb_model$rep$NAA[,length(data$years),,], dim = c(n_regions, n_ages, n_sexes))
+#' terminal_NAA <- array(obj$rep$NAA[,length(data$years),,], dim = c(n_regions, n_ages, n_sexes))
 #' WAA <- array(rep(data$WAA[,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # weight at age
 #' MatAA <- array(rep(data$MatAA[,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # maturity at age
-#' fish_sel <- array(rep(sabie_rtmb_model$rep$fish_sel[,length(data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
-#' Movement <- array(rep(sabie_rtmb_model$rep$Movement[,,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes))
-#' terminal_F <- array(sabie_rtmb_model$rep$Fmort[,length(data$years),], dim = c(n_regions, n_fish_fleets))
-#' natmort <- array(sabie_rtmb_model$rep$natmort[,length(data$years),,], dim = c(n_regions, n_proj_yrs, n_ages, n_sexes))
-#' recruitment <- array(sabie_rtmb_model$rep$Rec[,20:(length(data$years) - 2)], dim = c(n_regions, length(20:length(data$years))))
+#' fish_sel <- array(rep(obj$rep$fish_sel[,length(data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
+#' Movement <- array(rep(obj$rep$Movement[,,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes))
+#' terminal_F <- array(obj$rep$Fmort[,length(data$years),], dim = c(n_regions, n_fish_fleets))
+#' natmort <- array(obj$rep$natmort[,length(data$years),,], dim = c(n_regions, n_proj_yrs, n_ages, n_sexes))
+#' recruitment <- array(obj$rep$Rec[,20:(length(data$years) - 2)], dim = c(n_regions, length(20:length(data$years))))
 #'
 #' # Define reference points
 #' spr_35 <- Get_Reference_Points(data = data,
