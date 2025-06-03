@@ -145,8 +145,8 @@ global_SPR <- function(pars,
     else age_idx = n_model_ages
 
     # Get temporary values
-    tmp_unfished = Nspr[1,,j-1]
-    tmp_fished = Nspr[2,,j-1]
+    tmp_unfished = t(Nspr[1,,j-1])
+    tmp_fished = t(Nspr[2,,j-1])
 
     # Apply movement
     if(do_recruits_move == 1 || (do_recruits_move == 0 && j > 2)) {

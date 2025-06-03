@@ -214,29 +214,6 @@ Get_move_PE_loglik <- function(PE_model,
 
     } # end r loop
 
-    # if(PE_model == 2) {
-    #
-    #   # Transform process error parameters
-    #   rho_a = rho_trans(PE_pars[1,1]) # correlation across ages
-    #   rho_y = rho_trans(PE_pars[1,2]) # correaltion across years
-    #   rho_r = rho_trans(PE_pars[1,3]) # correaltion across regions
-    #   sigma2 = exp(PE_pars[1,4])^2 # get sigma
-    #
-    #   # Extract out logit deviations to a given region
-    #   if(do_recruits_move == 0) eps_rya = logit_devs[,rr,,-1]
-    #   else eps_rya = logit_devs[,rr,,]
-    #
-    #   # Define 3d scale
-    #   scale = sqrt(sigma2) / sqrt(1 - rho_y^2) / sqrt(1 - rho_a^2) / sqrt(1 - rho_r^2)
-    #
-    #   # Define ar1 separable functions
-    #   f1 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_r, log = TRUE)
-    #   f2 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_y, log = TRUE)
-    #   f3 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_a, log = TRUE)
-    #   ll = ll + RTMB::dseparable(f1, f2, f3)(eps_rya, scale = scale)
-    #
-    # } # 3d process error
-
   } # end rr loop
 
   return(ll)

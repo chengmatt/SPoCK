@@ -210,6 +210,7 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
     if(y == 1) tmp_rec <- terminal_NAA[,1,]
 
     if(y > 1) {
+
       # Inverse Gaussian Recruitment
       if(recruitment_opt == 'inv_gauss') {
         for(r in 1:n_regions) {
