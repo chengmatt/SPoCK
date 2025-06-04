@@ -52,7 +52,7 @@ Name | Description
 |-------------------------|------------------------------------------------------|
 `WAA`	| Weight-at-age values dimensioned by n_regions, n_years, n_ages, n_sexes
 `MatAA`	| Maturity-at-age values dimensioned by n_regions, n_years, n_ages, n_sexes
-`AgeingError`	| Ageing error matrix dimensioned by n_ages, n_ages, where rows sum to 1
+`AgeingError`	| Ageing error matrix dimensioned by number of modelled ages, number of observed composition ages, where rows sum to 1
 `fit_lengths`	| Value describing whether or not to fit length composition data. 0: Don’t fit lengths, 1: Fit lengths
 `SizeAgeTrans`	| Size-age transition matrix dimensioned by n_regions, n_years, n_lens, n_ages, n_sexes. Can be specified as NA if length compositions are not fit
 `Use_M_prior` | Value specifying whether natural mortality priors are used. 0: Don’t use prior, 1: Use prior

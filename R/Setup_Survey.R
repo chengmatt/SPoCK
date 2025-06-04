@@ -61,7 +61,7 @@ Setup_Sim_Survey <- function(sigmaSrvIdx,
 #' @param ObsSrvIdx Observed survey indices as an array dimensioned by n_regions, n_years, n_srv_fleets
 #' @param ObsSrvIdx_SE Observed standard errors for survey indices as an array dimensioned by n_regions, n_years, n_srv_fleets
 #' @param UseSrvIdx Indicator variables specifying whether or not to fit survey indices as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
-#' @param ObsSrvAgeComps Observed survey age compositions as an array dimensioned by n_regions, n_years, n_ages, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)
+#' @param ObsSrvAgeComps Observed survey age compositions as an array dimensioned by n_regions, n_years, number of observed composition ages, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)
 #' @param UseSrvAgeComps  Indicator variables specifying whether or not to fit survey ages as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
 #' @param ObsSrvLenComps Observed survey age compositions as an array dimensioned by n_regions, n_years, n_lens, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)
 #' @param UseSrvLenComps  Indicator variables specifying whether or not to fit survey lengths as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
@@ -104,7 +104,7 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
   check_data_dimensions(ObsSrvIdx, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_srv_fleets = input_list$data$n_srv_fleets, what = 'ObsSrvIdx')
   check_data_dimensions(ObsSrvIdx_SE, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_srv_fleets = input_list$data$n_srv_fleets, what = 'ObsSrvIdx_SE')
   check_data_dimensions(UseSrvIdx, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_srv_fleets = input_list$data$n_srv_fleets, what = 'UseSrvIdx')
-  check_data_dimensions(ObsSrvAgeComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, n_srv_fleets = input_list$data$n_srv_fleets, what = 'ObsSrvAgeComps')
+  check_data_dimensions(ObsSrvAgeComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_sexes = input_list$data$n_sexes, n_srv_fleets = input_list$data$n_srv_fleets, what = 'ObsSrvAgeComps')
   check_data_dimensions(UseSrvAgeComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_srv_fleets = input_list$data$n_srv_fleets, what = 'UseSrvAgeComps')
   check_data_dimensions(UseSrvLenComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_srv_fleets = input_list$data$n_srv_fleets, what = 'UseSrvLenComps')
   check_data_dimensions(ObsSrvLenComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_lens = length(input_list$data$lens), n_sexes = input_list$data$n_sexes, n_srv_fleets = input_list$data$n_srv_fleets, what = 'ObsSrvLenComps')

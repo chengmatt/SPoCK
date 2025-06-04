@@ -25,7 +25,7 @@ Setup_Mod_Biologicals(
 
 \item{MatAA}{Inputs of maturity at age dimensioned by n_region, n_year, n_ages, n_sexes}
 
-\item{AgeingError}{Inputs of ageing error matrix dimensioned by n_ages, n_ages. Default behavior uses an identity matrix (no ageing error)}
+\item{AgeingError}{Inputs of ageing error matrix dimensioned by number of modelled ages, number of observed composition ages Default behavior uses an identity matrix (no ageing error)}
 
 \item{Use_M_prior}{Whether or not to use natural mortality prior, == 0 don't use, == 1 use}
 

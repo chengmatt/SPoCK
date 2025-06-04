@@ -16,7 +16,8 @@ Get_Comp_Likelihoods(
   Comp_Type,
   Likelihood_Type,
   n_regions,
-  n_bins,
+  n_model_bins,
+  n_obs_bins,
   n_sexes,
   age_or_len,
   AgeingError,
@@ -48,7 +49,9 @@ Get_Comp_Likelihoods(
 
 \item{n_regions}{number of regions modeled}
 
-\item{n_bins}{number of bins modeled}
+\item{n_model_bins}{Number of bins used in the model}
+
+\item{n_obs_bins}{Number of observed composition bins}
 
 \item{n_sexes}{Number of sexes modeled}
 

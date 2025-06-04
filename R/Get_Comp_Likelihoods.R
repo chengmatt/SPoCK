@@ -12,12 +12,13 @@
 #' @param AgeingError Ageing Error matrix
 #' @param ln_theta Log theta overdispersion for Dirichlet mutlinomial (scalar or vector depending on if 'Split' or 'Joint')
 #' @param n_regions number of regions modeled
-#' @param n_bins number of bins modeled
 #' @param use Vector of 0s and 1s corresponding to regions (==0, don't have obs and dont' use, ==1, have obs and use)
 #' @param ln_theta_agg Log overdispersion parameter if comp_type == 0, but we want to estsimate either a dirichlet or multinomial
 #' @param comp_agg_type How to aggregate data (if aggregating)
 #' @param LN_corr_pars Logistic normal correlation parameters (dimensioned by n_regions, n_sexes, and 3 parameters)
 #' @param LN_corr_pars_agg Logistic normal correlation parameters if comps are aggregated (just dimensioned by length of 1 value)
+#' @param n_model_bins Number of bins used in the model
+#' @param n_obs_bins Number of observed composition bins
 #'
 #' @return Returns negative log likelihood for composition data (age and/or length)
 #' @keywords internal
@@ -33,7 +34,8 @@ Get_Comp_Likelihoods = function(Exp,
                                 Comp_Type,
                                 Likelihood_Type,
                                 n_regions,
-                                n_bins,
+                                n_model_bins,
+                                n_obs_bins,
                                 n_sexes,
                                 age_or_len,
                                 AgeingError,
@@ -51,8 +53,8 @@ Get_Comp_Likelihoods = function(Exp,
   n_regions_obs_use = sum(use == 1) # get number of regions that have observations
 
   # Making sure things are correctly formatted (and regions are not dropped)
-  Obs = array(Obs, dim = c(n_regions, n_bins, n_sexes))
-  Exp = array(Exp, dim = c(n_regions, n_bins, n_sexes))
+  Obs = array(Obs, dim = c(n_regions, n_obs_bins, n_sexes))
+  Exp = array(Exp, dim = c(n_regions, n_obs_bins, n_sexes)) # using n_obs_bins, because non-square ageing error matrix will collapse to n_obs_bins
   ISS = array(ISS, dim = c(n_regions, n_sexes))
   Wt_Mltnml = array(Wt_Mltnml, dim = c(n_regions, n_sexes))
   ln_theta = array(ln_theta, dim = c(n_regions, n_sexes))
@@ -66,14 +68,18 @@ Get_Comp_Likelihoods = function(Exp,
   if(Comp_Type == 0) {
     if(comp_agg_type == 0) { # aggregated age comps are normalized, aggregated, ageing error, and then normalized again
       # Expected Values
-      tmp_Exp = Exp / array(data = rep(colSums(matrix(Exp, nrow = n_bins)), each = n_bins), dim = dim(Exp)) # normalize by sex and region
-      tmp_Exp = matrix(rowSums(matrix(tmp_Exp, nrow = n_bins)) / (n_sexes * n_regions), nrow = 1) # take average proportions and transpose
+      tmp_Exp = Exp / array(data = rep(colSums(matrix(Exp, nrow = n_model_bins)), each = n_model_bins), dim = dim(Exp)) # normalize by sex and region
+      tmp_Exp = matrix(rowSums(matrix(tmp_Exp, nrow = n_model_bins)) / (n_sexes * n_regions), nrow = 1) # take average proportions and transpose
     }
-    if(comp_agg_type == 1) tmp_Exp = matrix(rowSums(matrix(Exp, nrow = n_bins)) / (n_sexes * n_regions), nrow = 1) # age comps are aggregated, ageing error, and the normalized
-    if(age_or_len == 0) {
+
+    if(comp_agg_type == 1) tmp_Exp = matrix(rowSums(matrix(Exp, nrow = n_model_bins)) / (n_sexes * n_regions), nrow = 1) # age comps are aggregated, ageing error, and the normalized
+
+    # Expected age bins get collapsed to observed age bins if ageing error is non-square
+     if(age_or_len == 0) {
       tmp_Exp = tmp_Exp %*% AgeingError # apply ageing error
       tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize
-    }
+     }
+
     if(age_or_len == 1) tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize (lengths)
 
     # Multinomial likelihood
@@ -98,7 +104,7 @@ Get_Comp_Likelihoods = function(Exp,
     if(Likelihood_Type == 3) {
       tmp_Obs = (Obs[1,,1]) / sum(Obs[1,,1]) # Normalize observed values
       LN_corr_b = rho_trans(LN_corr_pars_agg) # correlation by age / length
-      Sigma = get_AR1_CorrMat(n_bins, LN_corr_b)
+      Sigma = get_AR1_CorrMat(n_obs_bins, LN_corr_b)
       Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta_agg)^2 # remove last row and column
       comp_nLL[1,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1)
     } # end if logistic normal (1dar1)
@@ -137,7 +143,7 @@ Get_Comp_Likelihoods = function(Exp,
         if(Likelihood_Type == 3) {
           tmp_Obs = Obs[r,,s] / sum(Obs[r,,s]) # extract variable and normalize
           LN_corr_b = rho_trans(LN_corr_pars[r,s,1]) # correlation by age / length
-          Sigma = get_AR1_CorrMat(n_bins, LN_corr_b)
+          Sigma = get_AR1_CorrMat(n_obs_bins, LN_corr_b)
           Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[r,s])^2  # remove last row and column
           comp_nLL[r,s] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1)
         } # end if logistic normal (1dar1)
@@ -180,7 +186,7 @@ Get_Comp_Likelihoods = function(Exp,
       if(Likelihood_Type == 3) {
         tmp_Obs = Obs[r,,] / sum(Obs[r,,]) # extract variable and normalize
         LN_corr_b = rho_trans(LN_corr_pars[r,1,1]) # correlation by age / length
-        Sigma = get_AR1_CorrMat(n_bins * n_sexes, LN_corr_b)
+        Sigma = get_AR1_CorrMat(n_obs_bins * n_sexes, LN_corr_b)
         Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[r,1])^2  # remove last row and column
         comp_nLL[r,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1)
       } # end if logistic normal (1dar1)
@@ -189,7 +195,7 @@ Get_Comp_Likelihoods = function(Exp,
         tmp_Obs = Obs[r,,] / sum(Obs[r,,]) # extract temporary observed variable and normalize
         LN_corr_b = rho_trans(LN_corr_pars[r,1,1]) # correlation by age / length
         LN_corr_s = rho_trans(LN_corr_pars[r,1,2]) # correlation by sex
-        Sigma = kronecker(get_AR1_CorrMat(n_bins, LN_corr_b), get_Constant_CorrMat(n_sexes, LN_corr_s))
+        Sigma = kronecker(get_AR1_CorrMat(n_obs_bins, LN_corr_b), get_Constant_CorrMat(n_sexes, LN_corr_s))
         Sigma = Sigma[-nrow(Sigma), -ncol(Sigma)] * exp(ln_theta[r,1])^2 # remove last row and column
         comp_nLL[r,1] = -1 * dlogistnormal(obs = tmp_Obs, pred = tmp_Exp, Sigma = Sigma, TRUE) # Logistic Normal likelihood (1dar1 by age, constant corr by sex)
       } # end if logistic normal (1dar1 by age, constant corr by sex)

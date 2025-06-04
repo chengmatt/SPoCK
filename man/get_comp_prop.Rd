@@ -11,7 +11,7 @@ get_comp_prop(data, rep, age_labels, len_labels, year_labels)
 
 \item{rep}{report file from RTMB}
 
-\item{age_labels}{vector of age labels in assessment}
+\item{age_labels}{vector of observed age labels in assessment}
 
 \item{len_labels}{vector of length labels in assessment}
 

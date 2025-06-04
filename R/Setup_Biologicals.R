@@ -57,7 +57,7 @@ Setup_Sim_Biologicals <- function(
 #' @param input_list List containing a data list, parameter list, and map list
 #' @param WAA Inputs of weight at age dimensioned by n_region, n_year, n_ages, n_sexes
 #' @param MatAA Inputs of maturity at age dimensioned by n_region, n_year, n_ages, n_sexes
-#' @param AgeingError Inputs of ageing error matrix dimensioned by n_ages, n_ages. Default behavior uses an identity matrix (no ageing error)
+#' @param AgeingError Inputs of ageing error matrix dimensioned by number of modelled ages, number of observed composition ages Default behavior uses an identity matrix (no ageing error)
 #' @param Use_M_prior Whether or not to use natural mortality prior, == 0 don't use, == 1 use
 #' @param M_prior Vector of natural mortality priors with the first element representing the mean in normal space, and the second element representing the sd.
 #' @param fit_lengths Whether or not to fit length data, == 0 dont fit, == 1 fit

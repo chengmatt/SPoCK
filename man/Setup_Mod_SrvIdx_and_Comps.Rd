@@ -36,7 +36,7 @@ Setup_Mod_SrvIdx_and_Comps(
 
 \item{srv_idx_type}{Survey index type dimensioned by n_srv_fleets, character string for abundance (abd) or biomass (biom), "none" if not availabile or used}
 
-\item{ObsSrvAgeComps}{Observed survey age compositions as an array dimensioned by n_regions, n_years, n_ages, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)}
+\item{ObsSrvAgeComps}{Observed survey age compositions as an array dimensioned by n_regions, n_years, number of observed composition ages, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)}
 
 \item{UseSrvAgeComps}{Indicator variables specifying whether or not to fit survey ages as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit}
 

@@ -808,8 +808,15 @@ region and a given sex. Following that, the average of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mrow><mi>r</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">E_{r,b,s}</annotation></semantics></math>
 across regions and sexes is taken. If age compositions have ageing error
 associated with them, the expected age compositions are then multiplied
-by an ageing-error matrix to derive the compositions to fit to. This
-process is described by the equations below:</p>
+by an ageing-error matrix to derive the compositions to fit to. Note
+that a non-square (e.g., rectangular) ageing-error matrix can be
+provided to reduce the number of modelled ages to align with the number
+of observed composition ages. This approach is common for many rockfish
+species in Alaska, where the model includes a greater number of ages
+than are represented in the observed compositions. This allows for a
+more accurate representation of population dynamics (by modelling more
+ages), even though age estimates for older fish are often unreliable.
+This process is described by the equations below:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>O</mi><mi>b</mi></msub><mo>=</mo><mfrac><msub><mi>O</mi><mi>b</mi></msub><mrow><munder><mo>∑</mo><mi>b</mi></munder><msub><mi>O</mi><mi>b</mi></msub></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>E</mi><mi>b</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mi>s</mi></msub><mo>⋅</mo><msub><mi>n</mi><mi>r</mi></msub></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mrow><msub><mi>n</mi><mi>s</mi></msub><mo>⋅</mo><msub><mi>n</mi><mi>r</mi></msub></mrow></munderover><mfrac><msub><mi>E</mi><mrow><mi>r</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>s</mi></mrow></msub><mrow><munder><mo>∑</mo><mi>b</mi></munder><msub><mi>E</mi><mrow><mi>r</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>𝐄</mi><mo>=</mo><mi>𝐄</mi><mtext mathvariant="bold">𝐀𝐠𝐞𝐄𝐫𝐫𝐨𝐫</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>𝐎</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><msub><mi>O</mi><mi>b</mi></msub><mspace width="0.278em"></mspace><mo stretchy="true" form="infix">|</mo><mspace width="0.278em"></mspace><mi>b</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>n</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">}</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>𝐄</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><msub><mi>E</mi><mi>b</mi></msub><mspace width="0.278em"></mspace><mo stretchy="true" form="infix">|</mo><mspace width="0.278em"></mspace><mi>b</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>n</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">}</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 O_b = \frac{O_b}{\sum_b O_b} \\

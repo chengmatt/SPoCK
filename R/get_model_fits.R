@@ -116,27 +116,30 @@ Restrc_Comps <- function(Exp,
 
   # Dimensions
   n_regions <- dim(Exp)[1]
-  n_bins <- dim(Exp)[3]
+  n_model_bins <- dim(Exp)[3]
+  n_obs_bins <- dim(Obs)[3]
   n_sexes <- dim(Exp)[4]
 
-  # Storage
-  Exp_mat = array(NA, c(n_regions, n_bins, n_sexes))
-  Obs_mat = array(NA, c(n_regions, n_bins, n_sexes))
+  # Storage (Expected values get converted to n_obs_bins dimensions)
+  Exp_mat = array(NA, c(n_regions, n_obs_bins, n_sexes))
+  Obs_mat = array(NA, c(n_regions, n_obs_bins, n_sexes))
 
   # Aggregated comps by sex and region
   if(Comp_Type == 0) {
     if(comp_agg_type == 0) { # aggregated age comps are normalized, aggregated, ageing error, and then normalized again
       # Expected Values
-      tmp_Exp = Exp / array(data = rep(colSums(matrix(Exp, nrow = n_bins)), each = n_bins), dim = dim(Exp)) # normalize by sex and region
-      tmp_Exp = matrix(rowSums(matrix(tmp_Exp, nrow = n_bins)) / (n_sexes * n_regions), nrow = 1) # take average proportions and transpose
+      tmp_Exp = Exp / array(data = rep(colSums(matrix(Exp, nrow = n_model_bins)), each = n_model_bins), dim = dim(Exp)) # normalize by sex and region
+      tmp_Exp = matrix(rowSums(matrix(tmp_Exp, nrow = n_model_bins)) / (n_sexes * n_regions), nrow = 1) # take average proportions and transpose
     }
 
-    if(comp_agg_type == 1) tmp_Exp = matrix(rowSums(matrix(Exp, nrow = n_bins)) / (n_sexes * n_regions), nrow = 1) # age comps are aggregated, ageing error, and the normalized
+    if(comp_agg_type == 1) tmp_Exp = matrix(rowSums(matrix(Exp, nrow = n_model_bins)) / (n_sexes * n_regions), nrow = 1) # age comps are aggregated, ageing error, and the normalized
 
+    # Expected age bins get collapsed to observed age bins if ageing error is non-square
     if(age_or_len == 0) {
       tmp_Exp = tmp_Exp %*% AgeingError # apply ageing error
       tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize
     }
+
     if(age_or_len == 1) tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize (lengths)
 
     # Normalize observed
@@ -154,7 +157,7 @@ Restrc_Comps <- function(Exp,
       for(r in 1:n_regions) {
 
         # Expected Values
-        if(age_or_len == 0) tmp_Exp = ((Exp[r,1,,s,1]) / sum(Exp[r,1,,s,1])) %*% AgeingError # Normalize temporary variable (ages)
+        if(age_or_len == 0) tmp_Exp = ((Exp[r,1,,s,1]) / sum(Exp[r,1,,s,1])) %*% AgeingError # Normalize temporary variable (ages), collapses to observed age bins if ageing error is non square
         if(age_or_len == 1 && comp_agg_type == 0) tmp_Exp = (Exp[r,1,,s,1]) / sum(Exp[r,1,,s,1]) # Length comps are not normalized prior to age length transition
         if(age_or_len == 1 && comp_agg_type == 1) tmp_Exp = (Exp[r,1,,s,1]) # Length comps are normalized prior to age length transition
 
@@ -171,7 +174,7 @@ Restrc_Comps <- function(Exp,
     for(r in 1:n_regions) {
       # Expected values
       if(age_or_len == 0) { # if ages
-        tmp_Exp = t(as.vector((Exp[r,1,,,1])/ sum(Exp[r,1,,,1]))) %*% kronecker(diag(n_sexes), AgeingError) # apply ageing error
+        tmp_Exp = t(as.vector((Exp[r,1,,,1])/ sum(Exp[r,1,,,1]))) %*% kronecker(diag(n_sexes), AgeingError) # apply ageing error, collapses to observed age bins if ageing error is non square
         tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize to make sure sum to 1
       } # if ages
 
@@ -180,8 +183,8 @@ Restrc_Comps <- function(Exp,
       tmp_Obs = (Obs[r,1,,,1]) / sum(Obs[r,1,,,1]) # Normalize observed temporary variable
 
       # Input into storage matrix
-      Exp_mat[r,,] = array(tmp_Exp, dim = c(n_bins, n_sexes))
-      Obs_mat[r,,] = array(tmp_Obs, dim = c(n_bins, n_sexes))
+      Exp_mat[r,,] = array(tmp_Exp, dim = c(n_obs_bins, n_sexes))
+      Obs_mat[r,,] = array(tmp_Obs, dim = c(n_obs_bins, n_sexes))
     } # end r loop
   } # end if 'Joint' comps by sex
 
@@ -195,7 +198,7 @@ Restrc_Comps <- function(Exp,
 #' @param data list of data inputs
 #' @param rep report file from RTMB
 #' @param year_labels vector of years
-#' @param age_labels vector of age labels in assessment
+#' @param age_labels vector of observed age labels in assessment
 #' @param len_labels vector of length labels in assessment
 #'
 #' @import dplyr
@@ -244,20 +247,21 @@ get_comp_prop <- function(data,
   # dimensinoing
   n_regions <- data$n_regions
   n_yrs <- length(data$years)
-  n_ages <- length(data$ages)
+  n_fish_ages <- dim(data$ObsFishAgeComps)[3]
+  n_srv_ages <- dim(data$ObsSrvAgeComps)[3]
   n_lens <- length(data$lens)
   n_sexes <- data$n_sexes
   n_fish_fleets <- data$n_fish_fleets
   n_srv_fleets <- data$n_srv_fleets
 
   # storage containers
-  Obs_FishAge <- array(data = NA, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_fish_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Obs fishery ages
+  Obs_FishAge <- array(data = NA, dim = c(n_regions, n_yrs, n_fish_ages, n_sexes, n_fish_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Obs fishery ages
   Obs_FishLen <- array(data = NA, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_fish_fleets), dimnames = list(NULL, year_labels, len_labels, NULL, NULL)) # Obs fishery lengths
-  Obs_SrvAge <- array(data = NA, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Obs survey ages
+  Obs_SrvAge <- array(data = NA, dim = c(n_regions, n_yrs, n_srv_ages, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Obs survey ages
   Obs_SrvLen <- array(data = NA, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, len_labels, NULL, NULL)) # Obs survey lengths
-  Pred_FishAge <- array(data = NA, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_fish_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Predicted fishery ages
+  Pred_FishAge <- array(data = NA, dim = c(n_regions, n_yrs, n_fish_ages, n_sexes, n_fish_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Predicted fishery ages
   Pred_FishLen <- array(data = NA, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_fish_fleets), dimnames = list(NULL, year_labels, len_labels, NULL, NULL)) # Predicted fishery lengths
-  Pred_SrvAge <- array(data = NA, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Predicted survey ages
+  Pred_SrvAge <- array(data = NA, dim = c(n_regions, n_yrs, n_srv_ages, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, age_labels, NULL, NULL)) # Predicted survey ages
   Pred_SrvLen <- array(data = NA, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, len_labels, NULL, NULL)) # Predicted survey lengths
 
   # Get quantities

@@ -325,7 +325,7 @@ Setup_Mod_Catch_and_F <- function(input_list,
 #' @param ObsFishIdx Observed fishery indices as an array dimensioned by n_regions, n_years, n_fish_fleets
 #' @param ObsFishIdx_SE Observed standard errors for fishery indices as an array dimensioned by n_regions, n_years, n_fish_fleets
 #' @param UseFishIdx Indicator variables specifying whether or not to fit fishery indices as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit
-#' @param ObsFishAgeComps Observed fishery age compositions as an array dimensioned by n_regions, n_years, n_ages, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)
+#' @param ObsFishAgeComps Observed fishery age compositions as an array dimensioned by n_regions, n_years, number of composition ages, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)
 #' @param UseFishAgeComps  Indicator variables specifying whether or not to fit fishery ages as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit
 #' @param ObsFishLenComps Observed fishery age compositions as an array dimensioned by n_regions, n_years, n_lens, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)
 #' @param UseFishLenComps  Indicator variables specifying whether or not to fit fishery lengths as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit
@@ -368,7 +368,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
   check_data_dimensions(ObsFishIdx, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishIdx')
   check_data_dimensions(ObsFishIdx_SE, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishIdx_SE')
   check_data_dimensions(UseFishIdx, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'UseFishIdx')
-  check_data_dimensions(ObsFishAgeComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishAgeComps')
+  check_data_dimensions(ObsFishAgeComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_sexes = input_list$data$n_sexes, n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishAgeComps')
   check_data_dimensions(UseFishAgeComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'UseFishAgeComps')
   check_data_dimensions(UseFishLenComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_fish_fleets = input_list$data$n_fish_fleets, what = 'UseFishLenComps')
   check_data_dimensions(ObsFishLenComps, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_lens = length(input_list$data$lens), n_sexes = input_list$data$n_sexes, n_fish_fleets = input_list$data$n_fish_fleets, what = 'ObsFishLenComps')

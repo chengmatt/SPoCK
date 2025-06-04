@@ -31,9 +31,9 @@ check_data_dimensions <- function(x,
       stop(paste("Dimensions of", what, "are not correct. Should be n_regions, n_years, n_ages, and n_sexes"))
   }
 
-  if(what == 'AgeingError') {
-    if(sum(dim(x) == c(n_ages, n_ages)) != 2)
-      stop("Dimensions of AgeingError are not correct. Should be n_ages, n_ages")
+  if(what == 'AgeingError') { # Not checking the age dimension
+    if(sum(dim(x)[1] == n_ages) != 1)
+      stop("Dimensions of AgeingError are not correct. Should be n_ages, number of observed composition ages")
   }
 
   if(what == 'SizeAgeTrans') {
@@ -64,9 +64,9 @@ check_data_dimensions <- function(x,
       stop(paste(what, "needs to have a length of n_fish_fleets"))
   }
 
-  if(what == "ObsFishAgeComps") {
-    if(sum(dim(x) == c(n_regions, n_years, n_ages, n_sexes, n_fish_fleets)) != 5)
-      stop(paste("ObsFishAgeComps is not the correct dimension. Should be n_regions, n_years, n_ages, n_sexes, n_fish_fleets"))
+  if(what == "ObsFishAgeComps") { # Not checking the age dimension
+    if(sum(dim(x)[-3] == c(n_regions, n_years, n_sexes, n_fish_fleets)) != 4)
+      stop(paste("ObsFishAgeComps is not the correct dimension. Should be n_regions, n_years, number of observed composition ages, n_sexes, n_fish_fleets"))
   }
 
   if(what == "ObsFishLenComps") {
@@ -92,9 +92,9 @@ check_data_dimensions <- function(x,
       stop(paste(what, "needs to have a length of n_srv_fleets"))
   }
 
-  if(what == "ObsSrvAgeComps") {
-    if(sum(dim(x) == c(n_regions, n_years, n_ages, n_sexes, n_srv_fleets)) != 5)
-      stop(paste("ObsSrvAgeComps is not the correct dimension. Should be n_regions, n_years, n_ages, n_sexes, n_srv_fleets"))
+  if(what == "ObsSrvAgeComps") { # Not checking the age dimension
+    if(sum(dim(x)[-3] == c(n_regions, n_years, n_sexes, n_srv_fleets)) != 4)
+      stop(paste("ObsSrvAgeComps is not the correct dimension. Should be n_regions, n_years, number of observed composition ages, n_sexes, n_srv_fleets"))
   }
 
   if(what == "ObsSrvLenComps") {

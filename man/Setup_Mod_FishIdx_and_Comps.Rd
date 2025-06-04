@@ -36,7 +36,7 @@ Setup_Mod_FishIdx_and_Comps(
 
 \item{UseFishIdx}{Indicator variables specifying whether or not to fit fishery indices as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit}
 
-\item{ObsFishAgeComps}{Observed fishery age compositions as an array dimensioned by n_regions, n_years, n_ages, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)}
+\item{ObsFishAgeComps}{Observed fishery age compositions as an array dimensioned by n_regions, n_years, number of composition ages, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)}
 
 \item{UseFishAgeComps}{Indicator variables specifying whether or not to fit fishery ages as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit}
 

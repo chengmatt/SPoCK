@@ -553,7 +553,8 @@ SPoCK_rtmb = function(pars, data) {
           n_regions = n_regions, n_sexes = n_sexes, age_or_len = 0,
           AgeingError = AgeingError,
           use = UseFishAgeComps[,y,f],
-          n_bins = n_ages,
+          n_model_bins = n_ages,
+          n_obs_bins = dim(ObsFishAgeComps)[3],
           comp_agg_type = FishAge_comp_agg_type[f]
         )
 
@@ -582,7 +583,9 @@ SPoCK_rtmb = function(pars, data) {
           LN_corr_pars_agg = FishLen_corr_pars_agg[f],
           n_regions = n_regions, n_sexes = n_sexes, age_or_len = 1,
           AgeingError = NA, use = UseFishLenComps[,y,f],
-          n_bins = n_lens, comp_agg_type = FishLen_comp_agg_type[f]
+          n_model_bins = n_lens,
+          n_obs_bins = dim(ObsFishLenComps)[3],
+          comp_agg_type = FishLen_comp_agg_type[f]
         )
 
       } # if we have fishery length comps
@@ -642,7 +645,9 @@ SPoCK_rtmb = function(pars, data) {
           LN_corr_pars_agg = SrvAge_corr_pars_agg[sf],
           n_regions = n_regions, n_sexes = n_sexes, age_or_len = 0,
           AgeingError = AgeingError, use = UseSrvAgeComps[,y,sf],
-          n_bins = n_ages, comp_agg_type = SrvAge_comp_agg_type[sf]
+          n_model_bins = n_ages,
+          n_obs_bins = dim(ObsSrvAgeComps)[3],
+          comp_agg_type = SrvAge_comp_agg_type[sf]
         )
 
       } # if we have survey age comps
@@ -670,7 +675,9 @@ SPoCK_rtmb = function(pars, data) {
           LN_corr_pars_agg = SrvLen_corr_pars_agg[sf],
           n_regions = n_regions, n_sexes = n_sexes, age_or_len = 1,
           AgeingError = NA, use = UseSrvLenComps[,y,sf],
-          n_bins = n_lens, comp_agg_type = SrvLen_comp_agg_type[sf]
+          n_model_bins = n_lens,
+          n_obs_bins = dim(ObsSrvLenComps)[3],
+          comp_agg_type = SrvLen_comp_agg_type[sf]
         )
 
       } # if we have survey length comps
