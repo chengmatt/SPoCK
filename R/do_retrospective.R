@@ -51,7 +51,7 @@ truncate_yr <- function(j,
 
   # Adjust fishery parameter blocks
   retro_parameters$ln_fish_q <- parameters$ln_fish_q[,1:max(retro_data$fish_q_blocks),,drop = FALSE]
-  retro_parameters$ln_fish_fixed_sel_pars <- parameters$ln_fish_fixed_sel_pars[,,1:max(retro_data$fish_q_blocks),,,drop = FALSE]
+  retro_parameters$ln_fish_fixed_sel_pars <- parameters$ln_fish_fixed_sel_pars[,,1:max(retro_data$fish_sel_blocks),,,drop = FALSE]
 
   # Adjust fishery mapping
   retro_mapping$ln_fish_q <- factor(array(mapping$ln_fish_q, dim = dim(parameters$ln_fish_q))[,1:max(retro_data$fish_q_blocks),,drop = FALSE])
