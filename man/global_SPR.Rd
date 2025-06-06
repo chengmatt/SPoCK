@@ -23,10 +23,10 @@ n_ages <- length(data$ages) # number of ages
 n_years <- length(data$years) # number of years
 data_list$F_fract_flt <- rep$Fmort[1,n_years,] / sum(rep$Fmort[1,n_years,]) # get fleet F fraction to derive population level selectivity
 data_list$fish_sel <- array(rep$fish_sel[1,n_years,,1,], dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
-data_list$natmort <- rep$natmort[1,n_years,,1] # get female natural mortality
+data_list$natmort <- rep$natmort[1,1,,1] # get female natural mortality
 data_list$t_spwn <- t_spwn # specified mortality time up until spawning
-data_list$WAA <- data$WAA[1,n_years,,1] # weight-at-age for females
-data_list$MatAA <- data$MatAA[1,n_years,,1] # maturity at age for females
+data_list$WAA <- data$WAA[1,1,,1] # weight-at-age for females
+data_list$MatAA <- data$MatAA[1,1,,1] # maturity at age for females
 data_list$Rec_Prop <- rep$Rec_trans_prop # unfished recruitment by region
 data_list$Movement <- array(rep$Movement[,,n_years,,1], dim = c(n_regions, n_regions, n_ages)) # Movement
 data_list$do_recruits_move <- data$do_recruits_move # whether recruits move

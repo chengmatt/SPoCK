@@ -312,9 +312,11 @@ SPoCK_rtmb = function(pars, data) {
                                       h = h_trans,
                                       n_ages = n_ages,
                                       n_regions = n_regions,
-                                      WAA = WAA[,y,,1],
-                                      MatAA = MatAA[,y,,1],
-                                      natmort = natmort[,y,,1],
+                                      # Using first year for all demographics to
+                                      # calculate virgin spawning biomass
+                                      WAA = WAA[,1,,1],
+                                      MatAA = MatAA[,1,,1],
+                                      natmort = natmort[,1,,1],
                                       SSB_vals = SSB,
                                       y = y,
                                       rec_lag = rec_lag

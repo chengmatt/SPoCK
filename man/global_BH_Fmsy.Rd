@@ -23,10 +23,10 @@ n_ages <- length(data$ages) # number of ages
 n_years <- length(data$years) # number of years
 data_list$F_fract_flt <- rep$Fmort[1,n_years,] / sum(rep$Fmort[1,n_years,]) # get fleet F fraction
 data_list$fish_sel <- array(rep$fish_sel[1,n_years,,1,], dim = c(n_ages, data$n_fish_fleets))
-data_list$natmort <- rep$natmort[1,n_years,,1]
+data_list$natmort <- rep$natmort[1,1,,1]
 data_list$t_spwn <- 0
-data_list$WAA <- data$WAA[1,n_years,,1]
-data_list$MatAA <- data$MatAA[1,n_years,,1]
+data_list$WAA <- data$WAA[1,1,,1]
+data_list$MatAA <- data$MatAA[1,1,,1]
 data_list$h <- rep$h_trans
 data_list$R0 <- rep$R0
 
