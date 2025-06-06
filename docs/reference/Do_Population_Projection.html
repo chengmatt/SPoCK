@@ -69,7 +69,8 @@
 <span>  HCR_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  recruitment_opt <span class="op">=</span> <span class="st">"inv_gauss"</span>,</span>
 <span>  fmort_opt <span class="op">=</span> <span class="st">"HCR"</span>,</span>
-<span>  <span class="va">t_spawn</span></span>
+<span>  <span class="va">t_spawn</span>,</span>
+<span>  bh_rec_opt <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -159,6 +160,38 @@
 
 <dt id="arg-t-spawn">t_spawn<a class="anchor" aria-label="anchor" href="#arg-t-spawn"></a></dt>
 <dd><p>Fraction time of spawning used to compute projected SSB</p></dd>
+
+
+<dt id="arg-bh-rec-opt">bh_rec_opt<a class="anchor" aria-label="anchor" href="#arg-bh-rec-opt"></a></dt>
+<dd><p>A list object containing the following arguments:</p><dl><dt>recruitment_dd</dt>
+<dd><p>A value (0 or 1) indicating global (1) or local density dependence (0). In the case of a single region model, either local or global will give the same results</p></dd>
+
+<dt>rec_lag</dt>
+<dd><p>A value indicating the number of years lagged that a given year's SSB produces recruits</p></dd>
+
+<dt>R0</dt>
+<dd><p>The virgin recruitment parameter</p></dd>
+
+<dt>Rec_Prop</dt>
+<dd><p>Recruitment apportionment values. In a single region model, this should be set at a value of 1. Dimensioned by n_regions</p></dd>
+
+<dt>h</dt>
+<dd><p>Steepness values for the stock recruitment curve. Dimensioned by n_regions</p></dd>
+
+<dt>WAA</dt>
+<dd><p>A weight-at-age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year</p></dd>
+
+<dt>MatAA</dt>
+<dd><p>A maturity at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year</p></dd>
+
+<dt>natmort</dt>
+<dd><p>A natural mortality at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year</p></dd>
+
+<dt>SSB</dt>
+<dd><p>SSB values estimated from a given model, dimensioned by n_regions and n_yrs</p></dd>
+
+
+</dl></dd>
 
 </dl></div>
     <div class="section level2">
@@ -288,6 +321,20 @@
 <span>  <span class="op">}</span> <span class="co"># end sim loop</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="co"># end i loop</span></span>
+<span></span>
+<span><span class="co"># If users were to specify "bh_rec" for recruitment_opt, a list of specifications for projecting deterministic recruitment is required. An example</span></span>
+<span><span class="co"># of this is provided below:</span></span>
+<span><span class="va">bh_rec_opt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  recruitment_dd <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  rec_lag <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  R0 <span class="op">=</span> <span class="va">rep</span><span class="op">$</span><span class="va">R0</span>,</span>
+<span>  h <span class="op">=</span> <span class="va">rep</span><span class="op">$</span><span class="va">h_trans</span>,</span>
+<span>  Rec_Prop <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  WAA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">WAA</span><span class="op">[</span>,<span class="fl">1</span>,,<span class="op">]</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n_ages</span>, <span class="va">n_sexes</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  MatAA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">MatAA</span><span class="op">[</span>,<span class="fl">1</span>,,<span class="op">]</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n_ages</span>, <span class="va">n_sexes</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  natmort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Fixed_natmort</span><span class="op">[</span>,<span class="fl">1</span>,,<span class="op">]</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n_ages</span>, <span class="va">n_sexes</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  SSB <span class="op">=</span> <span class="va">rep</span><span class="op">$</span><span class="va">SSB</span></span>
+<span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="co"># }</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

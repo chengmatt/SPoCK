@@ -320,7 +320,8 @@ SPoCK_rtmb = function(pars, data) {
                                       SSB_vals = SSB,
                                       y = y,
                                       rec_lag = rec_lag
-    )
+                                      )
+
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
         if(y < sigmaR_switch) NAA[r,y,1,s] = tmp_Det_Rec[r] * exp(ln_RecDevs[r,y] - (sigmaR2_early/2 * bias_ramp[y])) * sexratio[s] # early period recruitment

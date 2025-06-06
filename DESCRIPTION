@@ -8,6 +8,7 @@ Authors@R:
 Description: A generalized spatial population model for stock assessment,
     written in RTMB.
 License: GPL-3
+URL: https://chengmatt.github.io/SPoCK
 Depends:
     R (>= 3.5),
     RTMB

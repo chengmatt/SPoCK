@@ -25,7 +25,8 @@ Do_Population_Projection(
   HCR_function = NULL,
   recruitment_opt = "inv_gauss",
   fmort_opt = "HCR",
-  t_spawn
+  t_spawn,
+  bh_rec_opt = NULL
 )
 }
 \arguments{
@@ -70,6 +71,19 @@ Do_Population_Projection(
 \item{fmort_opt}{Fishing Mortality option, which includes "HCR", which modifies the F reference point using a user supplied HCR_function, or "Input", which uses projected F values supplied by the user.}
 
 \item{t_spawn}{Fraction time of spawning used to compute projected SSB}
+
+\item{bh_rec_opt}{A list object containing the following arguments:
+\describe{
+\item{recruitment_dd}{A value (0 or 1) indicating global (1) or local density dependence (0). In the case of a single region model, either local or global will give the same results}
+\item{rec_lag}{A value indicating the number of years lagged that a given year's SSB produces recruits}
+\item{R0}{The virgin recruitment parameter}
+\item{Rec_Prop}{Recruitment apportionment values. In a single region model, this should be set at a value of 1. Dimensioned by n_regions}
+\item{h}{Steepness values for the stock recruitment curve. Dimensioned by n_regions}
+\item{WAA}{A weight-at-age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
+\item{MatAA}{A maturity at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
+\item{natmort}{A natural mortality at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
+\item{SSB}{SSB values estimated from a given model, dimensioned by n_regions and n_yrs}
+}}
 }
 \value{
 A list containing projected F, catch, SSB, and Numbers at Age. (Objects are generally dimensioned in the following order: n_regions, n_yrs, n_ages, n_sexes, n_fleets)
@@ -198,5 +212,19 @@ for (i in seq_along(proj_inputs)) {
   } # end sim loop
   print(i)
 } # end i loop
+
+# If users were to specify "bh_rec" for recruitment_opt, a list of specifications for projecting deterministic recruitment is required. An example
+# of this is provided below:
+bh_rec_opt <- list(
+  recruitment_dd = 1,
+  rec_lag = 1,
+  R0 = rep$R0,
+  h = rep$h_trans,
+  Rec_Prop = 1,
+  WAA = array(data$WAA[,1,,], dim = c(1, n_ages, n_sexes)),
+  MatAA = array(data$MatAA[,1,,], dim = c(1, n_ages, n_sexes)),
+  natmort = array(data$Fixed_natmort[,1,,], dim = c(1, n_ages, n_sexes)),
+  SSB = rep$SSB
+)
 }
 }

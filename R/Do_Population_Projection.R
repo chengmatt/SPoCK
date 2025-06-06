@@ -21,6 +21,18 @@
 #' @param recruitment_opt Recruitment simulation option, where options are "inv_gauss", which simulates future recruitment based on the the recruitment values supplied using an inverse gaussian distribution, "mean_rec", which takes the mean of the recruitment values supplied for a given region, and "zero", which assumes that future recruitment does not occur
 #' @param fmort_opt Fishing Mortality option, which includes "HCR", which modifies the F reference point using a user supplied HCR_function, or "Input", which uses projected F values supplied by the user.
 #' @param t_spawn Fraction time of spawning used to compute projected SSB
+#' @param bh_rec_opt A list object containing the following arguments:
+#' \describe{
+#' \item{recruitment_dd}{A value (0 or 1) indicating global (1) or local density dependence (0). In the case of a single region model, either local or global will give the same results}
+#' \item{rec_lag}{A value indicating the number of years lagged that a given year's SSB produces recruits}
+#' \item{R0}{The virgin recruitment parameter}
+#' \item{Rec_Prop}{Recruitment apportionment values. In a single region model, this should be set at a value of 1. Dimensioned by n_regions}
+#' \item{h}{Steepness values for the stock recruitment curve. Dimensioned by n_regions}
+#' \item{WAA}{A weight-at-age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
+#' \item{MatAA}{A maturity at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
+#' \item{natmort}{A natural mortality at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
+#' \item{SSB}{SSB values estimated from a given model, dimensioned by n_regions and n_yrs}
+#' }
 #'
 #' @returns A list containing projected F, catch, SSB, and Numbers at Age. (Objects are generally dimensioned in the following order: n_regions, n_yrs, n_ages, n_sexes, n_fleets)
 #' @export Do_Population_Projection
@@ -146,6 +158,20 @@
 #'   } # end sim loop
 #'   print(i)
 #' } # end i loop
+#'
+#' # If users were to specify "bh_rec" for recruitment_opt, a list of specifications for projecting deterministic recruitment is required. An example
+#' # of this is provided below:
+#' bh_rec_opt <- list(
+#'   recruitment_dd = 1,
+#'   rec_lag = 1,
+#'   R0 = rep$R0,
+#'   h = rep$h_trans,
+#'   Rec_Prop = 1,
+#'   WAA = array(data$WAA[,1,,], dim = c(1, n_ages, n_sexes)),
+#'   MatAA = array(data$MatAA[,1,,], dim = c(1, n_ages, n_sexes)),
+#'   natmort = array(data$Fixed_natmort[,1,,], dim = c(1, n_ages, n_sexes)),
+#'   SSB = rep$SSB
+#' )
 #' }
 Do_Population_Projection <- function(n_proj_yrs = 2,
                                      n_regions,
@@ -167,7 +193,8 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
                                      HCR_function = NULL,
                                      recruitment_opt = "inv_gauss",
                                      fmort_opt = 'HCR',
-                                     t_spawn
+                                     t_spawn,
+                                     bh_rec_opt = NULL
                                      ) {
 
 # Define Containers -------------------------------------------------------
@@ -231,6 +258,31 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
       if(recruitment_opt == "zero") {
         for(r in 1:n_regions) {
           proj_NAA[r,y,1,] <- 0 # input into projected NAA
+        } # end r loop
+      }
+
+      # Deterministic Beverton-Holt Recruitment
+      if(recruitment_opt == 'bh_rec') {
+
+        # Get deterministic recruitment
+        tmp_rec <- Get_Det_Recruitment(recruitment_model = 1,
+                                       recruitment_dd = bh_rec_opt$recruitment_dd,
+                                       y = y + dim(bh_rec_opt$SSB)[2],
+                                       rec_lag = bh_rec_opt$rec_lag,
+                                       R0 = bh_rec_opt$R0,
+                                       Rec_Prop = bh_rec_opt$Rec_Prop,
+                                       h = bh_rec_opt$h,
+                                       n_regions = n_regions,
+                                       n_ages = n_ages,
+                                       WAA = bh_rec_opt$WAA,
+                                       MatAA = bh_rec_opt$MatAA,
+                                       natmort = bh_rec_opt$natmort,
+                                       SSB_vals = cbind(bh_rec_opt$SSB, proj_SSB)
+                                       )
+
+        # Input deterministic recruitment
+        for(r in 1:n_regions) {
+          proj_NAA[r,y,1,] <- tmp_rec[r] * sexratio # input into projected NAA
         } # end r loop
       }
 
