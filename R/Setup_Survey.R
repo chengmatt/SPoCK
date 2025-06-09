@@ -274,14 +274,12 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
     for(y in 1:length(input_list$data$years)) {
       for(f in 1:input_list$data$n_srv_fleets) {
         # Survey Length Compositions
-        if(is.null(ISS_SrvLenComps)) {
-          # if aggregated across sexes and regions (0) or joint across sexes and regions (3)
-          if(input_list$data$SrvLenComps_Type[y,f] %in% c(0, 3)) ISS_SrvLenComps[1,y,1,f] <- sum(input_list$data$ObsSrvLenComps[,y,,,f])
-          # if split by region and sex
-          if(input_list$data$SrvLenComps_Type[y,f] == 1) ISS_SrvLenComps[,y,,f] <- apply(input_list$data$ObsSrvLenComps[,y,,,f, drop = FALSE], c(1,4), sum)
-          # if split by region, joint by sex
-          if(input_list$data$SrvLenComps_Type[y,f] == 2) ISS_SrvLenComps[,y,1,f] <- apply(input_list$data$ObsSrvLenComps[,y,,,f, drop = FALSE], 1, sum)
-        }
+        # if aggregated across sexes and regions (0) or joint across sexes and regions (3)
+        if(input_list$data$SrvLenComps_Type[y,f] %in% c(0, 3)) ISS_SrvLenComps[1,y,1,f] <- sum(input_list$data$ObsSrvLenComps[,y,,,f])
+        # if split by region and sex
+        if(input_list$data$SrvLenComps_Type[y,f] == 1) ISS_SrvLenComps[,y,,f] <- apply(input_list$data$ObsSrvLenComps[,y,,,f, drop = FALSE], c(1,4), sum)
+        # if split by region, joint by sex
+        if(input_list$data$SrvLenComps_Type[y,f] == 2) ISS_SrvLenComps[,y,1,f] <- apply(input_list$data$ObsSrvLenComps[,y,,,f, drop = FALSE], 1, sum)
       } # end f loop
     } # end y loop
   }

@@ -41,7 +41,7 @@ Get_Comp_Likelihoods = function(Exp,
                                 AgeingError,
                                 use,
                                 comp_agg_type
-                                ) {
+) {
 
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")
@@ -75,10 +75,10 @@ Get_Comp_Likelihoods = function(Exp,
     if(comp_agg_type == 1) tmp_Exp = matrix(rowSums(matrix(Exp, nrow = n_model_bins)) / (n_sexes * n_regions), nrow = 1) # age comps are aggregated, ageing error, and the normalized
 
     # Expected age bins get collapsed to observed age bins if ageing error is non-square
-     if(age_or_len == 0) {
+    if(age_or_len == 0) {
       tmp_Exp = tmp_Exp %*% AgeingError # apply ageing error
       tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize
-     }
+    }
 
     if(age_or_len == 1) tmp_Exp = as.vector((tmp_Exp) / sum(tmp_Exp)) # renormalize (lengths)
 

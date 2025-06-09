@@ -387,7 +387,8 @@ get_retrospective_relative_difference <- function(retro_data) {
   # Pivot longer
   allret <- allret %>%
     dplyr::select(Region, Year, Type, as.character(1:unique_peels)) %>%
-    tidyr::pivot_longer(cols = as.character(1:unique_peels), names_to = "peel", values_to = "rd")
+    tidyr::pivot_longer(cols = as.character(1:unique_peels), names_to = "peel", values_to = "rd") %>%
+    dplyr::mutate(Region = paste("Region", Region))
 
   return(allret)
 }

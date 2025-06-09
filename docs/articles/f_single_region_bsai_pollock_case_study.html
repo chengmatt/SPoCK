@@ -452,14 +452,14 @@ allow for estimation in a penalized likelihood framework.</p>
 the first survey fleet has <code>iid</code> parametric deviations on a
 selectivity form, while the second survey fleet has <code>2dar1</code>
 semi-parametric deviations. Selectivity for survey fleet 3 is not
-estimated as no age composition data are availiable. Therefore,
+estimated as no age composition data are available. Therefore,
 selectivity from survey fleet 2 and 3 are shared. Again, we specify that
 selectivity deviations are estimated in a penalized likelihood framework
 with the argument
-<code>srvsel_pe_pars_spec = c("fix", "fix", "none")</code> and specify
-to set <code>2dar1</code> correlations at 0, such that semi-parametric
+<code>srvsel_pe_pars_spec = c("fix", "fix", "fix")</code> and specify to
+set <code>2dar1</code> correlations at 0, such that semi-parametric
 deviations collapse to an iid formulation
-(<code>corr_opt_semipar = c(NA, "corr_zero_y_a_c", NA)</code>).</p>
+(<code>corr_opt_semipar = c(NA, "corr_zero_y_a_c", "corr_zero_y_a_c")</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co"># Setup survey selectivity and catchability</span></span>
 <span>  <span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Setup_Mod_Srvsel_and_Q.html">Setup_Mod_Srvsel_and_Q</a></span><span class="op">(</span></span>
@@ -467,10 +467,10 @@ deviations collapse to an iid formulation
 <span></span>
 <span>    <span class="co"># Model options</span></span>
 <span>    <span class="co"># survey selectivity, whether continuous time-varying</span></span>
-<span>    cont_tv_srv_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iid_Fleet_1"</span>, <span class="st">"2dar1_Fleet_2"</span>, <span class="st">"none_Fleet_3"</span><span class="op">)</span>,</span>
-<span>    srvsel_pe_pars_spec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fix"</span>, <span class="st">"fix"</span>, <span class="st">"none"</span><span class="op">)</span>, <span class="co"># penalize survey selex devs</span></span>
+<span>    cont_tv_srv_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iid_Fleet_1"</span>, <span class="st">"2dar1_Fleet_2"</span>, <span class="st">"2dar1_Fleet_3"</span><span class="op">)</span>,</span>
+<span>    srvsel_pe_pars_spec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fix"</span>, <span class="st">"fix"</span>, <span class="st">"fix"</span><span class="op">)</span>, <span class="co"># penalize survey selex devs</span></span>
 <span>    srv_sel_devs_spec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"est_all"</span>, <span class="st">"est_all"</span>, <span class="st">"none"</span><span class="op">)</span>, <span class="co"># estimating all srv selex devs</span></span>
-<span>    corr_opt_semipar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"corr_zero_y_a_c"</span>, <span class="cn">NA</span><span class="op">)</span>, <span class="co"># setting corelations at 0, so 2dar1 collapses to simple iid semi-parametric devs</span></span>
+<span>    corr_opt_semipar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"corr_zero_y_a_c"</span>, <span class="st">"corr_zero_y_a_c"</span><span class="op">)</span>, <span class="co"># setting corelations at 0, so 2dar1 collapses to simple iid semi-parametric devs</span></span>
 <span></span>
 <span>    <span class="co"># survey selectivity blocks</span></span>
 <span>    srv_sel_blocks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Fleet_1"</span>, <span class="st">"none_Fleet_2"</span>, <span class="st">"none_Fleet_3"</span><span class="op">)</span>,</span>
@@ -541,14 +541,13 @@ indices).</p>
 <p>Next, we can extract out elements created from the
 <code>input_list</code> object. We will then specify the values to fix
 selectivity variances at. In the first case, the fishery selectivity
-variance is fixed at a value of 0.15. In the second case, the bottom
+variance is fixed at a value of 0.075 In the second case, the bottom
 trawl survey <code>a50</code> and <code>k</code> selectivity variances
-for a logistic function are fixed at 0.05. Lastly, we allow for
-additional flexibility in acoustic trawl and vessel of opportunity
-surveys, and specify the variance at 0.3. For further details on the
-dimensionality of <code>fishsel_pe_pars</code> and
-<code>srvsel_pe_pars</code>, please refer to the
-<code>Description of Model Parameters</code> page.</p>
+for a logistic function are fixed at 0.075 Lastly, the acoustic trawl
+and vessel of opportunity surveys will have a specified variance of
+0.15. For further details on the dimensionality of
+<code>fishsel_pe_pars</code> and <code>srvsel_pe_pars</code>, please
+refer to the <code>Description of Model Parameters</code> page.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract out lists updated with helper functions</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">input_list</span><span class="op">$</span><span class="va">data</span></span>
@@ -556,9 +555,9 @@ dimensionality of <code>fishsel_pe_pars</code> and
 <span><span class="va">mapping</span> <span class="op">&lt;-</span> <span class="va">input_list</span><span class="op">$</span><span class="va">map</span></span>
 <span></span>
 <span><span class="co"># selex sigma to fix at, given penalized likelihood</span></span>
-<span><span class="va">parameters</span><span class="op">$</span><span class="va">fishsel_pe_pars</span><span class="op">[</span>,<span class="fl">4</span>,,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.15</span><span class="op">)</span> <span class="co"># fishery selex variance</span></span>
-<span><span class="va">parameters</span><span class="op">$</span><span class="va">srvsel_pe_pars</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># survey BTS - a50 and delta variance</span></span>
-<span><span class="va">parameters</span><span class="op">$</span><span class="va">srvsel_pe_pars</span><span class="op">[</span>,<span class="fl">4</span>,,<span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.3</span><span class="op">)</span> <span class="co"># survey ATS and ato variance</span></span>
+<span><span class="va">parameters</span><span class="op">$</span><span class="va">fishsel_pe_pars</span><span class="op">[</span>,<span class="fl">4</span>,,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.075</span><span class="op">)</span> <span class="co"># fishery selex variance</span></span>
+<span><span class="va">parameters</span><span class="op">$</span><span class="va">srvsel_pe_pars</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.075</span><span class="op">)</span> <span class="co"># survey BTS - a50 and delta variance</span></span>
+<span><span class="va">parameters</span><span class="op">$</span><span class="va">srvsel_pe_pars</span><span class="op">[</span>,<span class="fl">4</span>,,<span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.15</span><span class="op">)</span> <span class="co"># survey ATS and ato variance</span></span>
 <span></span>
 <span><span class="co"># Fit model</span></span>
 <span><span class="va">ebswp_rtmb_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_model.html">fit_model</a></span><span class="op">(</span><span class="va">data</span>,</span>

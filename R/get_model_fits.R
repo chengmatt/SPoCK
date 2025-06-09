@@ -40,12 +40,14 @@ get_idx_fits <- function(data,
   colnames(rep$PredSrvIdx) <- year_labs
   colnames(data$ObsFishIdx) <- year_labs
   colnames(data$ObsFishIdx_SE) <- year_labs
+  colnames(data$srv_q_blocks) <- year_labs
+  colnames(data$fish_q_blocks) <- year_labs
   colnames(rep$PredFishIdx) <- year_labs
 
   # Observed survey index
   obs_srv <- reshape2::melt(data$ObsSrvIdx) %>% dplyr::rename(obs = value) %>%
     dplyr::left_join(reshape2::melt(data$ObsSrvIdx_SE) %>%  dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
-    dplyr::mutate(lci = obs - (1.96 * se), uci = obs + (1.96 * se), Type = 'Survey') %>%
+    dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Survey') %>%
     tidyr::drop_na() %>%
     dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
 
@@ -55,9 +57,15 @@ get_idx_fits <- function(data,
     dplyr::mutate(Type = 'Survey') %>%
     dplyr::filter(Year %in% unique(obs_srv$Year), value != 0)
 
+  # Get survey catchability
+  srv_q <- reshape2::melt(data$srv_q_blocks) %>%
+    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3, q_block = value) %>%
+    dplyr::mutate(Type = 'Survey')
+
   # combine survey results
   all_srv <- obs_srv %>%
     dplyr::left_join(pred_srv, by = c("Region", "Year", "Fleet", 'Type')) %>%
+    dplyr::left_join(srv_q, by = c("Region", "Year", "Fleet", 'Type')) %>%
     dplyr::mutate(resid = log(obs) - log(value))
 
   # Observed fishery index
@@ -65,7 +73,7 @@ get_idx_fits <- function(data,
     dplyr::rename(obs = value) %>%
     dplyr::left_join(reshape2::melt(data$ObsFishIdx_SE) %>%
                 dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
-    dplyr::mutate(lci = obs - (1.96 * se), uci = obs + (1.96 * se), Type = 'Fishery') %>%
+    dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Fishery') %>%
     tidyr::drop_na() %>%
     dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
 
@@ -75,11 +83,21 @@ get_idx_fits <- function(data,
     dplyr::mutate(Type = 'Fishery') %>%
     dplyr::filter(Year %in% unique(obs_fish$Year), value != 0)
 
+  # Get fishery catchability
+  fish_q <- reshape2::melt(data$fish_q_blocks) %>%
+    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3, q_block = value) %>%
+    dplyr::mutate(Type = 'Fishery')
+
   # combine survey results
-  all_fish <- obs_fish %>% dplyr::left_join(pred_fish, by = c("Region", "Year", "Fleet", 'Type')) %>%
+  all_fish <- obs_fish %>%
+    dplyr::left_join(pred_fish, by = c("Region", "Year", "Fleet", 'Type')) %>%
+    dplyr::left_join(fish_q, by = c("Region", "Year", "Fleet", 'Type')) %>%
     dplyr::mutate(resid = log(obs) - log(value))
 
-  all_idx <- rbind(all_fish, all_srv)
+  all_idx <- rbind(all_fish, all_srv) %>%
+    dplyr::mutate(Category = paste(Type, Fleet, ", Q", q_block, sep = ''),
+                  Region = paste("Region", Region))
+
   return(all_idx)
 }
 
@@ -491,7 +509,6 @@ get_osa <- function(obs_mat,
   afscOSA <- asNamespace("afscOSA")
   compResidual <- asNamespace("compResidual")
 
-  years <- as.character(years) # define as character
   obs <- obs_mat[,years,,,fleet, drop = FALSE] # get filtered observed matrix
   exp <- exp_mat[,years,,,fleet, drop = FALSE] # get filtered expected matrix
   n_regions <- dim(obs)[1]

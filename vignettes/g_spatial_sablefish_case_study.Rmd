@@ -405,7 +405,7 @@ map_ln_fish_fixed_sel_pars[,2,1,2,2] <- 7 # delta, male, time block 1, trawl gea
 map_ln_fish_fixed_sel_pars[,,2,,2] <- NA # no parameters estimated for time block 2 trawl gear
 
 input_list$map$ln_fish_fixed_sel_pars <- factor(map_ln_fish_fixed_sel_pars) # input into map list
-input_list$par$ln_fish_fixed_sel_pars[] <- log(3) # some more inforamtive starting values
+input_list$par$ln_fish_fixed_sel_pars[] <- log(5) # some more inforamtive starting values
 ```
 
 Again, the same arguments are expected for setting up survey selectivity, and there are similarly some nuanced parameter fixing and sharing to help facilitate model stability.
@@ -475,7 +475,7 @@ map_ln_srv_fixed_sel_pars[,2,1,2,2] <- 4 # delta, domestic survey, time block 1,
 # (sharing with coop survey)
 
 input_list$map$ln_srv_fixed_sel_pars <- factor(map_ln_srv_fixed_sel_pars)  # input into map list
-input_list$par$ln_srv_fixed_sel_pars[] <- log(3) # some more informative starting values
+input_list$par$ln_srv_fixed_sel_pars[] <- log(5) # some more informative starting values
 ```
 
 ## Setup Model Weighting 

@@ -320,7 +320,7 @@ SPoCK_rtmb = function(pars, data) {
                                       SSB_vals = SSB,
                                       y = y,
                                       rec_lag = rec_lag
-                                      )
+    )
 
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {

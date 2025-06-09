@@ -17,20 +17,20 @@
 #' @export Setup_Sim_Rec
 #'
 Setup_Sim_Rec <- function(
-                          do_recruits_move,
-                          base_rec_sexratio,
-                          rec_sexratio_vary,
-                          base_r0,
-                          r0_vary,
-                          base_h,
-                          init_sigmaR,
-                          sigmaR,
-                          recruitment_opt,
-                          rec_dd,
-                          init_dd,
-                          sim_list,
-                          rec_lag
-                          ) {
+    do_recruits_move,
+    base_rec_sexratio,
+    rec_sexratio_vary,
+    base_r0,
+    r0_vary,
+    base_h,
+    init_sigmaR,
+    sigmaR,
+    recruitment_opt,
+    rec_dd,
+    init_dd,
+    sim_list,
+    rec_lag
+) {
 
 
   if(do_recruits_move == 'dont_move') sim_list$do_recruits_move <- 0
@@ -124,7 +124,7 @@ Setup_Mod_Rec <- function(input_list,
                           h_spec = NULL,
                           t_spawn = 0,
                           ...
-                          ) {
+) {
 
   messages_list <<- character(0) # string to attach to for printing messages
 
@@ -233,7 +233,7 @@ Setup_Mod_Rec <- function(input_list,
     if(InitDevs_spec == "fix") input_list$map$ln_InitDevs <- factor(rep(NA, prod(dim(map_InitDevs))))
     if(!InitDevs_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid initial deviations option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all initial deviations.")
     else collect_message("Initial Deviations is specified as: ", InitDevs_spec)
-  } else if(rec_dd == 'global' && rec_model == 'bh_rec' && input_list$data$n_regions > 1) stop("Please specify a valid initial age deviations option for global recruitment density dependence (should be est_shared_r)!") else collect_message("Initial Age Deviations is estimated for all dimensions")
+  } else collect_message("Initial Age Deviations is estimated for all dimensions")
 
   # Recruitment deviations
   if(!is.null(RecDevs_spec)) {
@@ -248,7 +248,7 @@ Setup_Mod_Rec <- function(input_list,
     if(RecDevs_spec == "fix") input_list$map$ln_RecDevs <- factor(rep(NA, prod(dim(map_RecDevs))))
     if(!RecDevs_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid recruitment deviations option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all recruitment deviations.")
     else collect_message("Recruitment Deviations is specified as: ", RecDevs_spec)
-  } else if(rec_dd == 'global' && rec_model == 'bh_rec' && input_list$data$n_regions > 1) stop("Please specify a valid recruitment deviations option for global recruitment density dependence (should be est_shared_r)!") else collect_message("Recruitment Deviations is estimated for all dimensions")
+  } else collect_message("Recruitment Deviations is estimated for all dimensions")
 
   # Steepness
   if(input_list$data$rec_model == 0) {

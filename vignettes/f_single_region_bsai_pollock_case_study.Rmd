@@ -282,7 +282,7 @@ Fishery selectivity is specified to vary semi-parametrically for the pollock mod
 ```
 
 # Setting up Survey Selectivity and Catchability
-Survey selectivity is setup in a similar way. Here, we specify that the first survey fleet has `iid` parametric deviations on a selectivity form, while the second survey fleet has `2dar1` semi-parametric deviations. Selectivity for survey fleet 3 is not estimated as no age composition data are availiable. Therefore, selectivity from survey fleet 2 and 3 are shared. Again, we specify that selectivity deviations are estimated in a penalized likelihood framework with the argument `srvsel_pe_pars_spec = c("fix", "fix", "none")` and specify to set `2dar1` correlations at 0, such that semi-parametric deviations collapse to an iid formulation (`corr_opt_semipar = c(NA, "corr_zero_y_a_c", NA)`).
+Survey selectivity is setup in a similar way. Here, we specify that the first survey fleet has `iid` parametric deviations on a selectivity form, while the second survey fleet has `2dar1` semi-parametric deviations. Selectivity for survey fleet 3 is not estimated as no age composition data are available. Therefore, selectivity from survey fleet 2 and 3 are shared. Again, we specify that selectivity deviations are estimated in a penalized likelihood framework with the argument `srvsel_pe_pars_spec = c("fix", "fix", "fix")` and specify to set `2dar1` correlations at 0, such that semi-parametric deviations collapse to an iid formulation (`corr_opt_semipar = c(NA, "corr_zero_y_a_c", "corr_zero_y_a_c")`).
 
 ```{r, eval = F}
  # Setup survey selectivity and catchability
@@ -291,10 +291,10 @@ Survey selectivity is setup in a similar way. Here, we specify that the first su
 
     # Model options
     # survey selectivity, whether continuous time-varying
-    cont_tv_srv_sel = c("iid_Fleet_1", "2dar1_Fleet_2", "none_Fleet_3"),
-    srvsel_pe_pars_spec = c("fix", "fix", "none"), # penalize survey selex devs
+    cont_tv_srv_sel = c("iid_Fleet_1", "2dar1_Fleet_2", "2dar1_Fleet_3"),
+    srvsel_pe_pars_spec = c("fix", "fix", "fix"), # penalize survey selex devs
     srv_sel_devs_spec = c("est_all", "est_all", "none"), # estimating all srv selex devs
-    corr_opt_semipar = c(NA, "corr_zero_y_a_c", NA), # setting corelations at 0, so 2dar1 collapses to simple iid semi-parametric devs
+    corr_opt_semipar = c(NA, "corr_zero_y_a_c", "corr_zero_y_a_c"), # setting corelations at 0, so 2dar1 collapses to simple iid semi-parametric devs
 
     # survey selectivity blocks
     srv_sel_blocks = c("none_Fleet_1", "none_Fleet_2", "none_Fleet_3"),
@@ -355,7 +355,7 @@ input_list <- Setup_Mod_Weighting(
 
 # Fit Model and Plot
 
-Next, we can extract out elements created from the `input_list` object. We will then specify the values to fix selectivity variances at. In the first case, the fishery selectivity variance is fixed at a value of 0.15. In the second case, the bottom trawl survey `a50` and `k` selectivity variances for a logistic function are fixed at 0.05. Lastly, we allow for additional flexibility in acoustic trawl and vessel of opportunity surveys, and specify the variance at 0.3. For further details on the dimensionality of `fishsel_pe_pars` and `srvsel_pe_pars`, please refer to the `Description of Model Parameters` page. 
+Next, we can extract out elements created from the `input_list` object. We will then specify the values to fix selectivity variances at. In the first case, the fishery selectivity variance is fixed at a value of 0.075 In the second case, the bottom trawl survey `a50` and `k` selectivity variances for a logistic function are fixed at 0.075 Lastly, the acoustic trawl and vessel of opportunity surveys will have a specified variance of 0.15. For further details on the dimensionality of `fishsel_pe_pars` and `srvsel_pe_pars`, please refer to the `Description of Model Parameters` page. 
 
 ```{r Fit Model, message = FALSE,  eval = FALSE}
 # extract out lists updated with helper functions
@@ -364,9 +364,9 @@ parameters <- input_list$par
 mapping <- input_list$map
 
 # selex sigma to fix at, given penalized likelihood
-parameters$fishsel_pe_pars[,4,,] <- log(0.15) # fishery selex variance
-parameters$srvsel_pe_pars[,1:2,,1] <- log(0.05) # survey BTS - a50 and delta variance
-parameters$srvsel_pe_pars[,4,,2] <- log(0.3) # survey ATS and ato variance
+parameters$fishsel_pe_pars[,4,,] <- log(0.075) # fishery selex variance
+parameters$srvsel_pe_pars[,1:2,,1] <- log(0.075) # survey BTS - a50 and delta variance
+parameters$srvsel_pe_pars[,4,,2] <- log(0.15) # survey ATS and ato variance
 
 # Fit model
 ebswp_rtmb_model <- fit_model(data,
