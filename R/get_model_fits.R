@@ -45,11 +45,19 @@ get_idx_fits <- function(data,
   colnames(rep$PredFishIdx) <- year_labs
 
   # Observed survey index
-  obs_srv <- reshape2::melt(data$ObsSrvIdx) %>% dplyr::rename(obs = value) %>%
-    dplyr::left_join(reshape2::melt(data$ObsSrvIdx_SE) %>%  dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
-    dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Survey') %>%
-    tidyr::drop_na() %>%
-    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
+  if(data$sablefish_ADMB == 0) {
+    obs_srv <- reshape2::melt(data$ObsSrvIdx) %>% dplyr::rename(obs = value) %>%
+      dplyr::left_join(reshape2::melt(data$ObsSrvIdx_SE) %>%  dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
+      dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Survey') %>%
+      tidyr::drop_na() %>%
+      dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
+  } else {
+    obs_srv <- reshape2::melt(data$ObsSrvIdx) %>% dplyr::rename(obs = value) %>%
+      dplyr::left_join(reshape2::melt(data$ObsSrvIdx_SE) %>%  dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
+      dplyr::mutate(lci = obs - (1.96 * se), uci = obs + (1.96 * se), Type = 'Survey') %>%
+      tidyr::drop_na() %>%
+      dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
+  }
 
   # Predicted survey index
   pred_srv <- reshape2::melt(rep$PredSrvIdx) %>%
@@ -69,13 +77,23 @@ get_idx_fits <- function(data,
     dplyr::mutate(resid = log(obs) - log(value))
 
   # Observed fishery index
-  obs_fish <- reshape2::melt(data$ObsFishIdx) %>%
-    dplyr::rename(obs = value) %>%
-    dplyr::left_join(reshape2::melt(data$ObsFishIdx_SE) %>%
-                dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
-    dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Fishery') %>%
-    tidyr::drop_na() %>%
-    dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
+  if(data$sablefish_ADMB == 0) {
+    obs_fish <- reshape2::melt(data$ObsFishIdx) %>%
+      dplyr::rename(obs = value) %>%
+      dplyr::left_join(reshape2::melt(data$ObsFishIdx_SE) %>%
+                         dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
+      dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Fishery') %>%
+      tidyr::drop_na() %>%
+      dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
+  } else {
+    obs_fish <- reshape2::melt(data$ObsFishIdx) %>%
+      dplyr::rename(obs = value) %>%
+      dplyr::left_join(reshape2::melt(data$ObsFishIdx_SE) %>%
+                         dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
+      dplyr::mutate(lci = obs - (1.96 * se), uci = obs + (1.96 * se), Type = 'Fishery') %>%
+      tidyr::drop_na() %>%
+      dplyr::rename(Region = Var1, Year = Var2, Fleet = Var3)
+  }
 
   # Predicted fishery index
   pred_fish <- reshape2::melt(rep$PredFishIdx) %>%
