@@ -57,6 +57,7 @@ SPoCK_rtmb = function(pars, data) {
   natmort = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # natural mortality at age
   Total_Biom = array(0, dim = c(n_regions, n_yrs)) # Total biomass
   SSB = array(0, dim = c(n_regions, n_yrs)) # Spawning stock biomass
+  Aggregated_SSB = array(0, dim = c(n_yrs)) # Spawning stock biomass
 
   # Movement Stuff
   Movement = array(data = 0, dim = c(n_regions, n_regions, n_yrs, n_ages, n_sexes)) # movement "matrix"
@@ -355,6 +356,9 @@ SPoCK_rtmb = function(pars, data) {
     if(n_sexes == 1) SSB[,y] = SSB[,y] * 0.5 # If single sex model, multiply SSB calculations by 0.5
 
   } # end y loop
+
+  # Get aggregated SSB values
+  Aggregated_SSB = colSums(SSB)
 
   ## Fishery Observation Model -----------------------------------------------
   for(r in 1:n_regions) {
@@ -1073,6 +1077,7 @@ SPoCK_rtmb = function(pars, data) {
   RTMB::ADREPORT(Total_Biom)
   RTMB::ADREPORT(SSB)
   RTMB::ADREPORT(Rec)
+  RTMB::ADREPORT(log(Aggregated_SSB))
 
   return(jnLL)
 } # end function

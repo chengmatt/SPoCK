@@ -223,7 +223,7 @@ Setup_Mod_Rec <- function(input_list,
   # Initial age deviations
   if(!is.null(InitDevs_spec)) {
     map_InitDevs <- input_list$par$ln_InitDevs # set up mapping for initial age deviations
-    if(rec_dd == 'global' && InitDevs_spec != "est_shared_r" && input_list$data$n_regions > 1) stop("Please specify a valid initial age deviations option for global recruitment density dependence (should be est_shared_r)!")
+    if(rec_dd == 'global' && InitDevs_spec != "est_shared_r" && input_list$data$n_regions > 1) stop("Please specify a valid initial age deviations option for global recruitment density dependence (should be est_shared_r or leave as NULL)!")
     # Share across regions and estimate
     if(InitDevs_spec == "est_shared_r") {
       for(r in 1:input_list$data$n_regions) map_InitDevs[r,] <- 1:length(map_InitDevs[1,]) # share parameters across regions

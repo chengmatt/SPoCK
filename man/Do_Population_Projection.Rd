@@ -93,6 +93,17 @@ Title Do Population Projections
 }
 \examples{
 \dontrun{
+# Define HCR to use
+HCR_function <- function(x, frp, brp, alpha = 0.05) {
+  stock_status <- x / brp # define stock status
+  # If stock status is > 1
+  if(stock_status >= 1) f <- frp
+  # If stock status is between brp and alpha
+  if(stock_status > alpha && stock_status < 1) f <- frp * (stock_status - alpha) / (1 - alpha)
+  # If stock status is less than alpha
+  if(stock_status < alpha) f <- 0
+  return(f)
+}
 rep <- obj$report(obj$env$last.par.best) # need to have an RTMB object first
 # Setup necessary inputs
 n_sims <- 1000
@@ -111,7 +122,7 @@ fish_sel <- array(rep(obj$rep$fish_sel[,length(data$years),,,], each = n_proj_yr
 Movement <- array(rep(obj$rep$Movement[,,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes))
 terminal_F <- array(obj$rep$Fmort[,length(data$years),], dim = c(n_regions, n_fish_fleets))
 natmort <- array(obj$rep$natmort[,length(data$years),,], dim = c(n_regions, n_proj_yrs, n_ages, n_sexes))
-recruitment <- array(obj$rep$Rec[,20:(length(data$years) - 2)], dim = c(n_regions, length(20:length(data$years))))
+recruitment <- array(obj$rep$Rec[,20:(length(data$years) - 2)], dim = c(n_regions, length(20:length(data$years) - 2)))
 
 # Define reference points
 spr_35 <- Get_Reference_Points(data = data,

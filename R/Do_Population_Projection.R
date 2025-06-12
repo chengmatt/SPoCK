@@ -39,6 +39,17 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Define HCR to use
+#' HCR_function <- function(x, frp, brp, alpha = 0.05) {
+#'   stock_status <- x / brp # define stock status
+#'   # If stock status is > 1
+#'   if(stock_status >= 1) f <- frp
+#'   # If stock status is between brp and alpha
+#'   if(stock_status > alpha && stock_status < 1) f <- frp * (stock_status - alpha) / (1 - alpha)
+#'   # If stock status is less than alpha
+#'   if(stock_status < alpha) f <- 0
+#'   return(f)
+#' }
 #' rep <- obj$report(obj$env$last.par.best) # need to have an RTMB object first
 #' # Setup necessary inputs
 #' n_sims <- 1000
@@ -57,7 +68,7 @@
 #' Movement <- array(rep(obj$rep$Movement[,,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes))
 #' terminal_F <- array(obj$rep$Fmort[,length(data$years),], dim = c(n_regions, n_fish_fleets))
 #' natmort <- array(obj$rep$natmort[,length(data$years),,], dim = c(n_regions, n_proj_yrs, n_ages, n_sexes))
-#' recruitment <- array(obj$rep$Rec[,20:(length(data$years) - 2)], dim = c(n_regions, length(20:length(data$years))))
+#' recruitment <- array(obj$rep$Rec[,20:(length(data$years) - 2)], dim = c(n_regions, length(20:length(data$years) - 2)))
 #'
 #' # Define reference points
 #' spr_35 <- Get_Reference_Points(data = data,
@@ -198,7 +209,7 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
                                      ) {
 
 # Define Containers -------------------------------------------------------
-  fratio <- terminal_F / apply(terminal_F, 1, sum)
+  fratio <- terminal_F / apply(terminal_F, 1, sum) # get fishing mortality ratio among fleets
   proj_NAA <- array(0, dim = c(n_regions, n_proj_yrs + 1, n_ages, n_sexes))
   proj_ZAA <- array(0, dim = c(n_regions, n_proj_yrs + 1, n_ages, n_sexes))
   proj_FAA <- array(0, dim = c(n_regions, n_proj_yrs + 1, n_ages, n_sexes, n_fish_fleets))
@@ -216,25 +227,23 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
 # Construct Mortality Processes -------------------------------------------
 
     # use terminal F in the first year (subsequent years use F derived from reference points and HCR)
-    if(y == 1) proj_F[,y] <- sum(terminal_F)
+    if(y == 1) proj_F[,y] <- rowSums(terminal_F)
 
-    for(f in 1:n_fish_fleets) {
-      for(a in 1:n_ages) {
-        for(s in 1:n_sexes) {
-          # get fishing mortality at age
-          proj_FAA[,y,a,s,f] <- proj_F[,y] * fratio[,f] * fish_sel[,y,a,s,f]
-        } # end s loop
-      } # end a loop
-    } # end f loop
+    for(a in 1:n_ages) {
+      for(s in 1:n_sexes) {
+        for(f in 1:n_fish_fleets) {
+        # get fishing mortality at age
+        proj_FAA[,y,a,s,f] <- proj_F[,y] * fratio[,f] * fish_sel[,y,a,s,f]
+      } # end f loop
 
-    # Get Total Mortality at Age
-    proj_ZAA[,y,,] <- natmort[,y,,] + apply(proj_FAA[,y,,,,drop = FALSE], c(1:4), sum)[,1,,] # M and sum F across fleets
+        # Get Total Mortality at Age
+        proj_ZAA[,y,a,s] <- natmort[,y,a,s] + apply(proj_FAA[,y,a,s,,drop = FALSE], c(1:4), sum) # M and sum F across fleets
+
+    } # end s loop
+  } # end a loop
 
 # Recruitment Processes ---------------------------------------------------
     tmp_rec <- vector() # temporary variable
-
-    # Use recruits estimated from terminal year in first projection year
-    if(y == 1) tmp_rec <- terminal_NAA[,1,]
 
     if(y > 1) {
 
@@ -289,7 +298,8 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
     }
 
 # Movement Processes ------------------------------------------------------
-    if(n_regions > 1) {
+    # Only apply movement if more than 1 reigon, or if y > 1 (because terminal NAA already has movement applied)
+    if(n_regions > 1 && y > 1) {
       # Recruits don't move
       if(do_recruits_move == 0) {
         # Apply movement after ageing processes - start movement at age 2
