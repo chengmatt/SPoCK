@@ -482,7 +482,7 @@ get_comp_prop <- function(data,
 #'
 #' @param obs_mat Matrix of observed values, which can have NAs - gets removed with years arge (dimensioned by region, year, age, sex, fleet)
 #' @param exp_mat Matrix of expceted values, which can have NAs - gets removed with years arg (dimensioned by region, year, age, sex, fleet)
-#' @param N Input or effective sample size. If aggregated, then a single number is provided. If split by region, joint by sex (comp_type == 2), then provide a matrix dimensioned by n_regions x n_sexes. If joint by sex, by split by region (comp_type == 3), then provide a vector of n_regions
+#' @param N Input or effective sample size. If aggregated (comp_type == 0), then a vector of n_years is provided. If split by region, split by sex (comp_type == 1), then provide a matrix dimensioned by n_regions x n_years x n_sexes. If joint by sex, by split by region (comp_type == 2), then provide a matrix of n_regions x n_years
 #' @param years Years we want to point to and filter to
 #' @param fleet Fleet we want to filter to
 #' @param bins Vector of age or length bins
@@ -561,7 +561,7 @@ get_osa <- function(obs_mat,
         tmp_exp <- exp[r,,,s,1] # get expected
 
         # compute OSA
-        tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N[r,s], years = years,
+        tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N[r,,s], years = years,
                        index = bins, fleet = as.character(fleet), index_label = bin_label)
 
         # Doing some naming stuff
@@ -597,7 +597,7 @@ get_osa <- function(obs_mat,
       } # end s loop
 
       # compute OSA
-      tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N[r], years = years,
+      tmp_osa <- afscOSA::run_osa(obs = tmp_obs, exp = tmp_exp, N = N[r,], years = years,
                          index = paste(rep(1:n_sexes, each = length(bins)), "_", rep(bins, times = n_sexes), sep = ""),
                          fleet = as.character(fleet), index_label = bin_label)
 

@@ -64,7 +64,7 @@
 
 
 <dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>Input or effective sample size. If aggregated, then a single number is provided. If split by region, joint by sex (comp_type == 2), then provide a matrix dimensioned by n_regions x n_sexes. If joint by sex, by split by region (comp_type == 3), then provide a vector of n_regions</p></dd>
+<dd><p>Input or effective sample size. If aggregated (comp_type == 0), then a vector of n_years is provided. If split by region, split by sex (comp_type == 1), then provide a matrix dimensioned by n_regions x n_years x n_sexes. If joint by sex, by split by region (comp_type == 2), then provide a matrix of n_regions x n_years</p></dd>
 
 
 <dt id="arg-years">years<a class="anchor" aria-label="anchor" href="#arg-years"></a></dt>
