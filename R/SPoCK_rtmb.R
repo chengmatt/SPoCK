@@ -35,7 +35,7 @@ SPoCK_rtmb = function(pars, data) {
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")
 
-  RTMB::getAll(parameters, data) # load in starting values and data
+  RTMB::getAll(pars, data) # load in starting values and data
 
   # Model Set Up (Containers) -----------------------------------------------
   n_ages = length(ages) # number of ages
@@ -112,22 +112,27 @@ SPoCK_rtmb = function(pars, data) {
   jnLL = 0 # Joint negative log likelihood
 
   # Model Process Equations -------------------------------------------------
+
   ## Movement Parameters (Set up) --------------------------------------------
   ref_region = 1 # Set up reference region (always set at 0)
   for(r in 1:n_regions) {
     for(y in 1:n_yrs) {
       for(a in 1:n_ages) {
         for(s in 1:n_sexes) {
-          move_tmp = rep(0, n_regions) # temporary movement vector to store values (from - to)
+
+          move_tmp = rep(0, n_regions) # temporary movement vector to store values
           counter = 1  # counter
+
           for(rr in 1:n_regions) {
             if(rr != ref_region) {
               move_tmp[rr] = move_pars[r,counter,y,a,s] + logit_move_devs[r,counter,y,a,s]
               counter = counter + 1
             } # end if not reference region
           } # end rr loop
-          if(use_fixed_movement == 0) Movement[r,,y,a,s] = exp(move_tmp) / sum(exp(move_tmp)) # multinomial logit transform (basically a softmax) - estimated movement
+
+          if(use_fixed_movement == 0) Movement[r,,y,a,s] = exp(move_tmp) / sum(exp(move_tmp)) # multinomial logit transform estimated movement
           if(use_fixed_movement == 1) Movement[r,,y,a,s] = Fixed_Movement[r,,y,a,s] # fixed movement matrix
+
         } # end s loop
       } # end a loop
     } # end y loop
@@ -140,18 +145,19 @@ SPoCK_rtmb = function(pars, data) {
         fish_sel_blk_idx = fish_sel_blocks[r,y,f] # Get fishery selectivity block index
         for(s in 1:n_sexes) {
 
-          # Extract out fixed-effect selectivity parameters
+          # Extract out fixed-effect selectivity parameters for a given block
           tmp_fish_sel_vec = ln_fish_fixed_sel_pars[r,,fish_sel_blk_idx,s,f]
 
           # Calculate selectivity
           fish_sel[r,y,,s,f] = Get_Selex(Selex_Model = fish_sel_model[r,y,f], # selectivity model
                                          TimeVary_Model = cont_tv_fish_sel[r,f], # time varying model
                                          ln_Pars = tmp_fish_sel_vec, # fixed effect selectivity parameters
-                                         ln_seldevs = ln_fishsel_devs[,,,,f, drop = FALSE], # list object to incorporate different dimensions of deviations
+                                         ln_seldevs = ln_fishsel_devs[,,,,f, drop = FALSE], # Selectivity deviations
                                          Region = r, # region index
                                          Year = y, # year index
                                          Age = ages, # age vector
-                                         Sex = s) # sex index
+                                         Sex = s # sex index
+                                         )
 
         } # end s loop
       } # end f loop
@@ -177,7 +183,8 @@ SPoCK_rtmb = function(pars, data) {
                                          Region = r, # region index
                                          Year = y, # year index
                                          Age = ages, # age vector
-                                         Sex = s) # sex index
+                                         Sex = s # sex index
+                                         )
 
         } # end s loop
       } # end sf loop
@@ -189,14 +196,14 @@ SPoCK_rtmb = function(pars, data) {
   for(r in 1:n_regions) {
     for(y in 1:n_yrs) {
 
-      # Fishing Mortality at Age calculations
+      # Fishing Mortality at Age
       for(f in 1:n_fish_fleets) {
         if(UseCatch[r,y,f] == 0) {
           Fmort[r,y,f] = 0 # Set F to zero when no catch data
         } else {
           if(Catch_Type[y,f] == 0 && est_all_regional_F == 0) {
-            Fmort[r,y,f] = exp(ln_F_mean_AggCatch[f] + ln_F_devs_AggCatch[y,f]) # If catch is aggregated across regions
-          } else Fmort[r,y,f] = exp(ln_F_mean[r,f] + ln_F_devs[r,y,f]) # Fully selected F
+            Fmort[r,y,f] = exp(ln_F_mean_AggCatch[f] + ln_F_devs_AggCatch[y,f]) # If catch is aggregated across regions (share same F time-series across regions)
+          } else Fmort[r,y,f] = exp(ln_F_mean[r,f] + ln_F_devs[r,y,f]) # If catch is region-specific
         }
         FAA[r,y,,,f] = Fmort[r,y,f] * fish_sel[r,y,,,f,drop = FALSE] # Fishing mortality at age
       } # f loop
@@ -210,7 +217,7 @@ SPoCK_rtmb = function(pars, data) {
 
       if(use_fixed_natmort == 1) natmort[r,y,,] = Fixed_natmort[r,y,,] # Using fixed natural mortality
 
-      ZAA[r,y,,] = apply(FAA[r,y,,,,drop = FALSE],3:4,sum) + natmort[r,y,,] # Total Mortality at age
+      ZAA[r,y,,] = apply(FAA[r,y,,,,drop = FALSE], 3:4, sum) + natmort[r,y,,] # Total Mortality at age
       SAA_mid[r,y,,] = exp(-0.5 * ZAA[r,y,,]) # Survival at age at midpoint of year
 
     } # end y loop
@@ -238,6 +245,7 @@ SPoCK_rtmb = function(pars, data) {
   if (do_rec_bias_ramp == 0) {
     bias_ramp = rep(1, n_yrs) # don't do bias ramp, set values to 1
   } else if (do_rec_bias_ramp == 1) {
+
     # setup bias ramp year ranges
     years = 1:n_yrs # years for indexing
     range1 = which(years >= bias_year[1] & years < bias_year[2])  # ascending limb
@@ -245,9 +253,10 @@ SPoCK_rtmb = function(pars, data) {
     range3 = which(years >= bias_year[3] & years < bias_year[4])  # descending limb
 
     # Apply bias ramp to the different ramp year ranges
-    if (length(range1) > 0) bias_ramp[range1] = (years[range1] - bias_year[1]) / (bias_year[2] - bias_year[1]) # ascneding limb
+    if (length(range1) > 0) bias_ramp[range1] = (years[range1] - bias_year[1]) / (bias_year[2] - bias_year[1]) # ascending limb
     if (length(range2) > 0) bias_ramp[range2] = 1 # full bias correction
     if (length(range3) > 0) bias_ramp[range3] = 1 - ((years[range3] - bias_year[3]) / (bias_year[4] - bias_year[3])) # descending limb
+
   } # end if doing bias ramp
 
   ## Initial Age Structure ---------------------------------------------------
@@ -255,24 +264,29 @@ SPoCK_rtmb = function(pars, data) {
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
         tmp_cumsum_Z = cumsum(natmort[r,1,1:(n_ages-1),s] + init_F * fish_sel[r,1,1:(n_ages-1),s,1])
-        Init_NAA[r,,s] = c(R0, R0 * exp(-tmp_cumsum_Z)) * sexratio[s] * Rec_trans_prop[r]
+        Init_NAA[r,,s] = c(R0 * sexratio[s] * Rec_trans_prop[r], R0 * sexratio[s] * Rec_trans_prop[r] * exp(-tmp_cumsum_Z))
       } # end s loop
     } # end r loop
 
     # Apply annual cycle and iterate to equilibrium
     for(i in 1:init_iter) {
       for(s in 1:n_sexes) {
+
         Init_NAA_next_year[,1,s] = R0 * sexratio[s] * Rec_trans_prop # recruitment
-        # recruits don't move
-        if(do_recruits_move == 0) for(a in 2:n_ages) Init_NAA[,a,s] = t(Init_NAA[,a,s]) %*% Movement[,,1,a,s] # movement
-        # recruits move
-        if(do_recruits_move == 1) for(a in 1:n_ages) Init_NAA[,a,s] = t(Init_NAA[,a,s]) %*% Movement[,,1,a,s] # movement
+
+        # movement
+        if(do_recruits_move == 0) for(a in 2:n_ages) Init_NAA[,a,s] = t(Init_NAA[,a,s]) %*% Movement[,,1,a,s] # recruits don't move
+        if(do_recruits_move == 1) for(a in 1:n_ages) Init_NAA[,a,s] = t(Init_NAA[,a,s]) %*% Movement[,,1,a,s] # recruits move
+
         # ageing and mortality
         Init_NAA_next_year[,2:n_ages,s] = Init_NAA[,1:(n_ages-1),s] * exp(-(natmort[,1,1:(n_ages-1),s] + (init_F * fish_sel[,1,1:(n_ages-1),s,1])))
+
         # accumulate plus group
         Init_NAA_next_year[,n_ages,s] = (Init_NAA_next_year[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1])))) +
-          (Init_NAA[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1]))))
+                                        (Init_NAA[,n_ages,s] * exp(-(natmort[,1,n_ages,s] + (init_F * fish_sel[,1,n_ages,s,1]))))
+
         Init_NAA = Init_NAA_next_year # iterate to next cycle
+
       } # end s loop
     } # end i loop
 
@@ -283,6 +297,7 @@ SPoCK_rtmb = function(pars, data) {
         NAA[r,1,2:n_ages,s] = Init_NAA[r,2:n_ages,s] # add in plus group
       } # end s loop
     } # end r loop
+
   } # end if
 
   # Current Assessment Approach -- FLAG, I think it's wrong!
@@ -290,11 +305,16 @@ SPoCK_rtmb = function(pars, data) {
     init_age_idx = 1:(n_ages - 2) # Get initial age indexing
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
-        NAA[r,1,init_age_idx + 1,s] = R0 * exp(ln_InitDevs[r,init_age_idx] - (init_age_idx * (natmort[r,1, init_age_idx + 1, s] +
-                                                                                                (init_F * fish_sel[r,1, init_age_idx + 1, s, 1])))) * sexratio[s] *  Rec_trans_prop[r] # not plus group
+
+        # not plus group
+        NAA[r,1,init_age_idx + 1,s] = R0 * exp(ln_InitDevs[r,init_age_idx] -
+                                     (init_age_idx * (natmort[r,1, init_age_idx + 1, s] + (init_F * fish_sel[r,1, init_age_idx + 1, s, 1])))) *
+                                      sexratio[s] *  Rec_trans_prop[r]
+
         # Plus group calculations
         NAA[r,1,n_ages,s] = R0 * exp( - ((n_ages - 1) * (natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1]))) ) /
-          (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) * sexratio[s] * Rec_trans_prop[r]
+                            (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) *
+                            sexratio[s] * Rec_trans_prop[r]
 
       } # end s loop
     } # end r loop
@@ -762,8 +782,10 @@ SPoCK_rtmb = function(pars, data) {
           # Add in observed and predicted non-recaptures
           tmp_pred = c(tmp_pred_c_all, 1 - sum(tmp_pred_c_all))
           tmp_obs = c(tmp_obs_c_all, 1 - sum(tmp_obs_c_all))
+
           if(Tag_LikeType == 2) Tag_nLL[ry,tc,1,1,1] = -tmp_n_tags_released * sum((tmp_obs) * log(tmp_pred)) # multinomial
           if(Tag_LikeType == 4) Tag_nLL[ry,tc,1,1,1] =  -1 * ddirmult(obs = tmp_obs, pred = tmp_pred, Ntotal = tmp_n_tags_released, ln_theta = ln_tag_theta, TRUE) # Dirichlet Multinomial
+
         } # end if release conditioned
 
         # Recapture Conditioned (Multinomial or Dirichlet-Multinomial)
@@ -794,10 +816,11 @@ SPoCK_rtmb = function(pars, data) {
           # Normalize observed and predicted recaptures
           tmp_pred_all = tmp_pred_all / sum(tmp_pred_all)
           tmp_obs_all = tmp_obs_all / tmp_n_tags_recap
+
           if(Tag_LikeType == 3) Tag_nLL[ry,tc,1,1,1] = -1 * tmp_n_tags_recap * sum(((tmp_obs_all) * log(tmp_pred_all))) # Multinomial
           if(Tag_LikeType == 5) Tag_nLL[ry,tc,1,1,1] =  -1 * ddirmult(obs = tmp_obs_all, pred = tmp_pred_all, Ntotal = tmp_n_tags_recap, ln_theta = ln_tag_theta, TRUE) # Dirichlet Multinomial
 
-        } # end if multinomial recapture conditioned
+        } # end if recapture conditioned
       } # end ry loop
 
     } # end tc loop

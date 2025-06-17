@@ -75,13 +75,12 @@ ddirmult = function(obs, pred, Ntotal, ln_theta, give_log = TRUE) {
 #' @param pred Vector of predicted values in proportions (vector length of n_bins)
 #' @param Sigma Covariance matrix
 #' @param give_log whether or not to use log space likelihood
-#' @param perc percentage to multiply minimum values by so there aren't zeros
 #'
 #' @import RTMB
 #' @returns Returns likelihood values from a logistic normal
 #' @keywords internal
 #'
-dlogistnormal = function(obs, pred, Sigma, perc = 0.85, give_log = TRUE) {
+dlogistnormal = function(obs, pred, Sigma, give_log = TRUE) {
 
   # multiplicative transform
   # ps = p[-length(p)]
@@ -90,8 +89,8 @@ dlogistnormal = function(obs, pred, Sigma, perc = 0.85, give_log = TRUE) {
   # Dealing with zeros
   if(any(obs == 0)) {
     # normalize by adding 85% of the minimum observed value in a given year
-    obs = (obs + min(obs[obs != 0]) * perc) / sum(obs + min(obs[obs != 0]) * perc)
-    pred = (pred + min(obs[obs != 0]) * perc) / sum(pred + min(obs[obs != 0]) * perc)
+    obs = (obs + min(obs[obs != 0]) * 0.85) / sum(obs + min(obs[obs != 0]) * 0.85)
+    pred = (pred + min(obs[obs != 0]) * 0.85) / sum(pred + min(obs[obs != 0]) * 0.85)
     # do logistic transformation on observed values
     tmp_Obs = log(obs[-length(obs)])
     tmp_Obs = tmp_Obs - log(obs[length(obs)])

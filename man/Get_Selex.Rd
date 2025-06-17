@@ -22,7 +22,7 @@ Get_Selex(
 
 \item{ln_Pars}{log selectivity parameters}
 
-\item{ln_seldevs}{selectivity deviations (either in array or matrix and needs to match the time_vary model specification)}
+\item{ln_seldevs}{selectivity deviations array dimensioned by n_regions, n_years, n_ages, n_sexes, 1}
 
 \item{Region}{Region index value}
 

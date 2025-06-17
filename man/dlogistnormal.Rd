@@ -4,7 +4,7 @@
 \alias{dlogistnormal}
 \title{Logistic Normal Likelihood}
 \usage{
-dlogistnormal(obs, pred, Sigma, perc = 0.85, give_log = TRUE)
+dlogistnormal(obs, pred, Sigma, give_log = TRUE)
 }
 \arguments{
 \item{obs}{Vector of observed values in numbers (can be integers or non-integers - vector length of n_bins)}
@@ -12,8 +12,6 @@ dlogistnormal(obs, pred, Sigma, perc = 0.85, give_log = TRUE)
 \item{pred}{Vector of predicted values in proportions (vector length of n_bins)}
 
 \item{Sigma}{Covariance matrix}
-
-\item{perc}{percentage to multiply minimum values by so there aren't zeros}
 
 \item{give_log}{whether or not to use log space likelihood}
 }
