@@ -15,8 +15,6 @@ Setup_Mod_Movement(
   Movement_yearblk_spec = NULL,
   Movement_sexblk_spec = NULL,
   cont_vary_movement = "none",
-  Movement_cont_age_spec = "none",
-  Movement_cont_year_spec = "none",
   Movement_cont_pe_pars_spec = "none",
   ...
 )
@@ -43,13 +41,9 @@ The default behavior is to estimate unique movement parameters for all years To 
 \item{Movement_sexblk_spec}{Either a character string specifiying "constant" sex movement, list object specifying which sexes to group together and block (i.e., which sexes to share parameters for). Each element in the list should be a vector specifying the range of sexes for which to share or block parameters for. For example, list(1, 2) has 2 sex blocks, where each sex has unique parameters
 The default behavior is to estimate unique movement parameters for all sexes. To estimate sex-invariant movement this list would be specified as: list(c(1:n_sexes)).}
 
-\item{cont_vary_movement}{Continuous varying movement 0 (not continuous), 1 (continuous)}
+\item{cont_vary_movement}{Continuous varying movement: "none", "iid_y", "iid_a", "iid_y_a", 'iid_y_s', 'iid_a_s', "iid_y_a_s"}
 
-\item{Movement_cont_age_spec}{Continuous age deviations as random effects. A character specified at est_all or none (i.e., no age deviations uses none, vs all ages uses est_all)}
-
-\item{Movement_cont_year_spec}{Continuous year deviations as random effects. A character specified at est_all or none (i.e., no year deviations uses none, vs all years uses est_all)}
-
-\item{Movement_cont_pe_pars_spec}{Specification of process error parameters. Character string where options are est_shared_r, est_shared_a, est_shared_r_a, est_all, fix, none}
+\item{Movement_cont_pe_pars_spec}{Specification of process error parameters. Character string where options are 'est_shared_r', 'est_shared_a', "est_shared_s", 'est_shared_r_a', 'est_shared_a_s', "est_shared_r_s", 'est_shared_r_a_s', 'est_all', 'fix', 'none'}
 
 \item{...}{Additional inputs for starting values for movement parameters (move_pars)}
 }

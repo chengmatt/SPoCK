@@ -13,10 +13,8 @@
 #' The default behavior is to estimate unique movement parameters for all years To estimate time-invariant movement this list would be specified as: list(c(1:n_years)).
 #' @param Movement_sexblk_spec Either a character string specifiying "constant" sex movement, list object specifying which sexes to group together and block (i.e., which sexes to share parameters for). Each element in the list should be a vector specifying the range of sexes for which to share or block parameters for. For example, list(1, 2) has 2 sex blocks, where each sex has unique parameters
 #' The default behavior is to estimate unique movement parameters for all sexes. To estimate sex-invariant movement this list would be specified as: list(c(1:n_sexes)).
-#' @param cont_vary_movement Continuous varying movement 0 (not continuous), 1 (continuous)
-#' @param Movement_cont_age_spec Continuous age deviations as random effects. A character specified at est_all or none (i.e., no age deviations uses none, vs all ages uses est_all)
-#' @param Movement_cont_year_spec Continuous year deviations as random effects. A character specified at est_all or none (i.e., no year deviations uses none, vs all years uses est_all)
-#' @param Movement_cont_pe_pars_spec Specification of process error parameters. Character string where options are est_shared_r, est_shared_a, est_shared_r_a, est_all, fix, none
+#' @param cont_vary_movement Continuous varying movement: "none", "iid_y", "iid_a", "iid_y_a", 'iid_y_s', 'iid_a_s', "iid_y_a_s"
+#' @param Movement_cont_pe_pars_spec Specification of process error parameters. Character string where options are 'est_shared_r', 'est_shared_a', "est_shared_s", 'est_shared_r_a', 'est_shared_a_s', "est_shared_r_s", 'est_shared_r_a_s', 'est_all', 'fix', 'none'
 #'
 #' @export Setup_Mod_Movement
 #'
@@ -30,8 +28,6 @@ Setup_Mod_Movement <- function(input_list,
                                Movement_yearblk_spec = NULL,
                                Movement_sexblk_spec = NULL,
                                cont_vary_movement = 'none',
-                               Movement_cont_age_spec = 'none',
-                               Movement_cont_year_spec = 'none',
                                Movement_cont_pe_pars_spec = 'none',
                                ...
                                ) {
@@ -55,24 +51,40 @@ Setup_Mod_Movement <- function(input_list,
   if(!Use_Movement_Prior %in% c(0,1)) stop('Options for movement priors not correctly specified. The options are Use_Movement_Prior == 0 (dont use), or == 1 (use)')
   else collect_message("Movement priors are: ", ifelse(Use_Movement_Prior == 0, "Not Used", "Used"))
 
-  if(!cont_vary_movement %in% c("none", "iid")) stop('Options for continuous movement is not correctly specified. The options are none, iid')
+  if(!cont_vary_movement %in% c("none", "iid_y", "iid_a", "iid_y_a", 'iid_y_s', 'iid_a_s', "iid_y_a_s")) stop('Options for continuous movement is not correctly specified. The options are none, iid_y, iid_a, iid_y_a, iid_y_s, iid_a_s, iid_y_a_s.')
   else collect_message("Continuous movement specification is: ", cont_vary_movement)
 
-  if(!Movement_cont_pe_pars_spec %in% c('est_shared_r', 'est_shared_a',
-                                        'est_shared_r_a', 'est_all', 'fix', 'none')) stop('Options for continuous movement process error is not correctly specified. The options are est_shared_r, est_shared_a, est_shared_r_a, est_all, fix, none')
+  if(!Movement_cont_pe_pars_spec %in% c('est_shared_r', 'est_shared_a', "est_shared_s",
+                                        'est_shared_r_a', 'est_shared_a_s', "est_shared_r_s",
+                                        'est_shared_r_a_s', 'est_all', 'fix', 'none')) stop('Options for continuous movement process error is not correctly specified. The options are est_shared_r, est_shared_a, est_shared_s, est_shared_r_a, est_shared_a_s, est_shared_r_s, est_shared_r_a_s, est_all, fix, none')
   else collect_message("Continuous movement process error specification is: ", Movement_cont_pe_pars_spec)
+
+  # define compatbility movement rules
+  compatibility_rules <- list(
+    "none" = c("fix", "none"),  # no movement variation
+    "iid_y" = c("fix", "est_shared_r_a_s"),  # must share ages and sexes
+    "iid_a" = c("fix", "est_shared_r_a_s", "est_shared_r_s", "est_shared_a_s", "est_shared_s"),  # must share sexes
+    "iid_y_s" = c("fix", "est_shared_r_a_s", "est_shared_a_s", "est_shared_r_a", "est_shared_a"),  # must share ages
+    "iid_y_a" = c("fix", "est_shared_r_a_s", "est_shared_r_s", "est_shared_a_s", "est_shared_s"),  # must share sexes
+    "iid_a_s" = c("fix", "est_shared_r", "est_shared_a", "est_shared_s", "est_shared_r_a", "est_shared_a_s", "est_shared_r_s", "est_shared_r_a_s"),  # all vary - no constraints
+    "iid_y_a_s" = c("fix", "est_shared_r", "est_shared_a", "est_shared_s", "est_shared_r_a", "est_shared_a_s", "est_shared_r_s", "est_shared_r_a_s")  # all vary - no constraints
+  )
+
+  # Check compatibility
+  if (!Movement_cont_pe_pars_spec %in% compatibility_rules[[cont_vary_movement]]) {
+    compatible_specs <- compatibility_rules[[cont_vary_movement]]
+    stop("Incompatible parameter combination. For cont_vary_movement = '", cont_vary_movement,
+         "', Movement_cont_pe_pars_spec must be one of: ",
+         paste(compatible_specs, collapse = ", "))
+  }
 
   # Fixed effects blocks
   if(!is.null(Movement_ageblk_spec)) if(!typeof(Movement_ageblk_spec) %in% c("list", "character", NULL)) stop("Movement fixed effects age blocks are not correctly specified, it needs to be either a list object or set at 'constant'. For example, if we had 10 ages and wanted 2 age blocks, this would be list(c(1:5), c(6:10)) such that ages 1 - 5 are a block, and ages 6 - 10 are a block.")
   if(!is.null(Movement_yearblk_spec)) if(!typeof(Movement_yearblk_spec) %in% c("list", "character", NULL)) stop("Movement fixed effects year blocks are not correctly specified, it needs to be either a list object or set at 'constant'. For example, if we had 10 years and wanted 2 year blocks, this would be list(c(1:5), c(6:10)) such that years 1 - 5 are a block, and years 6 - 10 are a block.")
   if(!is.null(Movement_sexblk_spec)) if(!typeof(Movement_sexblk_spec) %in% c("list", "character", NULL)) stop("Movement fixed effects sex blocks are not correctly specified, it needs to be either a list object or set at 'constant'. For example, if we had 2 sexes and wanted sex-specific movement, this would be list(1, 2).")
 
-  # Random effects
-  if(!is.null(Movement_cont_age_spec)) if(!Movement_cont_age_spec %in% c('est_all', 'none')) stop("Movement random effects for ages are not correctly specified, it needs to be either be 'est_all' or 'none'.")
-  if(!is.null(Movement_cont_year_spec)) if(!Movement_cont_year_spec %in% c('est_all', 'none')) stop("Movement random effects for years are not correctly specified, it needs to be either be 'est_all' or 'none'.")
-
   # define for continuous varying movement
-  cont_move_map <- data.frame(type = c("none", "iid"), num = c(0,1)) # set up values we map to
+  cont_move_map <- data.frame(type = c("none", "iid_y", "iid_a", "iid_y_a", 'iid_y_s', 'iid_a_s', "iid_y_a_s"), num = c(0:6))
   cont_vary_movement_val <- cont_move_map$num[cont_move_map$type == cont_vary_movement] # look for number corresponding to specified option
 
   # Input variables into data list
@@ -93,11 +105,11 @@ Setup_Mod_Movement <- function(input_list,
 
   # Movement deviations
   if("logit_move_devs" %in% names(starting_values)) input_list$par$logit_move_devs <- starting_values$logit_move_devs
-  else input_list$par$logit_move_devs <- array(0, c(input_list$data$n_regions, input_list$data$n_regions - 1, length(input_list$data$years), length(input_list$data$ages)))
+  else input_list$par$logit_move_devs <- array(0, c(input_list$data$n_regions, input_list$data$n_regions - 1, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes))
 
   # Movement process error parameters
   if("move_pe_pars" %in% names(starting_values)) input_list$par$move_pe_pars <- starting_values$move_pe_pars
-  else input_list$par$move_pe_pars <- array(0, dim = c(input_list$data$n_regions, max(4, length(input_list$data$ages)))) # max 4 parameters or the ages
+  else input_list$par$move_pe_pars <- array(0, dim = c(input_list$data$n_regions, max(4, length(input_list$data$ages)), input_list$data$n_sexes)) # max 4 parameters or the ages
 
   # Setup mapping list
   map_Movement_Pars <- input_list$par$move_pars # initialize array with same dimensions as parameters
@@ -107,6 +119,9 @@ Setup_Mod_Movement <- function(input_list,
   # Setup dimensions
   n_regions_from <- dim(map_Movement_Pars)[1]
   n_regions_to <- dim(map_Movement_Pars)[2]
+
+  # Whether or not recruits move
+  age_start <- ifelse(do_recruits_move == 0 && length(input_list$data$ages) >= 2, 2, 1)
 
   # Set up mapping for fixed-effects of movement parameters (i.e., if blocking as fixed effects)
   # If movement is constant for either ages, years, or sexes
@@ -120,7 +135,7 @@ Setup_Mod_Movement <- function(input_list,
 
   if(is.character(Movement_sexblk_spec)){
     if(Movement_sexblk_spec == "constant") Movement_sexblk_spec_vals = list(1:input_list$data$n_sexes)
-  } else Movement_sexblk_spec_vals = Movement_yearblk_spec
+  } else Movement_sexblk_spec_vals = Movement_sexblk_spec
 
   if(input_list$data$n_regions > 1) {
     counter <- 1
@@ -150,61 +165,110 @@ Setup_Mod_Movement <- function(input_list,
 
   # Set up mapping for logit move devs and process error parameters
   if(input_list$data$n_regions > 1 && input_list$data$cont_vary_movement > 0 && input_list$data$use_fixed_movement == 0) {
-
-    # Mapping for logit move devs
-    if(Movement_cont_age_spec == "none") map_logit_move_devs[,,,1:length(input_list$data$ages)]  <- NA # Continuous movement across ages
-    if(Movement_cont_year_spec == "none") map_logit_move_devs[,,1:length(input_list$data$years),] <- NA # Continuous movement across years
-
-    # Whether or not recruits move
-    if(do_recruits_move == 0) age_start <- 2
-    else age_start <- 1
-
     counter <- 1
+
     for(r in 1:input_list$data$n_regions) {
       for(rr in 1:(input_list$data$n_regions - 1)) {
-        if(Movement_cont_year_spec == "est_all" && Movement_cont_age_spec == "est_all") {
+
+        if(cont_vary_movement %in% c('iid_y')) {
+          for(y in 1:length(input_list$data$years)) {
+            map_logit_move_devs[r,rr,y,,] <- counter
+            counter <- counter + 1
+          } # end y loop
+        } # end if iid_y
+
+        if(cont_vary_movement %in% c('iid_a')) {
+          for(a in age_start:length(input_list$data$ages)) {
+            map_logit_move_devs[r,rr,,a,] <- counter
+            counter <- counter + 1
+          } # end a loop
+        } # end if iid_a
+
+        if(cont_vary_movement %in% c('iid_y_a')) {
           for(y in 1:length(input_list$data$years)) {
             for(a in age_start:length(input_list$data$ages)) {
-              map_logit_move_devs[r,rr,y,a] <- counter
+              map_logit_move_devs[r,rr,y,a,] <- counter
               counter <- counter + 1
             } # end a loop
           } # end y loop
-        } else if(Movement_cont_year_spec == "est_all") {
+        } # end if iid_y_a
+
+        if(cont_vary_movement %in% c('iid_y_s')) {
           for(y in 1:length(input_list$data$years)) {
-            map_logit_move_devs[r,rr,y,] <- counter
-            counter <- counter + 1
+            for(s in 1:input_list$data$n_sexes) {
+              map_logit_move_devs[r,rr,y,,s] <- counter
+              counter <- counter + 1
+            } # end s loop
           } # end y loop
-        } else if(Movement_cont_age_spec == "est_all") {
+        } # end if iid_y_s
+
+        if(cont_vary_movement %in% c('iid_a_s')) {
           for(a in age_start:length(input_list$data$ages)) {
-            map_logit_move_devs[r,rr,,a] <- counter
-            counter <- counter + 1
-          } # end a loop
-        }
+            for(s in 1:input_list$data$n_sexes) {
+              map_logit_move_devs[r,rr,,a,s] <- counter
+              counter <- counter + 1
+            } # end s loop
+          } # end y loop
+        } # end if iid_a_s
+
+        if(cont_vary_movement %in% c('iid_y_a_s')) {
+          for(y in 1:length(input_list$data$years)) {
+            for(a in age_start:length(input_list$data$ages)) {
+              for(s in 1:input_list$data$n_sexes) {
+                map_logit_move_devs[r,rr,y,a,s] <- counter
+                counter <- counter + 1
+              } # end s loop
+            } # end a loop
+          } # end y loop
+        } # end if iid_y_a_s
+
       } # end rr
     } # end r loop
 
     # Mapping for movement process error deviations
     if(Movement_cont_pe_pars_spec %in% c("fix", "none")) map_move_pe_pars <- map_move_pe_pars
     if(Movement_cont_pe_pars_spec == 'est_all') map_move_pe_pars[] <- 1:length(map_move_pe_pars)
-    if(Movement_cont_pe_pars_spec %in% c('est_shared_r', 'est_shared_a', 'est_shared_r_a')) {
+    if(Movement_cont_pe_pars_spec %in% c('est_shared_r', 'est_shared_a', "est_shared_s", 'est_shared_r_a', 'est_shared_a_s', 'est_shared_r_s', 'est_shared_r_a_s')) {
       counter <- 1
       for(r in 1:input_list$data$n_regions) {
-        for(a in 1:length(input_list$data$ages)) {
-          # Sharing process error parameters across origin regions
-          if(Movement_cont_pe_pars_spec == 'est_shared_r' && r == 1) {
-            map_move_pe_pars[,a] <- counter
-            counter <- counter + 1
-          }
-          # Sharing process error parameters across ages
-          if(Movement_cont_pe_pars_spec == 'est_shared_a' && a == 1) {
-            map_move_pe_pars[r,] <- counter
-            counter <- counter + 1
-          }
-          # Sharing process error parameters across regions and ages
-          if(Movement_cont_pe_pars_spec == 'est_shared_r_a' && r == 1 && a == 1) {
-            map_move_pe_pars[,] <- counter
-            counter <- counter + 1
-          }
+        for(a in age_start:length(input_list$data$ages)) {
+          for(s in 1:input_list$data$n_sexes) {
+            # Sharing process error parameters across origin regions
+            if(Movement_cont_pe_pars_spec == 'est_shared_r' && r == 1) {
+              map_move_pe_pars[,a,s] <- counter
+              counter <- counter + 1
+            }
+            # Sharing process error parameters across ages
+            if(Movement_cont_pe_pars_spec == 'est_shared_a' && a == 1) {
+              map_move_pe_pars[r,,s] <- counter
+              counter <- counter + 1
+            }
+            # Sharing process error parameters across sexes
+            if(Movement_cont_pe_pars_spec == 'est_shared_s' && s == 1) {
+              map_move_pe_pars[r,a,] <- counter
+              counter <- counter + 1
+            }
+            # Sharing process error parameters across regions and ages
+            if(Movement_cont_pe_pars_spec == 'est_shared_r_a' && r == 1 && a == 1) {
+              map_move_pe_pars[,,s] <- counter
+              counter <- counter + 1
+            }
+            # Sharing process error parameters across ages and sexes
+            if(Movement_cont_pe_pars_spec == 'est_shared_a_s' && a == 1 && s == 1) {
+              map_move_pe_pars[r,,] <- counter
+              counter <- counter + 1
+            }
+            # Sharing process error parameters across regions and sexes
+            if(Movement_cont_pe_pars_spec == 'est_shared_r_s' && r == 1 && s == 1) {
+              map_move_pe_pars[,a,] <- counter
+              counter <- counter + 1
+            }
+            # Sharing process error parameters across regions, ages, and sexes
+            if(Movement_cont_pe_pars_spec == 'est_shared_r_a_s' && r == 1 && a == 1 && s == 1) {
+              map_move_pe_pars[,,] <- counter
+              counter <- counter + 1
+            }
+          } # end s loop
         } # end a loop
       } # end r loop
     }

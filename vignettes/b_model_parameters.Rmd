@@ -47,8 +47,8 @@ The following table describes all elements contained within `input_list$pars`, w
 | `ln_SrvAge_theta`       | `n_regions, n_srv_fleets, n_sexes`                   | Survey Compositions    | Log overdispersion (survey age comp)                                    |
 | `ln_SrvLen_theta`       | `n_regions, n_srv_fleets, n_sexes`                   | Survey Compositions    | Log overdispersion (survey length comp)                                 |
 | `move_pars`             | `n_regions, n_regions – 1, n_years, n_ages, n_sexes` | Movement               | Movement logit parameters                                               |
-| `logit_move_devs`       | `n_regions`, `n_regions – 1`, `n_years`, `n_ages`    | Movement               | Logit movement deviations                                               |
-| `move_pe_pars`          | `n_regions`, `n_ages`                                | Movement               | Log process error parameters                                            |
+| `logit_move_devs`       | `n_regions`, `n_regions – 1`, `n_years`, `n_ages`, `n_sexes`    | Movement               | Logit movement deviations                                               |
+| `move_pe_pars`          | `n_regions`, `n_ages`, `n_sexes`                                 | Movement               | Log process error parameters                                            |
 | `ln_Init_Tag_Mort`      | `1`                                                  | Tagging                | Log tag mortality                                                       |
 | `ln_Tag_Shed`           | `1`                                                  | Tagging                | Log chronic tag shedding                                                |
 | `Tag_Reporting_Pars`    | `n_regions, n_years`                                 | Tagging                | Logit tag reporting rate parameters                                     |

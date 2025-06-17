@@ -730,10 +730,10 @@ Continuous movement deviations can also be estimated under a random effects or p
 
 \[
 \begin{aligned}
-\omega_{k,-1,y,a,s} = \omega_{k,-1,s} + \epsilon^{\text{Move}}_{k,j,y,a} \\
-\epsilon^{\text{Move}}_{k,-1,y,a,s} \sim N(0,\sigma^2_{k,a})
+\omega_{k,-1,y,a,s} = \omega_{k,-1,s} + \epsilon^{\text{Move}}_{k,j,y,a,s} \\
+\epsilon^{\text{Move}}_{k,-1,y,a,s} \sim N(0,\sigma^2_{k,a,s})
 \end{aligned}
 \]
 
-where $\epsilon^{\text{Move}}_{k,-1,y,a}$ are movement deviatons in logit space. Because of the sum to 1 constraint, movement deviations are only estimated for $n_r - 1$. Deviations then arise from a normal distribution with process variation constrained by $\sigma^2_{k,a}$. Thus, process variance can be distinct by the origin region and age (although other parameterizations that share all parameters across origin region and ages are also allowed). 
+where $\epsilon^{\text{Move}}_{k,-1,y,a,s}$ are movement deviatons in logit space. Because of the sum to 1 constraint, movement deviations are only estimated for $n_r - 1$. Deviations then arise from a normal distribution with process variation constrained by $\sigma^2_{k,a,s}$. Thus, process variance can be distinct by the origin region and age (although other parameterizations that share all parameters across origin region, ages, and sexes are also allowed). Similarly, process deviations can be invoked only across years, ages, years and ages, years, ages, and sexes, etc. This flexibility is maintained given the computational demand for estimating random effects for movement. 
 

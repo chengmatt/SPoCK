@@ -173,47 +173,72 @@ Get_move_PE_loglik <- function(PE_model,
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")
 
-  # Function to constrain values between -1 and 1
-  rho_trans = function(x) 2/(1+ exp(-2 * x)) - 1
-
   # Note that the likelihood calculations are positive within the function,
   # because it gets converted to negative outside the wrapper function
 
   ll = 0 # initialize likelihood
-
-  # find unique movement deviations to penalize (sort drops NAs)
-  unique_move_devs = sort(unique(as.vector(map_move_devs)))
 
   # Get dimensions for curvature penalty
   n_regions_from = dim(map_move_devs)[1]
   n_regions_to = dim(map_move_devs)[2]
   n_yrs = dim(map_move_devs)[3]
   n_ages = dim(map_move_devs)[4]
+  n_sexes = dim(map_move_devs)[5]
+
+  # whether recruits move
+  age_start = ifelse(do_recruits_move == 0 && n_ages >= 2, 2, 1)
 
   # Penalize Deviations
   for(rr in 1:n_regions_to) {
     for(r in 1:n_regions_from) {
-      for(y in 1:n_yrs) {
 
-        if(PE_model == 1) {
+      if(PE_model == 1) {
+        for(y in 1:n_yrs) {
+          ll = ll + RTMB::dnorm(logit_devs[r,rr,y,1,1], 0, exp(PE_pars[r,1,1]), TRUE)
+        } # end y loop
+      } # iid_y
 
-          if(n_ages >= 1) {
-            for (aa in 2:(n_ages - 1)) {
-              age_curvature = logit_devs[r,rr,y,aa+1] -
-                2 * logit_devs[r,rr,y,aa] + logit_devs[r,rr,y,aa-1]
-              ll = ll - age_curvature^2
-            } # end aa loop
-          } # end if
+      if(PE_model == 2) {
+        for(a in age_start:n_ages) {
+          ll = ll + RTMB::dnorm(logit_devs[r,rr,1,a,1], 0, exp(PE_pars[r,a,1]), TRUE)
+        } # end a loop
+      } # iid_a
 
-          for(a in 1:n_ages) {
-            ll = ll + RTMB::dnorm(logit_devs[r,rr,y,a], 0, exp(PE_pars[r,a]), TRUE)
+      if(PE_model == 3) {
+        for(y in 1:n_yrs) {
+          for(a in age_start:n_ages) {
+            ll = ll + RTMB::dnorm(logit_devs[r,rr,y,a,1], 0, exp(PE_pars[r,a,1]), TRUE)
           } # end a loop
-        } # iid process error
+        } # end y loop
+      } # iid_y_a
 
-      } # end y loop
+      if(PE_model == 4) {
+        for(y in 1:n_yrs) {
+          for(s in 1:n_sexes) {
+            ll = ll + RTMB::dnorm(logit_devs[r,rr,y,1,s], 0, exp(PE_pars[r,1,s]), TRUE)
+          } # end s loop
+        } # end y loop
+      } # iid_y_s
+
+      if(PE_model == 5) {
+        for(a in age_start:n_ages) {
+          for(s in 1:n_sexes) {
+            ll = ll + RTMB::dnorm(logit_devs[r,rr,1,a,s], 0, exp(PE_pars[r,a,s]), TRUE)
+          } # end s loop
+        } # end a loop
+      } # iid_a_s
+
+      if(PE_model == 6) {
+        for(y in 1:n_yrs) {
+          for(a in age_start:n_ages) {
+            for(s in 1:n_sexes) {
+              ll = ll + RTMB::dnorm(logit_devs[r,rr,y,a,s], 0, exp(PE_pars[r,a,s]), TRUE)
+            } # end s loop
+          } # end a loop
+        } # end y loop
+      } # iid_y_a_s
 
     } # end r loop
-
   } # end rr loop
 
   return(ll)

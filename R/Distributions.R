@@ -83,6 +83,10 @@ ddirmult = function(obs, pred, Ntotal, ln_theta, give_log = TRUE) {
 #'
 dlogistnormal = function(obs, pred, Sigma, perc = 0.85, give_log = TRUE) {
 
+  # multiplicative transform
+  # ps = p[-length(p)]
+  # ys = log(ps/(1 - cumsum(ps)))
+
   # Dealing with zeros
   if(any(obs == 0)) {
     # normalize by adding 85% of the minimum observed value in a given year

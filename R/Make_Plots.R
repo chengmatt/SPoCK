@@ -168,15 +168,14 @@ get_biological_plot <- function(data,
     )
 
   # Movement plot
-  move_plot <- ggplot2::ggplot(move_plot_df %>%
-                                dplyr::filter(Year %in% c(seq(min(move_plot_df$Year), max(move_plot_df$Year), 5))),
-                              ggplot2::aes(x = Age, y = value, color = Year)) +
-    ggplot2::geom_line(lwd = 2) +
+  move_plot <- ggplot(move_plot_df,
+                      ggplot2::aes(x = Year, y = Age, fill = value, z = value)) +
+    ggplot2::geom_tile(lwd = 1) +
     ggplot2::facet_grid(Region_To~Region_From + Sex) +
-    ggplot2::scale_color_viridis_c() +
-    ggplot2::labs(x = 'Age', y = 'Movement Probabilities', color = 'Year') +
+    ggplot2::labs(x = 'Year', y = 'Age', fill = 'Movement Probabilities') +
     ggplot2::coord_cartesian(ylim = c(0, NA)) +
     theme_sablefish() +
+    scale_fill_viridis_c(option = 'magma') +
     ggplot2::theme(legend.key.width = unit(2, "lines"))
 
   # Natural mortality plot

@@ -35,7 +35,7 @@ SPoCK_rtmb = function(pars, data) {
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")
 
-  RTMB::getAll(pars, data) # load in starting values and data
+  RTMB::getAll(parameters, data) # load in starting values and data
 
   # Model Set Up (Containers) -----------------------------------------------
   n_ages = length(ages) # number of ages
@@ -122,7 +122,7 @@ SPoCK_rtmb = function(pars, data) {
           counter = 1  # counter
           for(rr in 1:n_regions) {
             if(rr != ref_region) {
-              move_tmp[rr] = move_pars[r,counter,y,a,s] + logit_move_devs[r,counter,y,a]
+              move_tmp[rr] = move_pars[r,counter,y,a,s] + logit_move_devs[r,counter,y,a,s]
               counter = counter + 1
             } # end if not reference region
           } # end rr loop
