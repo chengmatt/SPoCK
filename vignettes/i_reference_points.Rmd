@@ -1,0 +1,130 @@
+---
+title: "Deriving Reference Points and Catch Advice"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{i_reference_points}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Several options exist for deriving management reference points and catch advice in `SPoCK`. In this vignette, we will first discuss the mathematical details for deriving different management reference points, and then demonstrate how catch advice might be developed with estimated reference points.
+
+# Reference Points
+
+Management reference points in `SPoCK` are divided into single-region and spatial reference points.
+
+Single-region reference points include:
+
+- Spawning potential ratio (SPR) reference points, which estimate the fishing mortality rate that reduces spawning biomass per recruit to x% of the unfished level.
+
+- Maximum sustainable yield (MSY) reference points, based on a Beverton-Holt relationship, which estimate the fishing mortality rate that maximizes long-term yield.
+
+Spatial reference points also include both SPR and MSY-based metrics, but are further divided into:
+
+- Independent SPR reference points, which estimate region-specific fishing mortality rates that reduce spawning biomass per recruit to x% of the unfished level, while ignoring movement.
+
+- Independent MSY reference points, which estimate region-specific fishing mortality rates that maximize yield within a given region.
+
+- Global SPR reference points, which estimate a global fishing mortality rate that reduces total spawning biomass per recruit to x% of the unfished level, accounting for movement.
+
+- Global MSY reference points, which estimate a global fishing mortality rate that maximizes long-term yield across all regions.
+
+## Single Region
+
+### Spawning Potential Ratio Reference Points
+To derive SPR reference points, users must specify a target percentage representing the spawning biomass per recruit under fishing relative to the unfished level. Following that, several additional quantities are needed to compute these reference points. This includes: 
+
+- the relative fishing mortality between fleets ($Frat_f = Fmort_{y = term,f} / \sum_f Fmort_{y = term,f}$), 
+- fleet-specific fishery selectivity ($Sel_{y = term,a,s = 1,f}^{Fsh}$),
+- natural mortality for females ($M_{y=1,a,s=1}$), 
+- weight at age for females ($W_{y=1,a,s=1}$),
+- maturity at age for females ($Mat_{y=1,a,s=1}$), 
+- spawn timing ($t_{spwn}$), 
+- a vector of recruitment values ($Rec_{y,s}$), 
+- the recruitment sex ratio ($\psi_s$), 
+- recruitment age ($RecAge$), and
+- the first year in the recruitment vector ($RecYear$) to be used for mean recruitment calculations. 
+
+For relative fishing mortality between fleets and fleet-specific fishery selectivity, the terminal year is utilized for these calculations. By contrast, estimates from the first model year are utilized for natural mortality, weight at age, and maturity at age.
+
+SPR reference points are then derived with the following process:
+
+\[
+N_{a = 1}^{fished} = 1 \\
+N_{a = 1}^{unfished} = 1
+\]
+
+where $N_{a = 1}^{fished}$ and $N_{a = 1}^{unfished}$ are the fished and unfished numbers at age per-recruit, respectively, for the first age class. Subsequent numbers at age per-recruit are then computed with an exponential mortality model, where fished numbers at age per-recruit are decremented with both natural and fishing mortality, while unfished numbers at age per-recruit are only decremented with natural mortality:
+
+\[
+N_{a}^{\text{fished}} = 
+\begin{cases}
+N_{a - 1}^{\text{fished}} \cdot \exp\left(-\left(M_{y=1,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right) & \text{if } 2 < a < n_{\text{ages}} \\
+\\
+N_{a - 1}^{\text{fished}} \cdot 
+\frac{
+\exp\left(-\left(M_{y=1,n_{\text{ages}}-1,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},n_{\text{ages}}-1,s=1,f}^{\text{Fsh}}\right)\right)
+}{
+1 - \exp\left(-\left(M_{y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}\right)\right)
+} & \text{if } a = n_{\text{ages}}
+\end{cases}
+\]
+
+\[
+N_{a}^{\text{unfished}} = 
+\begin{cases}
+N_{a - 1}^{\text{unfished}} \cdot \exp\left(-M_{y=1,a-1,s=1}\right) & \text{if } 2 < a < n_{\text{ages}} \\
+\\
+N_{a - 1}^{\text{unfished}} \cdot 
+\frac{
+\exp\left(-M_{y=1,n_{\text{ages}}-1,s=1}\right)
+}{
+1 - \exp\left(-M_{y=1,n_{\text{ages}},s=1}\right)
+} & \text{if } a = n_{\text{ages}}
+\end{cases}
+\]
+
+where $F_x$ represents the estimated fishing mortality rate that reduces the spawning biomass per recruit to x%, relative to the unfished level. Fished and unfished numbers at age per recruit can then be converted to spawning biomass per recruit quantities ($SSB$) with the following equations:
+
+\[
+SSB^{fished} = \sum_a N_{a}^{\text{fished}} \cdot W_{y=1,a,s=1} \cdot Mat_{y=1,a,s=1} \cdot \exp(-t_{spwn} \cdot M_{y=1,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}) \\ 
+SSB^{unfished} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y=1,a,s=1} \cdot Mat_{y=1,a,s=1} \cdot \exp(-t_{spwn} \cdot M_{y=1,a,s=1})
+\]
+
+SPR is then defined as the fraction of fished and unfished spawning biomass per recruit:
+
+\[
+SPR = \frac{SSB^{fished}}{SSB^{unfished}}
+\]
+
+and $F_x$ is solved for using a non-linear function minimizer by minimizing the following criteria:
+
+\[
+F_x = \arg\min_{F} \left\{ 100 \cdot \left( \text{SPR}(F) - \text{x%} \right)^2 \right\}
+\]
+
+### Maximum Sustainable Yield Reference Points (Beverton-Holt)
+
+
+
+## Multi Region
+
+### Spawning Potential Ratio Reference Points
+
+#### Independent
+#### Global
+
+### Maximum Sustainble Yield Reference Points (Beverton-Holt)
+
+#### Independent
+#### Global
+
+# Deriving Catch Advice
+

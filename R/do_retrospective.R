@@ -33,7 +33,6 @@ truncate_yr <- function(j,
   retro_parameters$ln_RecDevs <- parameters$ln_RecDevs[,1:(ncol(parameters$ln_RecDevs) - j), drop = FALSE] # Recruitment deviations
   if(any(names(retro_mapping) == 'ln_RecDevs')) retro_mapping$ln_RecDevs <- factor(array(mapping$ln_RecDevs, dim = dim(parameters$ln_RecDevs))[,1:(ncol(parameters$ln_RecDevs) - j), drop = FALSE]) # modify mapping if we have recruitment map
 
-
 # Fishery -----------------------------------------------------------------
 
   # Fishery mortality devs
@@ -81,9 +80,9 @@ truncate_yr <- function(j,
   if(data$n_regions > 1) {
     # Movement stuff
     retro_parameters$move_pars <- parameters$move_pars[,,1:(length(data$years) - j),,,drop = FALSE]
-    retro_parameters$logit_move_devs <- parameters$logit_move_devs[,,1:(length(data$years) - j),,drop = FALSE]
+    retro_parameters$logit_move_devs <- parameters$logit_move_devs[,,1:(length(data$years) - j),,,drop = FALSE]
     retro_mapping$move_pars <- factor(array(mapping$move_pars, dim = dim(parameters$move_pars))[,,1:(length(data$years) - j),,,drop = FALSE])
-    retro_mapping$logit_move_devs <- factor(array(mapping$logit_move_devs, dim = dim(parameters$logit_move_devs))[,,1:(length(data$years) - j),,drop = FALSE])
+    retro_mapping$logit_move_devs <- factor(array(mapping$logit_move_devs, dim = dim(parameters$logit_move_devs))[,,1:(length(data$years) - j),,,drop = FALSE])
     retro_data$map_Movement_Pars <- data$map_Movement_Pars[,,1:(length(data$years) - j),,,drop = FALSE]
     retro_data$Fixed_Movement <- data$Fixed_Movement[,,1:(length(data$years) - j),,,drop = FALSE]
   }

@@ -435,7 +435,8 @@ for (sim in 1:sim_env$n_sims) {
       ### Run reference point module ----------------------------------------------
       reference_points <- Get_Reference_Points(data = data,
                                                rep = obj$rep,
-                                               SPR_x = 0.4, t_spwn = 0,
+                                               SPR_x = 0.4, 
+                                               t_spwn = 0,
                                                sex_ratio_f = 0.5,
                                                calc_rec_st_yr = 1,
                                                rec_age = 1,

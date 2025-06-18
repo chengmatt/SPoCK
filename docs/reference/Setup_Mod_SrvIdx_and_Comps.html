@@ -26,6 +26,7 @@
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/h_closed_loop_simulations.html">Run Closed Loop Simulations</a></li>
+    <li><a class="dropdown-item" href="../articles/i_reference_points.html">Deriving Reference Points and Catch Advice</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -127,11 +128,11 @@
 
 
 <dt id="arg-srvagecomps-type">SrvAgeComps_Type<a class="anchor" aria-label="anchor" href="#arg-srvagecomps-type"></a></dt>
-<dd><p>Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.</p></dd>
+<dd><p>Defines how age composition data are fit to by sex and region, with four possible options (agg, spltRspltS, spltRjntS, none). Option agg indicates that compositions are aggregated across regions and sexes, option spltRspltS indicates that compositions are split by region and split by sex (compositions sum to 1 within a given region and sex), option spltRjntS indicates that compositions are split by region but sum to 1 jointly across sexes, and option none specifies that no composition data are available. After defining the composition type, users will need to specify the year range you want the composition type to be in, as well as the fleet number the composition type belongs to. For example, ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") specifies compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.</p></dd>
 
 
 <dt id="arg-srvlencomps-type">SrvLenComps_Type<a class="anchor" aria-label="anchor" href="#arg-srvlencomps-type"></a></dt>
-<dd><p>Character vector defines the compositiont and that is structured as: the composition type (agg, spltRspltS, spltRjntS, none), _, Year, _, year range you want the composition type to be in, _, Fleet, _, Fleet number. e.g., ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") species compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.</p></dd>
+<dd><p>Defines how length composition data are fit to by sex and region, with four possible options (agg, spltRspltS, spltRjntS, none). Option agg indicates that compositions are aggregated across regions and sexes, option spltRspltS indicates that compositions are split by region and split by sex (compositions sum to 1 within a given region and sex), option spltRjntS indicates that compositions are split by region but sum to 1 jointly across sexes, and option none specifies that no composition data are available. After defining the composition type, users will need to specify the year range you want the composition type to be in, as well as the fleet number the composition type belongs to. For example, ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") specifies compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.</p></dd>
 
 
 <dt id="arg-srvage-comp-agg-type">SrvAge_comp_agg_type<a class="anchor" aria-label="anchor" href="#arg-srvage-comp-agg-type"></a></dt>
