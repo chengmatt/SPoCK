@@ -94,9 +94,13 @@ N_{a - 1}^{\text{unfished}} \cdot
 where $F_x$ represents the estimated fishing mortality rate that reduces the spawning biomass per recruit to x%, relative to the unfished level. Fished and unfished numbers at age per recruit can then be converted to spawning biomass per recruit quantities ($SSB$) with the following equations:
 
 \[
-SSB^{fished} = \sum_a N_{a}^{\text{fished}} \cdot W_{y=1,a,s=1} \cdot Mat_{y=1,a,s=1} \cdot \exp(-t_{spwn} \cdot M_{y=1,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}) \\ 
-SSB^{unfished} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y=1,a,s=1} \cdot Mat_{y=1,a,s=1} \cdot \exp(-t_{spwn} \cdot M_{y=1,a,s=1})
+SSB^{\text{fished}} = \sum_a N_{a}^{\text{fished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{y=1,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a,s=1,f}^{\text{Fsh}} \right)
 \]
+
+\[
+SSB^{\text{unfished}} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{y=1,a,s=1} \right)
+\]
+
 
 SPR is then defined as the fraction of fished and unfished spawning biomass per recruit:
 
@@ -110,15 +114,124 @@ and $F_x$ is solved for using a non-linear function minimizer by minimizing the 
 F_x = \arg\min_{F} \left\{ 100 \cdot \left( \text{SPR}(F) - \text{x%} \right)^2 \right\}
 \]
 
+Biological SPR-based reference points ($B_x$) can then be derived by multiplying the fished spawning biomass per recruit by mean recruitment over a user-defined period and the recruitment sex-ratio:
+
+\[
+B_x = SSB^{\text{fished}} \cdot \frac{\sum_{RecYear}^{Y - RecAge} Rec_{y,s}}{Y - RecAge - RecYear} \psi_s
+\]
+
 ### Maximum Sustainable Yield Reference Points (Beverton-Holt)
+Deriving MSY based reference points using a Beverton-Holt stock recruitment relationship involves maximizing the equilibrium yield per recruit and requires several additional inputs. For completeness, we summarize the required inputs to derive MSY based reference points when assuming a Beverton-Holt relationship. These inputs include:
 
+- the relative fishing mortality between fleets ($Frat_f = Fmort_{y = term,f} / \sum_f Fmort_{y = term,f}$), 
+- fleet-specific fishery selectivity ($Sel_{y = term,a,s = 1,f}^{Fsh}$),
+- natural mortality for females ($M_{y=1,a,s=1}$), 
+- weight at age for females ($W_{y=1,a,s=1}$),
+- maturity at age for females ($Mat_{y=1,a,s=1}$), 
+- an estimate of virgin recruitment ($R_0$),
+- an estimate of steepness ($h$),
+- the recruitment sex ratio ($\psi_s$).
 
+Similarly, for relative fishing mortality between fleets and fleet-specific fishery selectivity, terminal year estimates are utilized for these calculations. By contrast, estimates from the first model year are utilized for natural mortality, weight at age, and maturity at age.
+
+MSY reference points can then be derived using the standard per-recruit calculations, where the initial number of fished and unfished individuals can be set at an arbitrary value:
+
+\[
+N_{a = 1}^{fished} = 1 \\
+N_{a = 1}^{unfished} = 1
+\]
+
+The following numbers-at-age per recruit are then decremented with an exponential mortality model:
+
+\[
+  N_{a}^{\text{fished}} = 
+    \begin{cases}
+  N_{a - 1}^{\text{fished}} \cdot \exp\left(-\left(M_{y=1,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right) & \text{if } 2 < a < n_{\text{ages}} \\
+  \\
+  N_{a - 1}^{\text{fished}} \cdot 
+  \frac{
+    \exp\left(-\left(M_{y=1,n_{\text{ages}}-1,s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{term},n_{\text{ages}}-1,s=1,f}^{\text{Fsh}}\right)\right)
+  }{
+    1 - \exp\left(-\left(M_{y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}\right)\right)
+  } & \text{if } a = n_{\text{ages}}
+  \end{cases}
+  \]
+
+\[
+  N_{a}^{\text{unfished}} = 
+    \begin{cases}
+  N_{a - 1}^{\text{unfished}} \cdot \exp\left(-M_{y=1,a-1,s=1}\right) & \text{if } 2 < a < n_{\text{ages}} \\
+  \\
+  N_{a - 1}^{\text{unfished}} \cdot 
+  \frac{
+    \exp\left(-M_{y=1,n_{\text{ages}}-1,s=1}\right)
+  }{
+    1 - \exp\left(-M_{y=1,n_{\text{ages}},s=1}\right)
+  } & \text{if } a = n_{\text{ages}}
+  \end{cases}
+  \]
+
+where $F_{msy}$ here represents the fishing mortality that would result in equilibrium yield being maximized. Yield per recruit quantities can then be computed using Baranov's catch equation:
+
+\[
+C_{a} = 
+\frac{
+  \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}
+}{
+  \left(M_{y=1,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)
+}
+\cdot
+N_a^{\text{fished}} \cdot 
+\left(
+  1 - \exp\left[
+    -\left(
+      M_{y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}
+    \right)
+  \right]
+\right)
+\]
+
+Values for equilibrium recruitment are then calculated using the Beverton-Holt stock recruitment relationship. Estimates of equilibrium recruitment are needed to convert per recruit quantities to yield and $B_{msy}$. Here, we first derive the fished and unfished spawning biomass per recruit:
+
+\[
+SSB^{\text{fished}} = \sum_a N_{a}^{\text{fished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{y=1,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a,s=1,f}^{\text{Fsh}} \right) \\
+\]
+
+\[
+SSB^{\text{unfished}} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{y=1,a,s=1} \right)
+\]
+
+Equilibrium recruitment can then be derived with the following:
+
+\[
+Req = \frac{4\cdot h \cdot R_0 \cdot SSB^{\text{fished}}}{SSB^{\text{unfished}} \cdot (1 - h) + SSB^{\text{fished}} \cdot (5 \cdot h - 1)}
+\]
+
+where $Req$ is the equilibrium recruitment. Yield and $B_{msy}$ can then be computed by multiplying the yield per recruit and spawning biomass per recruit by an estimate of equilibrium recruitment:
+
+\[
+Yield = \sum_a C_a \cdot Req \\ 
+B_{msy} = SSB^{\text{fished}} \cdot Req
+\]
+
+Lastly, $F_{msy}$ is solved for using a non-linear function minimizer by minimizing the following criteria (maximizing yield):
+
+\[
+F_{msy} = \arg\min_{F} Yield
+\]
 
 ## Multi Region
 
 ### Spawning Potential Ratio Reference Points
+In general, multi region SPR reference points can be computed in a similar manner as single region SPR reference points. The additional complication to calculating spatial reference points includes the additional region subscript for all quantities, as well as the **potential** need to account for movement processes.
 
 #### Independent
+In the case where users assume no movement occurs among regions, SPR rates can be calculated independently for each region, which results in region-specific $F_x$ and $B_x$ estimates. 
+
+
+
+
+
 #### Global
 
 ### Maximum Sustainble Yield Reference Points (Beverton-Holt)
