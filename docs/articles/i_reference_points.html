@@ -110,7 +110,7 @@ regions.</p></li>
 <h3 id="single-region">Single Region<a class="anchor" aria-label="anchor" href="#single-region"></a>
 </h3>
 <div class="section level4">
-<h4 id="spawning-potential-ratio-reference-points">Spawning Potential Ratio Reference Points<a class="anchor" aria-label="anchor" href="#spawning-potential-ratio-reference-points"></a>
+<h4 id="sglregionspr">Spawning Potential Ratio Reference Points<a class="anchor" aria-label="anchor" href="#sglregionspr"></a>
 </h4>
 <p>To derive SPR reference points, users must specify a target
 percentage representing the spawning biomass per recruit under fishing
@@ -222,7 +222,7 @@ B_x = SSB^{\text{fished}} \cdot \frac{\sum_{RecYear}^{Y - RecAge} Rec_{y,s}}{Y -
 </annotation></semantics></math></p>
 </div>
 <div class="section level4">
-<h4 id="maximum-sustainable-yield-reference-points-beverton-holt">Maximum Sustainable Yield Reference Points (Beverton-Holt)<a class="anchor" aria-label="anchor" href="#maximum-sustainable-yield-reference-points-beverton-holt"></a>
+<h4 id="sglregionmsy">Maximum Sustainable Yield Reference Points (Beverton-Holt)<a class="anchor" aria-label="anchor" href="#sglregionmsy"></a>
 </h4>
 <p>Deriving MSY based reference points using a Beverton-Holt stock
 recruitment relationship involves maximizing the equilibrium yield per
@@ -351,7 +351,7 @@ F_{msy} = \arg\min_{F} Yield
 <h3 id="multi-region">Multi Region<a class="anchor" aria-label="anchor" href="#multi-region"></a>
 </h3>
 <div class="section level4">
-<h4 id="spawning-potential-ratio-reference-points-1">Spawning Potential Ratio Reference Points<a class="anchor" aria-label="anchor" href="#spawning-potential-ratio-reference-points-1"></a>
+<h4 id="spawning-potential-ratio-reference-points">Spawning Potential Ratio Reference Points<a class="anchor" aria-label="anchor" href="#spawning-potential-ratio-reference-points"></a>
 </h4>
 <p>In general, multi region SPR reference points can be computed in a
 similar manner as single region SPR reference points. The additional
@@ -364,26 +364,360 @@ additional region subscript for all quantities, as well as the
 <p>In the case where users assume no movement occurs among regions, SPR
 rates can be calculated independently for each region, which results in
 region-specific
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>x</mi></msub><annotation encoding="application/x-tex">F_x</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">F_{r,x}</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>x</mi></msub><annotation encoding="application/x-tex">B_x</annotation></semantics></math>
-estimates.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,x}</annotation></semantics></math>
+estimates. Thus, each region has a unique
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">F_{r,x}</annotation></semantics></math>
+estimate that can be applied. All calculations are computed in the same
+manner as equations described for computing SPR rates in the <a href="#sglregionspr">single region case</a> except that an additional
+subscript is added to all demographic rates. Following that,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">F_{r,x}</annotation></semantics></math>
+can then be solved for by minimizing the following criteria for each
+region:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><msub><mi>F</mi><mi>r</mi></msub></munder><mrow><mo stretchy="true" form="prefix">{</mo><mn>100</mn><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">SPR</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>F</mi><mi>r</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mtext mathvariant="normal">x%</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+F_{r,x} = \arg\min_{F_r} \left\{ 100 \cdot \left( \text{SPR}(F_r) - \text{x%} \right)^2 \right\}
+</annotation></semantics></math></p>
+<p>Regional biological SPR-based reference points
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>x</mi></msub><annotation encoding="application/x-tex">B_x</annotation></semantics></math>)
+can then be derived by multiplying the fished spawning biomass per
+recruit by regional mean recruitment over a user-defined period and the
+recruitment sex-ratio:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mfrac><mrow><munderover><mo>∑</mo><mrow><mi>R</mi><mi>e</mi><mi>c</mi><mi>Y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow><mrow><mi>Y</mi><mo>−</mo><mi>R</mi><mi>e</mi><mi>c</mi><mi>A</mi><mi>g</mi><mi>e</mi></mrow></munderover><mi>R</mi><mi>e</mi><msub><mi>c</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><mrow><mi>Y</mi><mo>−</mo><mi>R</mi><mi>e</mi><mi>c</mi><mi>A</mi><mi>g</mi><mi>e</mi><mo>−</mo><mi>R</mi><mi>e</mi><mi>c</mi><mi>Y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow></mfrac><msub><mi>ψ</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">
+B_{r,x} = SSB_r^{\text{fished}} \cdot \frac{\sum_{RecYear}^{Y - RecAge} Rec_{r,y,s}}{Y - RecAge - RecYear} \psi_s
+</annotation></semantics></math></p>
 </div>
 <div class="section level5">
 <h5 id="global">Global<a class="anchor" aria-label="anchor" href="#global"></a>
 </h5>
+<p>In contrast to computing reference points when assuming independent
+populations, SPR rates can also be computed globally, where movement
+occurs among regions. Given the assumption of global SPR rates, this
+results in a global
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>x</mi></msub><annotation encoding="application/x-tex">F_x</annotation></semantics></math>
+estimate, but regional estimates of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,x}</annotation></semantics></math>
+because mean recruitment estimates are defined regionally. Thus, the
+global SPR solution results in a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>x</mi></msub><annotation encoding="application/x-tex">F_x</annotation></semantics></math>
+that reduces the global spawning biomass per recruit to x% of its
+unfished value, such that the aggregate spawning biomass reaches
+equilibrium at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>r</mi></msub><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\sum_r B_{r,x}</annotation></semantics></math>
+if applied over the long-term. However, this solution does not result in
+each region reaching equilibrium at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,x}</annotation></semantics></math>.
+Note that the same value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>x</mi></msub><annotation encoding="application/x-tex">F_x</annotation></semantics></math>
+is applied to each region in the global SPR case.</p>
+<p>Deriving global SPR reference points requires a different set of
+inputs. These include:</p>
+<ul>
+<li>the relative fishing mortality between fleets
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>r</mi><mi>a</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>=</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mo>∑</mo><mi>f</mi></msub><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo>,</mo><mi>f</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Frat_{r,f} = Fmort_{r,y = term,f} / \sum_f Fmort_{r,y = term,f}</annotation></semantics></math>),</li>
+<li>fleet-specific fishery selectivity
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">Sel_{r,y = term,a,s = 1,f}^{Fsh}</annotation></semantics></math>),</li>
+<li>natural mortality for females
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">M_{r,y=1,a,s=1}</annotation></semantics></math>),</li>
+<li>weight at age for females
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">W_{r,y=1,a,s=1}</annotation></semantics></math>),</li>
+<li>maturity at age for females
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>a</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">Mat_{r,y=1,a,s=1}</annotation></semantics></math>),</li>
+<li>spawn timing
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mrow><mi>s</mi><mi>p</mi><mi>w</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">t_{spwn}</annotation></semantics></math>),</li>
+<li>a vector of recruitment values
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><msub><mi>c</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Rec_{r,y,s}</annotation></semantics></math>),</li>
+<li>a matrix of movement values (\boldsymbol{M}{_{y = term,a,s =
+1})</li>
+<li>the recruitment sex ratio
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\psi_s</annotation></semantics></math>),</li>
+<li>recruitment age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><mi>c</mi><mi>A</mi><mi>g</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">RecAge</annotation></semantics></math>),</li>
+<li>the first year in the recruitment vector
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><mi>c</mi><mi>Y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">RecYear</annotation></semantics></math>)
+to be used for mean recruitment calculations, and</li>
+<li>the recruitment proportions (apportionment) by area
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ζ</mi><mi>r</mi></msub><annotation encoding="application/x-tex">\zeta_r</annotation></semantics></math>).</li>
+</ul>
+<p>Global SPR reference points are calculated by first setting the
+regional numbers-at-age in the per-recruit model equal to the estimated
+recruitment apportionment parameters
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ζ</mi><mi>r</mi></msub><annotation encoding="application/x-tex">\zeta_r</annotation></semantics></math>),
+which sum to 1:</p>
+<p><span class="math display">$$
+N_{r,a = 1}^{\text{fished}} = \zeta_r \\
+N_{r,a = 1}^{\text{unfished}} = \zeta_r
+$$</span></p>
+<p>Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mtext mathvariant="normal">fished</mtext></msubsup><annotation encoding="application/x-tex">N_{r,a=1}^{\text{fished}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><annotation encoding="application/x-tex">N_{r,a=1}^{\text{unfished}}</annotation></semantics></math>
+represent the regional numbers-at-age per recruit (for the first age
+class) under fished and unfished conditions, respectively.</p>
+<p>Subsequently, movement is applied. If recruits are allowed to move,
+the movement matrix is applied starting from age 1; otherwise, it is
+applied starting from age 2:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><msub><mi>𝐌</mi><mrow><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><msub><mi>a</mi><mo>min</mo></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>A</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mo>min</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">if recruits move</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>2</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\boldsymbol{N}_a^{\text{fished}} = (\boldsymbol{N}_a^{\text{fished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\begin{cases} 
+1 &amp; \text{if recruits move} \\
+2 &amp; \text{otherwise}
+\end{cases}
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><msub><mi>𝐌</mi><mrow><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><msub><mi>a</mi><mo>min</mo></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>A</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mo>min</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">if recruits move</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>2</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\boldsymbol{N}_a^{\text{unfished}} = (\boldsymbol{N}_a^{\text{unfished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\begin{cases} 
+1 &amp; \text{if recruits move} \\
+2 &amp; \text{otherwise}
+\end{cases}
+</annotation></semantics></math></p>
+<p>In these expressions,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+denotes the number of modeled ages
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>)
+in <code>SPoCK</code> multiplied by 10. For example, if 30 ages are
+modeled, then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">A = 300</annotation></semantics></math>.
+This extension enables iterative propagation of the plus group under
+movement, given that no closed-form solution exists. For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>&gt;</mo><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">a &gt; n_{ages}</annotation></semantics></math>
+in <code>SPoCK</code>, all demographic and fishery parameters are held
+constant at the values for the terminal modeled age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>).
+Following movement processes, an exponential mortality model is then
+applied:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>=</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>+</mo><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mi>x</mi></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mo>&lt;</mo><mi>a</mi><mo>&lt;</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">
+N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(M_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{x} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right)
+\quad \text{if } 2 &lt; a &lt; A
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><mo>=</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mo>&lt;</mo><mi>a</mi><mo>&lt;</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">
+N_{r,a}^{\text{unfished}} = N_{r,a - 1}^{\text{unfished}} \cdot \exp\left(-\left(M_{r,y=1,a-1,s=1}\right)\right)
+\quad \text{if } 2 &lt; a &lt; A
+</annotation></semantics></math></p>
+<p>Again, fished and unfished numbers at age per recruit can then be
+converted to spawning biomass per recruit quantities:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>=</mo><munder><mo>∑</mo><mi>a</mi></munder><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><msub><mtext mathvariant="normal">Mat</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>t</mi><mtext mathvariant="normal">spwn</mtext></msub><mo>⋅</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>+</mo><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mi>x</mi></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+SSB^{\text{fished}}_r = \sum_a N_{r,a}^{\text{fished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{r,y=1,a,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_x \cdot \text{Sel}_{r,y=\text{term},a,s=1,f}^{\text{Fsh}} \right)
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo>=</mo><munder><mo>∑</mo><mi>a</mi></munder><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><mo>⋅</mo><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><msub><mtext mathvariant="normal">Mat</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>t</mi><mtext mathvariant="normal">spwn</mtext></msub><mo>⋅</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+SSB^{\text{unfished}}_r = \sum_a N_{r,a}^{\text{unfished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{r,y=1,a,s=1} \right)
+</annotation></semantics></math></p>
+<p>and the global spawning potential ratio can then be computed as:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>P</mi><mi>R</mi><mo>=</mo><mfrac><mrow><munder><mo>∑</mo><mi>r</mi></munder><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup></mrow><mrow><munder><mo>∑</mo><mi>r</mi></munder><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+SPR = \frac{\sum_r SSB^{\text{fished}}_r}{\sum_r SSB^{\text{fished}}_r}
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>x</mi></msub><annotation encoding="application/x-tex">F_x</annotation></semantics></math>
+is solved for using a non-linear function minimzer by minimizing the
+following criteria for global SPR:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>x</mi></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mi>F</mi></munder><mrow><mo stretchy="true" form="prefix">{</mo><mn>100</mn><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">SPR</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>F</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mtext mathvariant="normal">x%</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+F_x = \arg\min_{F} \left\{ 100 \cdot \left( \text{SPR}(F) - \text{x%} \right)^2 \right\}
+</annotation></semantics></math></p>
+<p>Then, biological SPR-based reference points are assumed to be
+regional
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,x}</annotation></semantics></math>)
+and are derived by multiplying the fished spawning biomass per recruit
+by regional mean recruitment over a user-defined period and the
+recruitment sex-ratio:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mfrac><mrow><munderover><mo>∑</mo><mrow><mi>R</mi><mi>e</mi><mi>c</mi><mi>Y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow><mrow><mi>Y</mi><mo>−</mo><mi>R</mi><mi>e</mi><mi>c</mi><mi>A</mi><mi>g</mi><mi>e</mi></mrow></munderover><mi>R</mi><mi>e</mi><msub><mi>c</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><mrow><mi>Y</mi><mo>−</mo><mi>R</mi><mi>e</mi><mi>c</mi><mi>A</mi><mi>g</mi><mi>e</mi><mo>−</mo><mi>R</mi><mi>e</mi><mi>c</mi><mi>Y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow></mfrac><msub><mi>ψ</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">
+B_{r,x} = SSB^{\text{fished}}_r \cdot \frac{\sum_{RecYear}^{Y - RecAge} Rec_{r,y,s}}{Y - RecAge - RecYear} \psi_s
+</annotation></semantics></math></p>
+<p>Thus, the global SPR calculations result in a global
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>x</mi></msub><annotation encoding="application/x-tex">F_x</annotation></semantics></math>
+and regional
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,x}</annotation></semantics></math>
+estimates.</p>
 </div>
 </div>
 <div class="section level4">
 <h4 id="maximum-sustainble-yield-reference-points-beverton-holt">Maximum Sustainble Yield Reference Points (Beverton-Holt)<a class="anchor" aria-label="anchor" href="#maximum-sustainble-yield-reference-points-beverton-holt"></a>
 </h4>
+<p>MSY-based reference points assuming a Beverton-Holt stock recruitment
+relationship can be derived either assuming independent populations
+without movement or a global population with movement processes
+incorporated.</p>
 <div class="section level5">
 <h5 id="independent-1">Independent<a class="anchor" aria-label="anchor" href="#independent-1"></a>
 </h5>
+<p>Deriving MSY reference points assuming independent populations is
+similar to a single-region case, and results in region-specific
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">F_{r,msy}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,msy}</annotation></semantics></math>
+estimates, which can be applied to each region when conducting catch
+projections to determine management advice.In general, all calcualtions
+are computed in the same manner as equations described for computing MSY
+in the <a href="#sglregionmsy">single region case</a>, with the
+exception that demographic rates and fishery selectivity include a
+region subscript. Notably, virgin recruitment is considered regional to
+compute equilibrium recruitment in these calculations and is derived in
+the following manner:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mrow><mi>r</mi><mo>,</mo><mn>0</mn></mrow></msub><mo>=</mo><msub><mi>R</mi><mn>0</mn></msub><msub><mi>ζ</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">
+R_{r,0} = R_0 \zeta_r 
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><msub><mi>q</mi><mi>r</mi></msub><mo>=</mo><mfrac><mrow><mn>4</mn><mo>⋅</mo><msub><mi>h</mi><mi>r</mi></msub><mo>⋅</mo><msub><mi>R</mi><mrow><mi>r</mi><mo>,</mo><mn>0</mn></mrow></msub><mo>⋅</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup></mrow><mrow><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>h</mi><mi>r</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>5</mn><mo>⋅</mo><msub><mi>h</mi><mi>r</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+Req_r = \frac{4\cdot h_r \cdot R_{r,0} \cdot SSB_r^{\text{fished}}}{SSB_r^{\text{unfished}} \cdot (1 - h_r) + SSB_r^{\text{fished}} \cdot (5 \cdot h_r - 1)}
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">F_{r,msy}</annotation></semantics></math>
+is then derived by minimizing (maximizing) yield for each region
+independently:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><msub><mi>F</mi><mi>r</mi></msub></munder><mi>Y</mi><mi>i</mi><mi>e</mi><mi>l</mi><msub><mi>d</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">
+F_{r,msy} = \arg\min_{F_r} Yield_r
+</annotation></semantics></math></p>
+<p>and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,msy}</annotation></semantics></math>
+can then be derived as:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mrow><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msubsup><mi>R</mi><mi>e</mi><msub><mi>q</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">
+B_{r,msy} = SSB_r^{fished} Req_r
+</annotation></semantics></math></p>
 </div>
 <div class="section level5">
 <h5 id="global-1">Global<a class="anchor" aria-label="anchor" href="#global-1"></a>
 </h5>
+<p>Deriving global MSY in a spatial cointext requires movement among
+regions to be accounted for. Similar to the global SPR case, this
+results in a global
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">F_{msy}</annotation></semantics></math>
+estimate, but regional estiamtes of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,msy}</annotation></semantics></math>
+because recruitment parameters are defined regionally. This results in a
+reference point that achieves
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>r</mi></msub><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\sum_r B_{r,msy}</annotation></semantics></math>
+for the entire population if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">F_{msy}</annotation></semantics></math>
+is applied to each region, but does not ensure that each region is at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,msy}</annotation></semantics></math>.</p>
+<p>Global MSY reference points requires the following inputs:</p>
+<ul>
+<li>the relative fishing mortality between fleets
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>r</mi><mi>a</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>=</mo><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo>,</mo><mi>f</mi></mrow></msub><mi>/</mi><msub><mo>∑</mo><mi>f</mi></msub><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo>,</mo><mi>f</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Frat_{r,f} = Fmort_{r,y = term,f} / \sum_f Fmort_{r,y = term,f}</annotation></semantics></math>),</li>
+<li>fleet-specific fishery selectivity
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>e</mi><msubsup><mi>l</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mrow><mi>F</mi><mi>s</mi><mi>h</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">Sel_{r,y = term,a,s = 1,f}^{Fsh}</annotation></semantics></math>),</li>
+<li>natural mortality for females
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">M_{r,y=1,a,s=1}</annotation></semantics></math>),</li>
+<li>weight at age for females
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">W_{r,y=1,a,s=1}</annotation></semantics></math>),</li>
+<li>maturity at age for females
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>a</mi><msub><mi>t</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">Mat_{r,y=1,a,s=1}</annotation></semantics></math>),</li>
+<li>spawn timing
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mrow><mi>s</mi><mi>p</mi><mi>w</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">t_{spwn}</annotation></semantics></math>),</li>
+<li>a vector of recruitment values
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><msub><mi>c</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Rec_{r,y,s}</annotation></semantics></math>),</li>
+<li>a matrix of movement values (\boldsymbol{M}{_{y = term,a,s =
+1})</li>
+<li>the recruitment sex ratio
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\psi_s</annotation></semantics></math>),</li>
+<li>recruitment age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><mi>c</mi><mi>A</mi><mi>g</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">RecAge</annotation></semantics></math>),</li>
+<li>the first year in the recruitment vector
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><mi>c</mi><mi>Y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">RecYear</annotation></semantics></math>)
+to be used for mean recruitment calculations,</li>
+<li>the global steepness value to be used, which is taken as the mean
+across all regions if steepness is estimated to be regional
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mfrac><mrow><msub><mo>∑</mo><mi>r</mi></msub><msub><mi>h</mi><mi>r</mi></msub></mrow><msub><mi>n</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>s</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">h = \frac{\sum_r h_r}{n_{regions}}</annotation></semantics></math>),
+and</li>
+<li>the recruitment proportions (apportionment) by area
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ζ</mi><mi>r</mi></msub><annotation encoding="application/x-tex">\zeta_r</annotation></semantics></math>).</li>
+</ul>
+<p>Using standard per-recruit calculations, we will first define the
+initial number of fished and unfished individuals based on the
+recruitment proportions to each area:</p>
+<p><span class="math display">$$
+N_{r,a = 1}^{\text{fished}} = \zeta_r \\
+N_{r,a = 1}^{\text{unfished}} = \zeta_r
+$$</span></p>
+<p>Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mtext mathvariant="normal">fished</mtext></msubsup><annotation encoding="application/x-tex">N_{r,a=1}^{\text{fished}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>=</mo><mn>1</mn></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><annotation encoding="application/x-tex">N_{r,a=1}^{\text{unfished}}</annotation></semantics></math>
+represent the regional numbers-at-age per recruit (for the first age
+class) under fished and unfished conditions, respectively. We can then
+apply movement dynamics. If recruits are allowed to move, the movement
+matrix is applied starting from age 1; otherwise, it is applied starting
+from age 2:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><msub><mi>𝐌</mi><mrow><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><msub><mi>a</mi><mo>min</mo></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>A</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mo>min</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">if recruits move</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>2</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\boldsymbol{N}_a^{\text{fished}} = (\boldsymbol{N}_a^{\text{fished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\begin{cases} 
+1 &amp; \text{if recruits move} \\
+2 &amp; \text{otherwise}
+\end{cases}
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐍</mi><mi>a</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><msub><mi>𝐌</mi><mrow><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mo>=</mo><msub><mi>a</mi><mo>min</mo></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>A</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mo>min</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">if recruits move</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>2</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\boldsymbol{N}_a^{\text{unfished}} = (\boldsymbol{N}_a^{\text{unfished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\begin{cases} 
+1 &amp; \text{if recruits move} \\
+2 &amp; \text{otherwise}
+\end{cases}
+</annotation></semantics></math></p>
+<p>In these expressions,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+denotes the number of modeled ages
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>)
+in <code>SPoCK</code> multiplied by 10. For example, if 30 ages are
+modeled, then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">A = 300</annotation></semantics></math>.
+This extension enables iterative propagation of the plus group under
+movement, given that no closed-form solution exists. For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>&gt;</mo><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">a &gt; n_{ages}</annotation></semantics></math>
+in <code>SPoCK</code>, all demographic and fishery parameters are held
+constant at the values for the terminal modeled age
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>).
+After movement processes occur, an exponential mortality model is then
+applied:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>=</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>+</mo><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mrow><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mo>&lt;</mo><mi>a</mi><mo>&lt;</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">
+N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(M_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right)
+\quad \text{if } 2 &lt; a &lt; A
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><mo>=</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mo>&lt;</mo><mi>a</mi><mo>&lt;</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">
+N_{r,a}^{\text{unfished}} = N_{r,a - 1}^{\text{unfished}} \cdot \exp\left(-\left(M_{r,y=1,a-1,s=1}\right)\right)
+\quad \text{if } 2 &lt; a &lt; A
+</annotation></semantics></math></p>
+<p>Baranov’s catch equation is then invoked to compute yield per recruit
+in each regio:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><mfrac><mrow><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mtext mathvariant="normal">msy</mtext></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>+</mo><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mtext mathvariant="normal">msy</mtext></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mfrac><mo>⋅</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><msub><mi>n</mi><mtext mathvariant="normal">ages</mtext></msub><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>+</mo><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mtext mathvariant="normal">msy</mtext></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><msub><mi>n</mi><mtext mathvariant="normal">ages</mtext></msub><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+C_{r,a} = 
+\frac{
+  \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}
+}{
+  \left(M_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)
+}
+\cdot
+N_{r,a}^{\text{fished}} \cdot 
+\left(
+  1 - \exp\left[
+    -\left(
+      M_{r,y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}
+    \right)
+  \right]
+\right)
+</annotation></semantics></math></p>
+<p>Equilibrium recruitment is then computed using the Beverton-Holt
+stock recruitment relationship, where we first need to derive the
+quantities for fished and unfished spawning biomass per recruit:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>=</mo><munder><mo>∑</mo><mi>a</mi></munder><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><msub><mtext mathvariant="normal">Mat</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>t</mi><mtext mathvariant="normal">spwn</mtext></msub><mo>⋅</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>+</mo><munder><mo>∑</mo><mi>f</mi></munder><msub><mtext mathvariant="normal">Frat</mtext><mrow><mi>r</mi><mo>,</mo><mi>f</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mrow><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><mo>⋅</mo><msubsup><mtext mathvariant="normal">Sel</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mtext mathvariant="normal">term</mtext><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>f</mi></mrow><mtext mathvariant="normal">Fsh</mtext></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+SSB_r^{\text{fished}} = \sum_a N_{r,a}^{\text{fished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{r,y=1,a,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{term},a,s=1,f}^{\text{Fsh}} \right)
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo>=</mo><munder><mo>∑</mo><mi>a</mi></munder><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mtext mathvariant="normal">unfished</mtext></msubsup><mo>⋅</mo><msub><mi>W</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><msub><mtext mathvariant="normal">Mat</mtext><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>t</mi><mtext mathvariant="normal">spwn</mtext></msub><mo>⋅</mo><msub><mi>M</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi><mo>=</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+SSB_r^{\text{unfished}} = \sum_a N_{r,a}^{\text{unfished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot M_{r,y=1,a,s=1} \right)
+</annotation></semantics></math></p>
+<p>Calculations for equilibrium recruitment then follow as:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><msub><mi>q</mi><mi>r</mi></msub><mo>=</mo><mfrac><mrow><mn>4</mn><mo>⋅</mo><msub><mi>h</mi><mi>r</mi></msub><mo>⋅</mo><msub><mi>R</mi><mn>0</mn></msub><msub><mi>ζ</mi><mi>r</mi></msub><mo>⋅</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup></mrow><mrow><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">unfished</mtext></msubsup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mtext mathvariant="normal">fished</mtext></msubsup><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>5</mn><mo>⋅</mo><mi>h</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+Req_r = \frac{4\cdot h_r \cdot R_{0} \zeta_r \cdot SSB_r^{\text{fished}}}{SSB_r^{\text{unfished}} \cdot (1 - h) + SSB_r^{\text{fished}} \cdot (5 \cdot h - 1)}
+</annotation></semantics></math></p>
+<p>Lastly, yield and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">B_{r,msy}</annotation></semantics></math>
+can then be calculated by multiplying per recruit quantities by
+equilibrium recruitment:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mi>i</mi><mi>e</mi><mi>l</mi><msub><mi>d</mi><mi>r</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>a</mi></munder><munder><mo>∑</mo><mi>r</mi></munder><msub><mi>C</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>⋅</mo><mi>R</mi><mi>e</mi><msub><mi>q</mi><mi>r</mi></msub><msub><mi>B</mi><mrow><mi>r</mi><mo>,</mo><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>S</mi><msubsup><mi>B</mi><mi>r</mi><mrow><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msubsup><mo>⋅</mo><mi>R</mi><mi>e</mi><msub><mi>q</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">
+Yield_r = \sum_a \sum_r C_{r,a} \cdot Req_r
+B_{r,msy} = SSB_r^{fished} \cdot Req_r
+</annotation></semantics></math></p>
+<p>and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><annotation encoding="application/x-tex">F_{msy}</annotation></semantics></math>
+is solved for by minimizing (or maximizing) the system wide yield:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>m</mi><mi>s</mi><mi>y</mi></mrow></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mi>F</mi></munder><mi>Y</mi><mi>i</mi><mi>e</mi><mi>l</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">
+F_{msy} = \arg\min_{F} Yield
+</annotation></semantics></math></p>
 </div>
 </div>
 </div>
@@ -391,6 +725,30 @@ estimates.</p>
 <div class="section level2">
 <h2 id="deriving-catch-advice">Deriving Catch Advice<a class="anchor" aria-label="anchor" href="#deriving-catch-advice"></a>
 </h2>
+<p>A core part of the assessment process is to convert reference point
+estimates into catch advice. In the following sections, we will
+mathematically describe how catch advice is derived, and proceed to
+provide code examples for demonstration. To conduct projection from the
+terminal year, users will need the following quantities:</p>
+<ul>
+<li>Terminal year estimates of numbers-at-age,</li>
+<li>A user defined period of of recruitment values to use,</li>
+<li>A user defined period of weight-at-age values to use for
+projections,</li>
+<li>A user defined period of natural mortality-atage values to use for
+projections,</li>
+<li>A user defined period of maturity-at-age values to use for
+projections,</li>
+<li>A user defined period of fishery selectivity values to use for
+projections,</li>
+<li>A user defined period of movement values to use for
+projections,</li>
+<li>Terminal year estimates of fishing mortality,</li>
+<li>Fishing mortality rate to use to decrement the population,</li>
+<li>Optionally, biological reference points to use, if a harvest control
+rule is utilized,and</li>
+<li>A function describing a harvest control rule.</li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

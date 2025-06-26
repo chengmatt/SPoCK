@@ -44,7 +44,7 @@ Setup_Mod_Rec(
 
 \item{do_rec_bias_ramp}{whether or not to do recruitment bias ramp == 0 (don't use), == 1(use)}
 
-\item{bias_year}{vector of years in which the bias ramp is invoked and when it changes}
+\item{bias_year}{vector of years in which the bias ramp is invoked and when it changes. This should have a total of 4 values, the first describing when the period in which no bias correction is applied ends, the second describing the period over which the ascending limb ends, the third describing the period in which the full bias correction is last applied, and the fourth describing the period where no bias ramp is applied, following the period of full bias correction.}
 
 \item{sigmaR_switch}{year in which sigmaR switches from an early value to late (set to 0 if no switching occurs)}
 

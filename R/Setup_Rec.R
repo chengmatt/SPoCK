@@ -88,7 +88,7 @@ Setup_Sim_Rec <- function(
 #' @param h_mu vector of steepness mean if priors are used (dimensioned by n_region)
 #' @param h_sd vector of steepness sd if priors are used (dimensioned by n_region)
 #' @param do_rec_bias_ramp whether or not to do recruitment bias ramp == 0 (don't use), == 1(use)
-#' @param bias_year vector of years in which the bias ramp is invoked and when it changes
+#' @param bias_year vector of years in which the bias ramp is invoked and when it changes. This should have a total of 4 values, the first describing when the period in which no bias correction is applied ends, the second describing the period over which the ascending limb ends, the third describing the period in which the full bias correction is last applied, and the fourth describing the period where no bias ramp is applied, following the period of full bias correction.
 #' @param sigmaR_switch year in which sigmaR switches from an early value to late (set to 0 if no switching occurs)
 #' @param sexratio vector of recruitment sex ratio dimensioned by n_sexes
 #' @param init_age_strc whether initial age structure is initialized via == 0 (iteration) or via == 1 (geometric series)
