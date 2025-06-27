@@ -110,7 +110,7 @@
 
 
 <dt id="arg-bias-year">bias_year<a class="anchor" aria-label="anchor" href="#arg-bias-year"></a></dt>
-<dd><p>vector of years in which the bias ramp is invoked and when it changes. This should have a total of 4 values, the first describing when the period in which no bias correction is applied ends, the second describing the period over which the ascending limb ends, the third describing the period in which the full bias correction is last applied, and the fourth describing the period where no bias ramp is applied, following the period of full bias correction.</p></dd>
+<dd><p>vector of years in which the bias ramp is invoked and when it changes. This should have a total of 4 values, the first describing when the period in which no bias correction is applied ends, the second describing the period over which the ascending limb ends, the third describing the period in which the full bias correction is last applied, and the fourth describing the period where no bias ramp is applied, following the period of full bias correction. For example, if there are 65 years in an assessment model, specifying c(21, 31, 60, 64) indicates that years 1 - 21 have 0 bias correction, years 22 - 31 is the ascending limb of the bias correction, years 32 - 60 is the full bias correction period, years 61 - 63 is the descending limb of the ramp, and years 64 - 65 are zero bias correction periods.</p></dd>
 
 
 <dt id="arg-sigmar-switch">sigmaR_switch<a class="anchor" aria-label="anchor" href="#arg-sigmar-switch"></a></dt>
