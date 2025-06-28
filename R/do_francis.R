@@ -12,7 +12,7 @@
 #' @param comp_type Matrix of composition structure types dimensioned by year and fleet
 #'
 #' @returns Value for calculated francis weight
-#' @export get_francis_weights
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{

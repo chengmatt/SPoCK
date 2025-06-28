@@ -50,3 +50,4 @@ Computes Francis weights, which is used internally by do_francis_reweighting
 get_francis_weights(n_regions, n_sexes, n_fleets, Use, ISS, Pred_arry, Obs_array, weights, bins, comp_type)
 }
 }
+\keyword{internal}

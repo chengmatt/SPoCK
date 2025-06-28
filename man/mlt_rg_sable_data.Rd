@@ -8,7 +8,7 @@
 A list with multiple components needed for the multi (5) region sablefish model
 }
 \source{
-Cheng et al. 2025, In review; Panmictic Panacea? Demonstrating Good Practices for Developing Spatial Stock Assessments through Application to Alaska Sablefish (Anoplopoma fimbria)
+Cheng et al. 2025, Fish and Fisheries; Panmictic Panacea? Demonstrating Good Practices for Developing Spatial Stock Assessments through Application to Alaska Sablefish (Anoplopoma fimbria)
 }
 \usage{
 mlt_rg_sable_data

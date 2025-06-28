@@ -36,16 +36,16 @@ data("sgl_rg_sable_data") # load in data
 To initially set the model up, an input list containing a data list, parameter list, and a mapping list needs to be constructed. This is aided with the function `Setup_Mod_Dim`, where users specify a vector of years, ages, and lengths. Additionally, users need to specify the number of regions modelled (n_regions), number of sexes modelled (n_sexes), number of fishery fleets (n_fish_fleets), and number of survey fleets (n_srv_fleets)
 
 ```{r Setup Model Dimensions, message = FALSE,  eval = FALSE}
-input_list <- Setup_Mod_Dim(years = 1:65, # vector of years 
+input_list <- Setup_Mod_Dim(years = 1:length(sgl_rg_sable_data$years), # vector of years 
                             # (corresponds to year 1960 - 2024)
-                            ages = 1:30, # vector of ages
+                            ages = 1:length(sgl_rg_sable_data$ages), # vector of ages
                             lens = seq(41,99,2), # number of lengths
                             n_regions = 1, # number of regions
-                            n_sexes = 2, # number of sexes == 1,
+                            n_sexes = sgl_rg_sable_data$n_sexes, # number of sexes == 1,
                             # female, == 2 male
-                            n_fish_fleets = 2, # number of fishery
+                            n_fish_fleets = sgl_rg_sable_data$n_fish_fleets, # number of fishery
                             # fleet == 1, fixed gear, == 2 trawl gear
-                            n_srv_fleets = 3, # number of survey fleets
+                            n_srv_fleets = sgl_rg_sable_data$n_srv_fleets, # number of survey fleets
                             verbose = FALSE
                             )
 ```

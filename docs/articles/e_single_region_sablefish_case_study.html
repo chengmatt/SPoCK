@@ -41,7 +41,7 @@
     <li><a class="dropdown-item" href="../articles/f_single_region_bsai_pollock_case_study.html">Setting up a Single Region Model (BSAI Pollock)</a></li>
     <li><a class="dropdown-item" href="../articles/g_spatial_sablefish_case_study.html">Setting up a Spatial Model (Alaska Sablefish)</a></li>
     <li><a class="dropdown-item" href="../articles/h_closed_loop_simulations.html">Run Closed Loop Simulations</a></li>
-    <li><a class="dropdown-item" href="../articles/i_reference_points.html">Deriving Reference Points and Catch Advice</a></li>
+    <li><a class="dropdown-item" href="../articles/i_reference_points.html">Deriving Reference Points, Catch Advice, and Projections</a></li>
   </ul>
 </li>
       </ul>
@@ -102,16 +102,16 @@ specify the number of regions modelled (n_regions), number of sexes
 modelled (n_sexes), number of fishery fleets (n_fish_fleets), and number
 of survey fleets (n_srv_fleets)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Setup_Mod_Dim.html">Setup_Mod_Dim</a></span><span class="op">(</span>years <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">65</span>, <span class="co"># vector of years </span></span>
+<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Setup_Mod_Dim.html">Setup_Mod_Dim</a></span><span class="op">(</span>years <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sgl_rg_sable_data</span><span class="op">$</span><span class="va">years</span><span class="op">)</span>, <span class="co"># vector of years </span></span>
 <span>                            <span class="co"># (corresponds to year 1960 - 2024)</span></span>
-<span>                            ages <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, <span class="co"># vector of ages</span></span>
+<span>                            ages <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sgl_rg_sable_data</span><span class="op">$</span><span class="va">ages</span><span class="op">)</span>, <span class="co"># vector of ages</span></span>
 <span>                            lens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">41</span>,<span class="fl">99</span>,<span class="fl">2</span><span class="op">)</span>, <span class="co"># number of lengths</span></span>
 <span>                            n_regions <span class="op">=</span> <span class="fl">1</span>, <span class="co"># number of regions</span></span>
-<span>                            n_sexes <span class="op">=</span> <span class="fl">2</span>, <span class="co"># number of sexes == 1,</span></span>
+<span>                            n_sexes <span class="op">=</span> <span class="va">sgl_rg_sable_data</span><span class="op">$</span><span class="va">n_sexes</span>, <span class="co"># number of sexes == 1,</span></span>
 <span>                            <span class="co"># female, == 2 male</span></span>
-<span>                            n_fish_fleets <span class="op">=</span> <span class="fl">2</span>, <span class="co"># number of fishery</span></span>
+<span>                            n_fish_fleets <span class="op">=</span> <span class="va">sgl_rg_sable_data</span><span class="op">$</span><span class="va">n_fish_fleets</span>, <span class="co"># number of fishery</span></span>
 <span>                            <span class="co"># fleet == 1, fixed gear, == 2 trawl gear</span></span>
-<span>                            n_srv_fleets <span class="op">=</span> <span class="fl">3</span>, <span class="co"># number of survey fleets</span></span>
+<span>                            n_srv_fleets <span class="op">=</span> <span class="va">sgl_rg_sable_data</span><span class="op">$</span><span class="va">n_srv_fleets</span>, <span class="co"># number of survey fleets</span></span>
 <span>                            verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>                            <span class="op">)</span></span></code></pre></div>
 </div>

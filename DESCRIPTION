@@ -36,8 +36,10 @@ Imports:
     tidyr,
     tmbstan
 Suggests: 
+    abind,
     here,
     knitr,
+    purrr,
     rmarkdown
 VignetteBuilder: 
     knitr
@@ -45,4 +47,5 @@ Remotes:
     github::noaa-afsc/afscOSA
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: xz
 RoxygenNote: 7.3.2
