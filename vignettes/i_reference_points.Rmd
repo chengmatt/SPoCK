@@ -68,7 +68,10 @@ For relative fishing mortality between fleets and fleet-specific fishery selecti
 SPR reference points are then derived with the following process:
 
 \[
-N_{a = 1}^{fished} = 1 \\
+N_{a = 1}^{fished} = 1
+\]
+
+\[
 N_{a = 1}^{unfished} = 1
 \]
 
@@ -148,7 +151,10 @@ Similarly, for relative fishing mortality between fleets and fleet-specific fish
 MSY reference points can then be derived using the standard per-recruit calculations, where the initial number of fished and unfished individuals can be set at an arbitrary value:
 
 \[
-N_{a = 1}^{fished} = 1 \\
+N_{a = 1}^{fished} = 1 
+\]
+
+\[
 N_{a = 1}^{unfished} = 1
 \]
 
@@ -221,7 +227,10 @@ Req = \frac{4\cdot h \cdot R_0 \cdot SSB^{\text{fished}}}{SSB^{\text{unfished}} 
 where $Req$ is the equilibrium recruitment. Yield and $B_{msy}$ can then be computed by multiplying the yield per recruit and spawning biomass per recruit by an estimate of equilibrium recruitment:
 
 \[
-Yield = \sum_a C_a \cdot Req \\ 
+Yield = \sum_a C_a \cdot Req 
+\]
+
+\[
 B_{msy} = SSB^{\text{fished}} \cdot Req
 \]
 
@@ -502,7 +511,10 @@ projF_{r,y} = \sum_f Fmort_{r,y = term,f}
 Total mortality can then be computed as:
 
 \[
-F_{r,y,a,s,f} = projF_{r,y} \cdot Frat_{r,f} \cdot Sel^{Fsh}_{r,y,a,s,f} \\
+F_{r,y,a,s,f} = projF_{r,y} \cdot Frat_{r,f} \cdot Sel^{Fsh}_{r,y,a,s,f} 
+\]
+
+\[
 Z_{r,y,a,s,f} = \sum_f F_{r,y,a,s,f} + NatMort_{r,y,a,s}
 \]
 
@@ -725,7 +737,7 @@ Similarly, MSY-based reference points assuming a Beverton-Holt stock recruitment
 ### Single Region
 Next, using the reference points derived from the single region case study, we can conduct population and catch projections to derive catch advice. Note that this will require users to have a data file to extract the relevant demographic rates and data components, as well as a report file to extract necessary estimates to conduct projections. Let us first define a threshold harvest control rule to utilize in our population projections, although note that this is not strictly necessary.
 
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+```{r, eval = F}
 # Define HCR to use
 HCR_function <- function(x, frp, brp, alpha = 0.05) {
   stock_status <- x / brp # define stock status
@@ -753,6 +765,9 @@ ggplot(hcr_df, aes(x = SSB_B40, y = F)) +
   labs(x = "SSB / B40", y = "F") +
   theme_bw(base_size = 13)
 ```
+
+![](figures/i_threshold_hcr.png)
+
 
 We can define all the inputs needed to run the population projection:
 
@@ -786,7 +801,7 @@ b_ref_pt = array(sgl_ref_pt$b_ref_pt, dim = c(n_regions, n_proj_yrs))
 
 Note that in these projections, all demographic rates (e.g., weight-at-age, movement, maturity) use estimates from the terminal year of the assessment. However, this is not required - users may instead define demographic rates for the projection period using other approaches (e.g., averages over the last 5 years). Regardless of the approach, rates must be provided by the user in the format and dimensions described above. A population projection can then be conducted with the `Do_Population_Projection` function:
 
-```{r}
+```{r, eval = F}
 # do population projection
 out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs, # Number of projection years
                                n_regions = n_regions, # number of regions
@@ -815,7 +830,7 @@ out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs, # Number of projection 
 
 The outputted object from the function then includes the projected fishing mortality rates, the projected catch (i.e., the catch advice), the projected spawning stock biomass, the projected numbers at age, and the projected total mortality at age. We can plot a few of these quantities out below. In the example below, we show the projected SSB:
 
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+```{r, eval = F}
 combined_ssb <- c(sgl_rg_sable_rep$SSB[1, -65], out$proj_SSB[1,]) # removing terminal year becauase repeated in projection calculations
 years <- 1960:(2023 + n_proj_yrs)
 
@@ -833,9 +848,11 @@ ggplot(ssb_df, aes(x = Year, y = SSB)) +
   theme_bw(base_size = 13)
 ```
 
+![](figures/i_sgl_proj_ssb.png)
+
 as well as projected catches, which can then be the basis of management advice:
 
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+```{r, eval = F}
 combined_catch <- c(
   rowSums(sgl_rg_sable_rep$PredCatch[1, -65, ]), # removing terminal year becauase repeated in projection calculations
   rowSums(out$proj_Catch[1, , ])
@@ -857,13 +874,16 @@ ggplot(catch_df, aes(x = Year, y = Catch)) +
 sum(out$proj_Catch[1,2,]) # Catch advice in terminal year + 1
 ```
 
+![](figures/i_sgl_proj_catch.png)
+
+
 Importantly, catch advice should be based on terminal year+1 rather than the first projection year, since the first projection year serves only as an initialization step for the projection.
 
 ### Multi Region
 
 In the following, we will then demonstrate how catch projections can be conducted in a multi-region context, using independent SPR rates, such that there are region-specific estimates of $F_{r,40}$ and $B_{r,40}$. In general, the steps are similar to the single-region case. Again, we will utilize the harvest control rule function defined above. Given that each region has their own unique estimates, this will result in different harvest control rules being applied to each region:
 
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+```{r, eval = F}
 # Define HCR to use
 HCR_function <- function(x, frp, brp, alpha = 0.05) {
   stock_status <- x / brp # define stock status
@@ -897,6 +917,8 @@ ggplot(hcr_df, aes(x = SSB_B40, y = F, color = factor(j))) +
   theme_bw(base_size = 13) +
   theme(legend.position = 'none')
 ```
+
+![](figures/i_mlt_threshold_hcr.png)
 
 Let's then define all the inputs needed to run the population projection:
 
@@ -949,7 +971,7 @@ b_ref_pt_global[,2] # global SPR
 
 For the projections that follow, we use independent SPR rates to allow for region-specific reference points:
 
-```{r}
+```{r, eval = F}
 # do population projection
 out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs, # Number of projection years
                               n_regions = n_regions, # number of regions
@@ -976,7 +998,7 @@ out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs, # Number of projection 
 ```
 
 Again, we can visualize what these projections look like in terms of SSB and catch advice:
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+```{r, eval = F}
 combined_ssb <- cbind(mlt_rg_sable_rep$SSB[,-62], out$proj_SSB[,]) # removing terminal year becauase repeated in projection calculations
 combined_ssb_df <- reshape2::melt(combined_ssb) %>% 
   rename(Region = Var1, Year = Var2, SSB = value)
@@ -992,7 +1014,10 @@ ggplot(combined_ssb_df, aes(x = Year + 1959, y = SSB, color = factor(Region))) +
   theme(legend.position = 'none')
 ```
 
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+![](figures/i_mlt_proj_ssb.png)
+
+
+```{r, eval = F}
 combined_catch <- cbind(apply(mlt_rg_sable_rep$PredCatch, c(1,2), sum), apply(out$proj_Catch, c(1,2), sum))
 combined_catch_df <- reshape2::melt(combined_catch) %>% 
   rename(Region = Var1, Year = Var2, Catch = value)
@@ -1010,6 +1035,8 @@ ggplot(combined_catch_df, aes(x = Year + 1959, y = Catch, color = factor(Region)
 rowSums(out$proj_Catch[,2,]) # Catch advice by region in terminal year + 1
 ``` 
 
+![](figures/i_mlt_proj_catch.png)
+
 ## Conducting Stochastic Population Projections
 
 In the final section of this vignette, we demonstrate how to conduct stochastic population projections. For simplicity, we focus on the single-region case, though the approach extends similarly to multi-region scenarios. Stochastic projections follow the same general structure as deterministic ones, with the key difference being that `recruitment_opt = 'inv_gauss`' is specified to introduce variability in recruitment. For demonstration purposes, we will set up the following projection scenarios, which include:
@@ -1019,7 +1046,7 @@ In the final section of this vignette, we demonstrate how to conduct stochastic 
 
 Let us first redefine our single region inputs to use in our projection function, but also define the number of simulations to conduct (1000):
 
-```{r}
+```{r, eval = F}
 
 data("sgl_rg_sable_rep") # read in single region report
 data("sgl_rg_sable_data") # read in single region data 
@@ -1046,7 +1073,7 @@ recruitment <- array(sgl_rg_sable_rep$Rec[,20:(length(sgl_rg_sable_data$years) -
 
 We can then define our two projection scenarios to use in this example, as well as arrays to store our projection results in:
 
-```{r}
+```{r, eval = F}
 # Define the F used for each scenario 
 proj_inputs <- list(
   # Scenario 1 - Using HCR to adjust f40
@@ -1069,7 +1096,7 @@ all_scenarios_catch <- array(0, dim = c(n_regions, n_proj_yrs, n_fish_fleets, n_
 
 Next, we can then run our projections by iteration through our scenarios, as well as the number of simulations to conduct. Note that we switch from `fmort_opt = 'HCR'` to `fmort_opt = 'Input'` when going from scenario 1 to scenario 2, given that scenario 2 does not use an HCR (the HCR used is the threshold control rule defined earlier).
 
-```{r}
+```{r, eval = F}
 set.seed(123)
 for (i in seq_along(proj_inputs)) {
   for (sim in 1:n_sims) {
@@ -1109,7 +1136,7 @@ for (i in seq_along(proj_inputs)) {
 ```
 
 Finally, we can plot these stochastic simulations to inspect results:
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+```{r, eval = F}
 # Get historical SSB
 historical <- reshape2::melt(array(rep(sgl_rg_sable_rep$SSB, n_sims),
                                    dim = c(n_regions, length(sgl_rg_sable_data$years), n_sims))) %>%
@@ -1148,7 +1175,9 @@ combined_ssb %>%
   theme(legend.position = 'none')
 ```
 
-```{r, fig.align='center', fig.width=6.5, fig.height=5}
+![](figures/i_sgl_stoch_proj_ssb.png)
+
+```{r, eval = F}
 # Get historical catch
 historical <- reshape2::melt(array(rep(sgl_rg_sable_data$ObsCatch, n_sims),
                                    dim = c(n_regions, length(sgl_rg_sable_data$years), sgl_rg_sable_data$n_fish_fleets, n_sims))) %>%
@@ -1192,6 +1221,7 @@ combined_cat %>%
   theme(legend.position = 'none')
 ```
 
+![](figures/i_sgl_stoch_proj_catch.png)
 
 
 

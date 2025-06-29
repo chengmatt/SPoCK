@@ -530,5 +530,5 @@ reshape2::melt(sim_env$Obs_Catch) %>%
   ylim(0, NA)
 ```
 
-![Regional spawning stock biomass output from the closed loop simulation](figures/h_ssb_closed_loop.png)
-![Regional catches from the closed loop simulation](figures/h_catch_closed_loop.png)
+![](figures/h_ssb_closed_loop.png)
+![](figures/h_catch_closed_loop.png)
