@@ -2,7 +2,7 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_retrospective_plot}
 \alias{get_retrospective_plot}
-\title{Title Get Retrospective Plot}
+\title{Get Retrospective Plot}
 \usage{
 get_retrospective_plot(retro_output)
 }
@@ -13,7 +13,7 @@ get_retrospective_plot(retro_output)
 A retrospective plot of recruitment and SSB
 }
 \description{
-Title Get Retrospective Plot
+Get Retrospective Plot
 }
 \examples{
 \dontrun{

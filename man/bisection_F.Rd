@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utility_Functions.R
 \name{bisection_F}
 \alias{bisection_F}
-\title{Title Go from TAC to Fishing Mortality using bisection}
+\title{Go from TAC to Fishing Mortality using bisection}
 \usage{
 bisection_F(
   f_guess,
@@ -39,5 +39,5 @@ bisection_F(
 Fishing mortality values
 }
 \description{
-Title Go from TAC to Fishing Mortality using bisection
+Go from TAC to Fishing Mortality using bisection
 }

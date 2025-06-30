@@ -1,4 +1,4 @@
-#' Title Do Population Projections
+#' Do Population Projections
 #'
 #' @param n_proj_yrs Number of projection years
 #' @param n_regions Number of regions
@@ -17,7 +17,7 @@
 #' @param Movement Movement, dimensioned by n_regions, n_regions, n_proj_yrs, n_ages, n_sexes
 #' @param f_ref_pt Fishing mortality reference point dimensioned by n_regions and n_proj_yrs
 #' @param b_ref_pt Biological reference point dimensioned by n_regions and n_proj_yrs
-#' @param HCR_function Function describing a harvest control rule. The function should always have the following arguments: x, which represents SSB, frp, which takes inputs of fishery reference points, and brp, which takes inputs of biological reference points. Any additional arguments should be specified with defaults or hard coded / fixed within the function. e
+#' @param HCR_function Function describing a harvest control rule. The function should always have the following arguments: x, which represents SSB, frp, which takes inputs of fishery reference points, and brp, which takes inputs of biological reference points. Any additional arguments should be specified with defaults or hard coded / fixed within the function.
 #' @param recruitment_opt Recruitment simulation option, where options are "inv_gauss", which simulates future recruitment based on the the recruitment values supplied using an inverse gaussian distribution, "mean_rec", which takes the mean of the recruitment values supplied for a given region, and "zero", which assumes that future recruitment does not occur
 #' @param fmort_opt Fishing Mortality option, which includes "HCR", which modifies the F reference point using a user supplied HCR_function, or "Input", which uses projected F values supplied by the user.
 #' @param t_spawn Fraction time of spawning used to compute projected SSB
@@ -31,7 +31,7 @@
 #' \item{WAA}{A weight-at-age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
 #' \item{MatAA}{A maturity at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
 #' \item{natmort}{A natural mortality at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
-#' \item{SSB}{SSB values estimated from a given model, dimensioned by n_regions and n_yrs}
+#' \item{SSB}{All SSB values estimated from a given model, dimensioned by n_regions and n_yrs}
 #' }
 #'
 #' @returns A list containing projected F, catch, SSB, and Numbers at Age. (Objects are generally dimensioned in the following order: n_regions, n_yrs, n_ages, n_sexes, n_fleets)
@@ -207,6 +207,17 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
                                      t_spawn,
                                      bh_rec_opt = NULL
                                      ) {
+
+
+# Error Checking ----------------------------------------------------------
+
+  if(!recruitment_opt %in% c("inv_gauss", "mean_rec", "zero", "bh_rec")) stop("Recruitment options are not specified correctly! Should be inv_gauss, mean_rec, zero, or bh_rec")
+  if(!fmort_opt %in% c("HCR", "Input")) stop("Fishing Mortality options are not specified correctly! Should be HCR or Input")
+  if(recruitment_opt == "bh_rec") {
+    required_fields <- c("recruitment_dd", "rec_lag", "R0", "h", "Rec_Prop", "WAA", "MatAA", "natmort", "SSB")
+    diff <- setdiff(required_fields, names(bh_rec_opt)) # find difference
+    if(length(diff) > 0) stop(paste("bh_rec_opt is missing the following required fields:", paste(diff)))
+  }
 
 # Define Containers -------------------------------------------------------
   fratio <- terminal_F / apply(terminal_F, 1, sum) # get fishing mortality ratio among fleets

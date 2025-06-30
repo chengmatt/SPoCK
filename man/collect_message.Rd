@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utility_Functions.R
 \name{collect_message}
 \alias{collect_message}
-\title{Title Helper function to collect messages}
+\title{Helper function to collect messages}
 \usage{
 collect_message(...)
 }
@@ -10,6 +10,6 @@ collect_message(...)
 \item{...}{character vector of messages}
 }
 \description{
-Title Helper function to collect messages
+Helper function to collect messages
 }
 \keyword{internal}

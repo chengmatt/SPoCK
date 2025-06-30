@@ -2,21 +2,23 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_selex_plot}
 \alias{get_selex_plot}
-\title{Title Get Fishery and Survey Selectivity Plots}
+\title{Get Fishery and Survey Selectivity Plots}
 \usage{
-get_selex_plot(rep)
+get_selex_plot(rep, model_names)
 }
 \arguments{
-\item{rep}{RTMB report list}
+\item{rep}{List of n_models of `SPoCK` report lists}
+
+\item{model_names}{Vector of model names}
 }
 \value{
-Plots of fishery and survey selectivity by fleet, region, and sex
+Plots of terminal year fishery and survey selectivity by fleet, region, and sex across models
 }
 \description{
-Title Get Fishery and Survey Selectivity Plots
+Get Fishery and Survey Selectivity Plots
 }
 \examples{
 \dontrun{
-get_selex_plot(rep)
+get_selex_plot(list(rep1, rep2), c("Model1", "Model2"))
 }
 }

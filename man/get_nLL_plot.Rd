@@ -2,23 +2,23 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_nLL_plot}
 \alias{get_nLL_plot}
-\title{Title Get plot of negative log likelihood values}
+\title{Get plot of negative log likelihood values}
 \usage{
-get_nLL_plot(rep, sd_rep)
+get_nLL_plot(rep, model_names)
 }
 \arguments{
-\item{rep}{Report list from SPoCK}
+\item{rep}{List of n_models of `SPoCK` report lists}
 
-\item{sd_rep}{sdreport list from SPoCK}
+\item{model_names}{Vector of model names}
 }
 \value{
-Plot of negative log likelihood values
+Plot of negative log likelihood values across models
 }
 \description{
-Title Get plot of negative log likelihood values
+Get plot of negative log likelihood values
 }
 \examples{
 \dontrun{
-get_nLL_plot(rep, sd_rep)
+get_nLL_plot(list(rep1, rep2), c("Model1", "Model2"))
 }
 }

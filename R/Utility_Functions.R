@@ -1,4 +1,4 @@
-#' GGPLOT theme for sablefish
+#' ggplot theme for sablefish
 #'
 #' @return ggplot theme
 #' @export theme_sablefish
@@ -74,7 +74,7 @@ cmb <- function(f, d) {
   function(p) f(p, d)
 }
 
-#' Title Helper function to collect messages
+#' Helper function to collect messages
 #'
 #' @param ... character vector of messages
 #' @keywords internal
@@ -82,7 +82,7 @@ collect_message <- function(...) {
   messages_list <<- c(messages_list, paste(..., sep = ""))
 }
 
-#' Title Helper function to check package availbility
+#' Helper function to check package availbility
 #'
 #' @param pkg package name character
 #' @keywords internal
@@ -90,7 +90,7 @@ is_package_available <- function(pkg) {
   nzchar(system.file(package = pkg))
 }
 
-#' Title Go from TAC to Fishing Mortality using bisection
+#' Go from TAC to Fishing Mortality using bisection
 #'
 #' @param f_guess Initial guess of F
 #' @param catch Provided catch values

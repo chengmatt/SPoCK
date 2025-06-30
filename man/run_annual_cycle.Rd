@@ -2,7 +2,7 @@
 % Please edit documentation in R/Simulate_Population.R
 \name{run_annual_cycle}
 \alias{run_annual_cycle}
-\title{Title Ruin Annual Cycle in Simulation Environment}
+\title{Run Annual Cycle in Simulation Environment}
 \usage{
 run_annual_cycle(y, sim, sim_env)
 }
@@ -14,5 +14,5 @@ run_annual_cycle(y, sim, sim_env)
 \item{sim_env}{Simulation environment will all the necessary elements to run the annual cycle}
 }
 \description{
-Title Ruin Annual Cycle in Simulation Environment
+Run Annual Cycle in Simulation Environment
 }

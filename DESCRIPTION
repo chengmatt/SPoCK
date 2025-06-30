@@ -23,6 +23,7 @@ Imports:
     future.apply,
     GGally,
     ggplot2,
+    here,
     MASS,
     Matrix,
     methods,
@@ -37,7 +38,6 @@ Imports:
     tmbstan
 Suggests: 
     abind,
-    here,
     knitr,
     purrr,
     rmarkdown

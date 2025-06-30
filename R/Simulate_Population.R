@@ -1,4 +1,4 @@
-#' Title Constructs simulation objects in a new simulation environment for use in simulation functions
+#' Constructs simulation objects in a new simulation environment for use in simulation functions
 #'
 #' @param sim_list Simulation list objects
 #'
@@ -25,7 +25,7 @@ Setup_sim_env <- function(sim_list) {
 }
 
 
-#' Title Ruin Annual Cycle in Simulation Environment
+#' Run Annual Cycle in Simulation Environment
 #'
 #' @param y Year index
 #' @param sim Simulation index
@@ -665,7 +665,7 @@ Simulate_Pop_Static <- function(sim_list,
 
 } # end function
 
-#' Title Truncates data to feedback simulation loop year
+#' Helper function that obtains data for a simulation with a feedback loop
 #'
 #' @param sim_env Simulation environment defined using Simulate_Pop_Feedback
 #' @param sim_list Simulation list that defines the operating model options

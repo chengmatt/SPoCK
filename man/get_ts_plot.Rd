@@ -2,23 +2,25 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_ts_plot}
 \alias{get_ts_plot}
-\title{Title Get Time Series Plots}
+\title{Get Time Series Plots}
 \usage{
-get_ts_plot(rep, sd_rep)
+get_ts_plot(rep, sd_rep, model_names)
 }
 \arguments{
-\item{rep}{RTMB report list}
+\item{rep}{List of n_models of `SPoCK` report lists}
 
-\item{sd_rep}{RTMB sdreport list}
+\item{sd_rep}{List of n_models of `SPoCK` sdreport lists}
+
+\item{model_names}{Vector of model names}
 }
 \value{
-Plots of spawning biomass, total biomass, recruitment, and fishing mortality time-series
+Plots of spawning biomass, total biomass, recruitment, and fishing mortality time-series across models
 }
 \description{
-Title Get Time Series Plots
+Get Time Series Plots
 }
 \examples{
 \dontrun{
-  get_ts_plot(rep, sd_rep)
+  get_ts_plot(list(rep1, rep2), list(sd_rep1, sd_rep2), c("Model1", "Model2"))
 }
 }

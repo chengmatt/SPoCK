@@ -2,7 +2,7 @@
 % Please edit documentation in R/Simulate_Population.R
 \name{Setup_sim_env}
 \alias{Setup_sim_env}
-\title{Title Constructs simulation objects in a new simulation environment for use in simulation functions}
+\title{Constructs simulation objects in a new simulation environment for use in simulation functions}
 \usage{
 Setup_sim_env(sim_list)
 }
@@ -13,7 +13,7 @@ Setup_sim_env(sim_list)
 A new simulation environment with objects from sim_list
 }
 \description{
-Title Constructs simulation objects in a new simulation environment for use in simulation functions
+Constructs simulation objects in a new simulation environment for use in simulation functions
 }
 \examples{
 \dontrun{

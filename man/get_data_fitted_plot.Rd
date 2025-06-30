@@ -2,21 +2,23 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_data_fitted_plot}
 \alias{get_data_fitted_plot}
-\title{Title Get Data Fitted to Plot}
+\title{Get Data Fitted to Plot}
 \usage{
-get_data_fitted_plot(data)
+get_data_fitted_plot(data, model_names)
 }
 \arguments{
-\item{data}{data list fed into SPoCK}
+\item{data}{List of n_models of `SPoCK` data lists}
+
+\item{model_names}{Character vector of model names}
 }
 \value{
-A plot of data that were fitted to
+A plot of data that were fitted to across models
 }
 \description{
-Title Get Data Fitted to Plot
+Get Data Fitted to Plot
 }
 \examples{
 \dontrun{
-get_data_fitted_plot(data)
+get_data_fitted_plot(list(data1, data2), c("Model1", "Model2"))
 }
 }

@@ -2,23 +2,25 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_biological_plot}
 \alias{get_biological_plot}
-\title{Title Get Plots of Biological Quantities}
+\title{Get Plots of Biological Quantities}
 \usage{
-get_biological_plot(data, rep)
+get_biological_plot(data, rep, model_names)
 }
 \arguments{
-\item{data}{data list used for SPoCK}
+\item{data}{List of n_models of `SPoCK` data lists}
 
-\item{rep}{report list used for SPoCK}
+\item{rep}{List of n_models of `SPoCK` report lists}
+
+\item{model_names}{Vector of model names}
 }
 \value{
-A list of plots for movement, natural mortality, weight-at-age, and maturity at age
+A list of plots for terminal year movement, natural mortality, weight-at-age, and maturity at age across models
 }
 \description{
-Title Get Plots of Biological Quantities
+Get Plots of Biological Quantities
 }
 \examples{
 \dontrun{
-get_biological_plot(data, rep)
+get_biological_plot(list(data1, data2), list(rep1, rep2), c("Model1", "Model2"))
 }
 }

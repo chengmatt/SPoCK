@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utility_Functions.R
 \name{theme_sablefish}
 \alias{theme_sablefish}
-\title{GGPLOT theme for sablefish}
+\title{ggplot theme for sablefish}
 \usage{
 theme_sablefish()
 }
@@ -10,5 +10,5 @@ theme_sablefish()
 ggplot theme
 }
 \description{
-GGPLOT theme for sablefish
+ggplot theme for sablefish
 }

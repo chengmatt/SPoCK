@@ -2,7 +2,7 @@
 % Please edit documentation in R/Simulate_Population.R
 \name{Get_Feedback_Data}
 \alias{Get_Feedback_Data}
-\title{Title Truncates data to feedback simulation loop year}
+\title{Helper function that obtains data for a simulation with a feedback loop}
 \usage{
 Get_Feedback_Data(
   sim_env,
@@ -33,5 +33,5 @@ Get_Feedback_Data(
 Returns data, parameters, and mapping list truncated to match the feedback year
 }
 \description{
-Title Truncates data to feedback simulation loop year
+Helper function that obtains data for a simulation with a feedback loop
 }

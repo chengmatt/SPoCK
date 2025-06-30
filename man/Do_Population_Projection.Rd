@@ -2,7 +2,7 @@
 % Please edit documentation in R/Do_Population_Projection.R
 \name{Do_Population_Projection}
 \alias{Do_Population_Projection}
-\title{Title Do Population Projections}
+\title{Do Population Projections}
 \usage{
 Do_Population_Projection(
   n_proj_yrs = 2,
@@ -64,7 +64,7 @@ Do_Population_Projection(
 
 \item{b_ref_pt}{Biological reference point dimensioned by n_regions and n_proj_yrs}
 
-\item{HCR_function}{Function describing a harvest control rule. The function should always have the following arguments: x, which represents SSB, frp, which takes inputs of fishery reference points, and brp, which takes inputs of biological reference points. Any additional arguments should be specified with defaults or hard coded / fixed within the function. e}
+\item{HCR_function}{Function describing a harvest control rule. The function should always have the following arguments: x, which represents SSB, frp, which takes inputs of fishery reference points, and brp, which takes inputs of biological reference points. Any additional arguments should be specified with defaults or hard coded / fixed within the function.}
 
 \item{recruitment_opt}{Recruitment simulation option, where options are "inv_gauss", which simulates future recruitment based on the the recruitment values supplied using an inverse gaussian distribution, "mean_rec", which takes the mean of the recruitment values supplied for a given region, and "zero", which assumes that future recruitment does not occur}
 
@@ -82,14 +82,14 @@ Do_Population_Projection(
 \item{WAA}{A weight-at-age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
 \item{MatAA}{A maturity at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
 \item{natmort}{A natural mortality at age array dimensioned by n_regions, n_ages, and n_sexes, where the reference year should utilize values from the first year}
-\item{SSB}{SSB values estimated from a given model, dimensioned by n_regions and n_yrs}
+\item{SSB}{All SSB values estimated from a given model, dimensioned by n_regions and n_yrs}
 }}
 }
 \value{
 A list containing projected F, catch, SSB, and Numbers at Age. (Objects are generally dimensioned in the following order: n_regions, n_yrs, n_ages, n_sexes, n_fleets)
 }
 \description{
-Title Do Population Projections
+Do Population Projections
 }
 \examples{
 \dontrun{

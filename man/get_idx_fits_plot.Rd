@@ -2,23 +2,25 @@
 % Please edit documentation in R/Make_Plots.R
 \name{get_idx_fits_plot}
 \alias{get_idx_fits_plot}
-\title{Title Get Index Fits Plot}
+\title{Get Index Fits Plot}
 \usage{
-get_idx_fits_plot(data, rep)
+get_idx_fits_plot(data, rep, model_names)
 }
 \arguments{
-\item{data}{data list from SPoCK}
+\item{data}{List of n_models of `SPoCK` data lists}
 
-\item{rep}{report list from SPoCK}
+\item{rep}{List of n_models of `SPoCK` report lists}
+
+\item{model_names}{Vector of model names}
 }
 \value{
-A plot of fitted values to various indices
+A plot of fitted values to various indices across models
 }
 \description{
-Title Get Index Fits Plot
+Get Index Fits Plot
 }
 \examples{
 \dontrun{
-get_idx_fits_plot(data,rep)
+get_idx_fits_plot(list(data1, data2), list(rep1, rep2), c("Model1", "Model2"))
 }
 }

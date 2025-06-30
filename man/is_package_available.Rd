@@ -2,7 +2,7 @@
 % Please edit documentation in R/Utility_Functions.R
 \name{is_package_available}
 \alias{is_package_available}
-\title{Title Helper function to check package availbility}
+\title{Helper function to check package availbility}
 \usage{
 is_package_available(pkg)
 }
@@ -10,6 +10,6 @@ is_package_available(pkg)
 \item{pkg}{package name character}
 }
 \description{
-Title Helper function to check package availbility
+Helper function to check package availbility
 }
 \keyword{internal}

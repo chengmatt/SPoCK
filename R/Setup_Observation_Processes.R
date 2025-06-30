@@ -73,7 +73,7 @@ Setup_Sim_Observation_Proc <- function(Comp_Structure,
   return(sim_list)
 }
 
-#' Title
+#' Set up SPoCK model weighting
 #'
 #' @param input_list List containing a data list, parameter list, and map list
 #' @param likelihoods Numeric indicating whether to use ADMB likelihoods (0) or TMB likelihoods (1)
