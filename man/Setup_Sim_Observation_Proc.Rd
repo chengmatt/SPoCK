@@ -2,7 +2,7 @@
 % Please edit documentation in R/Setup_Observation_Processes.R
 \name{Setup_Sim_Observation_Proc}
 \alias{Setup_Sim_Observation_Proc}
-\title{Set up simulation observaiton processes}
+\title{Set up simulation observation processes}
 \usage{
 Setup_Sim_Observation_Proc(
   Comp_Structure,
@@ -45,5 +45,5 @@ Setup_Sim_Observation_Proc(
 \item{sim_list}{Simulation list}
 }
 \description{
-Set up simulation observaiton processes
+Set up simulation observation processes
 }

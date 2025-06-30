@@ -23,29 +23,157 @@ Setup_Mod_Srvsel_and_Q(
 \arguments{
 \item{input_list}{List containing a data list, parameter list, and map list}
 
-\item{cont_tv_srv_sel}{Specificaiton for continuous time-varying selectivity, character vector dimensioned by n_srv_fleets, where the character is time variation type, _, Fleet, fleet number. time variation types include (none, iid, rw, 3dmarg, 3dcond, 2dar1), and so if we were to specify iid for fleet 1, this would be iid_Fleet_1.}
+\item{cont_tv_srv_sel}{Character vector specifying the form of continuous time-varying selectivity for each survey fleet.
+The vector must be length \code{n_srv_fleets}, and each element must follow the structure:
+\code{"<time variation type>_Fleet_<fleet number>"}.
 
-\item{srv_sel_blocks}{Specification for survey selectivity blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets}
+Valid time variation types include:
+\itemize{
+  \item \code{"none"}: No continuous time variation.
+  \item \code{"iid"}: Independent and identically distributed deviations across years.
+  \item \code{"rw"}: Random walk in time.
+  \item \code{"3dmarg"}: 3D marginal time-varying selectivity.
+  \item \code{"3dcond"}: 3D conditional time-varying selectivity.
+  \item \code{"2dar1"}: Two-dimensional AR1 process.
+}
 
-\item{srv_sel_model}{Specification for survey selectivity model for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets, == 0 a50, k, logistic, == 1 gamma dome shaped, == 3, exponential, == 4 a50, a95 logistic}
+For example:
+\itemize{
+  \item \code{"iid_Fleet_1"} applies an iid time-varying structure to Fleet 1.
+  \item \code{"none_Fleet_2"} means no time variation is used for Fleet 2.
+}
+
+\strong{Note:} If time-block-based selectivity (via \code{srv_sel_blocks}) is specified for a fleet, then its corresponding entry here must be \code{"none_Fleet_<fleet number>"}.}
+
+\item{srv_sel_blocks}{Character vector specifying the survey selectivity blocks for each region and fleet.
+Each element must follow the structure: `"Block_<block number>_Year_<start>-<end>_Fleet_<fleet number>"` or `"none_Fleet_<fleet number>"`.
+This allows users to define time-varying selectivity blocks for specific fleets within a region.
+
+For example:
+\itemize{
+  \item \code{"Block_1_Year_1-35_Fleet_1"} defines selectivity block 1 for Fleet 1 covering years 1 through 35.
+  \item \code{"Block_2_Year_36-56_Fleet_1"} defines block 2 for Fleet 1 for years 36 to 56.
+  \item \code{"Block_3_Year_57-terminal_Fleet_1"} assigns block 3 from year 57 through the terminal year for Fleet 1.
+  \item \code{"none_Fleet_2"} indicates that no survey selectivity blocks are used for Fleet 2.
+}
+
+The blocks must be non-overlapping and sequential in time within each fleet, and block numbers must be unique within each fleet.}
+
+\item{srv_sel_model}{Character vector specifying the survey selectivity model for each fleet.
+The vector must be length \code{n_srv_fleets}, and each element must follow the structure:
+\code{"<selectivity model>_Fleet_<fleet number>"}.
+
+Available selectivity model types include:
+\itemize{
+  \item \code{"logist1"}: Logistic function with parameters \code{a50} and \code{k}.
+  \item \code{"logist2"}: Logistic function with parameters \code{a50} and \code{a95}.
+  \item \code{"gamma"}: Dome-shaped gamma function with parameters \code{amax} and \code{delta}.
+  \item \code{"exponential"}: Exponential function with a power parameter.
+}
+
+For example:
+\itemize{
+  \item \code{"logist1_Fleet_1"} uses the logistic (a50, k) model for Fleet 1.
+  \item \code{"gamma_Fleet_2"} uses the gamma dome-shaped model for Fleet 2.
+}
+
+The models are applied by region and year as defined in the overall model array structure
+(\code{n_regions} x \code{n_years} x \code{n_srv_fleets}), though this vector defines only the functional form for each fleet.
+
+For mathematical definitions and implementation details of each selectivity form, refer to the model equations vignette.}
 
 \item{Use_srv_q_prior}{Integer specifying whether to use survey q prior or not (0 dont use) (1 use)}
 
-\item{srv_q_prior}{Survey q priors in normal space, dimensioned by region, block, survey fleet, and 2 (mean, and sd in the 4 dimension of array)}
+\item{srv_q_prior}{Survey q priors in normal space, dimensioned by region, block,  survey fleet, and 2 (mean, and sd in the 4 dimension of array)}
 
-\item{srv_q_blocks}{Specification for survey catchability blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets}
+\item{srv_q_blocks}{Character vector specifying survey catchability (q) blocks for each fleet.
+Each element must follow the structure: \code{"Block_<block number>_Year_<start>-<end>_Fleet_<fleet number>"}
+or \code{"none_Fleet_<fleet number>"}.
 
-\item{srvsel_pe_pars_spec}{Specification for survey selectivity process error parameters. If cont_tv_srv_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes. Other options are fix and none which indicate to not estimate these parameters}
+This allows users to define time-varying catchability blocks independently of selectivity blocks.
+The blocks must be non-overlapping and sequential in time within each fleet.
 
-\item{srv_fixed_sel_pars_spec}{Specification for survey selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes}
+For example:
+\itemize{
+  \item \code{"Block_1_Year_1-35_Fleet_1"} assigns block 1 to Fleet 1 for years 1–35.
+  \item \code{"Block_2_Year_36-56_Fleet_1"} continues with block 2 for years 36–56.
+  \item \code{"Block_3_Year_57-terminal_Fleet_1"} assigns block 3 from year 57 to the terminal year for Fleet 1.
+  \item \code{"none_Fleet_2"} indicates no catchability blocks are used for Fleet 2.
+}
 
-\item{srv_q_spec}{Specification for survey catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.}
+Internally, these specifications are converted to a \code{[n_regions, n_years, n_srv_fleets]} array,
+where each block is mapped to the appropriate years and fleets.}
 
-\item{srv_sel_devs_spec}{Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes}
+\item{srvsel_pe_pars_spec}{Character string specifying how process error parameters for survey selectivity
+are estimated across regions and sexes. This is only relevant if \code{cont_tv_srv_sel} is not set to \code{"none"};
+otherwise, all process error parameters are treated as fixed.
 
-\item{corr_opt_semipar}{Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correlations to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.}
+Available options include:
+\itemize{
+  \item \code{"est_all"}: Estimates separate process error parameters for each region and sex.
+  \item \code{"est_shared_r"}: Shares process error parameters across regions (sex-specific parameters are still estimated).
+  \item \code{"est_shared_s"}: Shares process error parameters across sexes (region-specific parameters are still estimated).
+  \item \code{"est_shared_r_s"}: Shares process error parameters across both regions and sexes, estimating a single set of parameters.
+  \item \code{"fix"} or \code{"none"}: Does not estimate process error parameters; all are treated as fixed.
+}}
 
-\item{...}{Additional arguments specifying starting values for survey selectivity and catchability parameters (ln_srv_fixed_sel_pars, ln_srv_q)}
+\item{srv_fixed_sel_pars_spec}{Character string specifying the structure for estimating
+fixed-effect parameters of the survey selectivity model (e.g., a50, k, amax).
+This controls whether selectivity parameters are estimated separately or shared across regions and sexes.
+
+Available options include:
+\itemize{
+  \item \code{"est_all"}: Estimates separate fixed-effect selectivity parameters for each region and sex.
+  \item \code{"est_shared_r"}: Shares parameters across regions (sex-specific parameters are still estimated).
+  \item \code{"est_shared_s"}: Shares parameters across sexes (region-specific parameters are still estimated).
+  \item \code{"est_shared_r_s"}: Shares parameters across both regions and sexes, estimating a single set of fixed-effect parameters.
+}}
+
+\item{srv_q_spec}{Character string specifying the structure of survey catchability (\code{q}) estimation
+across regions. This controls whether separate or shared parameters are used.
+
+Available options include:
+\itemize{
+  \item \code{"est_all"}: Estimates separate catchability parameters for each region.
+  \item \code{"est_shared_r"}: Estimates a single catchability parameter shared across all regions.
+}}
+
+\item{srv_sel_devs_spec}{Character string specifying the structure of process error deviations
+in time-varying survey selectivity dimensioned by the number of survey fleets. This determines how deviations are estimated across regions and sexes.
+
+Available options include:
+\itemize{
+  \item \code{"est_all"}: Estimates a separate deviation time series for each region and sex.
+  \item \code{"est_shared_r"}: Shares deviations across regions (sex-specific deviations are still estimated).
+  \item \code{"est_shared_s"}: Shares deviations across sexes (region-specific deviations are still estimated).
+  \item \code{"est_shared_r_s"}: Shares deviations across both regions and sexes, estimating a single deviation time series.
+}
+
+This argument is only used when a continuous time-varying selectivity form is specified (e.g., via \code{cont_tv_srv_sel}).}
+
+\item{corr_opt_semipar}{Character string specifying which correlation structures to suppress
+  when using semi-parametric time-varying selectivity models. Only used if \code{cont_tv_sel}
+  is set to one of \code{"3dmarg"}, \code{"3dcond"}, or \code{"2dar1"}.
+
+  This option allows users to turn off estimation of specific correlation components in the
+  time-varying selectivity model. This can improve stability or enforce assumptions about
+  independence in the temporal or age structure.
+
+  Available options:
+  \itemize{
+    \item \code{"corr_zero_y"}: Sets year (temporal) correlations to 0.
+    \item \code{"corr_zero_a"}: Sets age correlations to 0.
+    \item \code{"corr_zero_y_a"}: Sets both year and age correlations to 0.
+    \item \code{"corr_zero_c"}: Sets cohort correlations to 0. Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}.
+    \item \code{"corr_zero_y_c"}: Sets year and cohort correlations to 0. Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}.
+    \item \code{"corr_zero_a_c"}: Sets age and cohort correlations to 0. Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}.
+    \item \code{"corr_zero_y_a_c"}: Sets all correlations (year, age, and cohort) to 0.
+      Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}; equivalent to an iid structure.
+  }
+
+These correlation-suppression flags are ignored when \code{cont_tv_sel} is set to any other value.}
+
+\item{...}{Additional arguments specifying starting values for survey selectivity and catchability parameters (srvsel_pe_pars, ln_srvsel_devs, ln_srv_fixed_sel_pars, ln_srv_q)}
 }
 \description{
 Setup survey selectivity and catchability specifications

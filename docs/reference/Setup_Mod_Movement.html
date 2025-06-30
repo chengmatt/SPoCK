@@ -70,54 +70,84 @@
 
 
 <dl><dt id="arg-input-list">input_list<a class="anchor" aria-label="anchor" href="#arg-input-list"></a></dt>
-<dd><p>List containing a data list, parameter list, and map list</p></dd>
+<dd><p>List containing data, parameter, and map lists for the model.</p></dd>
 
 
 <dt id="arg-do-recruits-move">do_recruits_move<a class="anchor" aria-label="anchor" href="#arg-do-recruits-move"></a></dt>
-<dd><p>Whether recruits move, 1 (they move), 0 (they don't move), default is 0</p></dd>
+<dd><p>Integer flag (0 or 1) indicating whether recruits move.
+Default is 0 (do not move).</p></dd>
 
 
 <dt id="arg-use-fixed-movement">use_fixed_movement<a class="anchor" aria-label="anchor" href="#arg-use-fixed-movement"></a></dt>
-<dd><p>Whether to use a fixed movement matrix, == 0 don't use, == 1 use</p></dd>
+<dd><p>Integer flag (0 or 1) indicating whether to use a fixed movement matrix (1) or estimate movement parameters (0).
+Default is 0.</p></dd>
 
 
 <dt id="arg-fixed-movement">Fixed_Movement<a class="anchor" aria-label="anchor" href="#arg-fixed-movement"></a></dt>
-<dd><p>Input for a fixed movement matrix dimensioned by n_regions, n_regions, n_years, n_ages, n_sexes</p></dd>
+<dd><p>Numeric array for fixed movement matrix dimensioned by <code>[n_regions, n_regions, n_years, n_ages, n_sexes]</code>.
+Default is an array of ones.</p></dd>
 
 
 <dt id="arg-use-movement-prior">Use_Movement_Prior<a class="anchor" aria-label="anchor" href="#arg-use-movement-prior"></a></dt>
-<dd><p>Whether or not to use movement priors == 0 don't use, == 1 use</p></dd>
+<dd><p>Integer flag (0 or 1) indicating whether to use movement priors.
+Default is 0 (no priors).</p></dd>
 
 
 <dt id="arg-movement-prior">Movement_prior<a class="anchor" aria-label="anchor" href="#arg-movement-prior"></a></dt>
-<dd><p>Movement prior values, can be dimension as a vector of (results in a constant prior across all regions from, years, ages, and sexes), or as an array by n_regions, n_regions, n_years, n_ages, n_sexes</p></dd>
+<dd><p>Numeric vector or array specifying prior values for movement parameters.
+If a vector, a constant prior is applied across all dimensions.</p></dd>
 
 
 <dt id="arg-movement-ageblk-spec">Movement_ageblk_spec<a class="anchor" aria-label="anchor" href="#arg-movement-ageblk-spec"></a></dt>
-<dd><p>Either a character string specifiying "constant" age movement, or a ist object specifying which ages to group together and block (i.e., which ages to share parameters for). Each element in the list should be a vector specifying the range of ages for which to share or block parameters for. For example, list(c(1:6), c(7:10), c(11:n_ages)) has 3 age blocks, where ages 1-6 have the same paraemters, 7:10 have the same parameters (but diffeerent from 1:6), and 11:n_ages haave the same parameters (but different from 1:6 and 7:10).
-The default behavior is to estimate unique movement parmaeters for all ages. To estimate age-invariant movement this list would be specified as: list(c(1:n_ages)).</p></dd>
+<dd><p>Either:</p><ul><li><p>Character string <code>"constant"</code> for age-invariant movement, or</p></li>
+<li><p>A list of numeric vectors specifying age blocks sharing parameters.</p></li>
+</ul><p>For example, <code>list(c(1:6), c(7:10), c(11:n_ages))</code> defines three age blocks where:</p><ul><li><p>ages 1 to 6 share parameters,</p></li>
+<li><p>ages 7 to 10 share parameters,</p></li>
+<li><p>ages 11 to <code>n_ages</code> share parameters.</p></li>
+</ul><p>To specify age-invariant movement, use either <code>"constant"</code> or <code>list(c(1:n_ages))</code>.</p></dd>
 
 
 <dt id="arg-movement-yearblk-spec">Movement_yearblk_spec<a class="anchor" aria-label="anchor" href="#arg-movement-yearblk-spec"></a></dt>
-<dd><p>Either a character string specifiying "constant" year movement, list object specifying which years to group together and block (i.e., which years to share parameters for). Each element in the list should be a vector specifying the range of years for which to share or block parameters for. For example, list(c(1:6), c(7:10), c(11:n_years)) has 3 year blocks, where years 1-6 have the same paraemters, 7:10 have the same parameters (but diffeerent from 1:6), and 11:n_years haave the same parameters (but different from 1:6 and 7:10).
-The default behavior is to estimate unique movement parameters for all years To estimate time-invariant movement this list would be specified as: list(c(1:n_years)).</p></dd>
+<dd><p>Either:</p><ul><li><p>Character string <code>"constant"</code> for time-invariant movement, or</p></li>
+<li><p>A list of numeric vectors specifying year blocks sharing movement parameters.</p></li>
+</ul></dd>
 
 
 <dt id="arg-movement-sexblk-spec">Movement_sexblk_spec<a class="anchor" aria-label="anchor" href="#arg-movement-sexblk-spec"></a></dt>
-<dd><p>Either a character string specifiying "constant" sex movement, list object specifying which sexes to group together and block (i.e., which sexes to share parameters for). Each element in the list should be a vector specifying the range of sexes for which to share or block parameters for. For example, list(1, 2) has 2 sex blocks, where each sex has unique parameters
-The default behavior is to estimate unique movement parameters for all sexes. To estimate sex-invariant movement this list would be specified as: list(c(1:n_sexes)).</p></dd>
+<dd><p>Either:</p><ul><li><p>Character string <code>"constant"</code> for sex-invariant movement, or</p></li>
+<li><p>A list of numeric vectors specifying sex blocks sharing movement parameters.</p></li>
+</ul></dd>
 
 
 <dt id="arg-cont-vary-movement">cont_vary_movement<a class="anchor" aria-label="anchor" href="#arg-cont-vary-movement"></a></dt>
-<dd><p>Continuous varying movement: "none", "iid_y", "iid_a", "iid_y_a", 'iid_y_s', 'iid_a_s', "iid_y_a_s"</p></dd>
+<dd><p>Character string specifying continuous varying movement type.
+Available options:</p><ul><li><p><code>"none"</code></p></li>
+<li><p><code>"iid_y"</code> (iid deviations by year)</p></li>
+<li><p><code>"iid_a"</code> (iid deviations by age)</p></li>
+<li><p><code>"iid_y_a"</code> (iid deviations by year and age)</p></li>
+<li><p><code>"iid_y_s"</code> (iid deviations by year and sex)</p></li>
+<li><p><code>"iid_a_s"</code> (iid deviations by age and sex)</p></li>
+<li><p><code>"iid_y_a_s"</code> (iid deviations by year, age, and sex)</p></li>
+</ul><p>Default is <code>"none"</code>.</p></dd>
 
 
 <dt id="arg-movement-cont-pe-pars-spec">Movement_cont_pe_pars_spec<a class="anchor" aria-label="anchor" href="#arg-movement-cont-pe-pars-spec"></a></dt>
-<dd><p>Specification of process error parameters. Character string where options are 'est_shared_r', 'est_shared_a', "est_shared_s", 'est_shared_r_a', 'est_shared_a_s', "est_shared_r_s", 'est_shared_r_a_s', 'est_all', 'fix', 'none'</p></dd>
+<dd><p>Character string specifying process error parameter sharing.
+Available options:</p><ul><li><p><code>"est_shared_r"</code></p></li>
+<li><p><code>"est_shared_a"</code></p></li>
+<li><p><code>"est_shared_s"</code></p></li>
+<li><p><code>"est_shared_r_a"</code></p></li>
+<li><p><code>"est_shared_a_s"</code></p></li>
+<li><p><code>"est_shared_r_s"</code></p></li>
+<li><p><code>"est_shared_r_a_s"</code></p></li>
+<li><p><code>"est_all"</code></p></li>
+<li><p><code>"fix"</code></p></li>
+<li><p><code>"none"</code></p></li>
+</ul><p>Default is <code>"none"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional inputs for starting values for movement parameters (move_pars)</p></dd>
+<dd><p>Additional parameters such as starting values for <code>move_pars</code>, <code>logit_move_devs</code>, and <code>move_pe_pars</code>.</p></dd>
 
 </dl></div>
 

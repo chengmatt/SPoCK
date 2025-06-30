@@ -28,45 +28,90 @@ Setup_Mod_Rec(
 )
 }
 \arguments{
-\item{input_list}{List containing a data list, parameter list, and map list}
+\item{input_list}{List containing data, parameters, and map lists used by the model.}
 
-\item{rec_model}{recruitment model, options are mean_rec, bh_rec}
+\item{rec_model}{Character string specifying the recruitment model. Options are:
+\itemize{
+  \item \code{"mean_rec"}: Recruitment is a fixed mean value.
+  \item \code{"bh_rec"}: Beverton-Holt recruitment with steepness parameter.
+}}
 
-\item{rec_dd}{Recruitment density dependence, Options are "local", "global", or NULL}
+\item{rec_dd}{Character string specifying recruitment density dependence, options:
+\code{"local"}, \code{"global"}, or \code{NULL}.}
 
-\item{rec_lag}{duration of recruitment lag with SSB}
+\item{rec_lag}{Integer specifying the recruitment lag duration relative to spawning stock biomass (SSB).}
 
-\item{Use_h_prior}{whether or not to use a steepness prior == 0 (don't use), == 1 (use)}
+\item{Use_h_prior}{Integer flag (0 or 1) indicating whether to apply a prior on steepness \code{h}.}
 
-\item{h_mu}{vector of steepness mean if priors are used (dimensioned by n_region)}
+\item{h_mu}{Numeric vector (length \code{n_regions}) specifying the mean steepness prior values if used.}
 
-\item{h_sd}{vector of steepness sd if priors are used (dimensioned by n_region)}
+\item{h_sd}{Numeric vector (length \code{n_regions}) specifying the standard deviation for steepness priors if used.}
 
-\item{do_rec_bias_ramp}{whether or not to do recruitment bias ramp == 0 (don't use), == 1(use)}
+\item{do_rec_bias_ramp}{Integer flag (0 or 1) indicating whether to apply a recruitment bias correction ramp.}
 
-\item{bias_year}{vector of years in which the bias ramp is invoked and when it changes. This should have a total of 4 values, the first describing when the period in which no bias correction is applied ends, the second describing the period over which the ascending limb ends, the third describing the period in which the full bias correction is last applied, and the fourth describing the period where no bias ramp is applied, following the period of full bias correction. For example, if there are 65 years in an assessment model, specifying c(21, 31, 60, 64) indicates that years 1 - 21 have 0 bias correction, years 22 - 31 is the ascending limb of the bias correction, years 32 - 60 is the full bias correction period, years 61 - 63 is the descending limb of the ramp, and years 64 - 65 are zero bias correction periods.}
+\item{bias_year}{Numeric vector of length 4 defining the recruitment bias ramp periods:
+\itemize{
+  \item Element 1: End year of no bias correction period.
+  \item Element 2: End year of ascending bias ramp period.
+  \item Element 3: End year of full bias correction period.
+  \item Element 4: Start year of final no bias correction period.
+}
+For example, with 65 years total, \code{c(21, 31, 60, 64)} means:
+\itemize{
+  \item Years 1–21: No bias correction.
+  \item Years 22–31: Ascending bias correction.
+  \item Years 32–60: Full bias correction.
+  \item Years 61–63: Descending bias ramp.
+  \item Years 64–65: No bias correction.
+}}
 
-\item{sigmaR_switch}{year in which sigmaR switches from an early value to late (set to 0 if no switching occurs)}
+\item{sigmaR_switch}{Integer year indicating when \code{sigmaR} switches from early to late values (0 disables switching).}
 
-\item{dont_est_recdev_last}{Numeric indicating the last x years to not estimate rec devs for. Default is 0.}
+\item{dont_est_recdev_last}{Integer specifying how many of the most recent recruitment deviations to not estimate. Default is 0.}
 
-\item{sexratio}{vector of recruitment sex ratio dimensioned by n_sexes}
+\item{sexratio}{Numeric vector specifying recruitment sex ratio, dimensioned by number of sexes.}
 
-\item{init_age_strc}{whether initial age structure is initialized via == 0 (iteration) or via == 1 (geometric series)}
+\item{init_age_strc}{Integer flag specifying initialization of initial age structure:
+\itemize{
+  \item \code{0}: Initialize by iteration.
+  \item \code{1}: Initialize using a geometric series.
+}}
 
-\item{init_F_prop}{Initial F proportion relative to a mean F value for initializing age structure}
+\item{init_F_prop}{Numeric value specifying the initial fishing mortality proportion relative to mean fishing mortality for initializing age structure.}
 
-\item{sigmaR_spec}{Specification for sigmaR. Default is NULL such that it is estimated for both early and late periods. Other options include "est_shared" which estiamtes sigmaR but shares the same value between early and late period and "fix" which fixes both values.}
+\item{sigmaR_spec}{Character string specifying estimation of recruitment variability (\code{sigmaR}):
+\itemize{
+  \item \code{NULL}: Estimate separate \code{sigmaR} for early and late periods.
+  \item \code{"est_shared"}: Estimate one \code{sigmaR} shared across periods.
+  \item \code{"fix"}: Fix both \code{sigmaR} values.
+  \item \code{"fix_early_est_late"}: Fix early \code{sigmaR}, estimate late \code{sigmaR}.
+}}
 
-\item{InitDevs_spec}{Specification for initial age dviations. Default is NULL such that is its estimated for all ages and regions. Other options include "est_shared_r" which estimates deviations for all ages but shares them across regions, or "fix" which fixeds all values.}
+\item{InitDevs_spec}{Character string specifying estimation of initial age deviations:
+\itemize{
+  \item \code{NULL}: Estimate deviations for all ages and regions.
+  \item \code{"est_shared_r"}: Estimate deviations shared across regions.
+  \item \code{"fix"}: Fix all deviations.
+}}
 
-\item{RecDevs_spec}{Specification for recruitment deviations. Default is NULL such that it is estimated for all regions and years. Other options include "est_shared_r" which estimates deviations for all years, but shares them across regions (global recruitment deviaitons), or "fix" which fixes all values.}
+\item{RecDevs_spec}{Character string specifying recruitment deviation estimation:
+\itemize{
+  \item \code{NULL}: Estimate deviations for all regions and years.
+  \item \code{"est_shared_r"}: Estimate deviations shared across regions (global recruitment deviations).
+  \item \code{"fix"}: Fix all recruitment deviations.
+}}
 
-\item{h_spec}{Specification for steepness. Default is NULL, such that it is estimated for all reigons if rec_model == 1 (Beverton-Holt). Other options include "est_shared_r" which estimates h but shares across regions, or "fix" which fixes all steepness values. If rec_model == 0, h is fixed.}
+\item{h_spec}{Character string specifying steepness estimation:
+\itemize{
+  \item \code{NULL}: Estimate steepness for all regions if \code{rec_model == "bh_rec"}.
+  \item \code{"est_shared_r"}: Estimate steepness shared across regions.
+  \item \code{"fix"}: Fix steepness values.
+}
+  If \code{rec_model == "mean_rec"}, steepness is fixed.}
 
-\item{t_spawn}{Spawn timing fraction}
+\item{t_spawn}{Numeric fraction specifying spawning timing within the year.}
 
-\item{...}{Additional arguments for starting values for recruitment parameters (ln_global_R0, Rec_prop, h, ln_InitDevs, ln_RecDevs, ln_sigmaR)}
+\item{...}{Additional arguments specifying starting values for recruitment parameters such as \code{ln_global_R0}, \code{Rec_prop}, \code{h}, \code{ln_InitDevs}, \code{ln_RecDevs}, and \code{ln_sigmaR}.}
 }
 \description{
 Setup model objects for specifying recruitment module and associated processes

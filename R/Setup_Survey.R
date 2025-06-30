@@ -56,25 +56,75 @@ Setup_Sim_Survey <- function(sigmaSrvIdx,
 } # end function
 
 #' Setup observed survey indices and composition data (age and length comps)
-#'
 #' @param input_list List containing a data list, parameter list, and map list
-#' @param ObsSrvIdx Observed survey indices as an array dimensioned by n_regions, n_years, n_srv_fleets
-#' @param ObsSrvIdx_SE Observed standard errors for survey indices as an array dimensioned by n_regions, n_years, n_srv_fleets
-#' @param UseSrvIdx Indicator variables specifying whether or not to fit survey indices as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
-#' @param ObsSrvAgeComps Observed survey age compositions as an array dimensioned by n_regions, n_years, number of observed composition ages, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)
-#' @param UseSrvAgeComps  Indicator variables specifying whether or not to fit survey ages as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
-#' @param ObsSrvLenComps Observed survey age compositions as an array dimensioned by n_regions, n_years, n_lens, n_sexes, n_srv_fleets (should be in numbers, although need not be whole numbers)
-#' @param UseSrvLenComps  Indicator variables specifying whether or not to fit survey lengths as an array imensioned by n_regions, n_years, n_srv_fleets, == 0 don't fit, == 1 fit
-#' @param SrvAgeComps_LikeType Vector of character strings dimensioned by n_srv_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.
-#' @param SrvLenComps_LikeType Vector of character strings dimensioned by n_srv_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.
-#' @param SrvAgeComps_Type Defines how age composition data are fit to by sex and region, with four possible options (agg, spltRspltS, spltRjntS, none). Option agg indicates that compositions are aggregated across regions and sexes, option spltRspltS indicates that compositions are split by region and split by sex (compositions sum to 1 within a given region and sex), option spltRjntS indicates that compositions are split by region but sum to 1 jointly across sexes, and option none specifies that no composition data are available. After defining the composition type, users will need to specify the year range you want the composition type to be in, as well as the fleet number the composition type belongs to. For example, ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") specifies compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.
-#' @param SrvLenComps_Type Defines how length composition data are fit to by sex and region, with four possible options (agg, spltRspltS, spltRjntS, none). Option agg indicates that compositions are aggregated across regions and sexes, option spltRspltS indicates that compositions are split by region and split by sex (compositions sum to 1 within a given region and sex), option spltRjntS indicates that compositions are split by region but sum to 1 jointly across sexes, and option none specifies that no composition data are available. After defining the composition type, users will need to specify the year range you want the composition type to be in, as well as the fleet number the composition type belongs to. For example, ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") specifies compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.
-#' @param SrvAge_comp_agg_type Vector dimensioned by n_srv_fleets specifying how to aggregate age composition data if SrvAgeComps_Type == 0, if comp_agg_type == 0 normalize, aggregate, ageing erorr then normalize, == 1 aggregate, normalize, then ageing error (for age compositions). Default is specify at NULL
-#' @param SrvLen_comp_agg_type Vector dimensioned by n_srv_fleets specifying how to aggregate age composition data if SrvLenComps_Type == 1, if comp_agg_type == 0 length compositions are not normalized prior to application of size age transition, == 1 length compositions are normalized and then a size-age transition is applied (for length compositions). Default is specify at NULL
-#' @param srv_idx_type Survey index type dimensioned by n_srv_fleets, character string for abundance (abd) or biomass (biom), "none" if not availabile or used
-#' @param ... Additional arguments specifying starting values for survey age and length overdispersion parameters (ln_SrvAge_theta. ln_SrvLen_theta, ln_SrvAge_theta_agg, ln_SrvLen_theta_agg)
-#' @param ISS_SrvAgeComps Input sample size for survey comps. Dimensioned by n_regions, n_years, n_sexes, n_fleets. Can be left as is if numbers are defined for the observed comps because the function sums them up interally to get an ISS. However, if observed comps are input as proportions, be sure to specify an ISS so the model doesn't incorrectly weight it as a value of ISS = 1.
-#' @param ISS_SrvLenComps Input sample size for survey comps. Dimensioned by n_regions, n_years, n_sexes, n_fleets. Can be left as is if numbers are defined for the observed comps because the function sums them up interally to get an ISS. However, if observed comps are input as proportions, be sure to specify an ISS so the model doesn't incorrectly weight it as a value of ISS = 1.
+#' @param ObsSrvIdx Observed survey index data as a numeric array with dimensions
+#' \code{[n_regions, n_years, n_srv_fleets]}.
+#'
+#' @param ObsSrvIdx_SE Standard errors associated with \code{ObsSrvIdx},
+#' also dimensioned \code{[n_regions, n_years, n_srv_fleets]}.
+#'
+#' @param UseSrvIdx Logical or binary indicator array (\code{[n_regions, n_years, n_srv_fleets]})
+#' specifying whether to include a survey index in the likelihood (\code{1}) or ignore it (\code{0}).
+#'
+#' @param ObsSrvAgeComps Observed survey age composition data as a numeric array with dimensions
+#' \code{[n_regions, n_years, n_ages, n_sexes, n_srv_fleets]}. Values should reflect counts or proportions
+#' (not required to sum to 1, but should be on a comparable scale).
+#'
+#' @param UseSrvAgeComps Indicator array (\code{[n_regions, n_years, n_srv_fleets]}) specifying whether
+#' to fit survey age composition data (\code{1}) or ignore it (\code{0}).
+#'
+#' @param ObsSrvLenComps Observed survey length composition data as a numeric array with dimensions
+#' \code{[n_regions, n_years, n_lens, n_sexes, n_srv_fleets]}. Values should reflect counts or proportions.
+#'
+#' @param UseSrvLenComps Indicator array (\code{[n_regions, n_years, n_srv_fleets]}) specifying whether
+#' to fit survey length composition data (\code{1}) or ignore it (\code{0}).
+#'
+#' @param SrvAgeComps_LikeType Character vector of length \code{n_srv_fleets} specifying the likelihood
+#' type used for survey age composition data. Options include \code{"Multinomial"}, \code{"Dirichlet-Multinomial"},
+#' and \code{"iid-Logistic-Normal"}. Use \code{"none"} to omit the likelihood.
+#'
+#' @param SrvLenComps_LikeType Same as \code{SrvAgeComps_LikeType}, but for survey length composition data.
+#'
+#' @param SrvAgeComps_Type Character vector specifying how age compositions are structured by fleet and year range.
+#' Options include:
+#' \itemize{
+#'   \item \code{"agg"}: Aggregated across regions and sexes.
+#'   \item \code{"spltRspltS"}: Split by region and by sex (compositions sum to 1 within region-sex group).
+#'   \item \code{"spltRjntS"}: Split by region but summed jointly across sexes.
+#'   \item \code{"none"}: No composition data used.
+#' }
+#' Format each element as \code{"<type>_Year_<start>-<end>_Fleet_<fleet number>"}
+#' (e.g., \code{"agg_Year_1-10_Fleet_1"}).
+#'
+#' @param SrvLenComps_Type Same as \code{SrvAgeComps_Type}, but for length compositions.
+#'
+#' @param SrvAge_comp_agg_type Optional integer vector of length \code{n_srv_fleets} specifying
+#' the order of operations for aggregating age compositions when \code{SrvAgeComps_Type == "agg"}.
+#' \itemize{
+#'   \item \code{0}: Normalize, then aggregate, then apply ageing error, then normalize again.
+#'   \item \code{1}: Aggregate first, normalize, then apply ageing error.
+#' }
+#' Default is \code{NULL}.
+#'
+#' @param SrvLen_comp_agg_type Optional integer vector of length \code{n_srv_fleets} specifying
+#' the order of operations for aggregating length compositions.
+#' \itemize{
+#'   \item \code{0}: Do not normalize before applying size–age transition.
+#'   \item \code{1}: Normalize before applying size–age transition.
+#' }
+#' Default is \code{NULL}.
+#'
+#' @param srv_idx_type Character vector of length \code{n_srv_fleets} specifying the type of index data.
+#' Options are \code{"abd"} for abundance, \code{"biom"} for biomass, and \code{"none"} if no index is available.
+#'
+#' @param ISS_SrvAgeComps Input sample size for age compositions, array dimensioned
+#' \code{[n_regions, n_years, n_sexes, n_srv_fleets]}. Required if observed age comps are normalized
+#' (i.e., sum to 1), to correctly scale the contribution to the likelihood.
+#'
+#' @param ISS_SrvLenComps Same as \code{ISS_SrvAgeComps}, but for length compositions.
+#'
+#' @param ... Additional arguments specifying starting values for overdispersion parameters
+#' (e.g., \code{ln_SrvAge_theta}, \code{ln_SrvLen_theta}, \code{ln_SrvAge_theta_agg}, \code{ln_SrvLen_theta_agg}).
 #'
 #' @export Setup_Mod_SrvIdx_and_Comps
 #' @importFrom stringr str_detect
@@ -484,18 +534,146 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
 #' Setup survey selectivity and catchability specifications
 #'
 #' @param input_list List containing a data list, parameter list, and map list
-#' @param srv_sel_blocks Specification for survey selectivity blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets
-#' @param srv_sel_model Specification for survey selectivity model for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets, == 0 a50, k, logistic, == 1 gamma dome shaped, == 3, exponential, == 4 a50, a95 logistic
-#' @param srv_q_blocks Specification for survey catchability blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_srv_fleets
-#' @param ... Additional arguments specifying starting values for survey selectivity and catchability parameters (ln_srv_fixed_sel_pars, ln_srv_q)
-#' @param srvsel_pe_pars_spec Specification for survey selectivity process error parameters. If cont_tv_srv_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes. Other options are fix and none which indicate to not estimate these parameters
-#' @param srv_fixed_sel_pars_spec Specification for survey selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes
-#' @param srv_q_spec Specification for survey catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.
-#' @param srv_sel_devs_spec Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes
-#' @param cont_tv_srv_sel Specificaiton for continuous time-varying selectivity, character vector dimensioned by n_srv_fleets, where the character is time variation type, _, Fleet, fleet number. time variation types include (none, iid, rw, 3dmarg, 3dcond, 2dar1), and so if we were to specify iid for fleet 1, this would be iid_Fleet_1.
-#' @param corr_opt_semipar Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correlations to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.
+#' @param cont_tv_srv_sel Character vector specifying the form of continuous time-varying selectivity for each survey fleet.
+#' The vector must be length \code{n_srv_fleets}, and each element must follow the structure:
+#' \code{"<time variation type>_Fleet_<fleet number>"}.
+#'
+#' Valid time variation types include:
+#' \itemize{
+#'   \item \code{"none"}: No continuous time variation.
+#'   \item \code{"iid"}: Independent and identically distributed deviations across years.
+#'   \item \code{"rw"}: Random walk in time.
+#'   \item \code{"3dmarg"}: 3D marginal time-varying selectivity.
+#'   \item \code{"3dcond"}: 3D conditional time-varying selectivity.
+#'   \item \code{"2dar1"}: Two-dimensional AR1 process.
+#' }
+#'
+#' For example:
+#' \itemize{
+#'   \item \code{"iid_Fleet_1"} applies an iid time-varying structure to Fleet 1.
+#'   \item \code{"none_Fleet_2"} means no time variation is used for Fleet 2.
+#' }
+#'
+#' \strong{Note:} If time-block-based selectivity (via \code{srv_sel_blocks}) is specified for a fleet, then its corresponding entry here must be \code{"none_Fleet_<fleet number>"}.
+#' @param srv_sel_blocks Character vector specifying the survey selectivity blocks for each region and fleet.
+#' Each element must follow the structure: `"Block_<block number>_Year_<start>-<end>_Fleet_<fleet number>"` or `"none_Fleet_<fleet number>"`.
+#' This allows users to define time-varying selectivity blocks for specific fleets within a region.
+#'
+#' For example:
+#' \itemize{
+#'   \item \code{"Block_1_Year_1-35_Fleet_1"} defines selectivity block 1 for Fleet 1 covering years 1 through 35.
+#'   \item \code{"Block_2_Year_36-56_Fleet_1"} defines block 2 for Fleet 1 for years 36 to 56.
+#'   \item \code{"Block_3_Year_57-terminal_Fleet_1"} assigns block 3 from year 57 through the terminal year for Fleet 1.
+#'   \item \code{"none_Fleet_2"} indicates that no survey selectivity blocks are used for Fleet 2.
+#' }
+#'
+#' The blocks must be non-overlapping and sequential in time within each fleet, and block numbers must be unique within each fleet.
+#' @param srv_sel_model Character vector specifying the survey selectivity model for each fleet.
+#' The vector must be length \code{n_srv_fleets}, and each element must follow the structure:
+#' \code{"<selectivity model>_Fleet_<fleet number>"}.
+#'
+#' Available selectivity model types include:
+#' \itemize{
+#'   \item \code{"logist1"}: Logistic function with parameters \code{a50} and \code{k}.
+#'   \item \code{"logist2"}: Logistic function with parameters \code{a50} and \code{a95}.
+#'   \item \code{"gamma"}: Dome-shaped gamma function with parameters \code{amax} and \code{delta}.
+#'   \item \code{"exponential"}: Exponential function with a power parameter.
+#' }
+#'
+#' For example:
+#' \itemize{
+#'   \item \code{"logist1_Fleet_1"} uses the logistic (a50, k) model for Fleet 1.
+#'   \item \code{"gamma_Fleet_2"} uses the gamma dome-shaped model for Fleet 2.
+#' }
+#'
+#' The models are applied by region and year as defined in the overall model array structure
+#' (\code{n_regions} x \code{n_years} x \code{n_srv_fleets}), though this vector defines only the functional form for each fleet.
+#'
+#' For mathematical definitions and implementation details of each selectivity form, refer to the model equations vignette.
+#' @param srv_q_blocks Character vector specifying survey catchability (q) blocks for each fleet.
+#' Each element must follow the structure: \code{"Block_<block number>_Year_<start>-<end>_Fleet_<fleet number>"}
+#' or \code{"none_Fleet_<fleet number>"}.
+#'
+#' This allows users to define time-varying catchability blocks independently of selectivity blocks.
+#' The blocks must be non-overlapping and sequential in time within each fleet.
+#'
+#' For example:
+#' \itemize{
+#'   \item \code{"Block_1_Year_1-35_Fleet_1"} assigns block 1 to Fleet 1 for years 1–35.
+#'   \item \code{"Block_2_Year_36-56_Fleet_1"} continues with block 2 for years 36–56.
+#'   \item \code{"Block_3_Year_57-terminal_Fleet_1"} assigns block 3 from year 57 to the terminal year for Fleet 1.
+#'   \item \code{"none_Fleet_2"} indicates no catchability blocks are used for Fleet 2.
+#' }
+#'
+#' Internally, these specifications are converted to a \code{[n_regions, n_years, n_srv_fleets]} array,
+#' where each block is mapped to the appropriate years and fleets.
+#' @param srvsel_pe_pars_spec Character string specifying how process error parameters for survey selectivity
+#' are estimated across regions and sexes. This is only relevant if \code{cont_tv_srv_sel} is not set to \code{"none"};
+#' otherwise, all process error parameters are treated as fixed.
+#'
+#' Available options include:
+#' \itemize{
+#'   \item \code{"est_all"}: Estimates separate process error parameters for each region and sex.
+#'   \item \code{"est_shared_r"}: Shares process error parameters across regions (sex-specific parameters are still estimated).
+#'   \item \code{"est_shared_s"}: Shares process error parameters across sexes (region-specific parameters are still estimated).
+#'   \item \code{"est_shared_r_s"}: Shares process error parameters across both regions and sexes, estimating a single set of parameters.
+#'   \item \code{"fix"} or \code{"none"}: Does not estimate process error parameters; all are treated as fixed.
+#' }
+#' @param srv_fixed_sel_pars_spec Character string specifying the structure for estimating
+#' fixed-effect parameters of the survey selectivity model (e.g., a50, k, amax).
+#' This controls whether selectivity parameters are estimated separately or shared across regions and sexes.
+#'
+#' Available options include:
+#' \itemize{
+#'   \item \code{"est_all"}: Estimates separate fixed-effect selectivity parameters for each region and sex.
+#'   \item \code{"est_shared_r"}: Shares parameters across regions (sex-specific parameters are still estimated).
+#'   \item \code{"est_shared_s"}: Shares parameters across sexes (region-specific parameters are still estimated).
+#'   \item \code{"est_shared_r_s"}: Shares parameters across both regions and sexes, estimating a single set of fixed-effect parameters.
+#' }
+#' @param srv_q_spec Character string specifying the structure of survey catchability (\code{q}) estimation
+#' across regions. This controls whether separate or shared parameters are used.
+#'
+#' Available options include:
+#' \itemize{
+#'   \item \code{"est_all"}: Estimates separate catchability parameters for each region.
+#'   \item \code{"est_shared_r"}: Estimates a single catchability parameter shared across all regions.
+#' }
+#' @param srv_sel_devs_spec Character string specifying the structure of process error deviations
+#' in time-varying survey selectivity dimensioned by the number of survey fleets. This determines how deviations are estimated across regions and sexes.
+#'
+#' Available options include:
+#' \itemize{
+#'   \item \code{"est_all"}: Estimates a separate deviation time series for each region and sex.
+#'   \item \code{"est_shared_r"}: Shares deviations across regions (sex-specific deviations are still estimated).
+#'   \item \code{"est_shared_s"}: Shares deviations across sexes (region-specific deviations are still estimated).
+#'   \item \code{"est_shared_r_s"}: Shares deviations across both regions and sexes, estimating a single deviation time series.
+#' }
+#'
+#' This argument is only used when a continuous time-varying selectivity form is specified (e.g., via \code{cont_tv_srv_sel}).
+#' @param corr_opt_semipar Character string specifying which correlation structures to suppress
+#'   when using semi-parametric time-varying selectivity models. Only used if \code{cont_tv_sel}
+#'   is set to one of \code{"3dmarg"}, \code{"3dcond"}, or \code{"2dar1"}.
+#'
+#'   This option allows users to turn off estimation of specific correlation components in the
+#'   time-varying selectivity model. This can improve stability or enforce assumptions about
+#'   independence in the temporal or age structure.
+#'
+#'   Available options:
+#'   \itemize{
+#'     \item \code{"corr_zero_y"}: Sets year (temporal) correlations to 0.
+#'     \item \code{"corr_zero_a"}: Sets age correlations to 0.
+#'     \item \code{"corr_zero_y_a"}: Sets both year and age correlations to 0.
+#'     \item \code{"corr_zero_c"}: Sets cohort correlations to 0. Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}.
+#'     \item \code{"corr_zero_y_c"}: Sets year and cohort correlations to 0. Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}.
+#'     \item \code{"corr_zero_a_c"}: Sets age and cohort correlations to 0. Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}.
+#'     \item \code{"corr_zero_y_a_c"}: Sets all correlations (year, age, and cohort) to 0.
+#'       Only valid for \code{cont_tv_sel} = \code{"3dmarg"} or \code{"3dcond"}; equivalent to an iid structure.
+#'   }
+#'
+#' These correlation-suppression flags are ignored when \code{cont_tv_sel} is set to any other value.
 #' @param Use_srv_q_prior Integer specifying whether to use survey q prior or not (0 dont use) (1 use)
-#' @param srv_q_prior Survey q priors in normal space, dimensioned by region, block, survey fleet, and 2 (mean, and sd in the 4 dimension of array)
+#' @param srv_q_prior Survey q priors in normal space, dimensioned by region, block,  survey fleet, and 2 (mean, and sd in the 4 dimension of array)
+#' @param ... Additional arguments specifying starting values for survey selectivity and catchability parameters (srvsel_pe_pars, ln_srvsel_devs, ln_srv_fixed_sel_pars, ln_srv_q)
 #'
 #' @export Setup_Mod_Srvsel_and_Q
 #' @importFrom stringr str_detect

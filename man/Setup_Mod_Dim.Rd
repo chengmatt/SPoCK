@@ -16,24 +16,29 @@ Setup_Mod_Dim(
 )
 }
 \arguments{
-\item{years}{vector of years}
+\item{years}{Numeric vector of years.}
 
-\item{ages}{vector of ages}
+\item{ages}{Numeric vector of age classes.}
 
-\item{lens}{vector of lengths (can just input 1 if not fitting lengths)}
+\item{lens}{Numeric vector of length bins; can be set to \code{1} if length data are not modeled.}
 
-\item{n_regions}{Number of regions}
+\item{n_regions}{Integer specifying the number of spatial regions.}
 
-\item{n_sexes}{Number of sexes}
+\item{n_sexes}{Integer specifying the number of sexes.}
 
-\item{n_fish_fleets}{Number of fishery fleets}
+\item{n_fish_fleets}{Integer specifying the number of fishery fleets.}
 
-\item{n_srv_fleets}{Number of survey fleets}
+\item{n_srv_fleets}{Integer specifying the number of survey fleets.}
 
-\item{verbose}{Whether to print messages}
+\item{verbose}{Logical flag indicating whether to print progress messages (default \code{FALSE}).}
 }
 \value{
-Returns a list object of length 3, with a data list, a par list, and a map list
+A list containing three named elements:
+\describe{
+  \item{\code{data}}{List of data inputs dimensioned by the model dimensions.}
+  \item{\code{parameters}}{List of model parameters initialized according to dimensions.}
+  \item{\code{map}}{List of parameter mappings for model fitting.}
+}
 }
 \description{
 Set up model dimensions

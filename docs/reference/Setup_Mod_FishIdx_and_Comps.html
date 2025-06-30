@@ -80,71 +80,97 @@
 
 
 <dt id="arg-obsfishidx">ObsFishIdx<a class="anchor" aria-label="anchor" href="#arg-obsfishidx"></a></dt>
-<dd><p>Observed fishery indices as an array dimensioned by n_regions, n_years, n_fish_fleets</p></dd>
+<dd><p>Observed fishery index data as a numeric array with dimensions
+<code>[n_regions, n_years, n_fish_fleets]</code>.</p></dd>
 
 
 <dt id="arg-obsfishidx-se">ObsFishIdx_SE<a class="anchor" aria-label="anchor" href="#arg-obsfishidx-se"></a></dt>
-<dd><p>Observed standard errors for fishery indices as an array dimensioned by n_regions, n_years, n_fish_fleets</p></dd>
+<dd><p>Standard errors associated with <code>ObsFishIdx</code>,
+also dimensioned <code>[n_regions, n_years, n_fish_fleets]</code>.</p></dd>
 
 
 <dt id="arg-fish-idx-type">fish_idx_type<a class="anchor" aria-label="anchor" href="#arg-fish-idx-type"></a></dt>
-<dd><p>Fishery index type dimensioned by n_fish_fleets, character string for abundance (abd) or biomass (biom), "none" if not availabile or used</p></dd>
+<dd><p>Character vector of length <code>n_fish_fleets</code> specifying the type of index data.
+Options are <code>"abd"</code> for abundance, <code>"biom"</code> for biomass, and <code>"none"</code> if no index is available.</p></dd>
 
 
 <dt id="arg-usefishidx">UseFishIdx<a class="anchor" aria-label="anchor" href="#arg-usefishidx"></a></dt>
-<dd><p>Indicator variables specifying whether or not to fit fishery indices as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit</p></dd>
+<dd><p>Logical or binary indicator array (<code>[n_regions, n_years, n_fish_fleets]</code>)
+specifying whether to include a fishery index in the likelihood (<code>1</code>) or ignore it (<code>0</code>).</p></dd>
 
 
 <dt id="arg-obsfishagecomps">ObsFishAgeComps<a class="anchor" aria-label="anchor" href="#arg-obsfishagecomps"></a></dt>
-<dd><p>Observed fishery age compositions as an array dimensioned by n_regions, n_years, number of composition ages, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)</p></dd>
+<dd><p>Observed fishery age composition data as a numeric array with dimensions
+<code>[n_regions, n_years, n_ages, n_sexes, n_fish_fleets]</code>. Values should reflect counts or proportions
+(not required to sum to 1, but should be on a comparable scale).</p></dd>
 
 
 <dt id="arg-usefishagecomps">UseFishAgeComps<a class="anchor" aria-label="anchor" href="#arg-usefishagecomps"></a></dt>
-<dd><p>Indicator variables specifying whether or not to fit fishery ages as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit</p></dd>
+<dd><p>Indicator array (<code>[n_regions, n_years, n_fish_fleets]</code>) specifying whether
+to fit fishery age composition data (<code>1</code>) or ignore it (<code>0</code>).</p></dd>
 
 
 <dt id="arg-iss-fishagecomps">ISS_FishAgeComps<a class="anchor" aria-label="anchor" href="#arg-iss-fishagecomps"></a></dt>
-<dd><p>Input sample size for fishery comps dimensioned by n_regions, n_years, n_sexes, and n_fleets. If your sample sizes are already defined in your observed comps (i.e., numbers that don't sum to 1, can leave as is, but if they do sum to 1, you need to be sure to define this ISS so comps are correctly weighted (not given a ISS weight of 1))</p></dd>
+<dd><p>Input sample size for age compositions, array dimensioned
+<code>[n_regions, n_years, n_sexes, n_fish_fleets]</code>. Required if observed age comps are normalized
+(i.e., sum to 1), to correctly scale the contribution to the likelihood.</p></dd>
 
 
 <dt id="arg-obsfishlencomps">ObsFishLenComps<a class="anchor" aria-label="anchor" href="#arg-obsfishlencomps"></a></dt>
-<dd><p>Observed fishery age compositions as an array dimensioned by n_regions, n_years, n_lens, n_sexes, n_fish_fleets (should be in numbers, although need not be whole numbers)</p></dd>
+<dd><p>Observed fishery length composition data as a numeric array with dimensions
+<code>[n_regions, n_years, n_lens, n_sexes, n_fish_fleets]</code>. Values should reflect counts or proportions.</p></dd>
 
 
 <dt id="arg-usefishlencomps">UseFishLenComps<a class="anchor" aria-label="anchor" href="#arg-usefishlencomps"></a></dt>
-<dd><p>Indicator variables specifying whether or not to fit fishery lengths as an array imensioned by n_regions, n_years, n_fish_fleets, == 0 don't fit, == 1 fit</p></dd>
+<dd><p>Indicator array (<code>[n_regions, n_years, n_fish_fleets]</code>) specifying whether
+to fit fishery length composition data (<code>1</code>) or ignore it (<code>0</code>).</p></dd>
 
 
 <dt id="arg-iss-fishlencomps">ISS_FishLenComps<a class="anchor" aria-label="anchor" href="#arg-iss-fishlencomps"></a></dt>
-<dd><p>Input sample size for fishery comps dimensioned by n_regions, n_years, n_sexes, and n_fleets. If your sample sizes are already defined in your observed comps (i.e., numbers that don't sum to 1, can leave as is, but if they do sum to 1, you need to be sure to define this ISS so comps are correctly weighted (not given a ISS weight of 1))</p></dd>
+<dd><p>Same as <code>ISS_FishAgeComps</code>, but for length compositions.</p></dd>
 
 
 <dt id="arg-fishagecomps-liketype">FishAgeComps_LikeType<a class="anchor" aria-label="anchor" href="#arg-fishagecomps-liketype"></a></dt>
-<dd><p>Vector of character strings dimensioned by n_fish_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.</p></dd>
+<dd><p>Character vector of length <code>n_fish_fleets</code> specifying the likelihood
+type used for fishery age composition data. Options include <code>"Multinomial"</code>, <code>"Dirichlet-Multinomial"</code>,
+and <code>"iid-Logistic-Normal"</code>. Use <code>"none"</code> to omit the likelihood.</p></dd>
 
 
 <dt id="arg-fishlencomps-liketype">FishLenComps_LikeType<a class="anchor" aria-label="anchor" href="#arg-fishlencomps-liketype"></a></dt>
-<dd><p>Vector of character strings dimensioned by n_fish_fleets, options include Multinomial, Dirichlet-Multinomial, and iid-Logistic-Normal. Can specify with "none" if no likelihoods are used.</p></dd>
+<dd><p>Same as <code>FishAgeComps_LikeType</code>, but for fishery length composition data.</p></dd>
 
 
 <dt id="arg-fishagecomps-type">FishAgeComps_Type<a class="anchor" aria-label="anchor" href="#arg-fishagecomps-type"></a></dt>
-<dd><p>Defines how age composition data are fit to by sex and region, with four possible options (agg, spltRspltS, spltRjntS, none). Option agg indicates that compositions are aggregated across regions and sexes, option spltRspltS indicates that compositions are split by region and split by sex (compositions sum to 1 within a given region and sex), option spltRjntS indicates that compositions are split by region but sum to 1 jointly across sexes, and option none specifies that no composition data are available. After defining the composition type, users will need to specify the year range you want the composition type to be in, as well as the fleet number the composition type belongs to. For example, ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") specifies compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.</p></dd>
+<dd><p>Character vector specifying how age compositions are structured by fleet and year range.
+Options include:</p><ul><li><p><code>"agg"</code>: Aggregated across regions and sexes.</p></li>
+<li><p><code>"spltRspltS"</code>: Split by region and by sex (compositions sum to 1 within region-sex group).</p></li>
+<li><p><code>"spltRjntS"</code>: Split by region but summed jointly across sexes.</p></li>
+<li><p><code>"none"</code>: No composition data used.</p></li>
+</ul><p>Format each element as <code>"&lt;type&gt;_Year_&lt;start&gt;-&lt;end&gt;_Fleet_&lt;fleet number&gt;"</code>
+(e.g., <code>"agg_Year_1-10_Fleet_1"</code>).</p></dd>
 
 
 <dt id="arg-fishlencomps-type">FishLenComps_Type<a class="anchor" aria-label="anchor" href="#arg-fishlencomps-type"></a></dt>
-<dd><p>Defines how length composition data are fit to by sex and region, with four possible options (agg, spltRspltS, spltRjntS, none). Option agg indicates that compositions are aggregated across regions and sexes, option spltRspltS indicates that compositions are split by region and split by sex (compositions sum to 1 within a given region and sex), option spltRjntS indicates that compositions are split by region but sum to 1 jointly across sexes, and option none specifies that no composition data are available. After defining the composition type, users will need to specify the year range you want the composition type to be in, as well as the fleet number the composition type belongs to. For example, ("agg_Year_1-10_Fleet_1", "spltRjntS_Year_11-terminal_Fleet_1") specifies compositions to be aggregated in years 1 - 10 for fleet 1, split by region and sex in years 11 - terminal for fleet 1.</p></dd>
+<dd><p>Same as <code>FishAgeComps_Type</code>, but for length compositions.</p></dd>
 
 
 <dt id="arg-fishage-comp-agg-type">FishAge_comp_agg_type<a class="anchor" aria-label="anchor" href="#arg-fishage-comp-agg-type"></a></dt>
-<dd><p>Vector dimensioned by n_fish_fleets specifying how to aggregate age composition data if FishAgeComps_Type == 0, if comp_agg_type == 0 normalize, aggregate, ageing erorr then normalize, == 1 aggregate, normalize, then ageing error (for age compositions). Default is specify at NULL</p></dd>
+<dd><p>Optional integer vector of length <code>n_fish_fleets</code> specifying
+the order of operations for aggregating age compositions when <code>FishAgeComps_Type == "agg"</code>.</p><ul><li><p><code>0</code>: Normalize, then aggregate, then apply ageing error, then normalize again.</p></li>
+<li><p><code>1</code>: Aggregate first, normalize, then apply ageing error.</p></li>
+</ul><p>Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-fishlen-comp-agg-type">FishLen_comp_agg_type<a class="anchor" aria-label="anchor" href="#arg-fishlen-comp-agg-type"></a></dt>
-<dd><p>Vector dimensioned by n_fish_fleets specifying how to aggregate age composition data if FishLenComps_Type == 1, if comp_agg_type == 0 length compositions are not normalized prior to application of size age transition, == 1 length compositions are normalized and then a size-age transition is applied (for length compositions). Default is specify at NULL</p></dd>
+<dd><p>Optional integer vector of length <code>n_fish_fleets</code> specifying
+the order of operations for aggregating length compositions.</p><ul><li><p><code>0</code>: Do not normalize before applying size–age transition.</p></li>
+<li><p><code>1</code>: Normalize before applying size–age transition.</p></li>
+</ul><p>Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments specifying starting values for survey age and length overdispersion parameters (ln_FishAge_theta, ln_FishLen_theta, ln_FishAge_theta_agg, ln_FishLen_theta_agg)</p></dd>
+<dd><p>Additional arguments specifying starting values for overdispersion parameters
+(e.g., <code>ln_FishAge_theta</code>, <code>ln_FishLen_theta</code>, <code>ln_FishAge_theta_agg</code>, <code>ln_FishLen_theta_agg</code>).</p></dd>
 
 </dl></div>
 

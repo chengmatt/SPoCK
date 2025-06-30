@@ -75,15 +75,44 @@
 
 
 <dt id="arg-cont-tv-fish-sel">cont_tv_fish_sel<a class="anchor" aria-label="anchor" href="#arg-cont-tv-fish-sel"></a></dt>
-<dd><p>Specificaiton for continuous time-varying selectivity, character vector dimensioned by n_fish_fleets, where the character is time variation type, _, Fleet, fleet number. time variation types include (none, iid, rw, 3dmarg, 3dcond, 2dar1), and so if we were to specify iid for fleet 1, this would be iid_Fleet_1.</p></dd>
+<dd><p>Character vector specifying the form of continuous time-varying selectivity for each fishery fleet.
+The vector must be length <code>n_fish_fleets</code>, and each element must follow the structure:
+<code>"&lt;time variation type&gt;_Fleet_&lt;fleet number&gt;"</code>.</p>
+<p>Valid time variation types include:</p><ul><li><p><code>"none"</code>: No continuous time variation.</p></li>
+<li><p><code>"iid"</code>: Independent and identically distributed deviations across years.</p></li>
+<li><p><code>"rw"</code>: Random walk in time.</p></li>
+<li><p><code>"3dmarg"</code>: 3D marginal time-varying selectivity.</p></li>
+<li><p><code>"3dcond"</code>: 3D conditional time-varying selectivity.</p></li>
+<li><p><code>"2dar1"</code>: Two-dimensional AR1 process.</p></li>
+</ul><p>For example:</p><ul><li><p><code>"iid_Fleet_1"</code> applies an iid time-varying structure to Fleet 1.</p></li>
+<li><p><code>"none_Fleet_2"</code> means no time variation is used for Fleet 2.</p></li>
+</ul><p><strong>Note:</strong> If time-block-based selectivity (via <code>fish_sel_blocks</code>) is specified for a fleet, then its corresponding entry here must be <code>"none_Fleet_&lt;fleet number&gt;"</code>.</p></dd>
 
 
 <dt id="arg-fish-sel-blocks">fish_sel_blocks<a class="anchor" aria-label="anchor" href="#arg-fish-sel-blocks"></a></dt>
-<dd><p>Specification for fishery selectivity blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_fish_fleets</p></dd>
+<dd><p>Character vector specifying the fishery selectivity blocks for each region and fleet.
+Each element must follow the structure: `"Block_&lt;block number&gt;_Year_&lt;start&gt;-&lt;end&gt;_Fleet_&lt;fleet number&gt;"` or `"none_Fleet_&lt;fleet number&gt;"`.
+This allows users to define time-varying selectivity blocks for specific fleets within a region.</p>
+<p>For example:</p><ul><li><p><code>"Block_1_Year_1-35_Fleet_1"</code> defines selectivity block 1 for Fleet 1 covering years 1 through 35.</p></li>
+<li><p><code>"Block_2_Year_36-56_Fleet_1"</code> defines block 2 for Fleet 1 for years 36 to 56.</p></li>
+<li><p><code>"Block_3_Year_57-terminal_Fleet_1"</code> assigns block 3 from year 57 through the terminal year for Fleet 1.</p></li>
+<li><p><code>"none_Fleet_2"</code> indicates that no fishery selectivity blocks are used for Fleet 2.</p></li>
+</ul><p>The blocks must be non-overlapping and sequential in time within each fleet, and block numbers must be unique within each fleet.</p></dd>
 
 
 <dt id="arg-fish-sel-model">fish_sel_model<a class="anchor" aria-label="anchor" href="#arg-fish-sel-model"></a></dt>
-<dd><p>Specification for fishery selectivity model for a given region and fleet, array dimensioned by n_regions, n_years, n_fish_fleets, == 0 a50, k, logistic, == 1 gamma dome shaped, == 2, exponential, == 3 a50, a95 logistic</p></dd>
+<dd><p>Character vector specifying the fishery selectivity model for each fleet.
+The vector must be length <code>n_fish_fleets</code>, and each element must follow the structure:
+<code>"&lt;selectivity model&gt;_Fleet_&lt;fleet number&gt;"</code>.</p>
+<p>Available selectivity model types include:</p><ul><li><p><code>"logist1"</code>: Logistic function with parameters <code>a50</code> and <code>k</code>.</p></li>
+<li><p><code>"logist2"</code>: Logistic function with parameters <code>a50</code> and <code>a95</code>.</p></li>
+<li><p><code>"gamma"</code>: Dome-shaped gamma function with parameters <code>amax</code> and <code>delta</code>.</p></li>
+<li><p><code>"exponential"</code>: Exponential function with a power parameter.</p></li>
+</ul><p>For example:</p><ul><li><p><code>"logist1_Fleet_1"</code> uses the logistic (a50, k) model for Fleet 1.</p></li>
+<li><p><code>"gamma_Fleet_2"</code> uses the gamma dome-shaped model for Fleet 2.</p></li>
+</ul><p>The models are applied by region and year as defined in the overall model array structure
+(<code>n_regions</code> x <code>n_years</code> x <code>n_fish_fleets</code>), though this vector defines only the functional form for each fleet.</p>
+<p>For mathematical definitions and implementation details of each selectivity form, refer to the model equations vignette.</p></dd>
 
 
 <dt id="arg-use-fish-q-prior">Use_fish_q_prior<a class="anchor" aria-label="anchor" href="#arg-use-fish-q-prior"></a></dt>
@@ -95,27 +124,76 @@
 
 
 <dt id="arg-fish-q-blocks">fish_q_blocks<a class="anchor" aria-label="anchor" href="#arg-fish-q-blocks"></a></dt>
-<dd><p>Specification for fishery catchability blocks as unique numbers for a given region and fleet, array dimensioned by n_regions, n_years, n_fish_fleets</p></dd>
+<dd><p>Character vector specifying fishery catchability (q) blocks for each fleet.
+Each element must follow the structure: <code>"Block_&lt;block number&gt;_Year_&lt;start&gt;-&lt;end&gt;_Fleet_&lt;fleet number&gt;"</code>
+or <code>"none_Fleet_&lt;fleet number&gt;"</code>.</p>
+<p>This allows users to define time-varying catchability blocks independently of selectivity blocks.
+The blocks must be non-overlapping and sequential in time within each fleet.</p>
+<p>For example:</p><ul><li><p><code>"Block_1_Year_1-35_Fleet_1"</code> assigns block 1 to Fleet 1 for years 1–35.</p></li>
+<li><p><code>"Block_2_Year_36-56_Fleet_1"</code> continues with block 2 for years 36–56.</p></li>
+<li><p><code>"Block_3_Year_57-terminal_Fleet_1"</code> assigns block 3 from year 57 to the terminal year for Fleet 1.</p></li>
+<li><p><code>"none_Fleet_2"</code> indicates no catchability blocks are used for Fleet 2.</p></li>
+</ul><p>Internally, these specifications are converted to a <code>[n_regions, n_years, n_fish_fleets]</code> array,
+where each block is mapped to the appropriate years and fleets.</p></dd>
 
 
 <dt id="arg-fishsel-pe-pars-spec">fishsel_pe_pars_spec<a class="anchor" aria-label="anchor" href="#arg-fishsel-pe-pars-spec"></a></dt>
-<dd><p>Specification for fishery selectivity process error parameters. If cont_tv_fish_sel is = 0, then this is all fixed and not estimated. Otherwise, the options are: est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes, options fix and none all indicate to not estimate seletivity process error parameters and treat these as fixed.</p></dd>
+<dd><p>Character string specifying how process error parameters for fishery selectivity
+are estimated across regions and sexes. This is only relevant if <code>cont_tv_fish_sel</code> is not set to <code>"none"</code>;
+otherwise, all process error parameters are treated as fixed.</p>
+<p>Available options include:</p><ul><li><p><code>"est_all"</code>: Estimates separate process error parameters for each region and sex.</p></li>
+<li><p><code>"est_shared_r"</code>: Shares process error parameters across regions (sex-specific parameters are still estimated).</p></li>
+<li><p><code>"est_shared_s"</code>: Shares process error parameters across sexes (region-specific parameters are still estimated).</p></li>
+<li><p><code>"est_shared_r_s"</code>: Shares process error parameters across both regions and sexes, estimating a single set of parameters.</p></li>
+<li><p><code>"fix"</code> or <code>"none"</code>: Does not estimate process error parameters; all are treated as fixed.</p></li>
+</ul></dd>
 
 
 <dt id="arg-fish-fixed-sel-pars-spec">fish_fixed_sel_pars_spec<a class="anchor" aria-label="anchor" href="#arg-fish-fixed-sel-pars-spec"></a></dt>
-<dd><p>Specification for fishery selectivity fixed effects parameters. Options are est_all, which estiamtes all parameters, est_shared_r, which estiamtes parameters shared across regions, est_shared_s, which estiamtes parameters shared across sexes, and est_shared_r_s, which estimates these paraemters shared across regions and sexes</p></dd>
+<dd><p>Character string specifying the structure for estimating
+fixed-effect parameters of the fishery selectivity model (e.g., a50, k, amax).
+This controls whether selectivity parameters are estimated separately or shared across regions and sexes.</p>
+<p>Available options include:</p><ul><li><p><code>"est_all"</code>: Estimates separate fixed-effect selectivity parameters for each region and sex.</p></li>
+<li><p><code>"est_shared_r"</code>: Shares parameters across regions (sex-specific parameters are still estimated).</p></li>
+<li><p><code>"est_shared_s"</code>: Shares parameters across sexes (region-specific parameters are still estimated).</p></li>
+<li><p><code>"est_shared_r_s"</code>: Shares parameters across both regions and sexes, estimating a single set of fixed-effect parameters.</p></li>
+</ul></dd>
 
 
 <dt id="arg-fish-q-spec">fish_q_spec<a class="anchor" aria-label="anchor" href="#arg-fish-q-spec"></a></dt>
-<dd><p>Specification for fishery catchability. Options are est_all, which estiamtes all parameters across regions, est_shared_r, which estimates parameters shared across regions.</p></dd>
+<dd><p>Character string specifying the structure of fishery catchability (<code>q</code>) estimation
+across regions. This controls whether separate or shared parameters are used.</p>
+<p>Available options include:</p><ul><li><p><code>"est_all"</code>: Estimates separate catchability parameters for each region.</p></li>
+<li><p><code>"est_shared_r"</code>: Estimates a single catchability parameter shared across all regions.</p></li>
+</ul></dd>
 
 
 <dt id="arg-fish-sel-devs-spec">fish_sel_devs_spec<a class="anchor" aria-label="anchor" href="#arg-fish-sel-devs-spec"></a></dt>
-<dd><p>Specificaiton for selectivity process error dviations. Options are est_all, which estimates all deviations, est_shared_r, which shares them across regions, est_shared_s, which shares them across sexes, est_shared_r_s, which shares them across regions and sexes</p></dd>
+<dd><p>Character string specifying the structure of process error deviations
+in time-varying fishery selectivity dimensioned by the number of fishery fleets. This determines how deviations are estimated across regions and sexes.</p>
+<p>Available options include:</p><ul><li><p><code>"est_all"</code>: Estimates a separate deviation time series for each region and sex.</p></li>
+<li><p><code>"est_shared_r"</code>: Shares deviations across regions (sex-specific deviations are still estimated).</p></li>
+<li><p><code>"est_shared_s"</code>: Shares deviations across sexes (region-specific deviations are still estimated).</p></li>
+<li><p><code>"est_shared_r_s"</code>: Shares deviations across both regions and sexes, estimating a single deviation time series.</p></li>
+</ul><p>This argument is only used when a continuous time-varying selectivity form is specified (e.g., via <code>cont_tv_fish_sel</code>).</p></dd>
 
 
 <dt id="arg-corr-opt-semipar">corr_opt_semipar<a class="anchor" aria-label="anchor" href="#arg-corr-opt-semipar"></a></dt>
-<dd><p>Only used if cont_tv_sel is 3,4,5. Allows users to turn off estimation of certain correlation parameters ot be at 0. Options include corr_zero_y, which turns year correlations to 0, corr_zero_a which turns age correaltions to 0, corr_zero_y_a which turns year age correaltions to 0. These options can be used for cont_tv_sel 3,4,5. Additional options include corr_zero_c, which turns cohort correaltions to 0, corr_zero_y_c, which turns cohort and year correaltions to 0, corr_zero_a_c which turns age and cohort correaltions to 0, as well as corr_zero_y_a_c, which turns all correlations to 0, and effectively collapses to iid. These latter options are only available for cont_tv_sel 3,4.</p></dd>
+<dd><p>Character string specifying which correlation structures to suppress
+  when using semi-parametric time-varying selectivity models. Only used if <code>cont_tv_sel</code>
+  is set to one of <code>"3dmarg"</code>, <code>"3dcond"</code>, or <code>"2dar1"</code>.</p>
+<p>This option allows users to turn off estimation of specific correlation components in the
+  time-varying selectivity model. This can improve stability or enforce assumptions about
+  independence in the temporal or age structure.</p>
+<p>Available options:</p><ul><li><p><code>"corr_zero_y"</code>: Sets year (temporal) correlations to 0.</p></li>
+<li><p><code>"corr_zero_a"</code>: Sets age correlations to 0.</p></li>
+<li><p><code>"corr_zero_y_a"</code>: Sets both year and age correlations to 0.</p></li>
+<li><p><code>"corr_zero_c"</code>: Sets cohort correlations to 0. Only valid for <code>cont_tv_sel</code> = <code>"3dmarg"</code> or <code>"3dcond"</code>.</p></li>
+<li><p><code>"corr_zero_y_c"</code>: Sets year and cohort correlations to 0. Only valid for <code>cont_tv_sel</code> = <code>"3dmarg"</code> or <code>"3dcond"</code>.</p></li>
+<li><p><code>"corr_zero_a_c"</code>: Sets age and cohort correlations to 0. Only valid for <code>cont_tv_sel</code> = <code>"3dmarg"</code> or <code>"3dcond"</code>.</p></li>
+<li><p><code>"corr_zero_y_a_c"</code>: Sets all correlations (year, age, and cohort) to 0.
+      Only valid for <code>cont_tv_sel</code> = <code>"3dmarg"</code> or <code>"3dcond"</code>; equivalent to an iid structure.</p></li>
+</ul><p>These correlation-suppression flags are ignored when <code>cont_tv_sel</code> is set to any other value.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

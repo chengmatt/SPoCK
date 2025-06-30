@@ -20,32 +20,78 @@ Setup_Mod_Movement(
 )
 }
 \arguments{
-\item{input_list}{List containing a data list, parameter list, and map list}
+\item{input_list}{List containing data, parameter, and map lists for the model.}
 
-\item{do_recruits_move}{Whether recruits move, 1 (they move), 0 (they don't move), default is 0}
+\item{do_recruits_move}{Integer flag (0 or 1) indicating whether recruits move.
+Default is 0 (do not move).}
 
-\item{use_fixed_movement}{Whether to use a fixed movement matrix, == 0 don't use, == 1 use}
+\item{use_fixed_movement}{Integer flag (0 or 1) indicating whether to use a fixed movement matrix (1) or estimate movement parameters (0).
+Default is 0.}
 
-\item{Fixed_Movement}{Input for a fixed movement matrix dimensioned by n_regions, n_regions, n_years, n_ages, n_sexes}
+\item{Fixed_Movement}{Numeric array for fixed movement matrix dimensioned by \code{[n_regions, n_regions, n_years, n_ages, n_sexes]}.
+Default is an array of ones.}
 
-\item{Use_Movement_Prior}{Whether or not to use movement priors == 0 don't use, == 1 use}
+\item{Use_Movement_Prior}{Integer flag (0 or 1) indicating whether to use movement priors.
+Default is 0 (no priors).}
 
-\item{Movement_prior}{Movement prior values, can be dimension as a vector of (results in a constant prior across all regions from, years, ages, and sexes), or as an array by n_regions, n_regions, n_years, n_ages, n_sexes}
+\item{Movement_prior}{Numeric vector or array specifying prior values for movement parameters.
+If a vector, a constant prior is applied across all dimensions.}
 
-\item{Movement_ageblk_spec}{Either a character string specifiying "constant" age movement, or a ist object specifying which ages to group together and block (i.e., which ages to share parameters for). Each element in the list should be a vector specifying the range of ages for which to share or block parameters for. For example, list(c(1:6), c(7:10), c(11:n_ages)) has 3 age blocks, where ages 1-6 have the same paraemters, 7:10 have the same parameters (but diffeerent from 1:6), and 11:n_ages haave the same parameters (but different from 1:6 and 7:10).
-The default behavior is to estimate unique movement parmaeters for all ages. To estimate age-invariant movement this list would be specified as: list(c(1:n_ages)).}
+\item{Movement_ageblk_spec}{Either:
+\itemize{
+  \item Character string \code{"constant"} for age-invariant movement, or
+  \item A list of numeric vectors specifying age blocks sharing parameters.
+}
+For example, \code{list(c(1:6), c(7:10), c(11:n_ages))} defines three age blocks where:
+\itemize{
+  \item ages 1 to 6 share parameters,
+  \item ages 7 to 10 share parameters,
+  \item ages 11 to \code{n_ages} share parameters.
+}
+To specify age-invariant movement, use either \code{"constant"} or \code{list(c(1:n_ages))}.}
 
-\item{Movement_yearblk_spec}{Either a character string specifiying "constant" year movement, list object specifying which years to group together and block (i.e., which years to share parameters for). Each element in the list should be a vector specifying the range of years for which to share or block parameters for. For example, list(c(1:6), c(7:10), c(11:n_years)) has 3 year blocks, where years 1-6 have the same paraemters, 7:10 have the same parameters (but diffeerent from 1:6), and 11:n_years haave the same parameters (but different from 1:6 and 7:10).
-The default behavior is to estimate unique movement parameters for all years To estimate time-invariant movement this list would be specified as: list(c(1:n_years)).}
+\item{Movement_yearblk_spec}{Either:
+\itemize{
+  \item Character string \code{"constant"} for time-invariant movement, or
+  \item A list of numeric vectors specifying year blocks sharing movement parameters.
+}}
 
-\item{Movement_sexblk_spec}{Either a character string specifiying "constant" sex movement, list object specifying which sexes to group together and block (i.e., which sexes to share parameters for). Each element in the list should be a vector specifying the range of sexes for which to share or block parameters for. For example, list(1, 2) has 2 sex blocks, where each sex has unique parameters
-The default behavior is to estimate unique movement parameters for all sexes. To estimate sex-invariant movement this list would be specified as: list(c(1:n_sexes)).}
+\item{Movement_sexblk_spec}{Either:
+\itemize{
+  \item Character string \code{"constant"} for sex-invariant movement, or
+  \item A list of numeric vectors specifying sex blocks sharing movement parameters.
+}}
 
-\item{cont_vary_movement}{Continuous varying movement: "none", "iid_y", "iid_a", "iid_y_a", 'iid_y_s', 'iid_a_s', "iid_y_a_s"}
+\item{cont_vary_movement}{Character string specifying continuous varying movement type.
+Available options:
+\itemize{
+  \item \code{"none"}
+  \item \code{"iid_y"} (iid deviations by year)
+  \item \code{"iid_a"} (iid deviations by age)
+  \item \code{"iid_y_a"} (iid deviations by year and age)
+  \item \code{"iid_y_s"} (iid deviations by year and sex)
+  \item \code{"iid_a_s"} (iid deviations by age and sex)
+  \item \code{"iid_y_a_s"} (iid deviations by year, age, and sex)
+}
+Default is \code{"none"}.}
 
-\item{Movement_cont_pe_pars_spec}{Specification of process error parameters. Character string where options are 'est_shared_r', 'est_shared_a', "est_shared_s", 'est_shared_r_a', 'est_shared_a_s', "est_shared_r_s", 'est_shared_r_a_s', 'est_all', 'fix', 'none'}
+\item{Movement_cont_pe_pars_spec}{Character string specifying process error parameter sharing.
+Available options:
+\itemize{
+  \item \code{"est_shared_r"}
+  \item \code{"est_shared_a"}
+  \item \code{"est_shared_s"}
+  \item \code{"est_shared_r_a"}
+  \item \code{"est_shared_a_s"}
+  \item \code{"est_shared_r_s"}
+  \item \code{"est_shared_r_a_s"}
+  \item \code{"est_all"}
+  \item \code{"fix"}
+  \item \code{"none"}
+}
+Default is \code{"none"}.}
 
-\item{...}{Additional inputs for starting values for movement parameters (move_pars)}
+\item{...}{Additional parameters such as starting values for \code{move_pars}, \code{logit_move_devs}, and \code{move_pe_pars}.}
 }
 \description{
 Setup Movement Processes for SPoCK

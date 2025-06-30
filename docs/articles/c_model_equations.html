@@ -632,8 +632,10 @@ represent the observed catches and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsCatch}}}</annotation></semantics></math>
 is the standard deviation of the catch. In general,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsCatch}}}</annotation></semantics></math>
-is not estimable and should be fixed at a small value (e.g., 1e-02) such
-that catch is assumed to be known.
+is not estimable and should be fixed at a small value (e.g., 1e-03) such
+that catch is assumed to be known, which is the default in
+<code>SPoCK</code>. Users should be able to easily modify this value in
+the parameter list to something other than 1e-03 if desired.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mtext mathvariant="normal">ObsCatch</mtext></msub><annotation encoding="application/x-tex">\lambda_{\text{ObsCatch}}</annotation></semantics></math>
 in this case represents a likelihood weight to apply to catch data
 (generally not recommended to use and should be set to 1). In a case
@@ -1167,7 +1169,11 @@ with negligible error, the value specified for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Fmort}</annotation></semantics></math>
 should be inconsequential. It is generally necessary to constrain
 fishing mortality deviations to ensure that all parameters are
-identifiable.</p>
+identifiable. Currently,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Fmort}</annotation></semantics></math>
+can be specified as either random effects or penalized likelihood. Under
+a penalized likelihood framework, this value is fixed at 1, although
+this can be easily modified by the user.</p>
 </div>
 <div class="section level4">
 <h4 id="selpen">Selectivity (Fishery and Survey)<a class="anchor" aria-label="anchor" href="#selpen"></a>

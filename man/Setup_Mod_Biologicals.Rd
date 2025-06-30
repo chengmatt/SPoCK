@@ -19,27 +19,31 @@ Setup_Mod_Biologicals(
 )
 }
 \arguments{
-\item{input_list}{List containing a data list, parameter list, and map list}
+\item{input_list}{List containing data, parameter, and map lists for the model.}
 
-\item{WAA}{Inputs of weight at age dimensioned by n_region, n_year, n_ages, n_sexes}
+\item{WAA}{Numeric array of weight-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.}
 
-\item{MatAA}{Inputs of maturity at age dimensioned by n_region, n_year, n_ages, n_sexes}
+\item{MatAA}{Numeric array of maturity-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.}
 
-\item{AgeingError}{Inputs of ageing error matrix dimensioned by number of modelled ages, number of observed composition ages Default behavior uses an identity matrix (no ageing error)}
+\item{AgeingError}{Numeric matrix representing the ageing error transition matrix, dimensioned by \code{[number of modeled ages, number of observed composition ages]}. Defaults to identity matrix if not specified (no ageing error).}
 
-\item{Use_M_prior}{Whether or not to use natural mortality prior, == 0 don't use, == 1 use}
+\item{Use_M_prior}{Integer flag indicating whether to apply a natural mortality prior (\code{0} = no, \code{1} = yes).}
 
-\item{M_prior}{Vector of natural mortality priors with the first element representing the mean in normal space, and the second element representing the sd.}
+\item{M_prior}{Numeric vector of length two giving the mean (in normal space) and standard deviation of the natural mortality prior.}
 
-\item{fit_lengths}{Whether or not to fit length data, == 0 dont fit, == 1 fit}
+\item{fit_lengths}{Integer flag indicating whether to fit length data (\code{0} = no, \code{1} = yes).}
 
-\item{SizeAgeTrans}{Size age transition matrix dimensioned by n_regions, n_years, n_lens, n_ages, n_sexes}
+\item{SizeAgeTrans}{Numeric array of size-at-age transition probabilities, dimensioned \code{[n_regions, n_years, n_lens, n_ages, n_sexes]}.}
 
-\item{M_spec}{Character specifying options for how to estimate natural mortality. Default is NULL such that it is estimated for 2 sexes or only estimated for a single sex if it is a single sex model. Other options include "est_shared_s" which estimates the same natural mortality rate if n_sexes == 2. The other option is "fix" which fixes all natural mortality parameters.}
+\item{M_spec}{Character string specifying natural mortality estimation approach. Defaults to \code{NULL}, which estimates mortality for each sex independently. Other options:
+\itemize{
+  \item \code{"est_shared_s"}: Estimate a single natural mortality rate shared across sexes (if \code{n_sexes == 2}).
+  \item \code{"fix"}: Fix all natural mortality parameters using the provided array.
+}}
 
-\item{Fixed_natmort}{Fixed natural mortality array, dimensionsed by n_regions, n_yrs, n_ages, and n_sexes}
+\item{Fixed_natmort}{Numeric array of fixed natural mortality values, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}. Required if \code{M_spec = "fix"}.}
 
-\item{...}{Additional arguments for starting values of ln_M and M_offset (note that when M_spec is specified at 'fix', these will not be used. Instead, a user must supply a fixed natural mortality array using Fixed_natmort)}
+\item{...}{Additional arguments for starting values such as \code{ln_M} and \code{M_offset}. These are ignored if \code{M_spec = "fix"}.}
 }
 \description{
 Setup biological inputs for estimation model

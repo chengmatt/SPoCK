@@ -84,11 +84,11 @@
 
 
 <dt id="arg-usetagging">UseTagging<a class="anchor" aria-label="anchor" href="#arg-usetagging"></a></dt>
-<dd><p>Numeric indicating whether to use tagging data (1) or not (0)</p></dd>
+<dd><p>Numeric (0 or 1) indicating whether to use tagging data (1) or not (0)</p></dd>
 
 
 <dt id="arg-tag-release-indicator">tag_release_indicator<a class="anchor" aria-label="anchor" href="#arg-tag-release-indicator"></a></dt>
-<dd><p>Matrix dimensioned by n_tag_cohorts, 2 (where the first column is the release region, and the second column is the release year) describing the release region and year of a given tag cohort</p></dd>
+<dd><p>Matrix [n_tag_cohorts x 2], where columns are release region and release year</p></dd>
 
 
 <dt id="arg-max-tag-liberty">max_tag_liberty<a class="anchor" aria-label="anchor" href="#arg-max-tag-liberty"></a></dt>
@@ -96,75 +96,105 @@
 
 
 <dt id="arg-tagged-fish">Tagged_Fish<a class="anchor" aria-label="anchor" href="#arg-tagged-fish"></a></dt>
-<dd><p>Array dimensioned by n_tag_cohorts, n_ages, n_sexes describing the tag released fish</p></dd>
+<dd><p>Array [n_tag_cohorts x n_ages x n_sexes] describing tagged fish releases</p></dd>
 
 
 <dt id="arg-obs-tag-recap">Obs_Tag_Recap<a class="anchor" aria-label="anchor" href="#arg-obs-tag-recap"></a></dt>
-<dd><p>Observed tag recaptures dimensioned by max_tag_liberty, n_tag_cohorts, n_regions, n_ages, n_sexes</p></dd>
+<dd><p>Array [max_tag_liberty x n_tag_cohorts x n_regions x n_ages x n_sexes] observed tag recaptures</p></dd>
 
 
 <dt id="arg-tag-liketype">Tag_LikeType<a class="anchor" aria-label="anchor" href="#arg-tag-liketype"></a></dt>
-<dd><p>Numeric indicating tag likelihood type, == 0 Poisson, == 1 Negative Binomial, == 2 Multinomial Release Conditioned, == 3 Multinomial recapture conditioned, == 4 Dirichlet-Multinomial_Release, == 5 Dirichlet-Multinomial_Recapture</p></dd>
+<dd><p>Character string specifying tag likelihood type. One of:</p><ul><li><p><code>"Poisson"</code></p></li>
+<li><p><code>"NegBin"</code></p></li>
+<li><p><code>"Multinomial_Release"</code></p></li>
+<li><p><code>"Multinomial_Recapture"</code></p></li>
+<li><p><code>"Dirichlet-Multinomial_Release"</code></p></li>
+<li><p><code>"Dirichlet-Multinomial_Recapture"</code></p></li>
+</ul><p>Example: <code>Tag_LikeType = "NegBin"</code></p></dd>
 
 
 <dt id="arg-mixing-period">mixing_period<a class="anchor" aria-label="anchor" href="#arg-mixing-period"></a></dt>
-<dd><p>Numeric indicating mixing period such that any year &lt; mixing period for a given tag cohort is not fit to</p></dd>
+<dd><p>Numeric indicating minimum years post-release to include in fitting</p></dd>
 
 
 <dt id="arg-t-tagging">t_tagging<a class="anchor" aria-label="anchor" href="#arg-t-tagging"></a></dt>
-<dd><p>Fractional year in which tag releases happen</p></dd>
+<dd><p>Fractional year when tagging occurs (e.g., 0.5 for mid-year)</p></dd>
 
 
 <dt id="arg-tag-selex">tag_selex<a class="anchor" aria-label="anchor" href="#arg-tag-selex"></a></dt>
-<dd><p>Numeric indicating how tag recovery selectivity is parameterized, == 0 uniform selectivity, == 1 sex-averaged fishery selectivity from dominant fleet (fleet 1), == 2 sex-specific selectivity from dominant fleet (fleet 1)</p></dd>
+<dd><p>Character string specifying tag recovery selectivity. One of:</p><ul><li><p><code>"Uniform_DomFleet"</code></p></li>
+<li><p><code>"SexAgg_DomFleet"</code></p></li>
+<li><p><code>"SexSp_DomFleet"</code></p></li>
+<li><p><code>"Uniform_AllFleet"</code></p></li>
+<li><p><code>"SexAgg_AllFleet"</code></p></li>
+<li><p><code>"SexSp_AllFleet"</code></p></li>
+</ul><p>Example: <code>tag_selex = "SexSp_AllFleet"</code></p></dd>
 
 
 <dt id="arg-tag-natmort">tag_natmort<a class="anchor" aria-label="anchor" href="#arg-tag-natmort"></a></dt>
-<dd><p>Numeric indicating how tag natural mortality is parameterized, == 0 age- and sex-averaged, == 1 unique age, but sex-averaged natural mortality, == 2 unique sex, but age-aggregated natural mortality, == 3 unique sex-and age natural mortality</p></dd>
+<dd><p>Character string specifying tag natural mortality parameterization. One of:</p><ul><li><p><code>"AgeAgg_SexAgg"</code></p></li>
+<li><p><code>"AgeSp_SexAgg"</code></p></li>
+<li><p><code>"AgeAgg_SexSp"</code></p></li>
+<li><p><code>"AgeSp_SexSp"</code></p></li>
+</ul><p>Example: <code>tag_natmort = "AgeSp_SexSp"</code></p></dd>
 
 
 <dt id="arg-use-tagrep-prior">Use_TagRep_Prior<a class="anchor" aria-label="anchor" href="#arg-use-tagrep-prior"></a></dt>
-<dd><p>Numeric indicating whether to use tag reporting rate prior == 0, don't use, == 1 use</p></dd>
+<dd><p>Numeric (0 or 1) whether to use tag reporting rate prior</p></dd>
 
 
 <dt id="arg-tagrep-priortype">TagRep_PriorType<a class="anchor" aria-label="anchor" href="#arg-tagrep-priortype"></a></dt>
-<dd><p>Numeric indicating the type of tag reporting prior to use, == 0 Symmetric beta, such that extremes are penalized heaviest, == 1 Regular Beta</p></dd>
+<dd><p>Numeric indicating prior type for tag reporting:</p><ul><li><p>0: Symmetric beta</p></li>
+<li><p>1: Regular beta</p></li>
+</ul></dd>
 
 
 <dt id="arg-tagrep-mu">TagRep_mu<a class="anchor" aria-label="anchor" href="#arg-tagrep-mu"></a></dt>
-<dd><p>Numeric value indicating the mean of the tag reporting rate prior (in normal space), can be specified as NA if using a symmetric beta</p></dd>
+<dd><p>Numeric mean for tag reporting prior (normal space); <code>NA</code> if symmetric beta is used</p></dd>
 
 
 <dt id="arg-tagrep-sd">TagRep_sd<a class="anchor" aria-label="anchor" href="#arg-tagrep-sd"></a></dt>
-<dd><p>Numeric value indicating the sd of the tag reporting rate prior (in normal space), for a symmetric beta, smaller values impose a larger penalty along the edges</p></dd>
+<dd><p>Numeric standard deviation for tag reporting prior (normal space)</p></dd>
 
 
 <dt id="arg-move-age-tag-pool">move_age_tag_pool<a class="anchor" aria-label="anchor" href="#arg-move-age-tag-pool"></a></dt>
-<dd><p>List indicating how to fit tagging age-specific data. For example, if no age-specific data are avalialble, then the list should be dimensioned as lenght 1, where the first elmeent is 1:n_ages, however, if we have ageing data and we want to pool to fit data, then each element is the ages we want to pool. If we want to fit each age uniquely, then the list will have unique elements representing each age e.g., list(1,2,3,4, ... n_ages)</p></dd>
+<dd><p>List or character specifying pooling of tagging data by age groups. Examples:</p><ul><li><p><code>list(c(1:6), c(7:15), c(16:30))</code> pools ages 1–6, 7–15, 16–30</p></li>
+<li><p><code>"all"</code> pools all ages together as one group (internally converted to <code>list(1:n_ages)</code>)</p></li>
+<li><p><code>list(1, 2, 3, ..., n_ages)</code> fits each age separately</p></li>
+</ul></dd>
 
 
 <dt id="arg-move-sex-tag-pool">move_sex_tag_pool<a class="anchor" aria-label="anchor" href="#arg-move-sex-tag-pool"></a></dt>
-<dd><p>List indicating how to fit tagging sex-specific data. For example, if no sex-specific data are avalialble, then the list should be dimensioned as lenght 1, where the first elmeent is 1:n_sexes. However, if we have sex-specific data, this can be dimensioned as a length of 2 if we want to fit sex-specific data (e.g., list(1, 2))</p></dd>
+<dd><p>List or character specifying pooling of tagging data by sex groups. Examples:</p><ul><li><p><code>list(1:2)</code> pools sexes together</p></li>
+<li><p><code>"all"</code> pools all sexes together (internally converted to <code>list(1:n_sexes)</code>)</p></li>
+<li><p><code>list(1, 2)</code> fits each sex separately</p></li>
+</ul></dd>
 
 
 <dt id="arg-init-tag-mort-spec">Init_Tag_Mort_spec<a class="anchor" aria-label="anchor" href="#arg-init-tag-mort-spec"></a></dt>
-<dd><p>Specificaiotn of initial tag mortality. Options include fix, which fixes this parameter, or est, which estiamtes this parameter</p></dd>
+<dd><p>Character string <code>"fix"</code> or <code>"est"</code> specifying if initial tag mortality is fixed or estimated</p></dd>
 
 
 <dt id="arg-tag-shed-spec">Tag_Shed_spec<a class="anchor" aria-label="anchor" href="#arg-tag-shed-spec"></a></dt>
-<dd><p>Specificaiotn of chronic tag shedding. Options include fix, which fixes this parameter, or est, which estiamtes this parameter</p></dd>
+<dd><p>Character string <code>"fix"</code> or <code>"est"</code> specifying if chronic tag shedding is fixed or estimated</p></dd>
 
 
 <dt id="arg-tagrep-spec">TagRep_spec<a class="anchor" aria-label="anchor" href="#arg-tagrep-spec"></a></dt>
-<dd><p>Specification of tag reporting rates. Options include est_all, which estiamtes all regions and blocks specified, est_shared_r, which estamites all blocks, but shares across regions.</p></dd>
+<dd><p>Character string specifying tag reporting rate estimation scheme:</p><ul><li><p><code>"est_all"</code> estimates rates for all blocks and regions independently</p></li>
+<li><p><code>"est_shared_r"</code> estimates rates shared across regions but varying by block</p></li>
+<li><p><code>"fix"</code> fixes all reporting rates (no estimation)</p></li>
+</ul></dd>
 
 
 <dt id="arg-tag-reporting-blocks">Tag_Reporting_blocks<a class="anchor" aria-label="anchor" href="#arg-tag-reporting-blocks"></a></dt>
-<dd><p>Tag reporting blocks we want to specify. Character vector for each region "Block_1_Year_1-15_Region_1", "Block_2_Year_16-30_Region_1", "none_Region_2 to specify as an example.</p></dd>
+<dd><p>Character vector specifying blocks of years and regions for tag reporting rates. Format examples:</p><ul><li><p><code>"Block_1_Year_1-15_Region_1"</code></p></li>
+<li><p><code>"Block_2_Year_16-terminal_Region_2"</code></p></li>
+<li><p><code>"none_Region_3"</code> (means no block, constant for that region)</p></li>
+</ul></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments specifying starting values for tagging parameters (ln_Init_Tag_Mort, ln_Tag_Shed, ln_tag_theta, Tag_Reporting_Pars)</p></dd>
+<dd><p>Additional starting values for tagging parameters such as <code>ln_Init_Tag_Mort</code>, <code>ln_Tag_Shed</code>, <code>ln_tag_theta</code>, <code>Tag_Reporting_Pars</code></p></dd>
 
 </dl></div>
 

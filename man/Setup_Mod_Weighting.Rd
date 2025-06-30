@@ -21,31 +21,39 @@ Setup_Mod_Weighting(
 )
 }
 \arguments{
-\item{input_list}{List containing a data list, parameter list, and map list}
+\item{input_list}{List containing data, parameter, and map lists.}
 
-\item{sablefish_ADMB}{Numeric indicating whether to mimic calculations for the sablefish ADMB model (1) or not (0)}
+\item{sablefish_ADMB}{Numeric flag to mimic calculations for the sablefish ADMB model:
+\itemize{
+  \item 1 to mimic sablefish ADMB calculations
+  \item 0 otherwise
+}}
 
-\item{likelihoods}{Numeric indicating whether to use ADMB likelihoods (0) or TMB likelihoods (1)}
+\item{likelihoods}{Numeric flag indicating likelihood implementation to use:
+\itemize{
+  \item 0 for ADMB likelihoods
+  \item 1 for TMB likelihoods
+}}
 
-\item{Wt_Catch}{Weight (lambda) applied to the overall catch dataset}
+\item{Wt_Catch}{Numeric weight (lambda) applied to the overall catch dataset.}
 
-\item{Wt_FishIdx}{Weight (lambda) applied to the overall fishery index dataset}
+\item{Wt_FishIdx}{Numeric weight (lambda) applied to the overall fishery index dataset.}
 
-\item{Wt_SrvIdx}{Weight (lambda) applied to the overall survey index dataset}
+\item{Wt_SrvIdx}{Numeric weight (lambda) applied to the overall survey index dataset.}
 
-\item{Wt_Rec}{Weight (lambda) applied to recruitment penalty}
+\item{Wt_Rec}{Numeric weight (lambda) applied to the recruitment penalty.}
 
-\item{Wt_F}{Weight (lambda) applied to fishing mortality penalty}
+\item{Wt_F}{Numeric weight (lambda) applied to the fishing mortality penalty.}
 
-\item{Wt_Tagging}{Weight (lambda) applied to tagging data}
+\item{Wt_Tagging}{Numeric weight (lambda) applied to tagging data.}
 
-\item{Wt_FishAgeComps}{Weight (lambda) applied to fishery age compositions}
+\item{Wt_FishAgeComps}{Numeric weight (lambda) applied to fishery age composition data.}
 
-\item{Wt_SrvAgeComps}{Weight (lambda) applied to survey age compositions}
+\item{Wt_SrvAgeComps}{Numeric weight (lambda) applied to survey age composition data.}
 
-\item{Wt_FishLenComps}{Weight (lambda) applied to fishery length compositions}
+\item{Wt_FishLenComps}{Numeric weight (lambda) applied to fishery length composition data.}
 
-\item{Wt_SrvLenComps}{Weight (lambda) applied to survey length compositions}
+\item{Wt_SrvLenComps}{Numeric weight (lambda) applied to survey length composition data.}
 }
 \description{
 Set up SPoCK model weighting

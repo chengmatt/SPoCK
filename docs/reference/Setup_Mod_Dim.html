@@ -66,41 +66,50 @@
 
 
 <dl><dt id="arg-years">years<a class="anchor" aria-label="anchor" href="#arg-years"></a></dt>
-<dd><p>vector of years</p></dd>
+<dd><p>Numeric vector of years.</p></dd>
 
 
 <dt id="arg-ages">ages<a class="anchor" aria-label="anchor" href="#arg-ages"></a></dt>
-<dd><p>vector of ages</p></dd>
+<dd><p>Numeric vector of age classes.</p></dd>
 
 
 <dt id="arg-lens">lens<a class="anchor" aria-label="anchor" href="#arg-lens"></a></dt>
-<dd><p>vector of lengths (can just input 1 if not fitting lengths)</p></dd>
+<dd><p>Numeric vector of length bins; can be set to <code>1</code> if length data are not modeled.</p></dd>
 
 
 <dt id="arg-n-regions">n_regions<a class="anchor" aria-label="anchor" href="#arg-n-regions"></a></dt>
-<dd><p>Number of regions</p></dd>
+<dd><p>Integer specifying the number of spatial regions.</p></dd>
 
 
 <dt id="arg-n-sexes">n_sexes<a class="anchor" aria-label="anchor" href="#arg-n-sexes"></a></dt>
-<dd><p>Number of sexes</p></dd>
+<dd><p>Integer specifying the number of sexes.</p></dd>
 
 
 <dt id="arg-n-fish-fleets">n_fish_fleets<a class="anchor" aria-label="anchor" href="#arg-n-fish-fleets"></a></dt>
-<dd><p>Number of fishery fleets</p></dd>
+<dd><p>Integer specifying the number of fishery fleets.</p></dd>
 
 
 <dt id="arg-n-srv-fleets">n_srv_fleets<a class="anchor" aria-label="anchor" href="#arg-n-srv-fleets"></a></dt>
-<dd><p>Number of survey fleets</p></dd>
+<dd><p>Integer specifying the number of survey fleets.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>Whether to print messages</p></dd>
+<dd><p>Logical flag indicating whether to print progress messages (default <code>FALSE</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a list object of length 3, with a data list, a par list, and a map list</p>
-    </div>
+    <p>A list containing three named elements:</p><dl><dt><code>data</code></dt>
+<dd><p>List of data inputs dimensioned by the model dimensions.</p></dd>
+
+  <dt><code>parameters</code></dt>
+<dd><p>List of model parameters initialized according to dimensions.</p></dd>
+
+  <dt><code>map</code></dt>
+<dd><p>List of parameter mappings for model fitting.</p></dd>
+
+
+</dl></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

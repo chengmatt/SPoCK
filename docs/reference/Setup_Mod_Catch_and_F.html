@@ -69,47 +69,68 @@
 
 
 <dl><dt id="arg-input-list">input_list<a class="anchor" aria-label="anchor" href="#arg-input-list"></a></dt>
-<dd><p>List containing a data list, parameter list, and map list</p></dd>
+<dd><p>A list containing data, parameters, and map lists used by the model.</p></dd>
 
 
 <dt id="arg-obscatch">ObsCatch<a class="anchor" aria-label="anchor" href="#arg-obscatch"></a></dt>
-<dd><p>Array of observed catches dimensioned by n_regions, n_years, n_fish_fleets</p></dd>
+<dd><p>Numeric array of observed catches, dimensioned <code>[n_regions, n_years, n_fish_fleets]</code>.</p></dd>
 
 
 <dt id="arg-catch-type">Catch_Type<a class="anchor" aria-label="anchor" href="#arg-catch-type"></a></dt>
-<dd><p>Matrix of catch types dimensioned n_years, n_fish_fleets, == 0 indicates years to use aggregated catch, == 1 indicates years to use region specific catch</p></dd>
+<dd><p>Integer matrix with dimensions <code>[n_years, n_fish_fleets]</code>, specifying catch data types:</p><ul><li><p><code>0</code>: Use aggregated catch data for the year.</p></li>
+<li><p><code>1</code>: Use region-specific catch data for the year.</p></li>
+</ul></dd>
 
 
 <dt id="arg-usecatch">UseCatch<a class="anchor" aria-label="anchor" href="#arg-usecatch"></a></dt>
-<dd><p>Array of indicator variables dimensioned by n_regions, n_years, n_fish_fleets, == 0 don't use catch, == 1 use catch and fit</p></dd>
+<dd><p>Indicator array <code>[n_regions, n_years, n_fish_fleets]</code> specifying whether to include catch data in the fit:</p><ul><li><p><code>0</code>: Do not use catch data.</p></li>
+<li><p><code>1</code>: Use catch data and fit.</p></li>
+</ul></dd>
 
 
 <dt id="arg-use-f-pen">Use_F_pen<a class="anchor" aria-label="anchor" href="#arg-use-f-pen"></a></dt>
-<dd><p>Indicator number specifying whether a f penalty is applied == 0, don't apply, == 1 apply</p></dd>
+<dd><p>Integer flag indicating whether to apply a fishing mortality penalty:</p><ul><li><p><code>0</code>: Do not apply penalty.</p></li>
+<li><p><code>1</code>: Apply penalty.</p></li>
+</ul></dd>
 
 
 <dt id="arg-est-all-regional-f">est_all_regional_F<a class="anchor" aria-label="anchor" href="#arg-est-all-regional-f"></a></dt>
-<dd><p>Indicator number specifying whether all regional fishing mortality deviates are estimated, == 0 some F's are not regional and are aggregated, == 1 all fishing mortality deviates are regional</p></dd>
+<dd><p>Integer flag indicating whether all regional fishing mortality deviations are estimated:</p><ul><li><p><code>0</code>: Some fishing mortality deviations are aggregated across regions.</p></li>
+<li><p><code>1</code>: All fishing mortality deviations are regional.</p></li>
+</ul></dd>
 
 
 <dt id="arg-catch-constant">Catch_Constant<a class="anchor" aria-label="anchor" href="#arg-catch-constant"></a></dt>
-<dd><p>A vector dimensioned by n_fish_fleets specifying the constant to add to catch observations</p></dd>
+<dd><p>Numeric vector of length <code>n_fish_fleets</code> specifying constants to add to catch observations.</p></dd>
 
 
 <dt id="arg-sigmac-spec">sigmaC_spec<a class="anchor" aria-label="anchor" href="#arg-sigmac-spec"></a></dt>
-<dd><p>Observation error specificaiotn for catch. Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all</p></dd>
+<dd><p>Character string specifying observation error structure for catch data. Default behavior fixes <code>sigmaC</code> at a starting value of <code>1e-3</code> (log-scale <code>ln_sigmaC = log(1e-3)</code>) for all regions and fleets. Other options include:</p><ul><li><p><code>"est_shared_f"</code>: Estimate <code>sigmaC</code> shared across fishery fleets.</p></li>
+<li><p><code>"est_shared_r"</code>: Estimate <code>sigmaC</code> shared across regions but unique by fleet.</p></li>
+<li><p><code>"est_shared_r_f"</code>: Estimate <code>sigmaC</code> shared across regions and fleets.</p></li>
+<li><p><code>"fix"</code>: Fix <code>sigmaC</code> at the starting value.</p></li>
+<li><p><code>"est_all"</code>: Estimate separate <code>sigmaC</code> for each region and fleet.</p></li>
+</ul></dd>
 
 
 <dt id="arg-sigmaf-spec">sigmaF_spec<a class="anchor" aria-label="anchor" href="#arg-sigmaf-spec"></a></dt>
-<dd><p>Process error specificaiotn for fishing mortality Default behavior is to fix it for all regions and fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "est_shared_r" which estimates it but shares across regions (unique for each fleet), "est_shared_r_f which estimates it but shares across regions and fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all</p></dd>
+<dd><p>Character string specifying process error structure for fishing mortality. Default fixes <code>sigmaF</code> at <code>1</code> on the log scale (i.e., <code>ln_sigmaF = 0</code>). Other options include:</p><ul><li><p><code>"est_shared_f"</code>: Estimate <code>sigmaF</code> shared across fishery fleets.</p></li>
+<li><p><code>"est_shared_r"</code>: Estimate <code>sigmaF</code> shared across regions but unique by fleet.</p></li>
+<li><p><code>"est_shared_r_f"</code>: Estimate <code>sigmaF</code> shared across regions and fleets.</p></li>
+<li><p><code>"fix"</code>: Fix <code>sigmaF</code> at the starting value.</p></li>
+<li><p><code>"est_all"</code>: Estimate separate <code>sigmaF</code> for each region and fleet.</p></li>
+</ul></dd>
 
 
 <dt id="arg-sigmaf-agg-spec">sigmaF_agg_spec<a class="anchor" aria-label="anchor" href="#arg-sigmaf-agg-spec"></a></dt>
-<dd><p>Process error specificaiotn for fishing mortality when aggregated. Default behavior is to fix it for all fishery fleets. Other options include: "est_shared_f" which estimates it but shares it across fishery fleets, "fix" which fixes it at the starting value, and "est_all", which estimates them all</p></dd>
+<dd><p>Character string specifying process error structure for aggregated fishing mortality. Default fixes <code>sigmaF_agg</code> at the starting value (log-scale <code>ln_sigmaF_agg</code>). Other options include:</p><ul><li><p><code>"est_shared_f"</code>: Estimate <code>sigmaF_agg</code> shared across fishery fleets.</p></li>
+<li><p><code>"fix"</code>: Fix at the starting value.</p></li>
+<li><p><code>"est_all"</code>: Estimate separate parameters for each fishery fleet.</p></li>
+</ul></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments specifying starting values for ln_sigmaC and ln_sigmaF</p></dd>
+<dd><p>Additional arguments specifying starting values for <code>ln_sigmaC</code>, <code>ln_sigmaF</code>, and <code>ln_sigmaF_agg</code>.</p></dd>
 
 </dl></div>
 

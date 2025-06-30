@@ -348,7 +348,7 @@ Fishery catches can fit to using a lognormal likelihood, given by the following:
 L(log(\text{ObsCatch}_{r,y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{r,y,f}) - log(\text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
 \]
 
-where $\text{ObsCatch}_{r,y,f}$ represent the observed catches and $\sigma^{2^{\text{ObsCatch}}}$ is the standard deviation of the catch. In general, $\sigma^{2^{\text{ObsCatch}}}$ is not estimable and should be fixed at a small value (e.g., 1e-02) such that catch is assumed to be known. $\lambda_{\text{ObsCatch}}$ in this case represents a likelihood weight to apply to catch data (generally not recommended to use and should be set to 1). In a case where only spatially-aggregated catches are available for a period of time, the model has the option to switch to an aggregated likelihood for those defined periods:
+where $\text{ObsCatch}_{r,y,f}$ represent the observed catches and $\sigma^{2^{\text{ObsCatch}}}$ is the standard deviation of the catch. In general, $\sigma^{2^{\text{ObsCatch}}}$ is not estimable and should be fixed at a small value (e.g., 1e-03) such that catch is assumed to be known, which is the default in `SPoCK`. Users should be able to easily modify this value in the parameter list to something other than 1e-03 if desired.  $\lambda_{\text{ObsCatch}}$ in this case represents a likelihood weight to apply to catch data (generally not recommended to use and should be set to 1). In a case where only spatially-aggregated catches are available for a period of time, the model has the option to switch to an aggregated likelihood for those defined periods:
 
 \[
 L(log(\text{ObsCatch}_{y,f})) = \lambda_{\text{ObsCatch}} \frac{1}{\sqrt{2\pi} \sigma^{\text{ObsCatch}}} \exp(-\frac{[log(\text{ObsCatch}_{y,f}) - log(\sum_r \text{Catch}_{r,y,f})]^2}{2\sigma^{2^{\text{ObsCatch}}}})
@@ -649,7 +649,7 @@ Fishing mortality deviations are also constrained by a normal distribution:
 \epsilon_{r,y,f}^{Fmort} \sim N\left(0,\sigma^2_{Fmort}\right)
 \]
 
-where $\sigma^2_{Fmort}$ is fixed at an arbitrary value to ensure that observed catches are fit to adequately. Given that values of observed catch are generally known with negligible error, the value specified for $\sigma^2_{Fmort}$ should be inconsequential. It is generally necessary to constrain fishing mortality deviations to ensure that all parameters are identifiable. 
+where $\sigma^2_{Fmort}$ is fixed at an arbitrary value to ensure that observed catches are fit to adequately. Given that values of observed catch are generally known with negligible error, the value specified for $\sigma^2_{Fmort}$ should be inconsequential. It is generally necessary to constrain fishing mortality deviations to ensure that all parameters are identifiable. Currently, $\sigma^2_{Fmort}$ can be specified as either random effects or penalized likelihood. Under a penalized likelihood framework, this value is fixed at 1, although this can be easily modified by the user. 
 
 #### Selectivity (Fishery and Survey) {#selpen}
 

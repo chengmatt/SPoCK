@@ -58,30 +58,78 @@ Setup_Sim_Tagging <- function(
 #' Setup tagging processes and parameters
 #'
 #' @param input_list List containing a data list, parameter list, and map list
-#' @param UseTagging Numeric indicating whether to use tagging data (1) or not (0)
-#' @param tag_release_indicator Matrix dimensioned by n_tag_cohorts, 2 (where the first column is the release region, and the second column is the release year) describing the release region and year of a given tag cohort
+#' @param UseTagging Numeric (0 or 1) indicating whether to use tagging data (1) or not (0)
+#' @param tag_release_indicator Matrix [n_tag_cohorts x 2], where columns are release region and release year
 #' @param max_tag_liberty Maximum number of years to track a tagged cohort
-#' @param Tagged_Fish Array dimensioned by n_tag_cohorts, n_ages, n_sexes describing the tag released fish
-#' @param Obs_Tag_Recap Observed tag recaptures dimensioned by max_tag_liberty, n_tag_cohorts, n_regions, n_ages, n_sexes
-#' @param Tag_LikeType Numeric indicating tag likelihood type, == 0 Poisson, == 1 Negative Binomial, == 2 Multinomial Release Conditioned, == 3 Multinomial recapture conditioned, == 4 Dirichlet-Multinomial_Release, == 5 Dirichlet-Multinomial_Recapture
-#' @param mixing_period Numeric indicating mixing period such that any year < mixing period for a given tag cohort is not fit to
-#' @param t_tagging Fractional year in which tag releases happen
-#' @param tag_selex Numeric indicating how tag recovery selectivity is parameterized, == 0 uniform selectivity, == 1 sex-averaged fishery selectivity from dominant fleet (fleet 1), == 2 sex-specific selectivity from dominant fleet (fleet 1)
-#' @param tag_natmort Numeric indicating how tag natural mortality is parameterized, == 0 age- and sex-averaged, == 1 unique age, but sex-averaged natural mortality, == 2 unique sex, but age-aggregated natural mortality, == 3 unique sex-and age natural mortality
-#' @param Use_TagRep_Prior Numeric indicating whether to use tag reporting rate prior == 0, don't use, == 1 use
-#' @param TagRep_PriorType Numeric indicating the type of tag reporting prior to use, == 0 Symmetric beta, such that extremes are penalized heaviest, == 1 Regular Beta
-#' @param TagRep_mu Numeric value indicating the mean of the tag reporting rate prior (in normal space), can be specified as NA if using a symmetric beta
-#' @param TagRep_sd Numeric value indicating the sd of the tag reporting rate prior (in normal space), for a symmetric beta, smaller values impose a larger penalty along the edges
-#' @param move_age_tag_pool List indicating how to fit tagging age-specific data. For example, if no age-specific data are avalialble, then the list should be dimensioned as lenght 1, where the first elmeent is 1:n_ages, however, if we have ageing data and we want to pool to fit data, then each element is the ages we want to pool. If we want to fit each age uniquely, then the list will have unique elements representing each age e.g., list(1,2,3,4, ... n_ages)
-#' @param move_sex_tag_pool List indicating how to fit tagging sex-specific data. For example, if no sex-specific data are avalialble, then the list should be dimensioned as lenght 1, where the first elmeent is 1:n_sexes. However, if we have sex-specific data, this can be dimensioned as a length of 2 if we want to fit sex-specific data (e.g., list(1, 2))
-#' @param ... Additional arguments specifying starting values for tagging parameters (ln_Init_Tag_Mort, ln_Tag_Shed, ln_tag_theta, Tag_Reporting_Pars)
-#' @param Init_Tag_Mort_spec Specificaiotn of initial tag mortality. Options include fix, which fixes this parameter, or est, which estiamtes this parameter
-#' @param Tag_Shed_spec Specificaiotn of chronic tag shedding. Options include fix, which fixes this parameter, or est, which estiamtes this parameter
-#' @param Tag_Reporting_blocks Tag reporting blocks we want to specify. Character vector for each region "Block_1_Year_1-15_Region_1", "Block_2_Year_16-30_Region_1", "none_Region_2 to specify as an example.
-#' @param TagRep_spec Specification of tag reporting rates. Options include est_all, which estiamtes all regions and blocks specified, est_shared_r, which estamites all blocks, but shares across regions.
+#' @param Tagged_Fish Array [n_tag_cohorts x n_ages x n_sexes] describing tagged fish releases
+#' @param Obs_Tag_Recap Array [max_tag_liberty x n_tag_cohorts x n_regions x n_ages x n_sexes] observed tag recaptures
+#' @param Tag_LikeType Character string specifying tag likelihood type. One of:
+#'   \itemize{
+#'     \item \code{"Poisson"}
+#'     \item \code{"NegBin"}
+#'     \item \code{"Multinomial_Release"}
+#'     \item \code{"Multinomial_Recapture"}
+#'     \item \code{"Dirichlet-Multinomial_Release"}
+#'     \item \code{"Dirichlet-Multinomial_Recapture"}
+#'   }
+#'   Example: \code{Tag_LikeType = "NegBin"}
+#' @param mixing_period Numeric indicating minimum years post-release to include in fitting
+#' @param t_tagging Fractional year when tagging occurs (e.g., 0.5 for mid-year)
+#' @param tag_selex Character string specifying tag recovery selectivity. One of:
+#'   \itemize{
+#'     \item \code{"Uniform_DomFleet"}
+#'     \item \code{"SexAgg_DomFleet"}
+#'     \item \code{"SexSp_DomFleet"}
+#'     \item \code{"Uniform_AllFleet"}
+#'     \item \code{"SexAgg_AllFleet"}
+#'     \item \code{"SexSp_AllFleet"}
+#'   }
+#'   Example: \code{tag_selex = "SexSp_AllFleet"}
+#' @param tag_natmort Character string specifying tag natural mortality parameterization. One of:
+#'   \itemize{
+#'     \item \code{"AgeAgg_SexAgg"}
+#'     \item \code{"AgeSp_SexAgg"}
+#'     \item \code{"AgeAgg_SexSp"}
+#'     \item \code{"AgeSp_SexSp"}
+#'   }
+#'   Example: \code{tag_natmort = "AgeSp_SexSp"}
+#' @param Use_TagRep_Prior Numeric (0 or 1) whether to use tag reporting rate prior
+#' @param TagRep_PriorType Numeric indicating prior type for tag reporting:
+#'   \itemize{
+#'     \item 0: Symmetric beta
+#'     \item 1: Regular beta
+#'   }
+#' @param TagRep_mu Numeric mean for tag reporting prior (normal space); \code{NA} if symmetric beta is used
+#' @param TagRep_sd Numeric standard deviation for tag reporting prior (normal space)
+#' @param move_age_tag_pool List or character specifying pooling of tagging data by age groups. Examples:
+#'   \itemize{
+#'     \item \code{list(c(1:6), c(7:15), c(16:30))} pools ages 1–6, 7–15, 16–30
+#'     \item \code{"all"} pools all ages together as one group (internally converted to \code{list(1:n_ages)})
+#'     \item \code{list(1, 2, 3, ..., n_ages)} fits each age separately
+#'   }
+#' @param move_sex_tag_pool List or character specifying pooling of tagging data by sex groups. Examples:
+#'   \itemize{
+#'     \item \code{list(1:2)} pools sexes together
+#'     \item \code{"all"} pools all sexes together (internally converted to \code{list(1:n_sexes)})
+#'     \item \code{list(1, 2)} fits each sex separately
+#'   }
+#' @param Init_Tag_Mort_spec Character string \code{"fix"} or \code{"est"} specifying if initial tag mortality is fixed or estimated
+#' @param Tag_Shed_spec Character string \code{"fix"} or \code{"est"} specifying if chronic tag shedding is fixed or estimated
+#' @param Tag_Reporting_blocks Character vector specifying blocks of years and regions for tag reporting rates. Format examples:
+#'   \itemize{
+#'     \item \code{"Block_1_Year_1-15_Region_1"}
+#'     \item \code{"Block_2_Year_16-terminal_Region_2"}
+#'     \item \code{"none_Region_3"} (means no block, constant for that region)
+#'   }
+#' @param TagRep_spec Character string specifying tag reporting rate estimation scheme:
+#'   \itemize{
+#'     \item \code{"est_all"} estimates rates for all blocks and regions independently
+#'     \item \code{"est_shared_r"} estimates rates shared across regions but varying by block
+#'     \item \code{"fix"} fixes all reporting rates (no estimation)
+#'   }
+#' @param ... Additional starting values for tagging parameters such as \code{ln_Init_Tag_Mort}, \code{ln_Tag_Shed}, \code{ln_tag_theta}, \code{Tag_Reporting_Pars}
 #'
 #' @export Setup_Mod_Tagging
-#'
 Setup_Mod_Tagging <- function(input_list,
                               UseTagging = 0,
                               tag_release_indicator = NULL,

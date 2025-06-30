@@ -69,47 +69,49 @@
 
 
 <dl><dt id="arg-input-list">input_list<a class="anchor" aria-label="anchor" href="#arg-input-list"></a></dt>
-<dd><p>List containing a data list, parameter list, and map list</p></dd>
+<dd><p>List containing data, parameter, and map lists for the model.</p></dd>
 
 
 <dt id="arg-waa">WAA<a class="anchor" aria-label="anchor" href="#arg-waa"></a></dt>
-<dd><p>Inputs of weight at age dimensioned by n_region, n_year, n_ages, n_sexes</p></dd>
+<dd><p>Numeric array of weight-at-age, dimensioned <code>[n_regions, n_years, n_ages, n_sexes]</code>.</p></dd>
 
 
 <dt id="arg-mataa">MatAA<a class="anchor" aria-label="anchor" href="#arg-mataa"></a></dt>
-<dd><p>Inputs of maturity at age dimensioned by n_region, n_year, n_ages, n_sexes</p></dd>
+<dd><p>Numeric array of maturity-at-age, dimensioned <code>[n_regions, n_years, n_ages, n_sexes]</code>.</p></dd>
 
 
 <dt id="arg-ageingerror">AgeingError<a class="anchor" aria-label="anchor" href="#arg-ageingerror"></a></dt>
-<dd><p>Inputs of ageing error matrix dimensioned by number of modelled ages, number of observed composition ages Default behavior uses an identity matrix (no ageing error)</p></dd>
+<dd><p>Numeric matrix representing the ageing error transition matrix, dimensioned by <code>[number of modeled ages, number of observed composition ages]</code>. Defaults to identity matrix if not specified (no ageing error).</p></dd>
 
 
 <dt id="arg-use-m-prior">Use_M_prior<a class="anchor" aria-label="anchor" href="#arg-use-m-prior"></a></dt>
-<dd><p>Whether or not to use natural mortality prior, == 0 don't use, == 1 use</p></dd>
+<dd><p>Integer flag indicating whether to apply a natural mortality prior (<code>0</code> = no, <code>1</code> = yes).</p></dd>
 
 
 <dt id="arg-m-prior">M_prior<a class="anchor" aria-label="anchor" href="#arg-m-prior"></a></dt>
-<dd><p>Vector of natural mortality priors with the first element representing the mean in normal space, and the second element representing the sd.</p></dd>
+<dd><p>Numeric vector of length two giving the mean (in normal space) and standard deviation of the natural mortality prior.</p></dd>
 
 
 <dt id="arg-fit-lengths">fit_lengths<a class="anchor" aria-label="anchor" href="#arg-fit-lengths"></a></dt>
-<dd><p>Whether or not to fit length data, == 0 dont fit, == 1 fit</p></dd>
+<dd><p>Integer flag indicating whether to fit length data (<code>0</code> = no, <code>1</code> = yes).</p></dd>
 
 
 <dt id="arg-sizeagetrans">SizeAgeTrans<a class="anchor" aria-label="anchor" href="#arg-sizeagetrans"></a></dt>
-<dd><p>Size age transition matrix dimensioned by n_regions, n_years, n_lens, n_ages, n_sexes</p></dd>
+<dd><p>Numeric array of size-at-age transition probabilities, dimensioned <code>[n_regions, n_years, n_lens, n_ages, n_sexes]</code>.</p></dd>
 
 
 <dt id="arg-m-spec">M_spec<a class="anchor" aria-label="anchor" href="#arg-m-spec"></a></dt>
-<dd><p>Character specifying options for how to estimate natural mortality. Default is NULL such that it is estimated for 2 sexes or only estimated for a single sex if it is a single sex model. Other options include "est_shared_s" which estimates the same natural mortality rate if n_sexes == 2. The other option is "fix" which fixes all natural mortality parameters.</p></dd>
+<dd><p>Character string specifying natural mortality estimation approach. Defaults to <code>NULL</code>, which estimates mortality for each sex independently. Other options:</p><ul><li><p><code>"est_shared_s"</code>: Estimate a single natural mortality rate shared across sexes (if <code>n_sexes == 2</code>).</p></li>
+<li><p><code>"fix"</code>: Fix all natural mortality parameters using the provided array.</p></li>
+</ul></dd>
 
 
 <dt id="arg-fixed-natmort">Fixed_natmort<a class="anchor" aria-label="anchor" href="#arg-fixed-natmort"></a></dt>
-<dd><p>Fixed natural mortality array, dimensionsed by n_regions, n_yrs, n_ages, and n_sexes</p></dd>
+<dd><p>Numeric array of fixed natural mortality values, dimensioned <code>[n_regions, n_years, n_ages, n_sexes]</code>. Required if <code>M_spec = "fix"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments for starting values of ln_M and M_offset (note that when M_spec is specified at 'fix', these will not be used. Instead, a user must supply a fixed natural mortality array using Fixed_natmort)</p></dd>
+<dd><p>Additional arguments for starting values such as <code>ln_M</code> and <code>M_offset</code>. These are ignored if <code>M_spec = "fix"</code>.</p></dd>
 
 </dl></div>
 

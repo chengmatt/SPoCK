@@ -43,16 +43,21 @@ Setup_Sim_Dim <- function(n_sims,
 
 #' Set up model dimensions
 #'
-#' @param n_regions Number of regions
-#' @param ages vector of ages
-#' @param n_sexes Number of sexes
-#' @param n_fish_fleets Number of fishery fleets
-#' @param n_srv_fleets Number of survey fleets
-#' @param years vector of years
-#' @param lens vector of lengths (can just input 1 if not fitting lengths)
-#' @param verbose Whether to print messages
+#' @param n_regions Integer specifying the number of spatial regions.
+#' @param ages Numeric vector of age classes.
+#' @param n_sexes Integer specifying the number of sexes.
+#' @param n_fish_fleets Integer specifying the number of fishery fleets.
+#' @param n_srv_fleets Integer specifying the number of survey fleets.
+#' @param years Numeric vector of years.
+#' @param lens Numeric vector of length bins; can be set to \code{1} if length data are not modeled.
+#' @param verbose Logical flag indicating whether to print progress messages (default \code{FALSE}).
 #'
-#' @returns Returns a list object of length 3, with a data list, a par list, and a map list
+#' @returns A list containing three named elements:
+#' \describe{
+#'   \item{\code{data}}{List of data inputs dimensioned by the model dimensions.}
+#'   \item{\code{parameters}}{List of model parameters initialized according to dimensions.}
+#'   \item{\code{map}}{List of parameter mappings for model fitting.}
+#' }
 #' @export Setup_Mod_Dim
 #'
 Setup_Mod_Dim <- function(years,

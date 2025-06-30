@@ -1,4 +1,4 @@
-#' Set up simulation observaiton processes
+#' Set up simulation observation processes
 #'
 #' @param Comp_Structure Composition Structure (spltR_spltS, spltR_jntS)
 #' @param Comp_Srv_Like Survey Composition Likelihoods (Multinomial, Dirichlet-Multinomial, iid-Logistic-Normal)
@@ -75,22 +75,29 @@ Setup_Sim_Observation_Proc <- function(Comp_Structure,
 
 #' Set up SPoCK model weighting
 #'
-#' @param input_list List containing a data list, parameter list, and map list
-#' @param likelihoods Numeric indicating whether to use ADMB likelihoods (0) or TMB likelihoods (1)
-#' @param Wt_Catch Weight (lambda) applied to the overall catch dataset
-#' @param Wt_FishIdx Weight (lambda) applied to the overall fishery index dataset
-#' @param Wt_SrvIdx Weight (lambda) applied to the overall survey index dataset
-#' @param Wt_Rec Weight (lambda) applied to recruitment penalty
-#' @param Wt_F Weight (lambda) applied to fishing mortality penalty
-#' @param Wt_FishAgeComps Weight (lambda) applied to fishery age compositions
-#' @param Wt_SrvAgeComps Weight (lambda) applied to survey age compositions
-#' @param Wt_FishLenComps Weight (lambda) applied to fishery length compositions
-#' @param Wt_SrvLenComps Weight (lambda) applied to survey length compositions
-#' @param sablefish_ADMB Numeric indicating whether to mimic calculations for the sablefish ADMB model (1) or not (0)
-#' @param Wt_Tagging Weight (lambda) applied to tagging data
+#' @param input_list List containing data, parameter, and map lists.
+#' @param likelihoods Numeric flag indicating likelihood implementation to use:
+#'   \itemize{
+#'     \item 0 for ADMB likelihoods
+#'     \item 1 for TMB likelihoods
+#'   }
+#' @param Wt_Catch Numeric weight (lambda) applied to the overall catch dataset.
+#' @param Wt_FishIdx Numeric weight (lambda) applied to the overall fishery index dataset.
+#' @param Wt_SrvIdx Numeric weight (lambda) applied to the overall survey index dataset.
+#' @param Wt_Rec Numeric weight (lambda) applied to the recruitment penalty.
+#' @param Wt_F Numeric weight (lambda) applied to the fishing mortality penalty.
+#' @param Wt_FishAgeComps Numeric weight (lambda) applied to fishery age composition data.
+#' @param Wt_SrvAgeComps Numeric weight (lambda) applied to survey age composition data.
+#' @param Wt_FishLenComps Numeric weight (lambda) applied to fishery length composition data.
+#' @param Wt_SrvLenComps Numeric weight (lambda) applied to survey length composition data.
+#' @param sablefish_ADMB Numeric flag to mimic calculations for the sablefish ADMB model:
+#'   \itemize{
+#'     \item 1 to mimic sablefish ADMB calculations
+#'     \item 0 otherwise
+#'   }
+#' @param Wt_Tagging Numeric weight (lambda) applied to tagging data.
 #'
 #' @export Setup_Mod_Weighting
-#'
 Setup_Mod_Weighting <- function(input_list,
                                 sablefish_ADMB,
                                 likelihoods,
