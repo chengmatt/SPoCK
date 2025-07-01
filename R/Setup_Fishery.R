@@ -1156,8 +1156,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   for(f in 1:input_list$data$n_fish_fleets) {
     for(r in 1:input_list$data$n_regions) {
 
-      if(!fish_fixed_sel_pars_spec[f] %in% c("est_all", "est_shared_r", "est_shared_r_s", "fix"))
-        stop("fish_fixed_sel_pars_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, fix")
+      if(!fish_fixed_sel_pars_spec[f] %in% c("est_all", "est_shared_r", "est_shared_r_s", "fix", "est_shared_s"))
+        stop("fish_fixed_sel_pars_spec not correctly specfied. Should be one of these: est_all, est_shared_r, est_shared_r_s, est_shared_s, fix")
 
       # Figure out max number of selectivity parameters for a given region and fleet
       if(unique(input_list$data$fish_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
@@ -1270,7 +1270,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
     if(!is.null(fishsel_pe_pars_spec)) {
       if(!fishsel_pe_pars_spec[f] %in% c("fix", "none", "est_all", "est_shared_r", "est_shared_s", "est_shared_r_s"))
-        stop("fishsel_pe_pars_spec not correctly specfied. Should be one of these: fix, none, est_all, est_shared_r, est_shared_r_s")
+        stop("fishsel_pe_pars_spec not correctly specfied. Should be one of these: fix, none, est_all, est_shared_r, est_shared_r_s, est_shared_s")
     }
 
     for(r in 1:input_list$data$n_regions) {

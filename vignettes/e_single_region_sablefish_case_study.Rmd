@@ -304,7 +304,7 @@ input_list <- Setup_Mod_Fishsel_and_Q(input_list = input_list,
                                       # whether to estimate all fixed effects 
                                       # for fishery selectivity and later modify
                                       # to fix and share parameters 
-                                      fish_fixed_sel_pars = 
+                                      fish_fixed_sel_pars_spec = 
                                         c("est_all", "est_all"),
 
                                       # whether to estimate all fixed effects 

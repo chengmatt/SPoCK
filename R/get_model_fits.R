@@ -482,7 +482,7 @@ get_comp_prop <- function(data,
 #'
 #' @param obs_mat Matrix of observed values, which can have NAs - gets removed with years arge (dimensioned by region, year, age, sex, fleet)
 #' @param exp_mat Matrix of expceted values, which can have NAs - gets removed with years arg (dimensioned by region, year, age, sex, fleet)
-#' @param N Input or effective sample size. If aggregated (comp_type == 0), then a vector of n_years is provided. If split by region, split by sex (comp_type == 1), then provide a matrix dimensioned by n_regions x n_years x n_sexes. If joint by sex, by split by region (comp_type == 2), then provide a matrix of n_regions x n_years
+#' @param N Input or effective sample size. If aggregated (comp_type == 0), then a vector of n_years is provided. If split by region, split by sex (comp_type == 1), then provide a array dimensioned by n_regions x n_years x n_sexes. If joint by sex, by split by region (comp_type == 2), then provide a matrix of n_regions x n_years
 #' @param years Years we want to point to and filter to
 #' @param fleet Fleet we want to filter to
 #' @param bins Vector of age or length bins
@@ -670,7 +670,7 @@ plot_resids <- function(osa_results) {
       stat_qq(data = res, aes(sample = resid), col = "blue", size = 2, alpha = 0.5) +
       theme_bw(base_size = 20) +
       labs(x = "Theoretical quantiles", y = "Sample quantiles") +
-      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 8)
+      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 4)
   }
 
   # Split Sex and Split Region
