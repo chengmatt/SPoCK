@@ -1,5 +1,29 @@
 template:
   bootstrap: 5
   bootswatch: flatly
+
 destination: docs
 url: https://chengmatt.github.io/SPoCK
+
+articles:
+  - title: "Model Descriptions"
+    contents:
+      - a_model_dimensions
+      - b_model_parameters
+      - c_model_equations
+      - d_model_report
+
+  - title: "Model Setup Examples"
+    contents:
+      - e_single_region_sablefish_case_study
+      - f_single_region_bsai_pollock_case_study
+      - g_spatial_sablefish_case_study
+
+  - title: "Simulation and Projections"
+    contents:
+      - h_closed_loop_simulations
+      - i_reference_points
+
+  - title: "Advanced"
+    contents:
+      - j_starting_mapping

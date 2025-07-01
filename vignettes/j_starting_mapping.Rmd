@@ -104,7 +104,7 @@ Alternatively, starting values can be assigned after running the setup functions
 ```{r}
 input_list <- Setup_Mod_Rec(input_list = input_list, # input data list from above
                             # Model options
-                            do_rec_bias_ramp = , # don't do bias ramp 
+                            do_rec_bias_ramp = FALSE, # don't do bias ramp 
                             sigmaR_switch = as.integer(length(1960:1975)), # when to switch from early to late sigmaR
                             dont_est_recdev_last = 1, # don't estimate last recruitment deviate
                             rec_model = "mean_rec", # recruitment model
