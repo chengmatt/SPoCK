@@ -462,8 +462,9 @@ get_idx_fits_plot <- function(data,
 #' Get Retrospective Plot
 #'
 #' @param retro_output Dataframe generated from do_retrospective
+#' @param Rec_Age Age in which recruitment occurs
 #'
-#' @returns A retrospective plot of recruitment and SSB
+#' @returns A retrospective plot of recruitment and SSB in relative and absolute scales, as well as a retrospective plot of recruitment by cohort (squid plot)
 #' @export get_retrospective_plot
 #'
 #' @examples
@@ -479,9 +480,9 @@ get_idx_fits_plot <- function(data,
 #' do_francis = F, # if we want tod o Francis
 #' n_francis_iter = NULL # Number of francis iterations to do
 #' )
-#' get_retrospective_plot(retro)
+#' get_retrospective_plot(retro, Rec_Age = 2)
 #' }
-get_retrospective_plot <- function(retro_output) {
+get_retrospective_plot <- function(retro_output, Rec_Age) {
 
   if(sum(names(retro_output) %in% c("Region", "Year", "value", "Type", "peel")) != 5) stop("Retro output does not contain Region, Year, value, Type, peel.")
 
@@ -512,7 +513,27 @@ get_retrospective_plot <- function(retro_output) {
     theme_sablefish() +
     ggplot2::theme(legend.position = 'top')
 
-  return(retro_plot)
+  # get absolute retro plot
+  abs_retro_plot <- ggplot2::ggplot() +
+    ggplot2::geom_line(retro_output %>% filter(peel != 0), mapping = ggplot2::aes(x = Year, y = value, group = peel, color = peel), lwd = 1) +
+    ggplot2::geom_line(retro_output %>% filter(peel == 0), mapping = ggplot2::aes(x = Year, y = value), lty = 2, lwd = 1) +
+    ggplot2::scale_color_viridis_c() +
+    ggplot2::coord_cartesian(ylim = c(0, NA)) +
+    ggplot2::facet_wrap(~Type, scales = 'free') +
+    theme_sablefish() +
+    ggplot2::labs(x = 'Year', y = 'Value', color = 'Peel')
+
+  # get squid plot
+  squid_plot <- retro %>%
+    dplyr::mutate(Year = Year, terminal = max(retro$Year) - peel, cohort = Year - Rec_Age, years_est = terminal-Year) %>%
+    dplyr::filter(Type == 'Recruitment', cohort %in% seq(max(retro$Year) - 10, max(retro$Year), 1), terminal != Year) %>%
+    ggplot2::ggplot(ggplot2::aes(x = years_est - 1, y = value, group = Year, color = factor(cohort))) +
+    ggplot2::geom_line(lwd = 1.3) +
+    ggplot2::geom_point(size = 4) +
+    ggplot2::theme_bw(base_size = 15) +
+    ggplot2::labs(x = 'Years since cohort was last estimated', y = 'Recruitment (millions)', color = 'Cohort')
+
+  return(list(retro_plot, abs_retro_plot, squid_plot))
 }
 
 #' Plotting function for all basic quantities

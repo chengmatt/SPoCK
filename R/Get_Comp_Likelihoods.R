@@ -54,7 +54,7 @@ Get_Comp_Likelihoods = function(Exp,
 
   # Making sure things are correctly formatted (and regions are not dropped)
   Obs = array(Obs, dim = c(n_regions, n_obs_bins, n_sexes))
-  Exp = array(Exp, dim = c(n_regions, n_obs_bins, n_sexes)) # using n_obs_bins, because non-square ageing error matrix will collapse to n_obs_bins
+  Exp = array(Exp, dim = c(n_regions, n_model_bins, n_sexes)) # using n_obs_bins, because non-square ageing error matrix will collapse to n_obs_bins
   ISS = array(ISS, dim = c(n_regions, n_sexes))
   Wt_Mltnml = array(Wt_Mltnml, dim = c(n_regions, n_sexes))
   ln_theta = array(ln_theta, dim = c(n_regions, n_sexes))

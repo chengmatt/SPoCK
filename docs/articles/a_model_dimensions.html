@@ -973,15 +973,24 @@ sample size values)</td>
 </tr>
 <tr class="odd">
 <td><code>Wt_Catch</code></td>
-<td>Weight applied to fishery catch likelihoods.</td>
+<td>Weight applied to fishery catch likelihoods. Either a numeric scalar
+or an array of scalars dimensioned by <code>n_regions</code>,
+<code>n_years</code>, <code>n_fish_fleets.</code>
+</td>
 </tr>
 <tr class="even">
 <td><code>Wt_FishIdx</code></td>
-<td>Weight applied to fishery index likelihoods.</td>
+<td>Weight applied to fishery index likelihoods. Either a numeric scalar
+or an array of scalars dimensioned by <code>n_regions</code>,
+<code>n_years</code>, <code>n_fish_fleets.</code>
+</td>
 </tr>
 <tr class="odd">
 <td><code>Wt_SrvIdx</code></td>
-<td>Weight applied to survey index likelihoods.</td>
+<td>Weight applied to survey index likelihoods. Either a numeric scalar
+or an array of scalars dimensioned by <code>n_regions</code>,
+<code>n_years</code>, <code>n_srv_fleets.</code>
+</td>
 </tr>
 <tr class="even">
 <td><code>Wt_Rec</code></td>

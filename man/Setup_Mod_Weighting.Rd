@@ -35,11 +35,11 @@ Setup_Mod_Weighting(
   \item 1 for TMB likelihoods
 }}
 
-\item{Wt_Catch}{Numeric weight (lambda) applied to the overall catch dataset.}
+\item{Wt_Catch}{Either a numeric scalar (lambda) applied to the overall catch dataset or an array of lambdas (i.e., weights can change by year and fleet) dimensioned by n_regions, n_years, n_fish_fleets.}
 
-\item{Wt_FishIdx}{Numeric weight (lambda) applied to the overall fishery index dataset.}
+\item{Wt_FishIdx}{Either a numeric scalar (lambda) applied to the overall fishery index dataset  or an array of lambdas (i.e., weights can change by year and fleet) dimensioned by n_regions, n_years, n_fish_fleets.}
 
-\item{Wt_SrvIdx}{Numeric weight (lambda) applied to the overall survey index dataset.}
+\item{Wt_SrvIdx}{Either a numeric scalar (lambda) applied to the overall survey index dataset or an array of lambdas (i.e., weights can change by year and fleet) dimensioned by n_regions, n_years, n_srv_fleets.}
 
 \item{Wt_Rec}{Numeric weight (lambda) applied to the recruitment penalty.}
 

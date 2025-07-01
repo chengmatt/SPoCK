@@ -25,7 +25,7 @@ truncate_yr <- function(j,
 
   # Years
   retro_data$years <- data$years[1:(length(data$years) - j)] # remove j years from years vector
-  if(!is.na(sum(retro_data$bias_year))) data$bias_year[4] <- data$bias_year[4] - j # remove j years from bias correction vector
+  if(!is.na(sum(retro_data$bias_year))) data$bias_year[3:4] <- data$bias_year[3:4] - j # remove j years from bias correction vector (only applied to the full bias and descending limb)
 
 # Recruitment -------------------------------------------------------------
 

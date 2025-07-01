@@ -172,9 +172,9 @@ Name | Description
 |-------------------------|------------------------------------------------------|
 `sablefish_ADMB` | Value specific to bridging exercise for sablefish ADMB assessment. 0: Don’t mimic sablefish ADMB assessment for calculating and normalizing length composition data, 1: Mimic sablefish ADMB assessment 
 `likelihoods` |	Value specifying the type of likelihoods to use. 0: Use ADMB likelihoods (with associated weights), 1: Use TMB likelihoods (without any associated weights; weighted using standard deviation or input sample size values)
-`Wt_Catch` |	Weight applied to fishery catch likelihoods. 
-`Wt_FishIdx` |	Weight applied to fishery index likelihoods. 
-`Wt_SrvIdx`	| Weight applied to survey index likelihoods. 
+`Wt_Catch` |	Weight applied to fishery catch likelihoods. Either a numeric scalar or an array of scalars dimensioned by `n_regions`, `n_years`, `n_fish_fleets.` 
+`Wt_FishIdx` |	Weight applied to fishery index likelihoods. Either a numeric scalar or an array of scalars dimensioned by `n_regions`, `n_years`, `n_fish_fleets.` 
+`Wt_SrvIdx`	| Weight applied to survey index likelihoods. Either a numeric scalar or an array of scalars dimensioned by `n_regions`, `n_years`, `n_srv_fleets.` 
 `Wt_Rec` |	Weight applied to initial age deviations and recruitment deviations. 
 `Wt_F` |	Weight applied to fishing mortality deviations.
 `Wt_Tagging` |	Weight applied to tagging data.

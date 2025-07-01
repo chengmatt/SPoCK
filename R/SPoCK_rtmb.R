@@ -500,7 +500,7 @@ SPoCK_rtmb = function(pars, data) {
         # ADMB likelihoods
         if(likelihoods == 0) {
           Catch_nLL[1,y,f] = UseCatch[1,y,f] * (log(ObsCatch[1,y,f] + Catch_Constant[f]) -
-                                                  log(sum(PredCatch[,y,f]) + Catch_Constant[f]))^2 # SSQ Catch
+                                                  log((PredCatch[,y,f] + Catch_Constant[f])))^2 # SSQ Catch
         } # ADMB likelihoods
         if(likelihoods == 1) {
           Catch_nLL[1,y,f] = UseCatch[1,y,f] -1 * RTMB::dnorm(log(ObsCatch[1,y,f] + Catch_Constant[f]),
@@ -1011,24 +1011,24 @@ SPoCK_rtmb = function(pars, data) {
   } # if use tag reporting prior
 
   # Apply likelihood weights here and compute joint negative log likelihood
-  jnLL = (Wt_Catch * sum(Catch_nLL)) + # Catch likelihoods
-    (Wt_FishIdx * sum(FishIdx_nLL)) + # Fishery Index likelihood
-    (Wt_SrvIdx * sum(SrvIdx_nLL)) + # Survey Index likelihood
-    sum(FishAgeComps_nLL) + # Fishery Age likelihood
-    sum(FishLenComps_nLL) + # Fishery Length likelihood
-    sum(SrvAgeComps_nLL) + # Survey Age likelihood
-    sum(SrvLenComps_nLL) + # Survey Length likelihood
-    (Wt_Tagging * sum(Tag_nLL)) + # Tagging likelihood
-    (Wt_F * sum(Fmort_nLL)) + # Fishery Mortality Penalty
-    (Wt_Rec * sum(Rec_nLL)) + # Recruitment Penalty
-    (Wt_Rec * sum(Init_Rec_nLL)) + #  Initial Age Penalty
-    sel_nLL + #  selectivity penalty
-    M_nLL + # Natural Mortality Prior
-    h_nLL + # Steepness Prior
-    Movement_nLL + # movement Prior
-    TagRep_nLL + # tag reporting rate Prior
-    fish_q_nLL + # fishery q prior
-    srv_q_nLL  # survey q prior
+  jnLL = sum(Wt_Catch * Catch_nLL) + # Catch likelihoods
+         sum(Wt_FishIdx * FishIdx_nLL) + # Fishery Index likelihood
+         sum(Wt_SrvIdx * SrvIdx_nLL) + # Survey Index likelihood
+         sum(FishAgeComps_nLL) + # Fishery Age likelihood
+         sum(FishLenComps_nLL) + # Fishery Length likelihood
+         sum(SrvAgeComps_nLL) + # Survey Age likelihood
+         sum(SrvLenComps_nLL) + # Survey Length likelihood
+         (Wt_Tagging * sum(Tag_nLL)) + # Tagging likelihood
+         (Wt_F * sum(Fmort_nLL)) + # Fishery Mortality Penalty
+         (Wt_Rec * sum(Rec_nLL)) + # Recruitment Penalty
+         (Wt_Rec * sum(Init_Rec_nLL)) + #  Initial Age Penalty
+         sel_nLL + #  selectivity penalty
+         M_nLL + # Natural Mortality Prior
+         h_nLL + # Steepness Prior
+         Movement_nLL + # movement Prior
+         TagRep_nLL + # tag reporting rate Prior
+         fish_q_nLL + # fishery q prior
+         srv_q_nLL  # survey q prior
 
   # Report Section ----------------------------------------------------------
   # Biological Processes

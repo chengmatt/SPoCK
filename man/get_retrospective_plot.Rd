@@ -4,13 +4,15 @@
 \alias{get_retrospective_plot}
 \title{Get Retrospective Plot}
 \usage{
-get_retrospective_plot(retro_output)
+get_retrospective_plot(retro_output, Rec_Age)
 }
 \arguments{
 \item{retro_output}{Dataframe generated from do_retrospective}
+
+\item{Rec_Age}{Age in which recruitment occurs}
 }
 \value{
-A retrospective plot of recruitment and SSB
+A retrospective plot of recruitment and SSB in relative and absolute scales, as well as a retrospective plot of recruitment by cohort (squid plot)
 }
 \description{
 Get Retrospective Plot
@@ -28,6 +30,6 @@ n_cores = 7, # if parallel, number of cores to use
 do_francis = F, # if we want tod o Francis
 n_francis_iter = NULL # Number of francis iterations to do
 )
-get_retrospective_plot(retro)
+get_retrospective_plot(retro, Rec_Age = 2)
 }
 }
