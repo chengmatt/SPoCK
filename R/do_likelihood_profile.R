@@ -28,6 +28,10 @@ do_likelihood_profile <- function(data,
                                   inc = 0.05
                                   ) {
 
+  if(min_val > max_val) {
+    stop("`min_val` is greater than `max_val`. This likely occurred because you are profiling a log-transformed parameter. Try swapping the values: use the current `min_val` as `max_val`, and vice versa.")
+  }
+
   # create values to profile across
   vals <- seq(min_val, max_val, inc)
 
