@@ -23,11 +23,11 @@ Get_Feedback_Data(
 
 \item{sim}{sim index used for annual cycle}
 
-\item{skeleton_data}{Skeleton data list for estimation method (SPoCK) where all dimensions are defined using the total number of simulation years}
+\item{skeleton_data}{Skeleton data list for estimation method (SPoRC) where all dimensions are defined using the total number of simulation years}
 
-\item{skeleton_parameters}{Skeleton parameters list for estimation method (SPoCK) where all dimensions are defined using the total number of simulation years}
+\item{skeleton_parameters}{Skeleton parameters list for estimation method (SPoRC) where all dimensions are defined using the total number of simulation years}
 
-\item{skeleton_mapping}{Skeleton mapping list for estimation method (SPoCK) where all dimensions are defined using the total number of simulation years}
+\item{skeleton_mapping}{Skeleton mapping list for estimation method (SPoRC) where all dimensions are defined using the total number of simulation years}
 }
 \value{
 Returns data, parameters, and mapping list truncated to match the feedback year

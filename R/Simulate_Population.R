@@ -13,7 +13,7 @@ Setup_sim_env <- function(sim_list) {
 
   sim_env <- new.env(parent = parent.frame()) # define new environment for simulation
 
-  # Get SPoCK functions in simulation environment
+  # Get SPoRC functions in simulation environment
   sim_env$Get_Det_Recruitment <- Get_Det_Recruitment
   sim_env$Get_Tagging_Mortality <- Get_Tagging_Mortality
   sim_env$rdirM <- rdirM
@@ -671,9 +671,9 @@ Simulate_Pop_Static <- function(sim_list,
 #' @param sim_list Simulation list that defines the operating model options
 #' @param y y index used for annual cycle
 #' @param sim sim index used for annual cycle
-#' @param skeleton_data Skeleton data list for estimation method (SPoCK) where all dimensions are defined using the total number of simulation years
-#' @param skeleton_parameters Skeleton parameters list for estimation method (SPoCK) where all dimensions are defined using the total number of simulation years
-#' @param skeleton_mapping Skeleton mapping list for estimation method (SPoCK) where all dimensions are defined using the total number of simulation years
+#' @param skeleton_data Skeleton data list for estimation method (SPoRC) where all dimensions are defined using the total number of simulation years
+#' @param skeleton_parameters Skeleton parameters list for estimation method (SPoRC) where all dimensions are defined using the total number of simulation years
+#' @param skeleton_mapping Skeleton mapping list for estimation method (SPoRC) where all dimensions are defined using the total number of simulation years
 #'
 #' @export Get_Feedback_Data
 #' @returns Returns data, parameters, and mapping list truncated to match the feedback year

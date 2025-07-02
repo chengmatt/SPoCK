@@ -7,9 +7,9 @@
 get_ts_plot(rep, sd_rep, model_names)
 }
 \arguments{
-\item{rep}{List of n_models of `SPoCK` report lists}
+\item{rep}{List of n_models of `SPoRC` report lists}
 
-\item{sd_rep}{List of n_models of `SPoCK` sdreport lists}
+\item{sd_rep}{List of n_models of `SPoRC` sdreport lists}
 
 \item{model_names}{Vector of model names}
 }

@@ -18,13 +18,13 @@ knitr::opts_chunk$set(
   )
 ```
 
-The `SPoCK` package utilizes several helper functions to facilitate the set up of an age-structured assessment model. In this vignette, we will demonstrate how these helper functions might be used to set up a single-region model for Alaska sablefish. The vignette sets up the model following the parameterization of the 2024 federal Alaska sablefish stock assessment and compares model outputs from `SPoCK` to the existing ADMB model. The 2024 federal Alaska sablefish stock assessment is assessed on an Alaska-wide scale (from the Bering Sea to Eastern Gulf of Alaska) as a panmictic single-region model, with 2 sexes (females and males), 2 fishery fleets (fixed-gear and trawl), and 3 survey fleets (domestic longline, Japanese longline, and a domestic trawl survey). 
+The `SPoRC` package utilizes several helper functions to facilitate the set up of an age-structured assessment model. In this vignette, we will demonstrate how these helper functions might be used to set up a single-region model for Alaska sablefish. The vignette sets up the model following the parameterization of the 2024 federal Alaska sablefish stock assessment and compares model outputs from `SPoRC` to the existing ADMB model. The 2024 federal Alaska sablefish stock assessment is assessed on an Alaska-wide scale (from the Bering Sea to Eastern Gulf of Alaska) as a panmictic single-region model, with 2 sexes (females and males), 2 fishery fleets (fixed-gear and trawl), and 3 survey fleets (domestic longline, Japanese longline, and a domestic trawl survey). 
 
 First, let us load in any necessary packages. 
 
 ```{r setup, warning = FALSE, message = FALSE, eval = TRUE, warning = FALSE}
 # Load in packages
-library(SPoCK) 
+library(SPoRC) 
 library(here)
 library(RTMB)
 library(ggplot2)
@@ -258,7 +258,7 @@ input_list <- Setup_Mod_SrvIdx_and_Comps(input_list = input_list,
 
 ## Setup Selectivity and Catchability (Fishery and Survey)
 
-Specifying fishery/survey selectivity and catchability options (the function arguments are the same for both the fishery and survey) can be a bit involved as well. In `SPoCK`, there are several selectivity options, which include:
+Specifying fishery/survey selectivity and catchability options (the function arguments are the same for both the fishery and survey) can be a bit involved as well. In `SPoRC`, there are several selectivity options, which include:
 
 1) Whether we have continuous time-varying selectivity processes (`cont_tv_fish_sel` or `cont_tv_srv_sel`). For sablefish, continuous time-varying selectivity is not used and is specified as `none_Fleet_x`,
 2) Whether we have selectivity blocks (`fish_sel_blocks` or `srv_sel_blocks`). Sablefish assumes 3 time-blocks for the fixed-gear fleet and time-invariant selectivity for the trawl fishery. In general, time-blocks can be specified as `Block_v_Year_x-y_Fleet_z`, where `Block_v` represents the block number, `Year_x-y` represents the year range (`x-y`) for which the block number applies to, and `Fleet_z` represents the fleet to time-block for. If no time-blocks are specified, this can be left as `none_Fleet_z`,
@@ -504,7 +504,7 @@ ggplot(ts_df, aes(x = Year, y = ((RTMB - ADMB) / ADMB))) +
   geom_hline(yintercept = 0, lty = 2, size = 1.3) +
   facet_wrap(~Par, scales = "free_y") +
   labs(y = "Relative difference (%)")  +
-  SPoCK::theme_sablefish()
+  SPoRC::theme_sablefish()
 ```
 
 ![](figures/e_ts_comparison_re.png)
@@ -516,7 +516,7 @@ ggplot() +
   facet_wrap(~Par, scales = "free_y") +
   scale_color_manual(values = c('RTMB' = 'black', 'ADMB' = 'red')) +
   labs(x = "Year", color = 'Model', y = "Value") +
-  SPoCK::theme_sablefish()
+  SPoRC::theme_sablefish()
 ```
 
 ![](figures/e_ts_comparison.png)

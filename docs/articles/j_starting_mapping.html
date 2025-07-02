@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Starting Values and Fixing (and Sharing) Parameters • SPoCK</title>
+<title>Starting Values and Fixing (and Sharing) Parameters • SPoRC</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">SPoCK</a>
+    <a class="navbar-brand me-2" href="../index.html">SPoRC</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -58,7 +58,7 @@
 
     
     
-<p>In addition to the <code>SPoCK::Setup_xxx</code> functions, users can
+<p>In addition to the <code>SPoRC::Setup_xxx</code> functions, users can
 access several advanced model features. These include:</p>
 <ul>
 <li>Specifying starting values (closely tied to parameter fixing)<br>
@@ -72,32 +72,32 @@ access several advanced model features. These include:</p>
 </h2>
 <p>Starting values can be specified in two ways:</p>
 <ol style="list-style-type: decimal">
-<li>Directly within the <code>SPoCK::Setup_xxx</code> functions. Each
+<li>Directly within the <code>SPoRC::Setup_xxx</code> functions. Each
 setup function accepts starting values through the <code>...</code>
 argument. The inputs must match the model’s parameter names and
 dimensions. For more information on parameter dimensions, see the
 <em>Description of Model Parameters</em> vignette.</li>
 </ol>
 <ul>
-<li><p><code><a href="../reference/Setup_Mod_Rec.html">SPoCK::Setup_Mod_Rec</a></code><br><em>ln_global_R0</em>, <em>Rec_prop</em>, <em>steepness_h</em>,
+<li><p><code><a href="../reference/Setup_Mod_Rec.html">SPoRC::Setup_Mod_Rec</a></code><br><em>ln_global_R0</em>, <em>Rec_prop</em>, <em>steepness_h</em>,
 <em>ln_InitDevs</em>, <em>ln_RecDevs</em>, <em>ln_sigmaR</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_Biologicals.html">SPoCK::Setup_Mod_Biologicals</a></code><br><em>ln_M</em>, <em>M_offset</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_Movement.html">SPoCK::Setup_Mod_Movement</a></code><br><em>move_pars</em>, <em>logit_move_devs</em>,
+<li><p><code><a href="../reference/Setup_Mod_Biologicals.html">SPoRC::Setup_Mod_Biologicals</a></code><br><em>ln_M</em>, <em>M_offset</em></p></li>
+<li><p><code><a href="../reference/Setup_Mod_Movement.html">SPoRC::Setup_Mod_Movement</a></code><br><em>move_pars</em>, <em>logit_move_devs</em>,
 <em>move_pe_pars</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_Tagging.html">SPoCK::Setup_Mod_Tagging</a></code><br><em>ln_Init_Tag_Mort</em>, <em>ln_Tag_Shed</em>, <em>ln_tag_theta</em>,
+<li><p><code><a href="../reference/Setup_Mod_Tagging.html">SPoRC::Setup_Mod_Tagging</a></code><br><em>ln_Init_Tag_Mort</em>, <em>ln_Tag_Shed</em>, <em>ln_tag_theta</em>,
 <em>Tag_Reporting_Pars</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_Catch_and_F.html">SPoCK::Setup_Mod_Catch_and_F</a></code><br><em>ln_sigmaC</em>, <em>ln_sigmaF</em>, <em>ln_sigmaF_agg</em>,
+<li><p><code><a href="../reference/Setup_Mod_Catch_and_F.html">SPoRC::Setup_Mod_Catch_and_F</a></code><br><em>ln_sigmaC</em>, <em>ln_sigmaF</em>, <em>ln_sigmaF_agg</em>,
 <em>ln_F_mean</em>, <em>ln_F_devs</em>, <em>ln_F_mean_AggCatch</em>,
 <em>ln_F_devs_AggCatch</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_FishIdx_and_Comps.html">SPoCK::Setup_Mod_FishIdx_and_Comps</a></code><br><em>ln_FishAge_theta</em>, <em>FishAge_corr_pars</em>,
+<li><p><code><a href="../reference/Setup_Mod_FishIdx_and_Comps.html">SPoRC::Setup_Mod_FishIdx_and_Comps</a></code><br><em>ln_FishAge_theta</em>, <em>FishAge_corr_pars</em>,
 <em>ln_FishAge_theta_agg</em>, <em>FishAge_corr_pars_agg</em>,<br><em>ln_FishLen_theta</em>, <em>FishLen_corr_pars</em>,
 <em>ln_FishLen_theta_agg</em>, <em>FishLen_corr_pars_agg</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_SrvIdx_and_Comps.html">SPoCK::Setup_Mod_SrvIdx_and_Comps</a></code><br><em>ln_SrvAge_theta</em>, <em>SrvAge_corr_pars</em>,
+<li><p><code><a href="../reference/Setup_Mod_SrvIdx_and_Comps.html">SPoRC::Setup_Mod_SrvIdx_and_Comps</a></code><br><em>ln_SrvAge_theta</em>, <em>SrvAge_corr_pars</em>,
 <em>ln_SrvAge_theta_agg</em>, <em>SrvAge_corr_pars_agg</em>,<br><em>ln_SrvLen_theta</em>, <em>SrvLen_corr_pars</em>,
 <em>ln_SrvLen_theta_agg</em>, <em>SrvLen_corr_pars_agg</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_Fishsel_and_Q.html">SPoCK::Setup_Mod_Fishsel_and_Q</a></code><br><em>ln_fish_fixed_sel_pars</em>, <em>ln_fish_q</em>,
+<li><p><code><a href="../reference/Setup_Mod_Fishsel_and_Q.html">SPoRC::Setup_Mod_Fishsel_and_Q</a></code><br><em>ln_fish_fixed_sel_pars</em>, <em>ln_fish_q</em>,
 <em>fishsel_pe_pars</em>, <em>ln_fishsel_devs</em></p></li>
-<li><p><code><a href="../reference/Setup_Mod_Srvsel_and_Q.html">SPoCK::Setup_Mod_Srvsel_and_Q</a></code><br><em>ln_srv_fixed_sel_pars</em>, <em>ln_srv_q</em>,
+<li><p><code><a href="../reference/Setup_Mod_Srvsel_and_Q.html">SPoRC::Setup_Mod_Srvsel_and_Q</a></code><br><em>ln_srv_fixed_sel_pars</em>, <em>ln_srv_q</em>,
 <em>srvsel_pe_pars</em>, <em>ln_srvsel_devs</em></p></li>
 </ul>
 <ol start="2" style="list-style-type: decimal">
@@ -112,7 +112,7 @@ values for <code>ln_global_R0</code> and <code>ln_sigmaR</code>. First
 let us load in the package and define the model dimensions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load in packages</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://chengmatt.github.io/SPoCK">SPoCK</a></span><span class="op">)</span> </span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://chengmatt.github.io/SPoRC">SPoRC</a></span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sgl_rg_sable_data"</span><span class="op">)</span> <span class="co"># load in data</span></span>
 <span></span>
 <span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Setup_Mod_Dim.html">Setup_Mod_Dim</a></span><span class="op">(</span>years <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sgl_rg_sable_data</span><span class="op">$</span><span class="va">years</span><span class="op">)</span>, <span class="co"># vector of years </span></span>
@@ -187,7 +187,7 @@ mapping can be used to share parameters across model partitions.</p>
 <div class="section level3">
 <h3 id="fixing-parameters">Fixing Parameters<a class="anchor" aria-label="anchor" href="#fixing-parameters"></a>
 </h3>
-<p>The <code>SPoCK::Setup_xxx</code> functions include arguments that
+<p>The <code>SPoRC::Setup_xxx</code> functions include arguments that
 allow certain parameters to be fixed, meaning they are not estimated
 during model fitting. These arguments are not available for all
 parameters, but we note that all parameters can be specified to be
@@ -259,7 +259,7 @@ providing the desired value in the parameter list.</p>
 <div class="section level3">
 <h3 id="sharing-parameters">Sharing Parameters<a class="anchor" aria-label="anchor" href="#sharing-parameters"></a>
 </h3>
-<p>The <code>SPoCK::Setup_xxx</code> functions also support sharing
+<p>The <code>SPoRC::Setup_xxx</code> functions also support sharing
 parameters across model partitions. For example, selectivity parameters
 can be shared between sexes using built-in convenience arguments. These
 options simplify common sharing structures, but users can also implement
@@ -278,7 +278,7 @@ we should expect a total of 8 unique numbers, which represent unique
 selectivity parameters to be estimated for each sex and fleet (4 for
 each sex and fleet combination).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
+<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
 <span></span>
 <span>                                      <span class="co"># Model options</span></span>
 <span>                                      cont_tv_fish_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Fleet_1"</span>, <span class="st">"none_Fleet_2"</span><span class="op">)</span>,</span>
@@ -303,7 +303,7 @@ parameters are used for both sexes within each fleet. As a result, when
 we inspect the mapping, we should expect four unique values—two per
 fleet—despite having two sexes.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
+<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
 <span></span>
 <span>                                      <span class="co"># Model options</span></span>
 <span>                                      cont_tv_fish_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Fleet_1"</span>, <span class="st">"none_Fleet_2"</span><span class="op">)</span>,</span>
@@ -407,7 +407,7 @@ construct the mapping manually.</p>
 array with the correct dimensions and assumes that all selectivity
 parameters are uniquely estimated across model partitions.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span></span>
 <span>  input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
 <span></span>
 <span>  <span class="co"># Model options</span></span>

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Deriving Reference Points, Catch Advice, and Projections • SPoCK</title>
+<title>Deriving Reference Points, Catch Advice, and Projections • SPoRC</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">SPoCK</a>
+    <a class="navbar-brand me-2" href="../index.html">SPoRC</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -60,7 +60,7 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load in packages</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://chengmatt.github.io/SPoCK">SPoCK</a></span><span class="op">)</span> </span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://chengmatt.github.io/SPoRC">SPoRC</a></span><span class="op">)</span> </span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kaskr/RTMB" class="external-link">RTMB</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -68,14 +68,14 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span></code></pre></div>
 <p>Several options exist for deriving management reference points and
-catch advice in <code>SPoCK</code>. In this vignette, we will first
+catch advice in <code>SPoRC</code>. In this vignette, we will first
 discuss the mathematical details for deriving different management
 reference points, and then demonstrate how catch advice might be
 developed with estimated reference points.</p>
 <div class="section level2">
 <h2 id="reference-points">Reference Points<a class="anchor" aria-label="anchor" href="#reference-points"></a>
 </h2>
-<p>Management reference points in <code>SPoCK</code> are divided into
+<p>Management reference points in <code>SPoRC</code> are divided into
 single-region and spatial reference points.</p>
 <p>Single-region reference points include:</p>
 <ul>
@@ -476,13 +476,13 @@ applied starting from age 2:</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
 denotes the number of modeled ages
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>)
-in <code>SPoCK</code> multiplied by 10. For example, if 30 ages are
+in <code>SPoRC</code> multiplied by 10. For example, if 30 ages are
 modeled, then
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">A = 300</annotation></semantics></math>.
 This extension enables iterative propagation of the plus group under
 movement, given that no closed-form solution exists. For
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>&gt;</mo><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">a &gt; n_{ages}</annotation></semantics></math>
-in <code>SPoCK</code>, all demographic and fishery parameters are held
+in <code>SPoRC</code>, all demographic and fishery parameters are held
 constant at the values for the terminal modeled age
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>).
 Following movement processes, an exponential mortality model is then
@@ -655,13 +655,13 @@ from age 2:</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
 denotes the number of modeled ages
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>)
-in <code>SPoCK</code> multiplied by 10. For example, if 30 ages are
+in <code>SPoRC</code> multiplied by 10. For example, if 30 ages are
 modeled, then
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">A = 300</annotation></semantics></math>.
 This extension enables iterative propagation of the plus group under
 movement, given that no closed-form solution exists. For
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>&gt;</mo><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">a &gt; n_{ages}</annotation></semantics></math>
-in <code>SPoCK</code>, all demographic and fishery parameters are held
+in <code>SPoRC</code>, all demographic and fishery parameters are held
 constant at the values for the terminal modeled age
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>a</mi><mi>g</mi><mi>e</mi><mi>s</mi></mrow></msub><annotation encoding="application/x-tex">n_{ages}</annotation></semantics></math>).
 After movement processes occur, an exponential mortality model is then
@@ -924,8 +924,8 @@ corresponds to the projected catch in projection year 2 (i.e.,
 </h2>
 <p>In the subsequent sections, we will demonstrate how reference points,
 catch projections, catch advice, and stochastic projections can be
-derived and conducted using <code>SPoCK</code>. These features rely on
-users to have a report file from a <code>SPoCK</code> model, and we have
+derived and conducted using <code>SPoRC</code>. These features rely on
+users to have a report file from a <code>SPoRC</code> model, and we have
 generally coded this in a way that there is flexibility for users to
 define how projections are done.</p>
 <div class="section level3">
@@ -961,7 +961,7 @@ points, this can be derived by setting <code>what = 'BH_MSY'</code>.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sgl_rg_sable_data"</span><span class="op">)</span> <span class="co"># read in single region data </span></span>
 <span></span>
 <span><span class="co"># single area model</span></span>
-<span><span class="va">sgl_ref_pt</span> <span class="op">&lt;-</span> <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/Get_Reference_Points.html">Get_Reference_Points</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sgl_rg_sable_data</span>, <span class="co"># data file</span></span>
+<span><span class="va">sgl_ref_pt</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Get_Reference_Points.html">Get_Reference_Points</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sgl_rg_sable_data</span>, <span class="co"># data file</span></span>
 <span>                                          rep <span class="op">=</span> <span class="va">sgl_rg_sable_rep</span>, <span class="co"># report file</span></span>
 <span>                                          SPR_x <span class="op">=</span> <span class="fl">0.4</span>, <span class="co"># spr rate</span></span>
 <span>                                          type <span class="op">=</span> <span class="st">'single_region'</span>, <span class="co"># single region reference point</span></span>
@@ -1001,7 +1001,7 @@ are region-specific and can be applied accordingly.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mlt_rg_sable_data"</span><span class="op">)</span> <span class="co"># read in multi region data </span></span>
 <span></span>
 <span><span class="co"># multi region model with independent SPR</span></span>
-<span><span class="va">mlt_ref_pt_indp</span> <span class="op">&lt;-</span> <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/Get_Reference_Points.html">Get_Reference_Points</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mlt_rg_sable_data</span>, <span class="co"># data file</span></span>
+<span><span class="va">mlt_ref_pt_indp</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Get_Reference_Points.html">Get_Reference_Points</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mlt_rg_sable_data</span>, <span class="co"># data file</span></span>
 <span>                                          rep <span class="op">=</span> <span class="va">mlt_rg_sable_rep</span>, <span class="co"># report file</span></span>
 <span>                                          SPR_x <span class="op">=</span> <span class="fl">0.4</span>, <span class="co"># spr rate</span></span>
 <span>                                          type <span class="op">=</span> <span class="st">'multi_region'</span>, <span class="co"># multi region reference point</span></span>
@@ -1030,7 +1030,7 @@ values are all identical.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mlt_rg_sable_data"</span><span class="op">)</span> <span class="co"># read in multi region data </span></span>
 <span></span>
 <span><span class="co"># multi region model with global SPR</span></span>
-<span><span class="va">mlt_ref_pt_global</span> <span class="op">&lt;-</span> <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/Get_Reference_Points.html">Get_Reference_Points</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mlt_rg_sable_data</span>, <span class="co"># data file</span></span>
+<span><span class="va">mlt_ref_pt_global</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Get_Reference_Points.html">Get_Reference_Points</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mlt_rg_sable_data</span>, <span class="co"># data file</span></span>
 <span>                                                 rep <span class="op">=</span> <span class="va">mlt_rg_sable_rep</span>, <span class="co"># report file</span></span>
 <span>                                                 SPR_x <span class="op">=</span> <span class="fl">0.4</span>, <span class="co"># spr rate</span></span>
 <span>                                                 type <span class="op">=</span> <span class="st">'multi_region'</span>, <span class="co"># multi region reference point</span></span>

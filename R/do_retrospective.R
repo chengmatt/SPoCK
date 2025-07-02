@@ -203,22 +203,22 @@ do_retrospective <- function(n_retro,
       if(do_francis == FALSE) { # don't do francis within retrospective loop
 
         # make AD model function
-        SPoCK_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, init$retro_data), parameters = init$retro_parameters, map = init$retro_mapping, random = random, silent = T)
+        SPoRC_rtmb_model <- RTMB::MakeADFun(cmb(SPoRC_rtmb, init$retro_data), parameters = init$retro_parameters, map = init$retro_mapping, random = random, silent = T)
 
         # Now, optimize the function
-        SPoCK_optim <- stats::nlminb(SPoCK_rtmb_model$par, SPoCK_rtmb_model$fn, SPoCK_rtmb_model$gr,
+        SPoRC_optim <- stats::nlminb(SPoRC_rtmb_model$par, SPoRC_rtmb_model$fn, SPoRC_rtmb_model$gr,
                                      control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
         # newton steps
         try_improve <- tryCatch(expr =
                                   for(i in 1:3) {
-                                    g = as.numeric(SPoCK_rtmb_model$gr(SPoCK_optim$par))
-                                    h = optimHess(SPoCK_optim$par, fn = SPoCK_rtmb_model$fn, gr = SPoCK_rtmb_model$gr)
-                                    SPoCK_optim$par = SPoCK_optim$par - solve(h,g)
-                                    SPoCK_optim$objective = SPoCK_rtmb_model$fn(SPoCK_optim$par)
+                                    g = as.numeric(SPoRC_rtmb_model$gr(SPoRC_optim$par))
+                                    h = optimHess(SPoRC_optim$par, fn = SPoRC_rtmb_model$fn, gr = SPoRC_rtmb_model$gr)
+                                    SPoRC_optim$par = SPoRC_optim$par - solve(h,g)
+                                    SPoRC_optim$objective = SPoRC_rtmb_model$fn(SPoRC_optim$par)
                                   }
                                 , error = function(e){e}, warning = function(w){w})
 
-        rep <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best) # Get report
+        rep <- SPoRC_rtmb_model$report(SPoRC_rtmb_model$env$last.par.best) # Get report
 
       } else {
 
@@ -239,22 +239,22 @@ do_retrospective <- function(n_retro,
           }
 
           # make AD model function
-          SPoCK_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, init$retro_data), parameters = init$retro_parameters, map = init$retro_mapping, random = random, silent = T)
+          SPoRC_rtmb_model <- RTMB::MakeADFun(cmb(SPoRC_rtmb, init$retro_data), parameters = init$retro_parameters, map = init$retro_mapping, random = random, silent = T)
 
           # Now, optimize the function
-          SPoCK_optim <- stats::nlminb(SPoCK_rtmb_model$par, SPoCK_rtmb_model$fn, SPoCK_rtmb_model$gr,
+          SPoRC_optim <- stats::nlminb(SPoRC_rtmb_model$par, SPoRC_rtmb_model$fn, SPoRC_rtmb_model$gr,
                                        control = list(iter.max = 1e5, eval.max = 1e5, rel.tol = 1e-15))
           # newton steps
           try_improve <- tryCatch(expr =
                                     for(i in 1:3) {
-                                      g = as.numeric(SPoCK_rtmb_model$gr(SPoCK_optim$par))
-                                      h = optimHess(SPoCK_optim$par, fn = SPoCK_rtmb_model$fn, gr = SPoCK_rtmb_model$gr)
-                                      SPoCK_optim$par = SPoCK_optim$par - solve(h,g)
-                                      SPoCK_optim$objective = SPoCK_rtmb_model$fn(SPoCK_optim$par)
+                                      g = as.numeric(SPoRC_rtmb_model$gr(SPoRC_optim$par))
+                                      h = optimHess(SPoRC_optim$par, fn = SPoRC_rtmb_model$fn, gr = SPoRC_rtmb_model$gr)
+                                      SPoRC_optim$par = SPoRC_optim$par - solve(h,g)
+                                      SPoRC_optim$objective = SPoRC_rtmb_model$fn(SPoRC_optim$par)
                                     }
                                   , error = function(e){e}, warning = function(w){w})
 
-          rep <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best) # Get report
+          rep <- SPoRC_rtmb_model$report(SPoRC_rtmb_model$env$last.par.best) # Get report
 
         } # end f for francis iteration
       } # end else
@@ -285,7 +285,7 @@ do_retrospective <- function(n_retro,
         if(do_francis == FALSE) { # don't do francis within retrospective loop
 
           # make AD model function
-          SPoCK_rtmb_model <- fit_model(init$retro_data,
+          SPoRC_rtmb_model <- fit_model(init$retro_data,
                                         init$retro_parameters,
                                         init$retro_mapping,
                                         random = random,
@@ -293,7 +293,7 @@ do_retrospective <- function(n_retro,
                                         silent = T
                                         )
 
-          rep <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best) # Get report
+          rep <- SPoRC_rtmb_model$report(SPoRC_rtmb_model$env$last.par.best) # Get report
 
         } else {
 
@@ -314,7 +314,7 @@ do_retrospective <- function(n_retro,
             }
 
             # make AD model function
-            SPoCK_rtmb_model <- fit_model(init$retro_data,
+            SPoRC_rtmb_model <- fit_model(init$retro_data,
                                           init$retro_parameters,
                                           init$retro_mapping,
                                           random = random,
@@ -322,7 +322,7 @@ do_retrospective <- function(n_retro,
                                           silent = T
             )
 
-            rep <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best) # Get report
+            rep <- SPoRC_rtmb_model$report(SPoRC_rtmb_model$env$last.par.best) # Get report
 
           } # end f for francis iteration
         } # end else

@@ -7,7 +7,7 @@
 get_data_fitted_plot(data, model_names)
 }
 \arguments{
-\item{data}{List of n_models of `SPoCK` data lists}
+\item{data}{List of n_models of `SPoRC` data lists}
 
 \item{model_names}{Character vector of model names}
 }

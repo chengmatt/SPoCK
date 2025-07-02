@@ -2,7 +2,7 @@
 % Please edit documentation in R/Setup_Movement.R
 \name{Setup_Mod_Movement}
 \alias{Setup_Mod_Movement}
-\title{Setup Movement Processes for SPoCK}
+\title{Setup Movement Processes for SPoRC}
 \usage{
 Setup_Mod_Movement(
   input_list,
@@ -94,5 +94,5 @@ Default is \code{"none"}.}
 \item{...}{Additional parameters such as starting values for \code{move_pars}, \code{logit_move_devs}, and \code{move_pe_pars}.}
 }
 \description{
-Setup Movement Processes for SPoCK
+Setup Movement Processes for SPoRC
 }

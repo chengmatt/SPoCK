@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, warning = FALSE, message = FALSE, eval = TRUE, warning = FALSE}
 # Load in packages
-library(SPoCK) 
+library(SPoRC) 
 library(here)
 library(RTMB)
 library(ggplot2)
@@ -25,11 +25,11 @@ library(tidyr)
 library(purrr)
 ```
 
-Several options exist for deriving management reference points and catch advice in `SPoCK`. In this vignette, we will first discuss the mathematical details for deriving different management reference points, and then demonstrate how catch advice might be developed with estimated reference points.
+Several options exist for deriving management reference points and catch advice in `SPoRC`. In this vignette, we will first discuss the mathematical details for deriving different management reference points, and then demonstrate how catch advice might be developed with estimated reference points.
 
 # Reference Points
 
-Management reference points in `SPoCK` are divided into single-region and spatial reference points.
+Management reference points in `SPoRC` are divided into single-region and spatial reference points.
 
 Single-region reference points include:
 
@@ -306,7 +306,7 @@ Subsequently, movement is applied. If recruits are allowed to move, the movement
 \end{cases}
 \]
 
-In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoCK` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoCK`, all demographic and fishery parameters are held constant at the values for the terminal modeled age ($n_{ages}$). Following movement processes, an exponential mortality model is then applied:
+In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoRC` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoRC`, all demographic and fishery parameters are held constant at the values for the terminal modeled age ($n_{ages}$). Following movement processes, an exponential mortality model is then applied:
 
 \[
 N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{x} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right)
@@ -422,7 +422,7 @@ Here, \(N_{r,a=1}^{\text{fished}}\) and \(N_{r,a=1}^{\text{unfished}}\) represen
 \end{cases}
 \]
 
-In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoCK` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoCK`, all demographic and fishery parameters are held constant at the values for the terminal modeled age ($n_{ages}$). After movement processes occur, an exponential mortality model is then applied:
+In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoRC` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoRC`, all demographic and fishery parameters are held constant at the values for the terminal modeled age ($n_{ages}$). After movement processes occur, an exponential mortality model is then applied:
 
 \[
 N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right)
@@ -657,7 +657,7 @@ Following movement, which is only applied in projected years \( y > 1 \), as it 
 
 # Code Demonstration
 
-In the subsequent sections, we will demonstrate how reference points, catch projections, catch advice, and stochastic projections can be derived and conducted using `SPoCK`. These features rely on users to have a report file from a `SPoCK` model, and we have generally coded this in a way that there is flexibility for users to define how projections are done.
+In the subsequent sections, we will demonstrate how reference points, catch projections, catch advice, and stochastic projections can be derived and conducted using `SPoRC`. These features rely on users to have a report file from a `SPoRC` model, and we have generally coded this in a way that there is flexibility for users to define how projections are done.
 
 ## Getting Reference Points
 
@@ -670,7 +670,7 @@ data("sgl_rg_sable_rep") # read in single region report
 data("sgl_rg_sable_data") # read in single region data 
 
 # single area model
-sgl_ref_pt <- SPoCK::Get_Reference_Points(data = sgl_rg_sable_data, # data file
+sgl_ref_pt <- SPoRC::Get_Reference_Points(data = sgl_rg_sable_data, # data file
                                           rep = sgl_rg_sable_rep, # report file
                                           SPR_x = 0.4, # spr rate
                                           type = 'single_region', # single region reference point
@@ -695,7 +695,7 @@ data("mlt_rg_sable_rep") # read in multi region report
 data("mlt_rg_sable_data") # read in multi region data 
 
 # multi region model with independent SPR
-mlt_ref_pt_indp <- SPoCK::Get_Reference_Points(data = mlt_rg_sable_data, # data file
+mlt_ref_pt_indp <- SPoRC::Get_Reference_Points(data = mlt_rg_sable_data, # data file
                                           rep = mlt_rg_sable_rep, # report file
                                           SPR_x = 0.4, # spr rate
                                           type = 'multi_region', # multi region reference point
@@ -716,7 +716,7 @@ data("mlt_rg_sable_rep") # read in multi region report
 data("mlt_rg_sable_data") # read in multi region data 
 
 # multi region model with global SPR
-mlt_ref_pt_global <- SPoCK::Get_Reference_Points(data = mlt_rg_sable_data, # data file
+mlt_ref_pt_global <- SPoRC::Get_Reference_Points(data = mlt_rg_sable_data, # data file
                                                  rep = mlt_rg_sable_rep, # report file
                                                  SPR_x = 0.4, # spr rate
                                                  type = 'multi_region', # multi region reference point

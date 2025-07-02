@@ -7,7 +7,7 @@
 get_selex_plot(rep, model_names)
 }
 \arguments{
-\item{rep}{List of n_models of `SPoCK` report lists}
+\item{rep}{List of n_models of `SPoRC` report lists}
 
 \item{model_names}{Vector of model names}
 }

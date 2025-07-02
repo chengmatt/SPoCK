@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Setting up a Single Region Model (Alaska Sablefish) • SPoCK</title>
+<title>Setting up a Single Region Model (Alaska Sablefish) • SPoRC</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">SPoCK</a>
+    <a class="navbar-brand me-2" href="../index.html">SPoRC</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -58,13 +58,13 @@
 
     
     
-<p>The <code>SPoCK</code> package utilizes several helper functions to
+<p>The <code>SPoRC</code> package utilizes several helper functions to
 facilitate the set up of an age-structured assessment model. In this
 vignette, we will demonstrate how these helper functions might be used
 to set up a single-region model for Alaska sablefish. The vignette sets
 up the model following the parameterization of the 2024 federal Alaska
 sablefish stock assessment and compares model outputs from
-<code>SPoCK</code> to the existing ADMB model. The 2024 federal Alaska
+<code>SPoRC</code> to the existing ADMB model. The 2024 federal Alaska
 sablefish stock assessment is assessed on an Alaska-wide scale (from the
 Bering Sea to Eastern Gulf of Alaska) as a panmictic single-region
 model, with 2 sexes (females and males), 2 fishery fleets (fixed-gear
@@ -73,7 +73,7 @@ and a domestic trawl survey).</p>
 <p>First, let us load in any necessary packages.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load in packages</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://chengmatt.github.io/SPoCK">SPoCK</a></span><span class="op">)</span> </span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://chengmatt.github.io/SPoRC">SPoRC</a></span><span class="op">)</span> </span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kaskr/RTMB" class="external-link">RTMB</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -456,7 +456,7 @@ a Mulinomial likelihood.</p>
 </h2>
 <p>Specifying fishery/survey selectivity and catchability options (the
 function arguments are the same for both the fishery and survey) can be
-a bit involved as well. In <code>SPoCK</code>, there are several
+a bit involved as well. In <code>SPoRC</code>, there are several
 selectivity options, which include:</p>
 <ol style="list-style-type: decimal">
 <li>Whether we have continuous time-varying selectivity processes
@@ -792,7 +792,7 @@ the two models.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, lty <span class="op">=</span> <span class="fl">2</span>, size <span class="op">=</span> <span class="fl">1.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Par</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Relative difference (%)"</span><span class="op">)</span>  <span class="op">+</span></span>
-<span>  <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/theme_sablefish.html">theme_sablefish</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/theme_sablefish.html">theme_sablefish</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/e_ts_comparison_re.png"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -801,7 +801,7 @@ the two models.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Par</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RTMB'</span> <span class="op">=</span> <span class="st">'black'</span>, <span class="st">'ADMB'</span> <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Year"</span>, color <span class="op">=</span> <span class="st">'Model'</span>, y <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">SPoCK</span><span class="fu">::</span><span class="fu"><a href="../reference/theme_sablefish.html">theme_sablefish</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/theme_sablefish.html">theme_sablefish</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/e_ts_comparison.png"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

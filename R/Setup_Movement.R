@@ -1,4 +1,4 @@
-#' Setup Movement Processes for SPoCK
+#' Setup Movement Processes for SPoRC
 #'
 #' @param input_list List containing data, parameter, and map lists for the model.
 #' @param do_recruits_move Integer flag (0 or 1) indicating whether recruits move.

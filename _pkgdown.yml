@@ -3,7 +3,7 @@ template:
   bootswatch: flatly
 
 destination: docs
-url: https://chengmatt.github.io/SPoCK
+url: https://chengmatt.github.io/SPoRC
 
 articles:
   - title: "Model Descriptions"

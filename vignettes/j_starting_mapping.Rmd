@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In addition to the `SPoCK::Setup_xxx` functions, users can access several advanced model features. These include:
+In addition to the `SPoRC::Setup_xxx` functions, users can access several advanced model features. These include:
 
 - Specifying starting values (closely tied to parameter fixing)  
 - Fixing parameters  
@@ -24,35 +24,35 @@ In addition to the `SPoCK::Setup_xxx` functions, users can access several advanc
 
 Starting values can be specified in two ways:
 
-1. Directly within the `SPoCK::Setup_xxx` functions. Each setup function accepts starting values through the `...` argument. The inputs must match the model’s parameter names and dimensions. For more information on parameter dimensions, see the *Description of Model Parameters* vignette.
+1. Directly within the `SPoRC::Setup_xxx` functions. Each setup function accepts starting values through the `...` argument. The inputs must match the model’s parameter names and dimensions. For more information on parameter dimensions, see the *Description of Model Parameters* vignette.
 
-- `SPoCK::Setup_Mod_Rec`  
+- `SPoRC::Setup_Mod_Rec`  
   *ln_global_R0*, *Rec_prop*, *steepness_h*, *ln_InitDevs*, *ln_RecDevs*, *ln_sigmaR*
 
-- `SPoCK::Setup_Mod_Biologicals`  
+- `SPoRC::Setup_Mod_Biologicals`  
   *ln_M*, *M_offset*
 
-- `SPoCK::Setup_Mod_Movement`  
+- `SPoRC::Setup_Mod_Movement`  
   *move_pars*, *logit_move_devs*, *move_pe_pars*
 
-- `SPoCK::Setup_Mod_Tagging`  
+- `SPoRC::Setup_Mod_Tagging`  
   *ln_Init_Tag_Mort*, *ln_Tag_Shed*, *ln_tag_theta*, *Tag_Reporting_Pars*
 
-- `SPoCK::Setup_Mod_Catch_and_F`  
+- `SPoRC::Setup_Mod_Catch_and_F`  
   *ln_sigmaC*, *ln_sigmaF*, *ln_sigmaF_agg*, *ln_F_mean*, *ln_F_devs*, *ln_F_mean_AggCatch*, *ln_F_devs_AggCatch*
 
-- `SPoCK::Setup_Mod_FishIdx_and_Comps`  
+- `SPoRC::Setup_Mod_FishIdx_and_Comps`  
   *ln_FishAge_theta*, *FishAge_corr_pars*, *ln_FishAge_theta_agg*, *FishAge_corr_pars_agg*,  
   *ln_FishLen_theta*, *FishLen_corr_pars*, *ln_FishLen_theta_agg*, *FishLen_corr_pars_agg*
 
-- `SPoCK::Setup_Mod_SrvIdx_and_Comps`  
+- `SPoRC::Setup_Mod_SrvIdx_and_Comps`  
   *ln_SrvAge_theta*, *SrvAge_corr_pars*, *ln_SrvAge_theta_agg*, *SrvAge_corr_pars_agg*,  
   *ln_SrvLen_theta*, *SrvLen_corr_pars*, *ln_SrvLen_theta_agg*, *SrvLen_corr_pars_agg*
 
-- `SPoCK::Setup_Mod_Fishsel_and_Q`  
+- `SPoRC::Setup_Mod_Fishsel_and_Q`  
   *ln_fish_fixed_sel_pars*, *ln_fish_q*, *fishsel_pe_pars*, *ln_fishsel_devs*
 
-- `SPoCK::Setup_Mod_Srvsel_and_Q`  
+- `SPoRC::Setup_Mod_Srvsel_and_Q`  
   *ln_srv_fixed_sel_pars*, *ln_srv_q*, *srvsel_pe_pars*, *ln_srvsel_devs*
 
 2. Post-hoc modification of starting values. Alternatively, you can first call the setup functions without specifying starting values, then access and modify the internally created parameter list (`input_list$par`) before running the model.
@@ -61,7 +61,7 @@ In the following, we will illustrate both methods using the recruitment module (
 
 ```{r Setup, message = FALSE, eval = TRUE}
 # Load in packages
-library(SPoCK) 
+library(SPoRC) 
 data("sgl_rg_sable_data") # load in data
 
 input_list <- Setup_Mod_Dim(years = 1:length(sgl_rg_sable_data$years), # vector of years 
@@ -126,7 +126,7 @@ input_list$par$ln_sigmaR[] <- c(log(1.5), log(1.5)) # user specified starting va
 Mapping is a core feature of TMB and RTMB models. It allows users to either fix parameters at known values or to share parameters across different parts of the model. In the sections below, we first demonstrate how to use mapping to fix parameters. We then show how mapping can be used to share parameters across model partitions.
 
 ### Fixing Parameters
-The `SPoCK::Setup_xxx` functions include arguments that allow certain parameters to be fixed, meaning they are not estimated during model fitting. These arguments are not available for all parameters, but we note that all parameters can be specified to be fixed. As an example, we use `Setup_Mod_Rec` to show how the *ln_sigmaR* parameter can be fixed. The argument `sigmaR_spec = "fix"`.
+The `SPoRC::Setup_xxx` functions include arguments that allow certain parameters to be fixed, meaning they are not estimated during model fitting. These arguments are not available for all parameters, but we note that all parameters can be specified to be fixed. As an example, we use `Setup_Mod_Rec` to show how the *ln_sigmaR* parameter can be fixed. The argument `sigmaR_spec = "fix"`.
 
 ```{r}
 input_list <- Setup_Mod_Rec(input_list = input_list, # input data list from above
@@ -187,12 +187,12 @@ input_list$par$ln_global_R0 <- log(30)
 In this example, *ln_global_R0* is fixed at `log(30)` by setting its map entry to `NA` and providing the desired value in the parameter list.
 
 ### Sharing Parameters
-The `SPoCK::Setup_xxx` functions also support sharing parameters across model partitions. For example, selectivity parameters can be shared between sexes using built-in convenience arguments. These options simplify common sharing structures, but users can also implement more customized behavior when needed. Below, we demonstrate two approaches. First, we show how to share fishery selectivity parameters between sexes using a convenience flag in `Setup_Mod_Fishsel_and_Q`. Then, we outline how users can manually configure parameter sharing for finer control.
+The `SPoRC::Setup_xxx` functions also support sharing parameters across model partitions. For example, selectivity parameters can be shared between sexes using built-in convenience arguments. These options simplify common sharing structures, but users can also implement more customized behavior when needed. Below, we demonstrate two approaches. First, we show how to share fishery selectivity parameters between sexes using a convenience flag in `Setup_Mod_Fishsel_and_Q`. Then, we outline how users can manually configure parameter sharing for finer control.
 
 In the example below, we define two fishery fleets. Fleet 1 uses a logistic selectivity model (2 parameters), while Fleet 2 uses a gamma dome-shaped model (2 parameters). We first use the `fish_fixed_sel_pars_spec` argument to specify that selectivity parameters for both fleets should be estimated across all model partitions (`est_all`). Thus, when we inspect the map, we should expect a total of 8 unique numbers, which represent unique selectivity parameters to be estimated for each sex and fleet (4 for each sex and fleet combination).
 
 ```{r}
-input_list <- SPoCK::Setup_Mod_Fishsel_and_Q(input_list = input_list,
+input_list <- SPoRC::Setup_Mod_Fishsel_and_Q(input_list = input_list,
 
                                       # Model options
                                       cont_tv_fish_sel = c("none_Fleet_1", "none_Fleet_2"),
@@ -210,7 +210,7 @@ input_list$map$ln_fish_fixed_sel_pars # 8 unique numbers, 4 for each sex and fle
 Next, we use the `fish_fixed_sel_pars_spec` argument to indicate that selectivity parameters should be shared across sex partitions for both fleets. Specifically, we use the `"est_shared_s"` setting to link parameters between sexes, even though the model is sex-structured. In this setup, we still estimate separate parameters for each fleet, but the same selectivity parameters are used for both sexes within each fleet. As a result, when we inspect the mapping, we should expect four unique values—two per fleet—despite having two sexes.
 
 ```{r}
-input_list <- SPoCK::Setup_Mod_Fishsel_and_Q(input_list = input_list,
+input_list <- SPoRC::Setup_Mod_Fishsel_and_Q(input_list = input_list,
 
                                       # Model options
                                       cont_tv_fish_sel = c("none_Fleet_1", "none_Fleet_2"),
@@ -278,7 +278,7 @@ This level of control is not supported by the built-in `fish_fixed_sel_pars_spec
 We begin by calling `Setup_Mod_Fishsel_and_Q` with the `"est_all"` option for both fleets. This creates a parameter array with the correct dimensions and assumes that all selectivity parameters are uniquely estimated across model partitions.
 
 ```{r}
-input_list <- SPoCK::Setup_Mod_Fishsel_and_Q(
+input_list <- SPoRC::Setup_Mod_Fishsel_and_Q(
   input_list = input_list,
 
   # Model options

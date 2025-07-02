@@ -30,7 +30,7 @@
 #' @param data Data List
 #' @import RTMB
 #' @keywords internal
-SPoCK_rtmb = function(pars, data) {
+SPoRC_rtmb = function(pars, data) {
 
   "c" <- RTMB::ADoverload("c")
   "[<-" <- RTMB::ADoverload("[<-")

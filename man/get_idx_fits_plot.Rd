@@ -7,9 +7,9 @@
 get_idx_fits_plot(data, rep, model_names)
 }
 \arguments{
-\item{data}{List of n_models of `SPoCK` data lists}
+\item{data}{List of n_models of `SPoRC` data lists}
 
-\item{rep}{List of n_models of `SPoCK` report lists}
+\item{rep}{List of n_models of `SPoRC` report lists}
 
 \item{model_names}{Vector of model names}
 }

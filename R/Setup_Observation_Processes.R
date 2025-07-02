@@ -73,7 +73,7 @@ Setup_Sim_Observation_Proc <- function(Comp_Structure,
   return(sim_list)
 }
 
-#' Set up SPoCK model weighting
+#' Set up SPoRC model weighting
 #'
 #' @param input_list List containing data, parameter, and map lists.
 #' @param likelihoods Numeric flag indicating likelihood implementation to use:

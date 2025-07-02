@@ -1,14 +1,14 @@
 Type: Package
-Package: SPoCK
-Title: Spatial (S) Population (Po) Model with Connectivity (C) across
-    generalized Komponents (K)
+Package: SPoRC
+Title: Spatial (S) Population (Po) Model acRoss (R) generalized Components
+    (C)
 Version: 0.1.0
 Authors@R: 
     person("Matthew", "Cheng", , "jane@example.com", role = c("aut", "cre"))
 Description: A generalized spatial population model for stock assessment,
     written in RTMB.
 License: GPL-3
-URL: https://chengmatt.github.io/SPoCK
+URL: https://chengmatt.github.io/SPoRC
 Depends:
     R (>= 3.5),
     RTMB

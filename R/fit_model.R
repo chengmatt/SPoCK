@@ -29,7 +29,7 @@ fit_model <- function(data,
                       ) {
 
   # make AD model function
-  obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters,
+  obj <- RTMB::MakeADFun(cmb(SPoRC_rtmb, data), parameters = parameters,
                          map = mapping, random = random, silent = silent, ...)
 
   # Now, optimize the function

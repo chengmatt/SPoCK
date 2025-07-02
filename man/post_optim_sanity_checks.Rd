@@ -13,9 +13,9 @@ post_optim_sanity_checks(
 )
 }
 \arguments{
-\item{sd_rep}{sd report list from a `SPoCK` model}
+\item{sd_rep}{sd report list from a `SPoRC` model}
 
-\item{rep}{report list from a `SPoCK` model}
+\item{rep}{report list from a `SPoRC` model}
 
 \item{gradient_tol}{Value for maximum gradient tolerance to use}
 

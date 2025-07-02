@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In addition to being an estimation model, `SPoCK` also has the capacity to conduct closed loop simulations to evaluate the impacts of estimation model assumptions and harvest strategies on different operating models. These closed loop simulations can be conducted on either spatially-explicit or panmicitic populations. In this vignette, we will demonstrate how a spatially-explicit closed-loop simulation by outlining the following steps:
+In addition to being an estimation model, `SPoRC` also has the capacity to conduct closed loop simulations to evaluate the impacts of estimation model assumptions and harvest strategies on different operating models. These closed loop simulations can be conducted on either spatially-explicit or panmicitic populations. In this vignette, we will demonstrate how a spatially-explicit closed-loop simulation by outlining the following steps:
 
 1. Define an operating model (the truth),
 2. Define an estimation model to use in the closed-loop simulation,
@@ -22,10 +22,10 @@ In addition to being an estimation model, `SPoCK` also has the capacity to condu
 4. Derive reference points and management advice using estimates from the estimation model, and
 5. Return management advice back into the annual cycle, completing the closed loop simulation.
 
-Let us first load in the `SPoCK` package.
+Let us first load in the `SPoRC` package.
 
 ```{r setup, eval = FALSE}
-library(SPoCK)
+library(SPoRC)
 library(ggplot2)
 ```
 

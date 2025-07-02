@@ -7,11 +7,11 @@
 plot_all_basic(data, rep, sd_rep, model_names, out_path)
 }
 \arguments{
-\item{data}{List of n_models of `SPoCK` data lists}
+\item{data}{List of n_models of `SPoRC` data lists}
 
-\item{rep}{List of n_models of `SPoCK` report lists}
+\item{rep}{List of n_models of `SPoRC` report lists}
 
-\item{sd_rep}{List of n_models of sd report lists from `SPoCK`}
+\item{sd_rep}{List of n_models of sd report lists from `SPoRC`}
 
 \item{model_names}{Character vector of model names}
 

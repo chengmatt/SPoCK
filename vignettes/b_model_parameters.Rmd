@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The following table describes all elements contained within `input_list$pars`, which are generated using the `SPoCK::Setup_x` functions. Note that when `n_sexes > 1`, the first dimension will always be females and the second dimension will always be males.
+The following table describes all elements contained within `input_list$pars`, which are generated using the `SPoRC::Setup_x` functions. Note that when `n_sexes > 1`, the first dimension will always be females and the second dimension will always be males.
 
 | Parameter               | Dimension                                            | Component             | Description                                                              |
 |-------------------------|------------------------------------------------------|------------------------|-------------------------------------------------------------------------|

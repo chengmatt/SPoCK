@@ -88,7 +88,7 @@ do_jitter <- function(data,
 
   jitter_all <- data.frame()
 
-  obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data),
+  obj <- RTMB::MakeADFun(cmb(SPoRC_rtmb, data),
                          parameters = parameters,
                          map = mapping,
                          random = random,
@@ -147,7 +147,7 @@ do_jitter <- function(data,
       jitter_all <- future.apply::future_lapply(1:n_jitter, function(i) {
 
         # make obj
-        obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters,  map = mapping, random = random, silent = TRUE)
+        obj <- RTMB::MakeADFun(cmb(SPoRC_rtmb, data), parameters = parameters,  map = mapping, random = random, silent = TRUE)
 
         # Jitter original parameters
         jitter_pars <- obj$par + stats::rnorm(length(obj$par), 0, sd)

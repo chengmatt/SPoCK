@@ -1,7 +1,7 @@
 #' Get Time Series Plots
 #'
-#' @param rep List of n_models of `SPoCK` report lists
-#' @param sd_rep List of n_models of `SPoCK` sdreport lists
+#' @param rep List of n_models of `SPoRC` report lists
+#' @param sd_rep List of n_models of `SPoRC` sdreport lists
 #' @param model_names Vector of model names
 #'
 #' @returns Plots of spawning biomass, total biomass, recruitment, and fishing mortality time-series across models
@@ -79,7 +79,7 @@ get_ts_plot <- function(rep,
 
 #' Get Fishery and Survey Selectivity Plots
 #'
-#' @param rep List of n_models of `SPoCK` report lists
+#' @param rep List of n_models of `SPoRC` report lists
 #' @param model_names Vector of model names
 #'
 #' @returns Plots of terminal year fishery and survey selectivity by fleet, region, and sex across models
@@ -146,8 +146,8 @@ get_selex_plot <- function(rep, model_names) {
 
 #' Get Plots of Biological Quantities
 #'
-#' @param data List of n_models of `SPoCK` data lists
-#' @param rep List of n_models of `SPoCK` report lists
+#' @param data List of n_models of `SPoRC` data lists
+#' @param rep List of n_models of `SPoRC` report lists
 #' @param model_names Vector of model names
 #'
 #' @returns A list of plots for terminal year movement, natural mortality, weight-at-age, and maturity at age across models
@@ -257,7 +257,7 @@ get_biological_plot <- function(data,
 
 #' Get Data Fitted to Plot
 #'
-#' @param data List of n_models of `SPoCK` data lists
+#' @param data List of n_models of `SPoRC` data lists
 #' @param model_names Character vector of model names
 #'
 #' @returns A plot of data that were fitted to across models
@@ -347,7 +347,7 @@ get_data_fitted_plot <- function(data,
 
 #' Get plot of negative log likelihood values
 #'
-#' @param rep List of n_models of `SPoCK` report lists
+#' @param rep List of n_models of `SPoRC` report lists
 #' @param model_names Vector of model names
 #'
 #' @returns Plot and tables of negative log likelihood values across models
@@ -430,8 +430,8 @@ get_nLL_plot <- function(rep,
 
 #' Get Index Fits Plot
 #'
-#' @param data List of n_models of `SPoCK` data lists
-#' @param rep List of n_models of `SPoCK` report lists
+#' @param data List of n_models of `SPoRC` data lists
+#' @param rep List of n_models of `SPoRC` report lists
 #' @param model_names Vector of model names
 #'
 #' @returns A plot of fitted values to various indices across models
@@ -547,9 +547,9 @@ get_retrospective_plot <- function(retro_output, Rec_Age) {
 
 #' Plotting function for all basic quantities
 #'
-#' @param data List of n_models of `SPoCK` data lists
-#' @param rep List of n_models of `SPoCK` report lists
-#' @param sd_rep List of n_models of sd report lists from `SPoCK`
+#' @param data List of n_models of `SPoRC` data lists
+#' @param rep List of n_models of `SPoRC` report lists
+#' @param sd_rep List of n_models of sd report lists from `SPoRC`
 #' @param out_path Path to the output directory. Users only need to specify the path.
 #' @param model_names Character vector of model names
 #'

@@ -17,11 +17,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-The `SPoCK` package can be further generalized from a single region assessment into a spatial assessment. Here, we will demonstrate how a spatial stock assessment model might be set up. Similar to previous vignettes, the spatial stock assessment illustrated here uses various helper functions to facilitate setting it up. The spatial stock assessment is a 5-region model and encompasses the Bering Sea (BS), Aleutian Islands (AI), Western Gulf of Alaska (WGOA), Central Gulf of Alaska (CGOA), and Eastern Gulf of Alaska (EGOA). A total of 30 ages are modeled, along with 2 sexes. Additionally, two fishery fleets are modeled (fixed-gear and trawl) both of which operate across the entire spatial domain defined. Two survey fleets are also modeled (cooperative Japanese and domestic longline), which operates annually in the Gulf of Alaska, and biennially between the BS and AI regions. Let us first load in the necessary packages and data files.
+The `SPoRC` package can be further generalized from a single region assessment into a spatial assessment. Here, we will demonstrate how a spatial stock assessment model might be set up. Similar to previous vignettes, the spatial stock assessment illustrated here uses various helper functions to facilitate setting it up. The spatial stock assessment is a 5-region model and encompasses the Bering Sea (BS), Aleutian Islands (AI), Western Gulf of Alaska (WGOA), Central Gulf of Alaska (CGOA), and Eastern Gulf of Alaska (EGOA). A total of 30 ages are modeled, along with 2 sexes. Additionally, two fishery fleets are modeled (fixed-gear and trawl) both of which operate across the entire spatial domain defined. Two survey fleets are also modeled (cooperative Japanese and domestic longline), which operates annually in the Gulf of Alaska, and biennially between the BS and AI regions. Let us first load in the necessary packages and data files.
 
 ```{r Setup, message = FALSE, eval = TRUE}
 # Load in packages
-library(SPoCK) 
+library(SPoRC) 
 library(RTMB)
 library(ggplot2)
 library(dplyr)

@@ -143,8 +143,8 @@ bisection_F <- function(f_guess,
 
 #' Post Optimization Model Convergence Checks
 #'
-#' @param sd_rep sd report list from a `SPoCK` model
-#' @param rep report list from a `SPoCK` model
+#' @param sd_rep sd report list from a `SPoRC` model
+#' @param rep report list from a `SPoRC` model
 #' @param gradient_tol Value for maximum gradient tolerance to use
 #' @param se_tol Value for maximum standard error tolerance to use
 #' @param corr_tol Value for maximum correlation tolerance to use

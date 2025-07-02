@@ -76,15 +76,15 @@ do_likelihood_profile <- function(data,
     }
 
     # make adfun
-    SPoCK_rtmb_model <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters, map = mapping, random = random, silent = TRUE)
+    SPoRC_rtmb_model <- RTMB::MakeADFun(cmb(SPoRC_rtmb, data), parameters = parameters, map = mapping, random = random, silent = TRUE)
 
     # Within your loop
     tryCatch({
-      SPoCK_optim <- stats::nlminb(SPoCK_rtmb_model$par, SPoCK_rtmb_model$fn, SPoCK_rtmb_model$gr,
+      SPoRC_optim <- stats::nlminb(SPoRC_rtmb_model$par, SPoRC_rtmb_model$fn, SPoRC_rtmb_model$gr,
                                    control = list(iter.max = 1e6, eval.max = 1e6, rel.tol = 1e-15))
 
       # Get report
-      report <- SPoCK_rtmb_model$report(SPoCK_rtmb_model$env$last.par.best)
+      report <- SPoRC_rtmb_model$report(SPoRC_rtmb_model$env$last.par.best)
 
       # Store values and save
       jnLL[j,1] <- report$jnLL

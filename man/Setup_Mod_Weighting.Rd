@@ -2,7 +2,7 @@
 % Please edit documentation in R/Setup_Observation_Processes.R
 \name{Setup_Mod_Weighting}
 \alias{Setup_Mod_Weighting}
-\title{Set up SPoCK model weighting}
+\title{Set up SPoRC model weighting}
 \usage{
 Setup_Mod_Weighting(
   input_list,
@@ -56,5 +56,5 @@ Setup_Mod_Weighting(
 \item{Wt_SrvLenComps}{Numeric weight (lambda) applied to survey length composition data.}
 }
 \description{
-Set up SPoCK model weighting
+Set up SPoRC model weighting
 }

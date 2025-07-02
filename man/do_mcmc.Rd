@@ -31,7 +31,7 @@ Run MCMC using rtmbstan
 }
 \examples{
 \dontrun{
-obj <- RTMB::MakeADFun(cmb(SPoCK_rtmb, data), parameters = parameters, map = mapping)
+obj <- RTMB::MakeADFun(cmb(SPoRC_rtmb, data), parameters = parameters, map = mapping)
 mcmc <- do_mcmc(obj = obj,
                 chains = 4,
                 cores = 4,

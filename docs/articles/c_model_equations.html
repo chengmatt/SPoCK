@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Description of Model Equations • SPoCK</title>
+<title>Description of Model Equations • SPoRC</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">SPoCK</a>
+    <a class="navbar-brand me-2" href="../index.html">SPoRC</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -61,7 +61,7 @@
 <div class="section level2">
 <h2 id="process-models-and-equations">Process Models and Equations<a class="anchor" aria-label="anchor" href="#process-models-and-equations"></a>
 </h2>
-<p><code>SPoCK</code> assumes an annual time-step, where the following
+<p><code>SPoRC</code> assumes an annual time-step, where the following
 processes are applied in order:</p>
 <ol style="list-style-type: decimal">
 <li>Recruitment and tag releases initially occur (tag releases occur if
@@ -81,7 +81,7 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mo>+</mo></msub><annotation encoding="application/x-tex">a_+</annotation></semantics></math>,
 where the latter indicates the plus group), and sex
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>).
-Although <code>SPoCK</code> can accommodate spatial process, all of the
+Although <code>SPoRC</code> can accommodate spatial process, all of the
 equations described in this vignette can collapse and be generalized to
 a single region (i.e.,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">r = 1</annotation></semantics></math>).</p>
@@ -255,7 +255,7 @@ instantaneous fishing mortality rate is a user-specified value for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>m</mi><mi>o</mi><mi>r</mi><msub><mi>t</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>P</mi><mi>r</mi><mi>o</mi><mi>p</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Fmort_{InitProp}</annotation></semantics></math>,
 which represents the proportion of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\mu_{f=1}</annotation></semantics></math>
-to apply to the initial age structure. In <code>SPoCK</code>, it is
+to apply to the initial age structure. In <code>SPoRC</code>, it is
 generally recommended to structure associated data inptus for fishery
 fleet 1 to represent the dominant fishery fleet.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi>u</mi><msub><mi>m</mi><msubsup><mi>Z</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup></msub></mrow><annotation encoding="application/x-tex">cumsum_{Z_{r,a,s}^{Init}}</annotation></semantics></math>
@@ -621,7 +621,7 @@ is the standard deviation of the catch. In general,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><msup><mn>2</mn><mtext mathvariant="normal">ObsCatch</mtext></msup></msup><annotation encoding="application/x-tex">\sigma^{2^{\text{ObsCatch}}}</annotation></semantics></math>
 is not estimable and should be fixed at a small value (e.g., 1e-03) such
 that catch is assumed to be known, which is the default in
-<code>SPoCK</code>. Users should be able to easily modify this value in
+<code>SPoRC</code>. Users should be able to easily modify this value in
 the parameter list to something other than 1e-03 if desired.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mtext mathvariant="normal">ObsCatch</mtext></msub><annotation encoding="application/x-tex">\lambda_{\text{ObsCatch}}</annotation></semantics></math>
 in this case represents a likelihood weight to apply to catch data
@@ -1111,7 +1111,7 @@ distribution:</p>
 </annotation></semantics></math></p>
 <p>with a mean of 0 and a variance of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>σ</mi><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow><mn>2</mn></msubsup><annotation encoding="application/x-tex">\sigma^2_{Init}</annotation></semantics></math>.
-In <code>SPoCK</code>, these can either be estimated in a penalized
+In <code>SPoRC</code>, these can either be estimated in a penalized
 likelihood framework, where the variance parameter is fixed at a known
 value and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><annotation encoding="application/x-tex">\epsilon_{r,y}^{Init}</annotation></semantics></math>

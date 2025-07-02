@@ -17,17 +17,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-To further demonstrate additional funcionality of `SPoCK`, we will use the 2024 eastern Bering Sea walleye pollock assessment as an example. In particular, this vignette attempts to mimic the 2024 assessment. However, given the complexity and intricacies of the pollock assessment, a direct match in estimates is not currently possible due to a variety of factors, including:
+To further demonstrate additional funcionality of `SPoRC`, we will use the 2024 eastern Bering Sea walleye pollock assessment as an example. In particular, this vignette attempts to mimic the 2024 assessment. However, given the complexity and intricacies of the pollock assessment, a direct match in estimates is not currently possible due to a variety of factors, including:
 
-1. The pollock assessment fits to the bottom trawl survey with a covariance matrix, which is currently not possible in `SPoCK`,
-2. The bottom trawl survey follows a random walk process on logistic selectivity parameters, but also allows for age-1 deviations on the logistic functional form. This functionality is not incorporated in `SPoCK`,
+1. The pollock assessment fits to the bottom trawl survey with a covariance matrix, which is currently not possible in `SPoRC`,
+2. The bottom trawl survey follows a random walk process on logistic selectivity parameters, but also allows for age-1 deviations on the logistic functional form. This functionality is not incorporated in `SPoRC`,
 3. Different weight-at-age matrices are utilized to fit to biomass indices, compute spawning biomass, and compute expected catches, which is not currently allowed. 
 
-Despite these differences, `SPoCK` can generally approximate the dynamics of the 2024 assessment relatively closely. First, let us load in any necessary packages.
+Despite these differences, `SPoRC` can generally approximate the dynamics of the 2024 assessment relatively closely. First, let us load in any necessary packages.
 
 ```{r setup, warning = FALSE, message = FALSE, eval = TRUE, warning = FALSE}
 # Load in packages
-library(SPoCK) 
+library(SPoRC) 
 library(here)
 library(RTMB)
 library(ggplot2)
@@ -396,7 +396,7 @@ ssb_series$Par <- "Spawning Biomass"
 # bind together
 ts_df <- rbind(ssb_series,rec_series) %>%
   dplyr::rename(Region = Var1, Year = Var2) %>%
-  dplyr::mutate(Year = Year + 1963, type = 'SPoCK')
+  dplyr::mutate(Year = Year + 1963, type = 'SPoRC')
 
 # Get actual assessment results
 ssb_ass <- data.frame(
@@ -440,7 +440,7 @@ ggplot(ts_df, aes(x = Year, y = value, ymin = value - (1.96 * se),
 
 ![](figures/f_ebs_pol_ts_comparison.png)
 
-Lastly, we can also inspect estimates of fishery selectivity from `SPoCK`. Here, we show relative selectivity estimates for ages 3 - 11 (panels). Note that selectivity in this model can exceed 1, and we normalize these values in the figure to improve interpretability 
+Lastly, we can also inspect estimates of fishery selectivity from `SPoRC`. Here, we show relative selectivity estimates for ages 3 - 11 (panels). Note that selectivity in this model can exceed 1, and we normalize these values in the figure to improve interpretability 
 ```{r, eval = F}
 reshape2::melt(ebswp_rtmb_model$rep$fish_sel) %>%
   mutate(value = value/max(value)) %>%
