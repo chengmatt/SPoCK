@@ -350,7 +350,7 @@ get_data_fitted_plot <- function(data,
 #' @param rep List of n_models of `SPoCK` report lists
 #' @param model_names Vector of model names
 #'
-#' @returns Plot of negative log likelihood values across models
+#' @returns Plot and tables of negative log likelihood values across models
 #' @export get_nLL_plot
 #'
 #' @examples
@@ -416,7 +416,16 @@ get_nLL_plot <- function(rep,
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 0.5)) +
     ggplot2::labs(x = 'Likelihood Component', y = 'Likelihood', fill = 'Type')
 
-  return(nLL_plot)
+
+  # get nLL table
+  nLL_table <- nLL_all_df %>%
+    dplyr::select(-type) %>%
+    dplyr::filter(value != 0) %>%  # remove zeros
+    tidyr::pivot_wider(names_from = name, values_from = value)
+  table_plot <- grid::grid.grabExpr(gridExtra::grid.table(nLL_table))
+  table_plot1 <- cowplot::ggdraw() + cowplot::draw_grob(table_plot)
+
+  return(list(nLL_plot, table_plot1))
 }
 
 #' Get Index Fits Plot

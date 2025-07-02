@@ -12,7 +12,7 @@ get_nLL_plot(rep, model_names)
 \item{model_names}{Vector of model names}
 }
 \value{
-Plot of negative log likelihood values across models
+Plot and tables of negative log likelihood values across models
 }
 \description{
 Get plot of negative log likelihood values
