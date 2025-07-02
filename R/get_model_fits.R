@@ -45,7 +45,7 @@ get_idx_fits <- function(data,
   colnames(rep$PredFishIdx) <- year_labs
 
   # Observed survey index
-  if(data$sablefish_ADMB == 0) {
+  if(data$likelihoods == 1) {
     obs_srv <- reshape2::melt(data$ObsSrvIdx) %>% dplyr::rename(obs = value) %>%
       dplyr::left_join(reshape2::melt(data$ObsSrvIdx_SE) %>%  dplyr::rename(se = value), by = c("Var1", "Var2", "Var3")) %>%
       dplyr::mutate(lci = exp(log(obs) - (1.96 * se)), uci = exp(log(obs) + (1.96 * se)), Type = 'Survey') %>%
@@ -77,7 +77,7 @@ get_idx_fits <- function(data,
     dplyr::mutate(resid = log(obs) - log(value))
 
   # Observed fishery index
-  if(data$sablefish_ADMB == 0) {
+  if(data$likelihoods == 1) {
     obs_fish <- reshape2::melt(data$ObsFishIdx) %>%
       dplyr::rename(obs = value) %>%
       dplyr::left_join(reshape2::melt(data$ObsFishIdx_SE) %>%

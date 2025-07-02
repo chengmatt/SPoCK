@@ -170,7 +170,7 @@ post_optim_sanity_checks <- function(sd_rep,
   max_abs_grad <- abs(sd_rep$gradient.fixed)[max_abs_grad_ndx]
   if(gradient_tol < max_abs_grad) {
     message("Parameter: ", names(sd_rep$par.fixed)[max_abs_grad_ndx], " had absolute gradient = ", max_abs_grad,
-            " which was greater than tolerance ", gradient_tol,". This indicates potential non-convergence.\n")
+            " which was greater than tolerance ", gradient_tol,". This indicates potential non-convergence according to the tolerance.\n")
     passed_post_sanity_checks <- F
   }
 
@@ -189,7 +189,7 @@ post_optim_sanity_checks <- function(sd_rep,
   # check if standard errors are big
   if(max(diag(sd_rep$cov.fixed)) > se_tol) {
     message("Parameter: ", names(diag(sd_rep$cov.fixed))[which.max(diag(sd_rep$cov.fixed))], " has a standard error = ",
-            max(diag(sd_rep$cov.fixed)), " which was greated than tolerance ", se_tol, ". This indicates potential non-convergence.\n")
+            max(diag(sd_rep$cov.fixed)), " which was greated than tolerance ", se_tol, ". This indicates potential non-convergence according to the tolerance. \n")
     passed_post_sanity_checks <- F
   }
 
@@ -203,7 +203,7 @@ post_optim_sanity_checks <- function(sd_rep,
     dplyr::mutate(value = as.numeric(value))
 
   if(max(abs(corr_df$value)) > corr_tol) {
-    message("Parameter pairs: ", corr_df$Var1[which.max(abs(corr_df$value))], " and ", corr_df$Var2[which.max(abs(corr_df$value))], " have a correlation of ", max(abs(corr_df$value)), ". Model is likely not converged!")
+    message("Parameter pairs: ", corr_df$Var1[which.max(abs(corr_df$value))], " and ", corr_df$Var2[which.max(abs(corr_df$value))], " have a correlation of ", max(abs(corr_df$value)), ". This indicates potential non-convergence according to the tolerance.")
     passed_post_sanity_checks <- F
   }
 
