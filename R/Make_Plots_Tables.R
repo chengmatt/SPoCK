@@ -810,6 +810,7 @@ get_key_quants <- function(data,
     key_quants_tmp <- data.frame(Model = model_names[i],
                                  Region = 1:data[[i]]$n_regions,
                                  Terminal_SSB = round(out_proj$proj_SSB[,1], 5),
+                                 Terminal_F = rowSums(terminal_F),
                                  Catch_Advice = round(apply(out_proj$proj_Catch[,2,,drop = FALSE], c(1,2), sum), 5), # sum across fleets
                                  B_Ref_Pt = round(tmp_ref_pts$b_ref_pt, 5),
                                  F_Ref_Pt = round(tmp_ref_pts$f_ref_pt, 5),
