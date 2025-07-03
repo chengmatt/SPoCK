@@ -829,3 +829,40 @@ get_key_quants <- function(data,
   return(list(key_quants_df, table_plot1))
 
 } # end function
+
+#' Plotting function for all basic quantities
+#'
+#' @param data List of n_models of `SPoRC` data lists
+#' @param rep List of n_models of `SPoRC` report lists
+#' @param sd_rep List of n_models of sd report lists from `SPoRC`
+#' @param out_path Path to the output directory. Users only need to specify the path.
+#' @param model_names Character vector of model names
+#'
+#' @returns A series of plots compared across models outputted as a pdf in the specified directory
+#' @export plot_all_basic
+#'
+#' @examples
+#' \dontrun{
+#' plot_all_basic(
+#'   data = list(data1, data2),
+#'   rep = list(rep1, rep2),
+#'   sd_rep = list(sd_rep1, sd_rep2),
+#'   model_names = c("Model1", "Model2"),
+#'   out_path = here::here()
+#' )
+#' }
+plot_all_basic <- function(data,
+                           rep,
+                           sd_rep,
+                           model_names,
+                           out_path) {
+
+  pdf(here::here(out_path, "plot_results.pdf"), width = 25, height = 13)
+  print(get_biological_plot(data = data, rep = rep, model_names = model_names))
+  print(get_data_fitted_plot(data = data, model_names = model_names))
+  print(get_ts_plot(rep = rep, sd_rep = sd_rep, model_names = model_names))
+  print(get_selex_plot(rep = rep, model_names = model_names))
+  print(get_nLL_plot(rep = rep, model_names = model_names))
+  dev.off()
+
+}

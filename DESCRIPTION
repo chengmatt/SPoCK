@@ -26,6 +26,7 @@ Imports:
     ggplot2,
     grid,
     gridExtra,
+    here,
     MASS,
     Matrix,
     methods,
@@ -39,7 +40,6 @@ Imports:
     tidyr,
     tmbstan
 Suggests: 
-    here,
     knitr,
     purrr,
     rmarkdown
