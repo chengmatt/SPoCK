@@ -75,16 +75,7 @@ get_ts_plot <- function(rep,
     theme_sablefish()
 
   # fishing mortality
-  f_ts_plot <- ggplot2::ggplot(f_plot_df,
-                               ggplot2::aes(x = Year, y = value, color = factor(Model))) +
-    ggplot2::geom_line(lwd = 0.9) +
-    ggplot2::facet_grid(Type~Region, scales = 'free') +
-    ggplot2::labs(x = 'Year', y = 'Value', color = 'Model', fill = 'Model') +
-    ggplot2::coord_cartesian(ylim = c(0,NA)) +
-    theme_sablefish()
-
-  # fishing mortality
-  f_ts_plot <- ggplot2::ggplot(f_plot_df,
+  f_ts_plot <- ggplot2::ggplot(biom_rec_df %>% dplyr::filter(stringr::str_detect(Type, 'Fleet')),
                                ggplot2::aes(x = Year, y = value, color = factor(Model))) +
     ggplot2::geom_line(lwd = 0.9) +
     ggplot2::facet_grid(Type~Region, scales = 'free') +
@@ -93,7 +84,7 @@ get_ts_plot <- function(rep,
     theme_sablefish()
 
   # recruitment
-  rec_ts_plot <- ggplot2::ggplot(rec_plot_df,
+  rec_ts_plot <- ggplot2::ggplot(biom_rec_df %>% dplyr::filter(Type == 'Recruitment'),
                                  ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
     ggplot2::geom_line(lwd = 0.9) +
     ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
@@ -103,7 +94,7 @@ get_ts_plot <- function(rep,
     theme_sablefish()
 
   # ssb
-  ssb_ts_plot <- ggplot2::ggplot(ssb_plot_df,
+  ssb_ts_plot <- ggplot2::ggplot(biom_rec_df %>% dplyr::filter(Type == 'SSB'),
                                ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
     ggplot2::geom_line(lwd = 0.9) +
     ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
@@ -113,7 +104,7 @@ get_ts_plot <- function(rep,
     theme_sablefish()
 
   # total biomass
-  total_biom_plot <- ggplot2::ggplot(totbiom_plot_df,
+  total_biom_plot <- ggplot2::ggplot(biom_rec_df %>% dplyr::filter(Type == 'Total Biom'),
                       ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
     ggplot2::geom_line(lwd = 0.9) +
     ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
