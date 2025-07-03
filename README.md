@@ -1,7 +1,7 @@
-# SPoRC: Spatial (S) Population (Po) Model acRoss (R) genearlized Components (C)
+# SPoRC: A Generalized Stochastic (S) Population (Po) Model over Regional (R) Components (C)
 #### Matt Cheng, Dan Goethel, Pete Hulson, Curry Cunningham
 
-A generalized stock assessment model written in RTMB, that can be extended to represent any number of regions, ages, sexes, and fleets. 
+`SPoRC` is a flexible modeling framework that captures population dynamics across space, incorporating stochasticity in vital rates and movement among geographically defined components. It supports integration of multiple data sources, regional structuring, and age- and sex-specific processes, making it well suited for complex metapopulation or spatial stock assessment contexts.
 
 ## Installation
 

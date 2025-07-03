@@ -13,6 +13,7 @@ Depends:
     R (>= 3.5),
     RTMB
 Imports: 
+    abind,
     afscOSA,
     bayesplot,
     cowplot,
@@ -25,7 +26,6 @@ Imports:
     ggplot2,
     grid,
     gridExtra,
-    here,
     MASS,
     Matrix,
     methods,
@@ -39,7 +39,7 @@ Imports:
     tidyr,
     tmbstan
 Suggests: 
-    abind,
+    here,
     knitr,
     purrr,
     rmarkdown
