@@ -64,8 +64,8 @@ get_ts_plot <- function(rep,
     biom_rec_df <- rbind(ssb_plot_df, totbiom_plot_df, rec_plot_df, f_plot_df, biom_rec_df)
   }
 
-  # Plot time series
-  ts_plot <- ggplot2::ggplot(biom_rec_df,
+  # Plot combined time series
+  comb_ts_plot <- ggplot2::ggplot(biom_rec_df,
                              ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
     ggplot2::geom_line(lwd = 0.9) +
     ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
@@ -74,7 +74,55 @@ get_ts_plot <- function(rep,
     ggplot2::coord_cartesian(ylim = c(0,NA)) +
     theme_sablefish()
 
-  return(ts_plot)
+  # fishing mortality
+  f_ts_plot <- ggplot2::ggplot(f_plot_df,
+                               ggplot2::aes(x = Year, y = value, color = factor(Model))) +
+    ggplot2::geom_line(lwd = 0.9) +
+    ggplot2::facet_grid(Type~Region, scales = 'free') +
+    ggplot2::labs(x = 'Year', y = 'Value', color = 'Model', fill = 'Model') +
+    ggplot2::coord_cartesian(ylim = c(0,NA)) +
+    theme_sablefish()
+
+  # fishing mortality
+  f_ts_plot <- ggplot2::ggplot(f_plot_df,
+                               ggplot2::aes(x = Year, y = value, color = factor(Model))) +
+    ggplot2::geom_line(lwd = 0.9) +
+    ggplot2::facet_grid(Type~Region, scales = 'free') +
+    ggplot2::labs(x = 'Year', y = 'Value', color = 'Model', fill = 'Model') +
+    ggplot2::coord_cartesian(ylim = c(0,NA)) +
+    theme_sablefish()
+
+  # recruitment
+  rec_ts_plot <- ggplot2::ggplot(rec_plot_df,
+                                 ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
+    ggplot2::geom_line(lwd = 0.9) +
+    ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
+    ggplot2::facet_grid(Type~Region, scales = 'free') +
+    ggplot2::labs(x = 'Year', y = 'Recruitment', color = 'Model', fill = 'Model') +
+    ggplot2::coord_cartesian(ylim = c(0,NA)) +
+    theme_sablefish()
+
+  # ssb
+  ssb_ts_plot <- ggplot2::ggplot(ssb_plot_df,
+                               ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
+    ggplot2::geom_line(lwd = 0.9) +
+    ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
+    ggplot2::facet_grid(Type~Region, scales = 'free') +
+    ggplot2::labs(x = 'Year', y = 'Spawning Stock Biomass', color = 'Model', fill = 'Model') +
+    ggplot2::coord_cartesian(ylim = c(0,NA)) +
+    theme_sablefish()
+
+  # total biomass
+  total_biom_plot <- ggplot2::ggplot(totbiom_plot_df,
+                      ggplot2::aes(x = Year, y = value, ymin = lwr, ymax = upr, color = factor(Model), fill = factor(Model))) +
+    ggplot2::geom_line(lwd = 0.9) +
+    ggplot2::geom_ribbon(alpha = 0.3, color = NA) +
+    ggplot2::facet_grid(Type~Region, scales = 'free') +
+    ggplot2::labs(x = 'Year', y = 'Total Biomass', color = 'Model', fill = 'Model') +
+    ggplot2::coord_cartesian(ylim = c(0,NA)) +
+    theme_sablefish()
+
+  return(list(comb_ts_plot, f_ts_plot, rec_ts_plot, ssb_ts_plot, total_biom_plot))
 }
 
 #' Get Fishery and Survey Selectivity Plots
@@ -764,7 +812,9 @@ get_key_quants <- function(data,
                                  Terminal_SSB = round(out_proj$proj_SSB[,1], 5),
                                  Catch_Advice = round(apply(out_proj$proj_Catch[,2,,drop = FALSE], c(1,2), sum), 5), # sum across fleets
                                  B_Ref_Pt = round(tmp_ref_pts$b_ref_pt, 5),
-                                 F_Ref_Pt = round(tmp_ref_pts$f_ref_pt, 5)
+                                 F_Ref_Pt = round(tmp_ref_pts$f_ref_pt, 5),
+                                 B_over_B_Ref = round(out_proj$proj_SSB[,1] / tmp_ref_pts$b_ref_pt, 5),
+                                 F_over_F_Ref = round(rowSums(terminal_F) / tmp_ref_pts$f_ref_pt, 5)
     )
 
     key_quants_df <- rbind(key_quants_df, key_quants_tmp)
