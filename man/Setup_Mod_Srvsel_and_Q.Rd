@@ -69,6 +69,7 @@ Available selectivity model types include:
   \item \code{"logist2"}: Logistic function with parameters \code{a50} and \code{a95}.
   \item \code{"gamma"}: Dome-shaped gamma function with parameters \code{amax} and \code{delta}.
   \item \code{"exponential"}: Exponential function with a power parameter.
+  \item \code{"dbnrml"}: Double normal function with 6 parameters.
 }
 
 For example:

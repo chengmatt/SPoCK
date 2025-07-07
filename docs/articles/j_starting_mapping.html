@@ -278,7 +278,8 @@ we should expect a total of 8 unique numbers, which represent unique
 selectivity parameters to be estimated for each sex and fleet (4 for
 each sex and fleet combination).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
+<code class="sourceCode R"><span><span class="va">input_list</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">Selex_Type</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="co"># specifying age-based selectivity for demonstration purposes</span></span>
+<span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
 <span></span>
 <span>                                      <span class="co"># Model options</span></span>
 <span>                                      cont_tv_fish_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Fleet_1"</span>, <span class="st">"none_Fleet_2"</span><span class="op">)</span>,</span>
@@ -303,7 +304,8 @@ parameters are used for both sexes within each fleet. As a result, when
 we inspect the mapping, we should expect four unique values—two per
 fleet—despite having two sexes.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
+<code class="sourceCode R"><span><span class="va">input_list</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">Selex_Type</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="co"># specifying age-based selectivity for demonstration purposes</span></span>
+<span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span>input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
 <span></span>
 <span>                                      <span class="co"># Model options</span></span>
 <span>                                      cont_tv_fish_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none_Fleet_1"</span>, <span class="st">"none_Fleet_2"</span><span class="op">)</span>,</span>
@@ -407,7 +409,8 @@ construct the mapping manually.</p>
 array with the correct dimensions and assumes that all selectivity
 parameters are uniquely estimated across model partitions.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">input_list</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">Selex_Type</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="co"># specifying age-based selectivity for demonstration purposes</span></span>
+<span><span class="va">input_list</span> <span class="op">&lt;-</span> <span class="fu">SPoRC</span><span class="fu">::</span><span class="fu"><a href="../reference/Setup_Mod_Fishsel_and_Q.html">Setup_Mod_Fishsel_and_Q</a></span><span class="op">(</span></span>
 <span>  input_list <span class="op">=</span> <span class="va">input_list</span>,</span>
 <span></span>
 <span>  <span class="co"># Model options</span></span>

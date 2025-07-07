@@ -52,6 +52,7 @@
 <span>  dont_est_recdev_last <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  sexratio <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  init_age_strc <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  equil_init_age_strc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  init_F_prop <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  sigmaR_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  InitDevs_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -129,6 +130,12 @@
 <dt id="arg-init-age-strc">init_age_strc<a class="anchor" aria-label="anchor" href="#arg-init-age-strc"></a></dt>
 <dd><p>Integer flag specifying initialization of initial age structure:</p><ul><li><p><code>0</code>: Initialize by iteration.</p></li>
 <li><p><code>1</code>: Initialize using a geometric series.</p></li>
+</ul></dd>
+
+
+<dt id="arg-equil-init-age-strc">equil_init_age_strc<a class="anchor" aria-label="anchor" href="#arg-equil-init-age-strc"></a></dt>
+<dd><p>Integer flag specifying whether initial age structure is in equilibrium or stochastic. Default is stochastic.</p><ul><li><p><code>0</code>: Equilibrium initial age structure.</p></li>
+<li><p><code>1</code>: Stochastic initial age structure.</p></li>
 </ul></dd>
 
 

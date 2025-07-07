@@ -2,7 +2,7 @@
 % Please edit documentation in R/Get_Selex.R
 \name{Get_Selex}
 \alias{Get_Selex}
-\title{Get Selectivity}
+\title{Calculate Selectivity}
 \usage{
 Get_Selex(
   Selex_Model,
@@ -11,28 +11,53 @@ Get_Selex(
   ln_seldevs,
   Region,
   Year,
-  Age,
+  Bin,
   Sex
 )
 }
 \arguments{
-\item{Selex_Model}{integer for selectivity model}
+\item{Selex_Model}{Integer specifying the selectivity model:
+\describe{
+  \item{0}{Logistic selectivity: uses b50 and slope parameters}
+  \item{1}{Gamma-shaped (dome) selectivity: uses bin-at-peak and delta parameters}
+  \item{2}{Power function selectivity: decreasing selectivity with bin}
+  \item{3}{Logistic selectivity using b50 and b95}
+  \item{4}{Double-normal (dome-shaped) selectivity with plateau and flexible tails}
+}}
 
-\item{TimeVary_Model}{Time-varying selectivity model == 0, constant or blocked, == 1 iid, == 2 random walk, == 3 3dar1 marginal, == 4 3dar1 conditional, ==5 2dar1}
+\item{TimeVary_Model}{Integer specifying time variation structure:
+\describe{
+  \item{0}{No time variation (constant or blocked)}
+  \item{1}{IID deviations}
+  \item{2}{Random walk over time}
+  \item{3}{3D AR1-GMRF marginal}
+  \item{4}{3D AR1-GMRF conditional}
+  \item{5}{2D AR1-GMRF}
+}}
 
-\item{ln_Pars}{log selectivity parameters}
+\item{ln_Pars}{Vector of log-transformed selectivity parameters. Interpretation depends on `Selex_Model`.}
 
-\item{ln_seldevs}{selectivity deviations array dimensioned by n_regions, n_years, n_ages, n_sexes, 1}
+\item{ln_seldevs}{Array of selectivity deviations (may be log-scale), dimensioned as:
+[n_regions, n_years, n_bins, n_sexes, 1]. Used for time-varying or semi-parametric selectivity.}
 
-\item{Region}{Region index value}
+\item{Region}{Integer index for region}
 
-\item{Year}{Year index value}
+\item{Year}{Integer index for year}
 
-\item{Age}{vector of Ages}
+\item{Bin}{Numeric vector of bins to compute selectivity for}
 
-\item{Sex}{Sex index value}
+\item{Sex}{Integer index for sex}
+}
+\value{
+A numeric vector of selectivity values corresponding to the bins specified in the model.
 }
 \description{
-Get Selectivity
+Computes selectivity using one of several parametric or semi-parametric models.
+Supports both constant and time-varying selectivity, including random effects and GMRF-based deviations.
+}
+\details{
+Selectivity parameters are transformed internally (typically using `exp()` or logistic transformations)
+to ensure they remain in valid ranges. Deviations (`ln_seldevs`) apply multiplicatively to these transformed
+parameters when time-varying models are used. For semi-parametric models (TimeVary_Model 3–5), deviations are applied directly to the resulting selectivity curve.
 }
 \keyword{internal}

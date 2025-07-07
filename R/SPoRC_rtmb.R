@@ -24,6 +24,9 @@
 # Incorporated iid, random walk, 2d and 3d correaltions for fishery and survey selectivity
 # Added in options for Logistic Normal likelihood
 
+# version 4 - (M.LH Cheng)
+# Added in capabilities for length-based selectivity processes
+
 #' Generalized RTMB model
 #'
 #' @param pars Parameter List
@@ -52,12 +55,15 @@ SPoRC_rtmb = function(pars, data) {
   Init_NAA = array(0, dim = c(n_regions, n_ages, n_sexes)) # initial age structure
   Init_NAA_next_year = Init_NAA # initial age structure
   NAA = array(data = 0, dim = c(n_regions, n_yrs + 1, n_ages, n_sexes)) # Numbers at age
+  NAA0 = array(data = 0, dim = c(n_regions, n_yrs + 1, n_ages, n_sexes)) # Unfished Numbers at age
   ZAA = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # Total mortality at age
   SAA_mid = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # Survival at age (midpoint of the year)
   natmort = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes)) # natural mortality at age
   Total_Biom = array(0, dim = c(n_regions, n_yrs)) # Total biomass
   SSB = array(0, dim = c(n_regions, n_yrs)) # Spawning stock biomass
-  Aggregated_SSB = array(0, dim = c(n_yrs)) # Spawning stock biomass
+  Dynamic_SSB0 = array(0, dim = c(n_regions, n_yrs)) # Dynamic Unfished Spawning stock biomass
+  Aggregated_SSB = array(0, dim = c(n_yrs)) # Aggregated Spawning stock biomass
+  Dynamic_Aggregated_SSB0 = array(0, dim = c(n_yrs)) # Dynamic Unfished Aggregated Spawning stock biomass
 
   # Movement Stuff
   Movement = array(data = 0, dim = c(n_regions, n_regions, n_yrs, n_ages, n_sexes)) # movement "matrix"
@@ -78,13 +84,15 @@ SPoRC_rtmb = function(pars, data) {
   PredCatch = array(0, dim = c(n_regions, n_yrs, n_fish_fleets)) # Predicted catch in weight
   PredFishIdx = array(0, dim = c(n_regions, n_yrs, n_fish_fleets)) # Predicted fishery index
   fish_sel = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_fish_fleets)) # Fishery selectivity
+  fish_sel_l = array(data = 0, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_fish_fleets)) # Fishery selectivity (lengths)
   fish_q = array(0, dim = c(n_regions, n_yrs, n_fish_fleets)) # Fishery catchability
 
   # Survey Processes
   SrvIAA = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_srv_fleets)) # Survey index at age
   SrvIAL = array(data = 0, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_srv_fleets)) # Survey index at length
   PredSrvIdx = array(0, dim = c(n_regions, n_yrs, n_srv_fleets)) # Predicted survey index
-  srv_sel = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_srv_fleets)) # Survey selectivity
+  srv_sel = array(data = 0, dim = c(n_regions, n_yrs, n_ages, n_sexes, n_srv_fleets)) # Survey selectivity ages
+  srv_sel_l = array(data = 0, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_srv_fleets)) # Survey selectivity lengths
   srv_q = array(0, dim = c(n_regions, n_yrs, n_srv_fleets)) # Survey catchability
 
   # Likelihoods
@@ -112,7 +120,6 @@ SPoRC_rtmb = function(pars, data) {
   jnLL = 0 # Joint negative log likelihood
 
   # Model Process Equations -------------------------------------------------
-
   ## Movement Parameters (Set up) --------------------------------------------
   ref_region = 1 # Set up reference region (always set at 0)
   for(r in 1:n_regions) {
@@ -139,6 +146,9 @@ SPoRC_rtmb = function(pars, data) {
   } # end r loop
 
   ## Fishery Selectivity -----------------------------------------------------
+  if(Selex_Type == 0) selex_bins = ages # if age-based selectivity
+  if(Selex_Type == 1) selex_bins = lens # if length-based selectivity
+
   for(r in 1:n_regions) {
     for(y in 1:n_yrs) {
       for(f in 1:n_fish_fleets) {
@@ -148,16 +158,23 @@ SPoRC_rtmb = function(pars, data) {
           # Extract out fixed-effect selectivity parameters for a given block
           tmp_fish_sel_vec = ln_fish_fixed_sel_pars[r,,fish_sel_blk_idx,s,f]
 
+          # Compute selectivity functional form
+          tmp_sel = Get_Selex(Selex_Model = fish_sel_model[r,y,f], # selectivity model
+                              TimeVary_Model = cont_tv_fish_sel[r,f], # time varying model
+                              ln_Pars = tmp_fish_sel_vec, # fixed effect selectivity parameters
+                              ln_seldevs = ln_fishsel_devs[,,,,f, drop = FALSE], # Selectivity deviations
+                              Region = r, # region index
+                              Year = y, # year index
+                              Bin = selex_bins, # bin vector
+                              Sex = s # sex index
+                              )
+
           # Calculate selectivity
-          fish_sel[r,y,,s,f] = Get_Selex(Selex_Model = fish_sel_model[r,y,f], # selectivity model
-                                         TimeVary_Model = cont_tv_fish_sel[r,f], # time varying model
-                                         ln_Pars = tmp_fish_sel_vec, # fixed effect selectivity parameters
-                                         ln_seldevs = ln_fishsel_devs[,,,,f, drop = FALSE], # Selectivity deviations
-                                         Region = r, # region index
-                                         Year = y, # year index
-                                         Age = ages, # age vector
-                                         Sex = s # sex index
-                                         )
+          if(Selex_Type == 0) fish_sel[r,y,,s,f] = tmp_sel # age-based selectivity
+          if(Selex_Type == 1) {
+            fish_sel_l[r,y,,s,f] = tmp_sel # input into length-based fishery selectivity
+            fish_sel[r,y,,s,f] = tmp_sel %*% SizeAgeTrans[r,y,,,s] # length-based selectivity (dot product of size age transition)
+          }
 
         } # end s loop
       } # end f loop
@@ -175,16 +192,23 @@ SPoRC_rtmb = function(pars, data) {
           # extract temporary selectivity parameters
           tmp_srv_sel_vec = ln_srv_fixed_sel_pars[r,,srv_sel_blk_idx,s,sf]
 
+          # Compute selectivity functional form
+          tmp_sel = Get_Selex(Selex_Model = srv_sel_model[r,y,sf], # selectivity model
+                              TimeVary_Model = cont_tv_srv_sel[r,sf], # time varying model
+                              ln_seldevs = ln_srvsel_devs[,,,,sf, drop = FALSE], # deviations
+                              ln_Pars = tmp_srv_sel_vec,
+                              Region = r, # region index
+                              Year = y, # year index
+                              Bin = selex_bins, # bin vector
+                              Sex = s # sex index
+                              )
+
           # Calculate selectivity
-          srv_sel[r,y,,s,sf] = Get_Selex(Selex_Model = srv_sel_model[r,y,sf], # selectivity model
-                                         TimeVary_Model = cont_tv_srv_sel[r,sf], # time varying model
-                                         ln_seldevs = ln_srvsel_devs[,,,,sf, drop = FALSE], # deviations
-                                         ln_Pars = tmp_srv_sel_vec,
-                                         Region = r, # region index
-                                         Year = y, # year index
-                                         Age = ages, # age vector
-                                         Sex = s # sex index
-                                         )
+          if(Selex_Type == 0) srv_sel[r,y,,s,sf] = tmp_sel # age-based selectivity
+          if(Selex_Type == 1) {
+            srv_sel_l[r,y,,s,sf] = tmp_sel # input into length-based survey selectivity
+            srv_sel[r,y,,s,sf] = tmp_sel %*% SizeAgeTrans[r,y,,,s] # length-based selectivity (dot product of size age transition)
+          }
 
         } # end s loop
       } # end sf loop
@@ -320,6 +344,8 @@ SPoRC_rtmb = function(pars, data) {
     } # end r loop
   } # end if
 
+  # Initialize Unfished NAA
+  NAA0[,1,,] = NAA[,1,,]
 
   ## Population Projection ---------------------------------------------------
   for(y in 1:n_yrs) {
@@ -351,6 +377,7 @@ SPoRC_rtmb = function(pars, data) {
         if(y > n_est_rec_devs) NAA[r,y,1,s] = tmp_Det_Rec[r] * sexratio[s] # mean recruitment in terminal year (not estimate last year rec dev)
       } # end s loop
       Rec[r,y] = sum(NAA[r,y,1,]) # get annual recruitment container here
+      NAA0[r,y,1,] = NAA[r,y,1,] # populate unfished NAA
     } # end r loop
 
     ### Movement ----------------------------------------------------------------
@@ -367,18 +394,28 @@ SPoRC_rtmb = function(pars, data) {
     } # only compute if spatial
 
     ### Mortality and Ageing ------------------------------------------------------
+    # Fished
     NAA[,y+1,2:n_ages,] = NAA[,y,1:(n_ages-1),] * exp(-ZAA[,y,1:(n_ages-1),]) # Exponential mortality for individuals not in plus group
     NAA[,y+1,n_ages,] = NAA[,y+1,n_ages,] + NAA[,y,n_ages,] * exp(-ZAA[,y,n_ages,]) # Acuumulate plus group
+
+    # Unfished
+    NAA0[,y+1,2:n_ages,] = NAA0[,y,1:(n_ages-1),] * exp(-natmort[,y,1:(n_ages-1),]) # Exponential mortality for individuals not in plus group
+    NAA0[,y+1,n_ages,] = NAA0[,y+1,n_ages,] + NAA0[,y,n_ages,] * exp(-natmort[,y,n_ages,]) # Acuumulate plus group
 
     ### Compute Biomass Quantities ----------------------------------------------
     Total_Biom[,y] = apply(NAA[,y,,,drop = FALSE] * WAA[,y,,,drop = FALSE], 1, sum) # Total biomass
     SSB[,y] = apply(NAA[,y,,1,drop = FALSE] * WAA[,y,,1,drop = FALSE] * MatAA[,y,,1,drop = FALSE] * exp(-ZAA[,y,,1,drop = FALSE] * t_spawn), 1, sum)
-    if(n_sexes == 1) SSB[,y] = SSB[,y] * 0.5 # If single sex model, multiply SSB calculations by 0.5
-
+    Dynamic_SSB0[,y] = apply(NAA0[,y,,1,drop = FALSE] * WAA[,y,,1,drop = FALSE] * MatAA[,y,,1,drop = FALSE] * exp(-ZAA[,y,,1,drop = FALSE] * t_spawn), 1, sum)
+    # If single sex model, multiply SSB calculations by 0.5
+    if(n_sexes == 1) {
+      SSB[,y] = SSB[,y] * 0.5
+      Dynamic_SSB0[,y] = Dynamic_SSB0[,y] * 0.5
+    }
   } # end y loop
 
   # Get aggregated SSB values
   Aggregated_SSB = colSums(SSB)
+  Aggregated_Dynamic_SSB0 = colSums(Dynamic_SSB0)
 
   ## Fishery Observation Model -----------------------------------------------
   for(r in 1:n_regions) {
@@ -858,15 +895,20 @@ SPoRC_rtmb = function(pars, data) {
     for(f in 1:n_fish_fleets) {
 
       if(cont_tv_fish_sel[r,f] > 0) {
+
+        if(Selex_Type == 0) tmp_sel_vals = fish_sel[r,,,,f, drop = FALSE] # age-based selectivity
+        if(Selex_Type == 1) tmp_sel_vals = fish_sel_l[r,,,,f, drop = FALSE] # length-based selectivity
+
         sel_nLL = sel_nLL + - Get_sel_PE_loglik(PE_model = cont_tv_fish_sel[r,f], # process error model
                                                 PE_pars = fishsel_pe_pars[r,,,f, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
                                                 ln_devs = ln_fishsel_devs[r,,,,f, drop = FALSE], # extract out process error deviations for a given fleet
                                                 map_sel_devs = map_ln_fishsel_devs[r,,,,f, drop = FALSE],
-                                                sel_vals = fish_sel[r,,,,f, drop = FALSE])
+                                                sel_vals = tmp_sel_vals)
       } # end if
 
       # Mean Standardizing to help with interpretability
-      if(cont_tv_fish_sel[r,f] %in% 3:5) for(s in 1:n_sexes) fish_sel[r,,,s,f] = exp(log(fish_sel[r,,,s,f]) - log(mean(fish_sel[r,,,s,f])))
+      if(Selex_Type == 0) if(cont_tv_fish_sel[r,f] %in% 3:5) for(s in 1:n_sexes) fish_sel[r,,,s,f] = exp(log(fish_sel[r,,,s,f]) - log(mean(fish_sel[r,,,s,f]))) # age-based selectivity
+      if(Selex_Type == 1) if(cont_tv_fish_sel[r,f] %in% 3:5) for(s in 1:n_sexes) fish_sel_l[r,,,s,f] = exp(log(fish_sel_l[r,,,s,f]) - log(mean(fish_sel_l[r,,,s,f]))) # length-based selectivity
 
     } # end f loop
 
@@ -874,15 +916,20 @@ SPoRC_rtmb = function(pars, data) {
     for(sf in 1:n_srv_fleets) {
 
       if(cont_tv_srv_sel[r,sf] > 0) {
+
+        if(Selex_Type == 0) tmp_sel_vals = srv_sel[r,,,,sf, drop = FALSE] # age-based selectivity
+        if(Selex_Type == 1) tmp_sel_vals = srv_sel_l[r,,,,sf, drop = FALSE] # length-based selectivity
+
         sel_nLL = sel_nLL + - Get_sel_PE_loglik(PE_model = cont_tv_srv_sel[r,sf], # process error model
                                                 PE_pars = srvsel_pe_pars[r,,,sf, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
                                                 ln_devs = ln_srvsel_devs[r,,,,sf, drop = FALSE], # extract out process error deviations for a given fleet
                                                 map_sel_devs = map_ln_srvsel_devs[r,,,,sf, drop = FALSE],
-                                                sel_vals = srv_sel[r,,,,sf, drop = FALSE])
+                                                sel_vals = tmp_sel_vals)
       } # end if
 
       # Mean Standardizing to help with interpretability
-      if(cont_tv_srv_sel[r,sf] %in% 3:5) for(s in 1:n_sexes) srv_sel[r,,,s,sf] = exp(log(srv_sel[r,,,s,sf]) - log(mean(srv_sel[r,,,s,sf])))
+      if(Selex_Type == 0) if(cont_tv_srv_sel[r,sf] %in% 3:5) for(s in 1:n_sexes) srv_sel[r,,,s,sf] = exp(log(srv_sel[r,,,s,sf]) - log(mean(srv_sel[r,,,s,sf])))
+      if(Selex_Type == 1) if(cont_tv_srv_sel[r,sf] %in% 3:5) for(s in 1:n_sexes) srv_sel_l[r,,,s,sf] = exp(log(srv_sel_l[r,,,s,sf]) - log(mean(srv_sel_l[r,,,s,sf])))
 
     } # end sf loop
   } # end r loop
@@ -890,7 +937,8 @@ SPoRC_rtmb = function(pars, data) {
   ### Recruitment (Penalty) ----------------------------------------------------
   if(likelihoods == 0) {
     for(r in 1:n_regions) {
-      Init_Rec_nLL[r,] = (ln_InitDevs[r,] / exp(ln_sigmaR[1]))^2 # initial age structure penalty
+      # if initial age structure is stochastic
+      if(equil_init_age_strc == 1) Init_Rec_nLL[r,] = (ln_InitDevs[r,] / exp(ln_sigmaR[1]))^2 # initial age structure penalty
       if(sigmaR_switch > 1) for(y in 1:(sigmaR_switch-1)) {
         Rec_nLL[r,y] = (ln_RecDevs[r,y]/exp(ln_sigmaR[1]))^2 + bias_ramp[y]*ln_sigmaR[1] # early period
       } # end first y loop
@@ -904,7 +952,8 @@ SPoRC_rtmb = function(pars, data) {
 
   if(likelihoods == 1) {
     for(r in 1:n_regions) {
-      Init_Rec_nLL[r,] = -RTMB::dnorm(ln_InitDevs[r,], 0, exp(ln_sigmaR[1]), TRUE) # initial age structure penalty
+      # if initial age structure is stochastic
+      if(equil_init_age_strc == 1) Init_Rec_nLL[r,] = -RTMB::dnorm(ln_InitDevs[r,], 0, exp(ln_sigmaR[1]), TRUE) # initial age structure penalty
       if(sigmaR_switch > 1) for(y in 1:(sigmaR_switch-1)) {
         Rec_nLL[r,y] = -RTMB::dnorm(ln_RecDevs[r,y], 0, exp(ln_sigmaR[1]), TRUE)
       } # first y loop
@@ -1059,6 +1108,12 @@ SPoRC_rtmb = function(pars, data) {
   RTMB::REPORT(SrvIAA)
   RTMB::REPORT(SrvIAL)
 
+  # Report length-based selectivity
+  if(Selex_Type == 1) {
+    RTMB::REPORT(fish_sel_l)
+    RTMB::REPORT(srv_sel_l)
+  }
+
   # Tagging Processes
   if(UseTagging == 1) {
     RTMB::REPORT(Pred_Tag_Recap)
@@ -1091,16 +1146,23 @@ SPoRC_rtmb = function(pars, data) {
   # Report for derived quantities
   RTMB::REPORT(Total_Biom)
   RTMB::REPORT(SSB)
+  RTMB::REPORT(Dynamic_SSB0)
+  RTMB::REPORT(Aggregated_SSB)
+  RTMB::REPORT(Dynamic_Aggregated_SSB0)
   RTMB::REPORT(Rec)
 
   # Report these in log space because can't be < 0
   RTMB::ADREPORT(log(Total_Biom))
   RTMB::ADREPORT(log(SSB))
+  RTMB::ADREPORT(log(Dynamic_SSB0))
   RTMB::ADREPORT(log(Rec))
+  RTMB::ADREPORT(log(Aggregated_SSB))
+  RTMB::ADREPORT(log(Dynamic_Aggregated_SSB0))
+
   RTMB::ADREPORT(Total_Biom)
   RTMB::ADREPORT(SSB)
   RTMB::ADREPORT(Rec)
-  RTMB::ADREPORT(log(Aggregated_SSB))
+
 
   return(jnLL)
 } # end function

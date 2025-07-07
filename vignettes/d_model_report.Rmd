@@ -33,10 +33,12 @@ The following tables describes all elements contained within `obj$rep`, which is
 | `CAL`              | Catch-at-length: `n_regions × n_years × n_lens × n_fish_fleets`             |
 | `PredCatch`        | Predicted catch: `n_regions × n_years × n_fish_fleets`                      |
 | `PredFishIdx`      | Predicted fishery index: `n_regions × n_years × n_fish_fleets`              |
-| `fish_sel`         | Fishery selectivity: `n_regions × n_years × n_ages × n_sexes × n_fish_fleets` |
+| `fish_sel`         | Fishery age-selectivity: `n_regions × n_years × n_ages × n_sexes × n_fish_fleets` |
+| `fish_sel_l`       | Fishery length-selectivity: `n_regions × n_years × n_lens × n_sexes × n_fish_fleets` |
 | `fish_q`           | Fishery catchability: `n_regions × n_years × n_fish_fleets`                 |
 | `PredSrvIdx`       | Predicted survey index: `n_regions × n_years × n_srv_fleets`                |
-| `srv_sel`          | Survey selectivity: `n_regions × n_years × n_ages × n_srv_fleets × n_sexes` |
+| `srv_sel`          | Survey age-selectivity: `n_regions × n_years × n_ages × n_srv_fleets × n_sexes` |
+| `srv_sel_l`        | Survey length-selectivity: `n_regions × n_years × n_lens × n_srv_fleets × n_sexes` |
 | `srv_q`            | Survey catchability: `n_regions × n_years × n_srv_fleets`                   |
 | `SrvIAA`           | Survey index-at-age: `n_regions × n_years × n_ages × n_sexes × n_srv_fleets` |
 | `SrvIAL`           | Survey index-at-length: `n_regions × n_years × n_lens × n_sexes × n_srv_fleets` |
@@ -64,6 +66,9 @@ The following tables describes all elements contained within `obj$rep`, which is
 | `jnLL`             | Joint negative log-likelihood                                               |
 | `Total_Biom`       | Total biomass: `n_regions × n_years`                                        |
 | `SSB`              | Spawning stock biomass: `n_regions × n_years`                               |
+| `Aggregated_SSB`   | Aggregated Spawning stock biomass: `n_years`                               |
+| `Dynamic_SSB0`     | Unfished Spawning stock biomass: `n_regions × n_years`                      |
+| `Dynamic_Aggregated_SSB0`   | Unfished Aggregated Spawning stock biomass: `n_years`             |
 | `Rec`              | Recruitment: `n_regions × n_years`                                          |
 
 

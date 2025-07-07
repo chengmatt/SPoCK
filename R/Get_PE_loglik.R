@@ -4,7 +4,7 @@
 #' @param PE_pars Process error parameters
 #' @param ln_devs Deviations
 #' @param map_sel_devs selectivity deviations to share
-#' @param sel_vals Selectivity values
+#' @param sel_vals Selectivity values (either length or age based)
 #'
 #' @returns numeric value of log likelihood (in positive space)
 #' @keywords internal
@@ -28,7 +28,7 @@ Get_sel_PE_loglik <- function(PE_model,
   unique_sel_devs = sort(unique(as.vector(map_sel_devs)))
 
   n_yrs = dim(map_sel_devs)[2] # get years for indexing
-  n_ages = dim(map_sel_devs)[3] # get ages for indexing
+  n_bins = dim(map_sel_devs)[3] # get bins for indexing
   n_sexes = dim(map_sel_devs)[4] # get sexes for indexing
 
   if(PE_model %in% c(1, 2)) {
@@ -58,10 +58,10 @@ Get_sel_PE_loglik <- function(PE_model,
     # Temporal Stability Penalty
     for(y in (min_yr + 1):n_yrs) {
       for(s in 1:n_sexes) {
-        for(a in 1:n_ages) {
-          year_penalty = log(sel_vals[1,y,a,s,1]) - log(sel_vals[1,y-1,a,s,1])
+        for(b in 1:n_bins) {
+          year_penalty = log(sel_vals[1,y,b,s,1]) - log(sel_vals[1,y-1,b,s,1])
           ll = ll - year_penalty^2
-        } # end a loop
+        } # end b loop
       } # end s loop
     } # end y loop
 
@@ -89,7 +89,7 @@ Get_sel_PE_loglik <- function(PE_model,
 
       # Construct precision matrix for 3d gmrf
       if(PE_model %in% c(3,4)) {
-        Q = Get_3d_precision(n_ages = n_ages, # number of ages
+        Q = Get_3d_precision(n_ages = n_bins, # number of ages
                              n_yrs = n_yrs,  # number of years
                              pcorr_age = PE_pars[1,1,s,1], # unconstrained partial correaltion by age
                              pcorr_year = PE_pars[1,2,s,1], # unconstrained partial correaltion by year
@@ -109,38 +109,38 @@ Get_sel_PE_loglik <- function(PE_model,
 
         # Extract out varaibles and transform into appropriate space
         eps_ya = ln_devs[1,,,s,1] # needs to be in matrix format for dseparable
-        rho_a = rho_trans(PE_pars[1,1,s,1]) # correlation across ages
+        rho_b = rho_trans(PE_pars[1,1,s,1]) # correlation across bins
         rho_y = rho_trans(PE_pars[1,2,s,1]) # correlation across years
         sigma2 = exp(PE_pars[1,4,s,1])^2 # get sigma
 
         # Define 2d scale
-        scale = sqrt(sigma2) / sqrt(1 - rho_y^2) / sqrt(1 - rho_a^2)
+        scale = sqrt(sigma2) / sqrt(1 - rho_y^2) / sqrt(1 - rho_b^2)
 
         # Define ar1 separable functions
         f1 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_y, log = TRUE)
-        f2 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_a, log = TRUE)
+        f2 = function(x) RTMB::dautoreg(x, mu = 0, phi = rho_b, log = TRUE)
         ll = ll + RTMB::dseparable(f1, f2)(eps_ya, scale = scale)
       } # end if
     } # end idx loop
 
-    # Regularity on ages
+    # Regularity on bins
     for(s in 1:n_sexes) {
       for (y in min_yr:n_yrs) {
-        if (n_ages >= 3) {
-          for (a in 2:(n_ages - 1)) {
-            age_curvature = log(sel_vals[1,y,a+1,s,1]) - 2 * log(sel_vals[1,y,a,s,1]) + log(sel_vals[1,y,a-1,s,1])
-            ll = ll - age_curvature^2
-          } # end a loop
+        if (n_bins >= 3) {
+          for (b in 2:(n_bins - 1)) {
+            bin_curvature = log(sel_vals[1,y,b+1,s,1]) - 2 * log(sel_vals[1,y,b,s,1]) + log(sel_vals[1,y,b-1,s,1])
+            ll = ll - bin_curvature^2
+          } # end b loop
         } # end if
       } # end y loop
     } # end s loop
 
     # Regularity on years
     for(s in 1:n_sexes) {
-      for(a in 1:n_ages) {
+      for(b in 1:n_bins) {
         if(n_yrs >= 3) {
           for(y in (min_yr+1):(n_yrs - 1)) {
-            year_curvature = log(sel_vals[1,y+1,a,s,1]) - 2 * log(sel_vals[1,y,a,s,1]) + log(sel_vals[1,y-1,a,s,1])
+            year_curvature = log(sel_vals[1,y+1,b,s,1]) - 2 * log(sel_vals[1,y,b,s,1]) + log(sel_vals[1,y-1,b,s,1])
             ll = ll - year_curvature^2
           } # end y loop
         } # end if n_yrs >= 3

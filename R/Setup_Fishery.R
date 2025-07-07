@@ -887,6 +887,7 @@ Setup_Mod_FishIdx_and_Comps <- function(input_list,
 #'   \item \code{"logist2"}: Logistic function with parameters \code{a50} and \code{a95}.
 #'   \item \code{"gamma"}: Dome-shaped gamma function with parameters \code{amax} and \code{delta}.
 #'   \item \code{"exponential"}: Exponential function with a power parameter.
+#'   \item \code{"dbnrml"}: Double normal function with 6 parameters.
 #' }
 #'
 #' For example:
@@ -1009,11 +1010,11 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   if(!is.null(corr_opt_semipar)) if(length(corr_opt_semipar) != input_list$data$n_fish_fleets) stop("corr_opt_semipar is not length n_fish_fleets")
   if(!Use_fish_q_prior %in% c(0,1)) stop("Values for Use_fish_q_prior are not valid. They are == 0 (don't use prior), or == 1 (use prior)")
   collect_message("Fishery Catchability priors are: ", ifelse(Use_fish_q_prior == 0, "Not Used", "Used"))
+  if(is.null(input_list$data$Selex_Type)) stop("Selectivity type (age or length-based) has not been specified yet! Make sure to first specify biological inputs with Setup_Mod_Biologicals.")
 
   # define for continuous time-varying selectivity
   cont_tv_fish_sel_mat <- array(NA, dim = c(input_list$data$n_regions, input_list$data$n_fish_fleets))
-  cont_tv_map <- data.frame(type = c("none", "iid", "rw", "3dmarg", "3dcond", "2dar1"),
-                            num = c(0,1,2,3,4,5)) # set up values we map to
+  cont_tv_map <- data.frame(type = c("none", "iid", "rw", "3dmarg", "3dcond", "2dar1"), num = c(0,1,2,3,4,5)) # set up values we map to
 
   for(i in 1:length(cont_tv_fish_sel)) {
     # Extract out components from list
@@ -1061,7 +1062,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   for(f in 1:input_list$data$n_fish_fleets) collect_message(paste("Fishery Selectivity Time Blocks for fishery", f, "is specified at:", length(unique(fish_sel_blocks_arr[,,f]))))
 
   # Setup fishery selectivity models (functional forms)
-  sel_map <- data.frame(sel = c('logist1', "gamma", "exponential", "logist2"), num = c(0,1,2,3)) # set up values we can map to
+  sel_map <- data.frame(sel = c('logist1', "gamma", "exponential", "logist2", "dbnrml"), num = c(0,1,2,3,4)) # set up values we can map to
   fish_sel_model_arr = array(NA, dim = c(input_list$data$n_regions, length(input_list$data$years), input_list$data$n_fish_fleets))
   for(i in 1:length(fish_sel_model)) {
     # Extract out components from list
@@ -1069,7 +1070,7 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
     tmp_vec <- unlist(strsplit(tmp, "_"))
     sel_type <- tmp_vec[1] # get selectivity type
     fleet <- as.numeric(tmp_vec[3]) # get fleet number
-    if(!sel_type %in% c(sel_map$sel)) stop("fish_sel_model is not correctly specified. This needs to be one of these: logist1, gamma, exponential, logist2 (the seltypes) and specified as seltype_Fleet_x")
+    if(!sel_type %in% c(sel_map$sel)) stop("fish_sel_model is not correctly specified. This needs to be one of these: logist1, gamma, exponential, logist2, dbnrml (the seltypes) and specified as seltype_Fleet_x")
     if(!fleet %in% c(1:input_list$data$n_fish_fleets)) stop("Invalid fleet specified for fish_sel_model This needs to be specified as seltype_Fleet_x")
     fish_sel_model_arr[,,fleet] <- sel_map$num[which(sel_map$sel == sel_type)]
     collect_message("Fishery selectivity functional form specified as:", sel_type, " for fishery fleet ", f)
@@ -1125,8 +1126,9 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   sel_pars_vec <- vector() # create empty vector to populate
 
   for(i in 1:length(unique_fishsel_vals)) {
-    if(unique_fishsel_vals[i] %in% c(2)) sel_pars_vec[i] <- 1
-    if(unique_fishsel_vals[i] %in% c(0,1,3)) sel_pars_vec[i] <- 2
+    if(unique_fishsel_vals[i] %in% c(2)) sel_pars_vec[i] <- 1 # exponential
+    if(unique_fishsel_vals[i] %in% c(0,1,3)) sel_pars_vec[i] <- 2 # logistic or gamma
+    if(unique_fishsel_vals[i] == 4) sel_pars_vec[i] <- 6 # double normal
   } # end i loop
 
   max_fishsel_blks <- max(apply(input_list$data$fish_sel_blocks, c(1,3), FUN = function(x) length(unique(x)))) # figure out maximum number of fishery selectivity blocks for a given reigon and fleet
@@ -1144,8 +1146,10 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
   else input_list$par$fishsel_pe_pars <- array(0, dim = c(input_list$data$n_regions, max(max_fishsel_pars, 4), input_list$data$n_sexes, input_list$data$n_fish_fleets)) # dimensioned 4 as the max number of pars for process errors (e.g., sigmas), and then just map off if not using
 
   # Fishery selectivity deviations
+  if(input_list$data$Selex_Type == 0) bins <- length(input_list$data$ages) # age based deviations
+  if(input_list$data$Selex_Type == 1) bins <- length(input_list$data$lens) # length based deviations
   if("ln_fishsel_devs" %in% names(starting_values)) input_list$par$ln_fishsel_devs <- starting_values$ln_fishsel_devs
-  else input_list$par$ln_fishsel_devs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes, input_list$data$n_fish_fleets))
+  else input_list$par$ln_fishsel_devs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), bins, input_list$data$n_sexes, input_list$data$n_fish_fleets))
 
   # Setup mapping list
   # Initialize counter and mapping array for fixed effects fishery selectivity
@@ -1161,7 +1165,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
       # Figure out max number of selectivity parameters for a given region and fleet
       if(unique(input_list$data$fish_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
-      if(unique(input_list$data$fish_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic a50, k, gamma, and logistic a50, a95
+      if(unique(input_list$data$fish_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic or gamma
+      if(unique(input_list$data$fish_sel_model[r,,f]) == 4) max_sel_pars <- 6 # double normal
 
       # Extract number of fishery selectivity blocks
       fishsel_blocks_tmp <- unique(as.vector(input_list$data$fish_sel_blocks[r,,f]))
@@ -1277,7 +1282,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
       # Figure out max number of selectivity parameters for a given region and fleet
       if(unique(input_list$data$fish_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
-      if(unique(input_list$data$fish_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic a50, k, gamma, and logistic a50, a95
+      if(unique(input_list$data$fish_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic or gamma
+      if(unique(input_list$data$fish_sel_model[r,,f]) == 4) max_sel_pars <- 6 # double normal
 
       # if no time-variation, then fix all parameters for this fleet
       if(input_list$data$cont_tv_fish_sel[r,f] == 0) {
@@ -1317,7 +1323,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
             # Set up indexing to loop through
             if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4)) idx = 1:4 # 3dgmrf (1 = pcorr_age, 2 = pcorr_year, 3= pcorr_cohort, 4 = log_sigma)
-            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(5)) idx = c(1,2,4) # 2dar1 (1 = pcorr_age, 2 = pcorr_year, 4 = log_sigma)
+            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(5)) idx = c(1,2,4) # 2dar1 (1 = pcorr_bin, 2 = pcorr_year, 4 = log_sigma)
+            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4) && input_list$data$Selex_Type == 1) stop("Cohort-based selectivity deviations are specified, but selectivity is specified as length-based. Please choose another deviation form!")
 
             for(i in idx) {
 
@@ -1402,7 +1409,8 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
 
     # Figure out max number of selectivity parameters for a given region and fleet
     if(unique(input_list$data$fish_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
-    if(unique(input_list$data$fish_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic a50, k, gamma, and logistic a50, a95
+    if(unique(input_list$data$fish_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic or gamma
+    if(unique(input_list$data$fish_sel_model[r,,f]) == 4) max_sel_pars <- 6 # double normal
 
       for(s in 1:input_list$data$n_sexes) {
         for(y in 1:length(input_list$data$years)) {
@@ -1440,23 +1448,23 @@ Setup_Mod_Fishsel_and_Q <- function(input_list,
             # If 3d gmrf for this fleet
             if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4,5) && y >= min(which(input_list$data$UseCatch[,,f] == 1))) {
               for(i in 1:length(input_list$data$ages)) {
-                # Estimating all selectivity deviations across regions, years and ages (also cohorts baked in year x age)
+                # Estimating all selectivity deviations across regions, years and bins
                 if(fish_sel_devs_spec[f] == 'est_all') {
                   map_fishsel_devs[r,y,i,s,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
-                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across regions
+                # Estimating all selectivity deviations across years and bins, but shared across regions
                 if(fish_sel_devs_spec[f] == 'est_shared_r' && r == 1) {
                   map_fishsel_devs[,y,i,s,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
-                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes
+                # Estimating all selectivity deviations across years and bins, but shared across sexes
                 if(fish_sel_devs_spec[f] == 'est_shared_s' && s == 1) {
                   map_fishsel_devs[r,y,i,,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1
                 }
 
-                # Estimating all selectivity deviations across years and ages (also cohorts baked in year x age), but shared across sexes and regions
+                # Estimating all selectivity deviations across years and bins, but shared across sexes and regions
                 if(fish_sel_devs_spec[f] == 'est_shared_r_s' && s == 1 && r == 1) {
                   map_fishsel_devs[,y,i,,f] <- fishsel_devs_counter
                   fishsel_devs_counter <- fishsel_devs_counter + 1

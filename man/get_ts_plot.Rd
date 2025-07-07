@@ -14,7 +14,7 @@ get_ts_plot(rep, sd_rep, model_names)
 \item{model_names}{Vector of model names}
 }
 \value{
-Plots of spawning biomass, total biomass, recruitment, and fishing mortality time-series across models
+Plots of spawning biomass, dynamic b0, total biomass, recruitment, and fishing mortality time-series across models
 }
 \description{
 Get Time Series Plots

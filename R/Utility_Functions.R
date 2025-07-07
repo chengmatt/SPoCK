@@ -187,7 +187,7 @@ post_optim_sanity_checks <- function(sd_rep,
   }
 
   # check if standard errors are big
-  if(max(diag(sd_rep$cov.fixed)) > se_tol) {
+  if(max(sqrt(diag(sd_rep$cov.fixed))) > se_tol) {
     message("Parameter: ", names(diag(sd_rep$cov.fixed))[which.max(diag(sd_rep$cov.fixed))], " has a standard error = ",
             max(diag(sd_rep$cov.fixed)), " which was greated than tolerance ", se_tol, ". This indicates potential non-convergence according to the tolerance. \n")
     passed_post_sanity_checks <- F

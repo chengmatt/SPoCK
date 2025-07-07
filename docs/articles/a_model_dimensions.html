@@ -257,11 +257,16 @@ should be the standard deviation. The prior is applied to the M
 parameter and not the offset</td>
 </tr>
 <tr class="even">
+<td><code>Selex_Type</code></td>
+<td>Value specifying whether age or length-based selectivity is used. 0:
+Age-based, 1: Length-based</td>
+</tr>
+<tr class="odd">
 <td><code>use_fixed_natmort</code></td>
 <td>Value specifying whether a fixed mortality array is used. 0: Don’t
 use and estimate M, 1: Use</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Fixed_natmort</code></td>
 <td>Natural mortality array dimensioned by n_regions, n_years, n_ages,
 and n_sexes.</td>
@@ -816,8 +821,9 @@ apply in that given period.</td>
 the selectivity pattern for a given region, year, and fishery fleet.
 Several selectivity forms are currently available. 0: Logistic with a50
 and slope, 1: Gamma dome-shaped, 2: Power function, 3: Logistic with a50
-and a95. More options and details can be found in
-<code>Get_Selex.R</code> and the model equations vignette.</td>
+and a95, 4: Double Normal with 6 parameters. More options and details
+can be found in <code>Get_Selex.R</code> and the model equations
+vignette.</td>
 </tr>
 <tr class="even">
 <td><code>fish_q_blocks</code></td>
@@ -896,8 +902,8 @@ apply in that given period.</td>
 selectivity pattern for a given region, year, and survey fleet. Several
 selectivity forms are currently available. 0: Logistic with a50 and
 slope, 1: Gamma dome-shaped, 2: Power function, 3: Logistic with a50 and
-a95. More options and details can be found in <code>Get_Selex.R</code>
-and the model equations vignette.</td>
+a95, 4: Double Normal with 6 parameters. More options and details can be
+found in <code>Get_Selex.R</code> and the model equations vignette.</td>
 </tr>
 <tr class="even">
 <td><code>srv_q_blocks</code></td>

@@ -65,17 +65,6 @@ get_francis_weights <- function(n_regions,
       yr_alt_idx <- which(data_yrs == y) # get indexing to start from 1
       use_regions <- data_indices[which(data_indices[,2] == y)] # get regions with data
 
-      if((length(use_regions) != n_regions) & comp_type[y,f] == 3) {
-        warning("The number of regions with data is not the same as the total nunmber of regions.
-                                                                           If there are some years where the number of bins differs, the jntRjntS approach
-                                                                           is not appropriate for calculating Francis weights!")
-      }
-
-      if(comp_type[y,f] == 3) { # if joint, reorder array
-        tmp_exp_jntall <- aperm(tmp_exp, perm = c(3,4,1,2,5)) # reorder array, by ages, sexes, region, year, and fleet
-        tmp_obs_jntall <- aperm(tmp_obs, perm = c(3,4,1,2,5)) # reorder array, by ages, sexes, region, year, and fleet
-      }
-
       # If compositions are aggregated across regions and sexes
       if(comp_type[y,f] == 0) {
         exp_bar[1,yr_alt_idx,1] <- sum(bins * as.vector(tmp_exp[1,1,,1,1])) # get mean pred comps
@@ -99,20 +88,13 @@ get_francis_weights <- function(n_regions,
       # If compositions are split by region, but joint by sex
       if(comp_type[y,f] == 2) {
         for(r in use_regions) {
-          exp_bar[r,yr_alt_idx,1] <- sum(rep(bins, n_sexes) * as.vector(tmp_exp[r,1,,,1])) # get mean pred comps
-          obs_bar[r,yr_alt_idx,1] <- sum(rep(bins, n_sexes) * as.vector(tmp_obs[r,1,,,1])) # get mean obs comps
-          v_y[r,yr_alt_idx,1] <- sum(rep(bins, n_sexes)^2*as.vector(tmp_exp[r,1,,,1]))-exp_bar[r,yr_alt_idx,1]^2 # get variance
+          exp_bar[r,yr_alt_idx,1] <- sum(bins * rowSums(tmp_exp[r,1,,,1])) # input mean pred comps
+          obs_bar[r,yr_alt_idx,1] <- sum(bins * rowSums(tmp_obs[r,1,,,1])) # input mean obs comps
+          v_y[r,yr_alt_idx,1] <- sum(bins^2*rowSums(tmp_exp[r,1,,,1]))-exp_bar[r,yr_alt_idx,1]^2  # variance
           w_denom[r,yr_alt_idx,1] <- (obs_bar[r,yr_alt_idx,1]-exp_bar[r,yr_alt_idx,1])/sqrt(v_y[r,yr_alt_idx,1]/tmp_iss_obs[r,1,1,1]) # get weights
         } # end r loop
       } # end if split by region, joint by sex
 
-      # If compostions are joint by region and sex
-      if(comp_type[y,f] == 3) {
-        exp_bar[1,yr_alt_idx,1] <- sum(rep(bins, length(use_regions) * n_sexes) * as.vector(tmp_exp_jntall[,,,1,1])) # get mean pred comps
-        obs_bar[1,yr_alt_idx,1] <- sum(rep(bins, length(use_regions) * n_sexes) * as.vector(tmp_obs_jntall[,,,1,1])) # get mean obs comps
-        v_y[1,yr_alt_idx,1] <- sum(rep(bins, length(use_regions) * n_sexes)^2*as.vector(tmp_exp_jntall[,1,,,1]))-exp_bar[1,yr_alt_idx,1]^2 # get variance
-        w_denom[1,yr_alt_idx,1] <- (obs_bar[1,yr_alt_idx,1]-exp_bar[1,yr_alt_idx,1])/sqrt(v_y[1,yr_alt_idx,1]/tmp_iss_obs[1,1,1,1]) # get weights
-      } # end if joint by region and sex
     } # end y loop
 
     # get unique composition types
@@ -124,7 +106,7 @@ get_francis_weights <- function(n_regions,
       year_pointer <- which(comp_type[data_yrs,f] == unique_comp_type[j])
 
       # if aggregated or joint by region and sex
-      if(unique_comp_type[j] %in% c(0,3)) weights[1,data_yrs,1,f] <- 1 / var(w_denom[1,year_pointer,1], na.rm = TRUE)
+      if(unique_comp_type[j] == 0) weights[1,data_yrs,1,f] <- 1 / var(w_denom[1,year_pointer,1], na.rm = TRUE)
 
       # if split by sex and region
       if(unique_comp_type[j] == 1) for(r in 1:n_regions) for(s in 1:n_sexes) weights[r,data_yrs,s,f] <- 1 / var(w_denom[r,year_pointer,s], na.rm = TRUE)

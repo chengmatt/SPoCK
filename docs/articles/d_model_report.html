@@ -156,26 +156,38 @@ specified</td>
 </tr>
 <tr class="even">
 <td><code>fish_sel</code></td>
-<td>Fishery selectivity:
+<td>Fishery age-selectivity:
 <code>n_regions × n_years × n_ages × n_sexes × n_fish_fleets</code>
 </td>
 </tr>
 <tr class="odd">
+<td><code>fish_sel_l</code></td>
+<td>Fishery length-selectivity:
+<code>n_regions × n_years × n_lens × n_sexes × n_fish_fleets</code>
+</td>
+</tr>
+<tr class="even">
 <td><code>fish_q</code></td>
 <td>Fishery catchability:
 <code>n_regions × n_years × n_fish_fleets</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>PredSrvIdx</code></td>
 <td>Predicted survey index:
 <code>n_regions × n_years × n_srv_fleets</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>srv_sel</code></td>
-<td>Survey selectivity:
+<td>Survey age-selectivity:
 <code>n_regions × n_years × n_ages × n_srv_fleets × n_sexes</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>srv_sel_l</code></td>
+<td>Survey length-selectivity:
+<code>n_regions × n_years × n_lens × n_srv_fleets × n_sexes</code>
 </td>
 </tr>
 <tr class="even">
@@ -322,6 +334,23 @@ specified</td>
 </td>
 </tr>
 <tr class="odd">
+<td><code>Aggregated_SSB</code></td>
+<td>Aggregated Spawning stock biomass: <code>n_years</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>Dynamic_SSB0</code></td>
+<td>Unfished Spawning stock biomass:
+<code>n_regions × n_years</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>Dynamic_Aggregated_SSB0</code></td>
+<td>Unfished Aggregated Spawning stock biomass:
+<code>n_years</code>
+</td>
+</tr>
+<tr class="even">
 <td><code>Rec</code></td>
 <td>Recruitment: <code>n_regions × n_years</code>
 </td>

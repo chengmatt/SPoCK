@@ -13,6 +13,7 @@ Setup_Mod_Biologicals(
   M_prior = NA,
   fit_lengths = 0,
   SizeAgeTrans = NA,
+  Selex_Type = "age",
   M_spec = NULL,
   Fixed_natmort = NULL,
   ...
@@ -34,6 +35,12 @@ Setup_Mod_Biologicals(
 \item{fit_lengths}{Integer flag indicating whether to fit length data (\code{0} = no, \code{1} = yes).}
 
 \item{SizeAgeTrans}{Numeric array of size-at-age transition probabilities, dimensioned \code{[n_regions, n_years, n_lens, n_ages, n_sexes]}.}
+
+\item{Selex_Type}{Character string specifying whether selectivity is age or length-based. Default is age-based
+\itemize{
+  \item \code{"length"}: Length-based selectivity.
+  \item \code{"age"}: Age-based selectivity
+}}
 
 \item{M_spec}{Character string specifying natural mortality estimation approach. Defaults to \code{NULL}, which estimates mortality for each sex independently. Other options:
 \itemize{

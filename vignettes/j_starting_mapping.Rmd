@@ -192,6 +192,7 @@ The `SPoRC::Setup_xxx` functions also support sharing parameters across model pa
 In the example below, we define two fishery fleets. Fleet 1 uses a logistic selectivity model (2 parameters), while Fleet 2 uses a gamma dome-shaped model (2 parameters). We first use the `fish_fixed_sel_pars_spec` argument to specify that selectivity parameters for both fleets should be estimated across all model partitions (`est_all`). Thus, when we inspect the map, we should expect a total of 8 unique numbers, which represent unique selectivity parameters to be estimated for each sex and fleet (4 for each sex and fleet combination).
 
 ```{r}
+input_list$data$Selex_Type <- 0 # specifying age-based selectivity for demonstration purposes
 input_list <- SPoRC::Setup_Mod_Fishsel_and_Q(input_list = input_list,
 
                                       # Model options
@@ -210,6 +211,7 @@ input_list$map$ln_fish_fixed_sel_pars # 8 unique numbers, 4 for each sex and fle
 Next, we use the `fish_fixed_sel_pars_spec` argument to indicate that selectivity parameters should be shared across sex partitions for both fleets. Specifically, we use the `"est_shared_s"` setting to link parameters between sexes, even though the model is sex-structured. In this setup, we still estimate separate parameters for each fleet, but the same selectivity parameters are used for both sexes within each fleet. As a result, when we inspect the mapping, we should expect four unique values—two per fleet—despite having two sexes.
 
 ```{r}
+input_list$data$Selex_Type <- 0 # specifying age-based selectivity for demonstration purposes
 input_list <- SPoRC::Setup_Mod_Fishsel_and_Q(input_list = input_list,
 
                                       # Model options
@@ -278,6 +280,7 @@ This level of control is not supported by the built-in `fish_fixed_sel_pars_spec
 We begin by calling `Setup_Mod_Fishsel_and_Q` with the `"est_all"` option for both fleets. This creates a parameter array with the correct dimensions and assumes that all selectivity parameters are uniquely estimated across model partitions.
 
 ```{r}
+input_list$data$Selex_Type <- 0 # specifying age-based selectivity for demonstration purposes
 input_list <- SPoRC::Setup_Mod_Fishsel_and_Q(
   input_list = input_list,
 

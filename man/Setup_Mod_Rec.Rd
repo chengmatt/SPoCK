@@ -18,6 +18,7 @@ Setup_Mod_Rec(
   dont_est_recdev_last = 0,
   sexratio = 1,
   init_age_strc = 0,
+  equil_init_age_strc = 1,
   init_F_prop = 0,
   sigmaR_spec = NULL,
   InitDevs_spec = NULL,
@@ -75,6 +76,12 @@ For example, with 65 years total, \code{c(21, 31, 60, 64)} means:
 \itemize{
   \item \code{0}: Initialize by iteration.
   \item \code{1}: Initialize using a geometric series.
+}}
+
+\item{equil_init_age_strc}{Integer flag specifying whether initial age structure is in equilibrium or stochastic. Default is stochastic.
+\itemize{
+  \item \code{0}: Equilibrium initial age structure.
+  \item \code{1}: Stochastic initial age structure.
 }}
 
 \item{init_F_prop}{Numeric value specifying the initial fishing mortality proportion relative to mean fishing mortality for initializing age structure.}

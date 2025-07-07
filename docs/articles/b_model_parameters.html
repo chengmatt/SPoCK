@@ -127,9 +127,10 @@ and the second dimension will always be males.</p>
 </tr>
 <tr class="odd">
 <td><code>ln_fishsel_devs</code></td>
-<td><code>n_regions, n_years, n_ages, n_sexes, n_fish_fleets</code></td>
+<td><code>n_regions, n_years, n_bins, n_sexes, n_fish_fleets</code></td>
 <td>Fishery Selectivity</td>
-<td>Log selectivity deviations</td>
+<td>Log selectivity deviations (<code>n_bins</code> depends on whether
+selectivity is age or length-based)</td>
 </tr>
 <tr class="even">
 <td><code>ln_fish_fixed_sel_pars</code></td>
@@ -142,6 +143,19 @@ and the second dimension will always be males.</p>
 <td><code>n_regions, max_fishq_blks, n_fish_fleets</code></td>
 <td>Fishery Index</td>
 <td>Log fishery catchability</td>
+</tr>
+<tr class="even">
+<td><code>srvsel_pe_pars</code></td>
+<td><code>n_regions, 4, n_sexes, n_srv_fleets</code></td>
+<td>Survey Selectivity</td>
+<td>Time-varying selectivity process error parameters</td>
+</tr>
+<tr class="odd">
+<td><code>ln_srvsel_devs</code></td>
+<td><code>n_regions, n_years, n_bins, n_sexes, n_srv_fleets</code></td>
+<td>Survey Selectivity</td>
+<td>Log selectivity deviations (<code>n_bins</code> depends on whether
+selectivity is age or length-based)</td>
 </tr>
 <tr class="even">
 <td><code>ln_srv_fixed_sel_pars</code></td>

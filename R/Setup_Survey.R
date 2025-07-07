@@ -578,6 +578,7 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
 #'   \item \code{"logist2"}: Logistic function with parameters \code{a50} and \code{a95}.
 #'   \item \code{"gamma"}: Dome-shaped gamma function with parameters \code{amax} and \code{delta}.
 #'   \item \code{"exponential"}: Exponential function with a power parameter.
+#'   \item \code{"dbnrml"}: Double normal function with 6 parameters.
 #' }
 #'
 #' For example:
@@ -699,6 +700,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   if(!is.null(corr_opt_semipar)) if(length(corr_opt_semipar) != input_list$data$n_srv_fleets) stop("corr_opt_semipar is not length n_srv_fleets")
   if(!Use_srv_q_prior %in% c(0,1)) stop("Values for Use_srv_q_prior are not valid. They are == 0 (don't use prior), or == 1 (use prior)")
   collect_message("Survey Catchability priors are: ", ifelse(Use_srv_q_prior == 0, "Not Used", "Used"))
+  if(is.null(input_list$data$Selex_Type)) stop("Selectivity type (age or length-based) has not been specified yet! Make sure to first specify biological inputs with Setup_Mod_Biologicals.")
 
   # define for continuous time-varying selectivity
   cont_tv_srv_sel_mat <- array(NA, dim = c(input_list$data$n_regions, input_list$data$n_srv_fleets))
@@ -749,8 +751,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   for(f in 1:input_list$data$n_srv_fleets) collect_message(paste("Survey Selectivity Time Blocks for survey", f, "is specified at:", length(unique(srv_sel_blocks_arr[,,f]))))
 
   # Setup survey selectivity models (functional forms)
-  sel_map <- data.frame(sel = c('logist1', "gamma", "exponential", "logist2"),
-                        num = c(0,1,2,3)) # set up values we can map to
+  sel_map <- data.frame(sel = c('logist1', "gamma", "exponential", "logist2", "dbnrml"), num = c(0,1,2,3,4)) # set up values we can map to
   srv_sel_model_arr = array(NA, dim = c(input_list$data$n_regions, length(input_list$data$years), input_list$data$n_srv_fleets))
   for(i in 1:length(srv_sel_model)) {
     # Extract out components from list
@@ -758,7 +759,7 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
     tmp_vec <- unlist(strsplit(tmp, "_"))
     sel_type <- tmp_vec[1] # get selectivity type
     fleet <- as.numeric(tmp_vec[3]) # get fleet number
-    if(!sel_type %in% c(sel_map$sel)) stop("srv_sel_model is not correctly specified. This needs to be one of these: logist1, gamma, exponential, logist2 (the seltypes) and specified as seltype_Fleet_x")
+    if(!sel_type %in% c(sel_map$sel)) stop("srv_sel_model is not correctly specified. This needs to be one of these: logist1, gamma, exponential, logist2, dbnrml (the seltypes) and specified as seltype_Fleet_x")
     if(!fleet %in% c(1:input_list$data$n_srv_fleets)) stop("Invalid fleet specified for srv_sel_model This needs to be specified as seltype_Fleet_x")
     srv_sel_model_arr[,,fleet] <- sel_map$num[which(sel_map$sel == sel_type)]
     collect_message("Survey selectivity functional form specified as:", sel_type, " for survey fleet ", f)
@@ -817,8 +818,9 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   sel_pars_vec <- vector() # create empty vector to populate
 
   for(i in 1:length(unique_srvsel_vals)) {
-    if(unique_srvsel_vals[i] %in% c(2)) sel_pars_vec[i] <- 1
-    if(unique_srvsel_vals[i] %in% c(0,1,3)) sel_pars_vec[i] <- 2
+    if(unique_srvsel_vals[i] %in% c(2)) sel_pars_vec[i] <- 1 # exponential
+    if(unique_srvsel_vals[i] %in% c(0,1,3)) sel_pars_vec[i] <- 2 # logistic or gamma
+    if(unique_srvsel_vals[i] == 4) sel_pars_vec[i] <- 6 # double normal
   } # end i loop
 
   max_srvsel_blks <- max(apply(input_list$data$srv_sel_blocks, c(1,3), FUN = function(x) length(unique(x)))) # figure out maximum number of survey selectivity blocks for a given reigon and fleet
@@ -836,8 +838,10 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   else input_list$par$srvsel_pe_pars <- array(0, dim = c(input_list$data$n_regions, max(max_srvsel_pars, 4), input_list$data$n_sexes, input_list$data$n_srv_fleets)) # dimensioned 4 as the max number of pars for process errors (e.g., sigmas), and then just map off if not using
 
   # Survey selectivity deviations
+  if(input_list$data$Selex_Type == 0) bins <- length(input_list$data$ages) # age based deviations
+  if(input_list$data$Selex_Type == 1) bins <- length(input_list$data$lens) # length based deviations
   if("ln_srvsel_devs" %in% names(starting_values)) input_list$par$ln_srvsel_devs <- starting_values$ln_srvsel_devs
-  else input_list$par$ln_srvsel_devs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes, input_list$data$n_srv_fleets))
+  else input_list$par$ln_srvsel_devs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), bins, input_list$data$n_sexes, input_list$data$n_srv_fleets))
 
   # Setup mapping list
   # Initialize counter and mapping array for fixed effects survey selectivity
@@ -853,7 +857,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
 
       # Figure out max number of selectivity parameters for a given region and fleet
       if(unique(input_list$data$srv_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
-      if(unique(input_list$data$srv_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic a50, k, gamma, and logistic a50, a95
+      if(unique(input_list$data$srv_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic or gamma
+      if(unique(input_list$data$srv_sel_model[r,,f]) == 4) max_sel_pars <- 6 # double normal
 
       # Extract number of survey selectivity blocks
       srvsel_blocks_tmp <- unique(as.vector(input_list$data$srv_sel_blocks[r,,f]))
@@ -970,7 +975,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
 
       # Figure out max number of selectivity parameters for a given region and fleet
       if(unique(input_list$data$srv_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
-      if(unique(input_list$data$srv_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic a50, k, gamma, and logistic a50, a95
+      if(unique(input_list$data$srv_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic or gamma
+      if(unique(input_list$data$srv_sel_model[r,,f]) == 4) max_sel_pars <- 6 # double normal
 
       # if no time-variation, then fix all parameters for this fleet
       if(input_list$data$cont_tv_srv_sel[r,f] == 0) {
@@ -1010,7 +1016,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
 
             # Set up indexing to loop through
             if(input_list$data$cont_tv_srv_sel[r,f] %in% c(3,4)) idx = 1:4 # 3dgmrf (1 = pcorr_age, 2 = pcorr_year, 3= pcorr_cohort, 4 = log_sigma)
-            if(input_list$data$cont_tv_srv_sel[r,f] %in% c(5)) idx = c(1,2,4) # 2dar1 (1 = pcorr_age, 2 = pcorr_year, 4 = log_sigma)
+            if(input_list$data$cont_tv_srv_sel[r,f] %in% c(5)) idx = c(1,2,4) # 2dar1 (1 = pcorr_bin, 2 = pcorr_year, 4 = log_sigma)
+            if(input_list$data$cont_tv_fish_sel[r,f] %in% c(3,4) && input_list$data$Selex_Type == 1) stop("Cohort-based selectivity deviations are specified, but selectivity is specified as length-based. Please choose another deviation form!")
 
             for(i in idx) {
               # either fixing parameters or not used for a given fleet
@@ -1093,7 +1100,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
 
       # Figure out max number of selectivity parameters for a given region and fleet
       if(unique(input_list$data$srv_sel_model[r,,f]) %in% 2) max_sel_pars <- 1 # exponential
-      if(unique(input_list$data$srv_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic a50, k, gamma, and logistic a50, a95
+      if(unique(input_list$data$srv_sel_model[r,,f]) %in% c(0,1,3)) max_sel_pars <- 2 # logistic or gamma
+      if(unique(input_list$data$srv_sel_model[r,,f]) == 4) max_sel_pars <- 6 # double normal
 
       for(s in 1:input_list$data$n_sexes) {
         for(y in 1:length(input_list$data$years)) {

@@ -47,6 +47,7 @@
 <span>  M_prior <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  fit_lengths <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  SizeAgeTrans <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  Selex_Type <span class="op">=</span> <span class="st">"age"</span>,</span>
 <span>  M_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Fixed_natmort <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -87,6 +88,12 @@
 
 <dt id="arg-sizeagetrans">SizeAgeTrans<a class="anchor" aria-label="anchor" href="#arg-sizeagetrans"></a></dt>
 <dd><p>Numeric array of size-at-age transition probabilities, dimensioned <code>[n_regions, n_years, n_lens, n_ages, n_sexes]</code>.</p></dd>
+
+
+<dt id="arg-selex-type">Selex_Type<a class="anchor" aria-label="anchor" href="#arg-selex-type"></a></dt>
+<dd><p>Character string specifying whether selectivity is age or length-based. Default is age-based</p><ul><li><p><code>"length"</code>: Length-based selectivity.</p></li>
+<li><p><code>"age"</code>: Age-based selectivity</p></li>
+</ul></dd>
 
 
 <dt id="arg-m-spec">M_spec<a class="anchor" aria-label="anchor" href="#arg-m-spec"></a></dt>

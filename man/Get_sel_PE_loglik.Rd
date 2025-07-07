@@ -15,7 +15,7 @@ Get_sel_PE_loglik(PE_model, PE_pars, ln_devs, map_sel_devs, sel_vals)
 
 \item{map_sel_devs}{selectivity deviations to share}
 
-\item{sel_vals}{Selectivity values}
+\item{sel_vals}{Selectivity values (either length or age based)}
 }
 \value{
 numeric value of log likelihood (in positive space)

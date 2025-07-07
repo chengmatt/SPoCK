@@ -69,6 +69,11 @@ Setup_Sim_Biologicals <- function(
 #' }
 #' @param Fixed_natmort Numeric array of fixed natural mortality values, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}. Required if \code{M_spec = "fix"}.
 #' @param ... Additional arguments for starting values such as \code{ln_M} and \code{M_offset}. These are ignored if \code{M_spec = "fix"}.
+#' @param Selex_Type Character string specifying whether selectivity is age or length-based. Default is age-based
+#' \itemize{
+#'   \item \code{"length"}: Length-based selectivity.
+#'   \item \code{"age"}: Age-based selectivity
+#' }
 #'
 #' @export Setup_Mod_Biologicals
 Setup_Mod_Biologicals <- function(input_list,
@@ -79,6 +84,7 @@ Setup_Mod_Biologicals <- function(input_list,
                                   M_prior = NA,
                                   fit_lengths = 0,
                                   SizeAgeTrans = NA,
+                                  Selex_Type = 'age',
                                   M_spec = NULL,
                                   Fixed_natmort = NULL,
                                   ...
@@ -94,6 +100,18 @@ Setup_Mod_Biologicals <- function(input_list,
   if(!is.null(M_spec)) if(M_spec == 'fix') if(is.null(Fixed_natmort)) stop("Please provide a fixed natural mortality array dimensioned by n_regions, n_years, n_ages, and n_sexes!")
   if(!is.null(M_spec)) if(M_spec == 'fix') check_data_dimensions(Fixed_natmort, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'Fixed_natmort')
 
+  # Whether selectivity is age or length-based
+  if(Selex_Type == 'age') {
+    Selex_Type <- 0
+    collect_message("Selectivity is aged-based.")
+  } # if age based
+
+  if(Selex_Type == 'length') {
+    if(fit_lengths == 0) stop("Length composition data are not fit, but selectivity is length-based. This is not allowed. Please change to a valid option (either fit lengths or use age-based selectivity).")
+    Selex_Type <- 1
+    collect_message("Selectivity is length-based")
+  } # if length based
+
   input_list$data$WAA <- WAA
   input_list$data$MatAA <- MatAA
   if(is.null(AgeingError)) AgeingError <- diag(1, length(input_list$data$ages)) # if no inputs for ageing error, then create identity matrix
@@ -103,6 +121,7 @@ Setup_Mod_Biologicals <- function(input_list,
   input_list$data$Use_M_prior <- Use_M_prior
   input_list$data$M_prior <- M_prior
   input_list$data$Fixed_natmort <- Fixed_natmort
+  input_list$data$Selex_Type <- Selex_Type
 
   # Input indicator for estimating or not estimating M
   if(is.null(M_spec) || M_spec == "est_ln_M_only") input_list$data$use_fixed_natmort <- 0

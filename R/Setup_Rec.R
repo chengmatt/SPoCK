@@ -144,6 +144,11 @@ Setup_Sim_Rec <- function(
 #' \code{"local"}, \code{"global"}, or \code{NULL}.
 #' @param t_spawn Numeric fraction specifying spawning timing within the year.
 #' @param ... Additional arguments specifying starting values for recruitment parameters such as \code{ln_global_R0}, \code{Rec_prop}, \code{h}, \code{ln_InitDevs}, \code{ln_RecDevs}, and \code{ln_sigmaR}.
+#' @param equil_init_age_strc Integer flag specifying whether initial age structure is in equilibrium or stochastic. Default is stochastic.
+#'   \itemize{
+#'     \item \code{0}: Equilibrium initial age structure.
+#'     \item \code{1}: Stochastic initial age structure.
+#'   }
 #'
 #' @export Setup_Mod_Rec
 Setup_Mod_Rec <- function(input_list,
@@ -159,6 +164,7 @@ Setup_Mod_Rec <- function(input_list,
                           dont_est_recdev_last = 0,
                           sexratio = 1,
                           init_age_strc = 0,
+                          equil_init_age_strc = 1,
                           init_F_prop = 0,
                           sigmaR_spec = NULL,
                           InitDevs_spec = NULL,
@@ -225,6 +231,7 @@ Setup_Mod_Rec <- function(input_list,
   input_list$data$init_age_strc <- init_age_strc
   input_list$data$init_F_prop <- init_F_prop
   input_list$data$t_spawn <- t_spawn
+  input_list$data$equil_init_age_strc <- equil_init_age_strc
 
   # Global R0
   if("ln_global_R0" %in% names(starting_values)) input_list$par$ln_global_R0 <- starting_values$ln_global_R0
@@ -262,7 +269,7 @@ Setup_Mod_Rec <- function(input_list,
     else collect_message("Recruitment Variability is specified as: ", sigmaR_spec)
   } else collect_message("Recruitment Variability is estimated for both early and late periods")
 
-  # Initial age deviations
+  # Initial age deviations (stochastic)
   if(!is.null(InitDevs_spec)) {
     map_InitDevs <- input_list$par$ln_InitDevs # set up mapping for initial age deviations
     if(rec_dd == 'global' && InitDevs_spec != "est_shared_r" && input_list$data$n_regions > 1) stop("Please specify a valid initial age deviations option for global recruitment density dependence (should be est_shared_r or leave as NULL)!")
@@ -274,8 +281,15 @@ Setup_Mod_Rec <- function(input_list,
     # Fix all initial deviations
     if(InitDevs_spec == "fix") input_list$map$ln_InitDevs <- factor(rep(NA, prod(dim(map_InitDevs))))
     if(!InitDevs_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid initial deviations option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all initial deviations.")
-    else collect_message("Initial Deviations is specified as: ", InitDevs_spec)
-  } else collect_message("Initial Age Deviations is estimated for all dimensions")
+    else collect_message("Initial Deviations is stochastic and specified as: ", InitDevs_spec)
+  } else if(input_list$data$equil_init_age_strc == 1) collect_message("Initial Age Deviations is estimated for all dimensions")
+
+  # Initial age deviations (equilibrium)
+  if(input_list$data$equil_init_age_strc == 0) {
+    input_list$par$ln_InitDevs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$ages) - 2)) # override starting values if previously specified
+    input_list$map$ln_InitDevs <- factor(rep(NA, length(input_list$par$ln_InitDevs))) # set mapping
+    collect_message("Initial Age Structure is specified to be in equilibrium. No initial age deviations are estimated.")
+  }
 
   # Recruitment deviations
   if(!is.null(RecDevs_spec)) {
