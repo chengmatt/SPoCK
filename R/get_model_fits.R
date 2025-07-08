@@ -690,7 +690,7 @@ plot_resids <- function(osa_results) {
         sex = function(x) paste0("Sex ", x)
       )) +
       theme_bw(base_size = 20) +
-      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 8)
+      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 4)
   }
 
 
@@ -706,12 +706,11 @@ plot_resids <- function(osa_results) {
       geom_abline(slope = 1, intercept = 0, lty = 2, lwd = 1.3) +
       stat_qq(data = res, aes(sample = resid), col = "blue", size = 2, alpha = 0.5) +
       labs(x = "Theoretical quantiles", y = "Sample quantiles") +
-      facet_grid(region ~ sex, labeller = labeller(
-        region = function(x) paste0("Region ", x),
-        sex = function(x) paste0("Sex ", x)
+      facet_grid(~region, labeller = labeller(
+        region = function(x) paste0("Region ", x)
       )) +
       theme_bw(base_size = 20) +
-      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 8)
+      geom_text(data = sdnr, aes(x = -Inf, y = Inf, label = sdnr), hjust = -0.5, vjust = 2.5, size = 4)
   }
 
   # bubble plot

@@ -112,7 +112,7 @@ Get_Selex = function(Selex_Model,
     midbin <- Bin
 
     # Extract and transform parameters here
-    p1trans <- ln_Pars[1] # peak bin at plateau
+    p1trans <- min(Bin) + (max(Bin) - min(Bin)) * RTMB::plogis(ln_Pars[1]) # peak bin at plateau
     p2trans <- p1trans + 1 + (0.99 + max_x_val - p1trans - 1)/(1 + exp(-1.0 * ln_Pars[2])) # width of plateau
     p3trans <- exp(ln_Pars[3]) # ascending width
     p4trans <- exp(ln_Pars[4]) # descending width

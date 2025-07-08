@@ -415,7 +415,7 @@ SPoRC_rtmb = function(pars, data) {
 
   # Get aggregated SSB values
   Aggregated_SSB = colSums(SSB)
-  Aggregated_Dynamic_SSB0 = colSums(Dynamic_SSB0)
+  Dynamic_Aggregated_SSB0 = colSums(Dynamic_SSB0)
 
   ## Fishery Observation Model -----------------------------------------------
   for(r in 1:n_regions) {
@@ -903,7 +903,8 @@ SPoRC_rtmb = function(pars, data) {
                                                 PE_pars = fishsel_pe_pars[r,,,f, drop = FALSE], # process error parameters for a given fleet (correlaiton and sigmas)
                                                 ln_devs = ln_fishsel_devs[r,,,,f, drop = FALSE], # extract out process error deviations for a given fleet
                                                 map_sel_devs = map_ln_fishsel_devs[r,,,,f, drop = FALSE],
-                                                sel_vals = tmp_sel_vals)
+                                                sel_vals = tmp_sel_vals
+                                                )
       } # end if
 
       # Mean Standardizing to help with interpretability

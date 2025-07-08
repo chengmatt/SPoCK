@@ -174,10 +174,10 @@ Sel_{b} = \frac{1}{b^{\phi}}
 
 $\phi$ here is a power parameter determining the descending limb (larger values are steeper). 
 
-The other function that is available includes the 6 parameter double normal selectivity form. We define a parametric selectivity function using a flexible compound form. Parameters are transformed from a raw log-scale input vector $\hat{p}_1$ through $\hat{p}_6$ to define the shape.
+The other function that is available includes the 6 parameter double normal selectivity form. We define a parametric selectivity function using a flexible compound form. Parameters are transformed from input vector $\hat{p}_1$ through $\hat{p}_6$ to define the shape.
 
 \begin{align*}
-p_1 &= \hat{p}_1 
+p_1 &= \text{min}(b) + [\text{max}(b) - \text{min}(b)] \cdot \frac{1}{1 + \text{exp}(-\hat{p}_1)}
 && \text{Peak bin — beginning of the plateau} \\
 p_2 &= p_1 + 1 + \frac{0.99 + \text{max}_x - p_1 - 1}{1 + \exp(-\hat{p}_2)} 
 && \text{Width of plateau, smoothly approaches maximum bin} \\
