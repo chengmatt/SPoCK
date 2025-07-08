@@ -16,7 +16,7 @@ articles:
   - title: "Model Setup Examples"
     contents:
       - e_single_region_sablefish_case_study
-      - f_single_region_bsai_pollock_case_study
+      - f_single_region_ebs_pollock_case_study
       - g_spatial_sablefish_case_study
 
   - title: "Simulation and Projections"

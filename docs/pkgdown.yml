@@ -7,12 +7,12 @@ articles:
   c_model_equations: c_model_equations.html
   d_model_report: d_model_report.html
   e_single_region_sablefish_case_study: e_single_region_sablefish_case_study.html
-  f_single_region_bsai_pollock_case_study: f_single_region_bsai_pollock_case_study.html
+  f_single_region_ebs_pollock_case_study: f_single_region_ebs_pollock_case_study.html
   g_spatial_sablefish_case_study: g_spatial_sablefish_case_study.html
   h_closed_loop_simulations: h_closed_loop_simulations.html
   i_reference_points: i_reference_points.html
   j_starting_mapping: j_starting_mapping.html
-last_built: 2025-07-07T17:29Z
+last_built: 2025-07-08T01:53Z
 urls:
   reference: https://chengmatt.github.io/SPoRC/reference
   article: https://chengmatt.github.io/SPoRC/articles

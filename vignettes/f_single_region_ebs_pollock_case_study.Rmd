@@ -1,11 +1,11 @@
 ---
-title: "Setting up a Single Region Model (BSAI Pollock)"
+title: "Setting up a Single Region Model (Eastern Bering Sea Pollock)"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 6
 vignette: >
-  %\VignetteIndexEntry{f_single_region_bsai_pollock_case_study}
+  %\VignetteIndexEntry{f_single_region_ebs_pollock_case_study}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -602,9 +602,9 @@ get_retrospective_plot <- function(retro_output, Rec_Age) {
     ggplot2::labs(x = 'Year', y = 'Value', color = 'Peel')
 
   # get squid plot
-  squid_plot <- retro %>%
-    dplyr::mutate(Year = Year, terminal = max(retro$Year) - peel, cohort = Year - Rec_Age, years_est = terminal-Year) %>%
-    dplyr::filter(Type == 'Recruitment', cohort %in% seq(max(retro$Year) - 10, max(retro$Year), 1), terminal != Year) %>%
+  squid_plot <- retro_output %>%
+    dplyr::mutate(Year = Year, terminal = max(retro_output$Year) - peel, cohort = Year - Rec_Age, years_est = terminal-Year) %>%
+    dplyr::filter(Type == 'Recruitment', cohort %in% seq(max(retro_output$Year) - 10, max(retro_output$Year), 1), terminal != Year) %>%
     ggplot2::ggplot(ggplot2::aes(x = years_est - 1, y = value, group = Year, color = factor(cohort))) +
     ggplot2::geom_line(lwd = 1.3) +
     ggplot2::geom_point(size = 4) +
