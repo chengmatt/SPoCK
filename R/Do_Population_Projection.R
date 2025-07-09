@@ -12,6 +12,7 @@
 #' @param terminal_F Terminal fishing mortality rate, dimensioned by n_regions, n_fish_fleets
 #' @param natmort Natural mortality, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes
 #' @param WAA Weight at age, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes
+#' @param WAA_fish Weight at age for the fishery, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets
 #' @param MatAA Maturity at age, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes
 #' @param fish_sel Fishery selectivity, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets
 #' @param Movement Movement, dimensioned by n_regions, n_regions, n_proj_yrs, n_ages, n_sexes
@@ -63,6 +64,7 @@
 #' do_recruits_move <- 0
 #' terminal_NAA <- array(obj$rep$NAA[,length(data$years),,], dim = c(n_regions, n_ages, n_sexes))
 #' WAA <- array(rep(data$WAA[,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # weight at age
+#' WAA_fish <- array(rep(data$WAA_fish[,length(data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # weight at age for fishery
 #' MatAA <- array(rep(data$MatAA[,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # maturity at age
 #' fish_sel <- array(rep(obj$rep$fish_sel[,length(data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
 #' Movement <- array(rep(obj$rep$Movement[,,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes))
@@ -152,6 +154,7 @@
 #'                                     terminal_F = terminal_F,
 #'                                     natmort = natmort,
 #'                                     WAA = WAA,
+#'                                     WAA_fish = WAA_fish,
 #'                                     MatAA = MatAA,
 #'                                     fish_sel = fish_sel,
 #'                                     Movement = Movement,
@@ -196,6 +199,7 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
                                      terminal_F,
                                      natmort,
                                      WAA,
+                                     WAA_fish,
                                      MatAA,
                                      fish_sel,
                                      Movement,
@@ -340,7 +344,7 @@ Do_Population_Projection <- function(n_proj_yrs = 2,
         } # end a loop
 
         # Get total catch
-        proj_Catch[r,y,f] <- sum(proj_CAA[r,y,,,f] * WAA[r,y,,])
+        proj_Catch[r,y,f] <- sum(proj_CAA[r,y,,,f] * WAA_fish[r,y,,,f])
 
 # Project F using HCR and reference points -----------------------------------------------------
         if(fmort_opt == 'HCR') {

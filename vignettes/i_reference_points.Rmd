@@ -787,6 +787,7 @@ n_fish_fleets <- sgl_rg_sable_data$n_fish_fleets # number of fishery fleets
 do_recruits_move <- 0 # recruits don't move
 terminal_NAA <- array(sgl_rg_sable_rep$NAA[,length(sgl_rg_sable_data$years),,], dim = c(n_regions, n_ages, n_sexes)) # terminal numbers at age
 WAA <- array(rep(sgl_rg_sable_data$WAA[,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # weight at age
+WAA_fish <- array(rep(sgl_rg_sable_data$WAA[,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # weight at age for fishery
 MatAA <- array(rep(sgl_rg_sable_data$MatAA[,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # maturity at age
 fish_sel <- array(rep(sgl_rg_sable_rep$fish_sel[,length(sgl_rg_sable_data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
 Movement <- array(rep(sgl_rg_sable_rep$Movement[,,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes)) # movement
@@ -814,7 +815,8 @@ out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs, # Number of projection 
                                terminal_NAA = terminal_NAA, # terminal numbers at age
                                terminal_F = terminal_F, # terminal F
                                natmort = natmort, # natural mortality values to use in projection
-                               WAA = WAA, # weight at age values to use in projection
+                               WAA = WAA, # weight at age values to use in projection spawning
+                               WAA_fish = WAA_fish, # weight at age values to use in projection fishery
                                MatAA = MatAA, # maturity at age values to use in projection
                                fish_sel = fish_sel, # fishery selectivity values to use in projection
                                Movement = Movement, # movement values (not used since single area)
@@ -938,6 +940,7 @@ n_fish_fleets <- mlt_rg_sable_data$n_fish_fleets # number of fishery fleets
 do_recruits_move <- 0 # recruits don't move
 terminal_NAA <- array(mlt_rg_sable_rep$NAA[,length(mlt_rg_sable_data$years),,], dim = c(n_regions, n_ages, n_sexes)) # terminal numbers at age
 WAA <- array(rep(mlt_rg_sable_data$WAA[,length(mlt_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # weight at age
+WAA_fish <- array(rep(mlt_rg_sable_data$WAA[,length(mlt_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # weight at age
 MatAA <- array(rep(mlt_rg_sable_data$MatAA[,length(mlt_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # maturity at age
 fish_sel <- array(rep(mlt_rg_sable_rep$fish_sel[,length(mlt_rg_sable_data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
 Movement <- aperm(abind::abind(replicate(n_proj_yrs, mlt_rg_sable_rep$Movement[,,length(mlt_rg_sable_data$years),,], simplify = FALSE), along = 5), perm = c(1,2,5,3,4)) # movement
@@ -984,7 +987,8 @@ out <- Do_Population_Projection(n_proj_yrs = n_proj_yrs, # Number of projection 
                               terminal_NAA = terminal_NAA, # terminal numbers at age
                               terminal_F = terminal_F, # terminal F
                               natmort = natmort, # natural mortality values to use in projection
-                              WAA = WAA, # weight at age values to use in projection
+                              WAA = WAA, # weight at age values to use in projection spawning
+                              WAA_fish = WAA_fish, # weight at age values to use in projection fishery
                               MatAA = MatAA, # maturity at age values to use in projection
                               fish_sel = fish_sel, # fishery selectivity values to use in projection
                               Movement = Movement, # movement values (not used since single area)
@@ -1063,6 +1067,7 @@ n_fish_fleets <- sgl_rg_sable_data$n_fish_fleets # number of fishery fleets
 do_recruits_move <- 0 # recruits don't move
 terminal_NAA <- array(sgl_rg_sable_rep$NAA[,length(sgl_rg_sable_data$years),,], dim = c(n_regions, n_ages, n_sexes)) # terminal numbers at age
 WAA <- array(rep(sgl_rg_sable_data$WAA[,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # weight at age
+WAA_fish <- array(rep(sgl_rg_sable_data$WAA[,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # weight at age for the fishery
 MatAA <- array(rep(sgl_rg_sable_data$MatAA[,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # maturity at age
 fish_sel <- array(rep(sgl_rg_sable_rep$fish_sel[,length(sgl_rg_sable_data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
 Movement <- array(rep(sgl_rg_sable_rep$Movement[,,length(sgl_rg_sable_data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes)) # movement
@@ -1113,7 +1118,8 @@ for (i in seq_along(proj_inputs)) {
                                     terminal_NAA = terminal_NAA, # terminal numbers at age
                                     terminal_F = terminal_F, # terminal fishing mortality at age
                                     natmort = natmort, # natural mortality 
-                                    WAA = WAA, # weight at age
+                                    WAA = WAA, # weight at age for spawning
+                                    WAA_fish = WAA_fish, # weight at age for fishery
                                     MatAA = MatAA, # maturity at age
                                     fish_sel = fish_sel, # fishery selectivity
                                     Movement = Movement, # movement

@@ -19,6 +19,7 @@
 #' @param LN_corr_pars_agg Logistic normal correlation parameters if comps are aggregated (just dimensioned by length of 1 value)
 #' @param n_model_bins Number of bins used in the model
 #' @param n_obs_bins Number of observed composition bins
+#' @param addtocomp Small constant to add to composition data
 #'
 #' @return Returns negative log likelihood for composition data (age and/or length)
 #' @keywords internal
@@ -40,7 +41,8 @@ Get_Comp_Likelihoods = function(Exp,
                                 age_or_len,
                                 AgeingError,
                                 use,
-                                comp_agg_type
+                                comp_agg_type,
+                                addtocomp
 ) {
 
   "c" <- RTMB::ADoverload("c")
@@ -48,7 +50,7 @@ Get_Comp_Likelihoods = function(Exp,
 
   rho_trans = function(x) 2/(1+ exp(-2 * x)) - 1 # constraint between -1 and 1
   comp_nLL = array(0, dim = c(n_regions, n_sexes)) # initialize nLL here
-  const = 0.001 # small constant
+  const = addtocomp # small constant
   # Filter expectation and observations to regions that have observations
   n_regions_obs_use = sum(use == 1) # get number of regions that have observations
 

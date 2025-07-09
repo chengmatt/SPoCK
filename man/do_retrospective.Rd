@@ -2,7 +2,7 @@
 % Please edit documentation in R/do_retrospective.R
 \name{do_retrospective}
 \alias{do_retrospective}
-\title{Functino to run retrospective analyses}
+\title{Run retrospective analyses}
 \usage{
 do_retrospective(
   n_retro,
@@ -39,7 +39,7 @@ do_retrospective(
 Dataframe of retrospective estiamtes of SSB and recruitment
 }
 \description{
-Functino to run retrospective analyses
+Run retrospective analyses
 }
 \examples{
 \dontrun{

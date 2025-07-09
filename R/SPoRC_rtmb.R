@@ -432,13 +432,13 @@ SPoRC_rtmb = function(pars, data) {
           else if(fit_lengths == 1) CAL[r,y,,s,f] = SizeAgeTrans[r,y,,,s] %*% CAA[r,y,,s,f] # Catch at length
         } # end s loop
 
-        PredCatch[r,y,f] = sum(CAA[r,y,,,f] * WAA[r,y,,]) # get total catch
+        PredCatch[r,y,f] = sum(CAA[r,y,,,f] * WAA_fish[r,y,,,f]) # get total catch
 
         # Get fishery index
         if(fish_idx_type[r,f] == 0) PredFishIdx[r,y,f] = fish_q[r,y,f] * sum(NAA[r,y,,] * SAA_mid[r,y,,] * fish_sel[r,y,,,f]) # abundance
         if(fish_idx_type[r,f] == 1) {
-          if(fish_q_blk_idx == 1 && sablefish_ADMB == 1) PredFishIdx[r,y,f] = fish_q[r,y,f] * sum(NAA[r,y,,] * SAA_mid[r,y,,] * fish_sel[r,y,,1,f] * WAA[r,y,,]) # first time block (Sablefish bridging specific)
-          else PredFishIdx[r,y,f] = fish_q[r,y,f] * sum(NAA[r,y,,] * SAA_mid[r,y,,] * fish_sel[r,y,,,f] * WAA[r,y,,]) # for not first time block
+          if(fish_q_blk_idx == 1 && sablefish_ADMB == 1) PredFishIdx[r,y,f] = fish_q[r,y,f] * sum(NAA[r,y,,] * SAA_mid[r,y,,] * fish_sel[r,y,,1,f] * WAA_fish[r,y,,,f]) # first time block (Sablefish bridging specific)
+          else PredFishIdx[r,y,f] = fish_q[r,y,f] * sum(NAA[r,y,,] * SAA_mid[r,y,,] * fish_sel[r,y,,,f] * WAA_fish[r,y,,,f]) # for not first time block
         } # weight
 
       } # end f loop
@@ -462,7 +462,7 @@ SPoRC_rtmb = function(pars, data) {
 
         # Get predicted survey index
         if(srv_idx_type[r,sf] == 0) PredSrvIdx[r,y,sf] = srv_q[r,y,sf] * sum(NAA[r,y,,] * srv_sel[r,y,,,sf] * SAA_mid[r,y,,]) # abundance
-        if(srv_idx_type[r,sf] == 1) PredSrvIdx[r,y,sf] = srv_q[r,y,sf] * sum(NAA[r,y,,] * srv_sel[r,y,,,sf] * SAA_mid[r,y,,] * WAA[r,y,,]) # biomass
+        if(srv_idx_type[r,sf] == 1) PredSrvIdx[r,y,sf] = srv_q[r,y,sf] * sum(NAA[r,y,,] * srv_sel[r,y,,,sf] * SAA_mid[r,y,,] * WAA_srv[r,y,,,sf]) # biomass
 
       } # end sf loop
     } # end y loop
@@ -619,7 +619,8 @@ SPoRC_rtmb = function(pars, data) {
           use = UseFishAgeComps[,y,f],
           n_model_bins = n_ages,
           n_obs_bins = dim(ObsFishAgeComps)[3],
-          comp_agg_type = FishAge_comp_agg_type[f]
+          comp_agg_type = FishAge_comp_agg_type[f],
+          addtocomp = addtocomp
         )
 
       } # if we have fishery age comps
@@ -649,7 +650,8 @@ SPoRC_rtmb = function(pars, data) {
           AgeingError = NA, use = UseFishLenComps[,y,f],
           n_model_bins = n_lens,
           n_obs_bins = dim(ObsFishLenComps)[3],
-          comp_agg_type = FishLen_comp_agg_type[f]
+          comp_agg_type = FishLen_comp_agg_type[f],
+          addtocomp = addtocomp
         )
 
       } # if we have fishery length comps
@@ -711,7 +713,8 @@ SPoRC_rtmb = function(pars, data) {
           AgeingError = AgeingError, use = UseSrvAgeComps[,y,sf],
           n_model_bins = n_ages,
           n_obs_bins = dim(ObsSrvAgeComps)[3],
-          comp_agg_type = SrvAge_comp_agg_type[sf]
+          comp_agg_type = SrvAge_comp_agg_type[sf],
+          addtocomp = addtocomp
         )
 
       } # if we have survey age comps
@@ -741,7 +744,8 @@ SPoRC_rtmb = function(pars, data) {
           AgeingError = NA, use = UseSrvLenComps[,y,sf],
           n_model_bins = n_lens,
           n_obs_bins = dim(ObsSrvLenComps)[3],
-          comp_agg_type = SrvLen_comp_agg_type[sf]
+          comp_agg_type = SrvLen_comp_agg_type[sf],
+          addtocomp = addtocomp
         )
 
       } # if we have survey length comps

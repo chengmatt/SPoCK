@@ -127,11 +127,6 @@ assessment estiamted value,</li>
 <li>Recruitment deviations are estimated in a penalized likelihood
 framework,</li>
 <li>Recruitment deviations are estimated for all years,</li>
-<li>Initial age deviations have a <code>ln_sigmaR = 2</code>, while
-later deviations (after year 1) have a <code>ln_sigmaR = 1</code>. This
-is done to mimic the current assessment, where a different mean
-parameter is estimated for the early age deviations and later
-recruitment deviations,</li>
 <li>Initial age deviations are estimated for all ages, including the
 plus group,</li>
 <li>Initial age structure is derived by assuming a geometric series
@@ -152,7 +147,7 @@ structure to some equilibrium <code>init_age_strc = 0</code>), and</li>
 <span>    <span class="co"># do bias ramp (0 == don't do bias ramp, 1 == do bias ramp)</span></span>
 <span>    sigmaR_switch <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    <span class="co"># when to switch from early to late sigmaR (switch in first year)</span></span>
-<span>    ln_sigmaR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    ln_sigmaR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    <span class="co"># Starting values for early and late sigmaR</span></span>
 <span>    rec_model <span class="op">=</span> <span class="st">"bh_rec"</span>,</span>
 <span>    <span class="co"># recruitment model</span></span>

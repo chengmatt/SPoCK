@@ -22,7 +22,8 @@ Get_Comp_Likelihoods(
   age_or_len,
   AgeingError,
   use,
-  comp_agg_type
+  comp_agg_type,
+  addtocomp
 )
 }
 \arguments{
@@ -62,6 +63,8 @@ Get_Comp_Likelihoods(
 \item{use}{Vector of 0s and 1s corresponding to regions (==0, don't have obs and dont' use, ==1, have obs and use)}
 
 \item{comp_agg_type}{How to aggregate data (if aggregating)}
+
+\item{addtocomp}{Small constant to add to composition data}
 }
 \value{
 Returns negative log likelihood for composition data (age and/or length)

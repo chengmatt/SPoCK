@@ -17,6 +17,7 @@ Do_Population_Projection(
   terminal_F,
   natmort,
   WAA,
+  WAA_fish,
   MatAA,
   fish_sel,
   Movement,
@@ -53,6 +54,8 @@ Do_Population_Projection(
 \item{natmort}{Natural mortality, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes}
 
 \item{WAA}{Weight at age, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes}
+
+\item{WAA_fish}{Weight at age for the fishery, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets}
 
 \item{MatAA}{Maturity at age, dimensioned by n_regions, n_proj_yrs, n_ages, n_sexes}
 
@@ -117,6 +120,7 @@ n_fish_fleets <- 2
 do_recruits_move <- 0
 terminal_NAA <- array(obj$rep$NAA[,length(data$years),,], dim = c(n_regions, n_ages, n_sexes))
 WAA <- array(rep(data$WAA[,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # weight at age
+WAA_fish <- array(rep(data$WAA_fish[,length(data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # weight at age for fishery
 MatAA <- array(rep(data$MatAA[,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes)) # maturity at age
 fish_sel <- array(rep(obj$rep$fish_sel[,length(data$years),,,], each = n_proj_yrs), dim = c(n_regions, n_proj_yrs, n_ages, n_sexes, n_fish_fleets)) # selectivity
 Movement <- array(rep(obj$rep$Movement[,,length(data$years),,], each = n_proj_yrs), dim = c(n_regions, n_regions, n_proj_yrs, n_ages, n_sexes))
@@ -206,6 +210,7 @@ for (i in seq_along(proj_inputs)) {
                                     terminal_F = terminal_F,
                                     natmort = natmort,
                                     WAA = WAA,
+                                    WAA_fish = WAA_fish,
                                     MatAA = MatAA,
                                     fish_sel = fish_sel,
                                     Movement = Movement,

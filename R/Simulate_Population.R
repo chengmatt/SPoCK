@@ -171,7 +171,7 @@ run_annual_cycle <- function(y,
         CAA[r,y,,,f,sim] <- (Fmort[r,y,f,sim] * fish_sel[r,y,,,f,sim]) / Z[r,y,,,sim] *  NAA[r,y,,,sim] * (1 - exp(-Z[r,y,,,sim]))
 
         # Generate Catch Data
-        True_Catch[r,y,f,sim] <- sum(CAA[r,y,,,f,sim] * WAA[r,y,,,sim]) # True Catch
+        True_Catch[r,y,f,sim] <- sum(CAA[r,y,,,f,sim] * WAA_fish[r,y,,,f,sim]) # True Catch
         Obs_Catch[r,y,f,sim] <- True_Catch[r,y,f,sim] * exp(stats::rnorm(1, 0, sigmaC)) # Observed Catch w/ lognormal deviations
 
         # Generate Compositions
@@ -546,6 +546,8 @@ run_annual_cycle <- function(y,
 #'    M_pattern = "constant",
 #'    base_WAA_values = array(rep(5 * (1 - exp(-0.1 * 1:sim_list$n_ages)), each = sim_list$n_regions * sim_list$n_sexes),
 #'                            dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes)),
+#'    base_WAA_fish_values = array(rep(5 * (1 - exp(-0.1 * 1:sim_list$n_ages)), each = sim_list$n_regions * sim_list$n_sexes),
+#'                                 dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets)),
 #'    WAA_pattern = "constant",
 #'    base_Maturity_AA_values = array(rep(1 / (1 + exp(-0.3 * 1:sim_list$n_ages)), each = sim_list$n_regions * sim_list$n_sexes),
 #'                                    dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes)),
@@ -632,6 +634,8 @@ Simulate_Pop_Static <- function(sim_list,
                   rec_sexratio = sim_env$rec_sexratio,
                   r0 = sim_env$r0,
                   WAA = sim_env$WAA,
+                  WAA_fish = sim_env$WAA_fish,
+                  WAA_srv = sim_env$WAA_srv,
                   Maturity_AA = sim_env$Maturity_AA,
                   init_sigmaR = sim_env$init_sigmaR,
                   sigmaR = sim_env$sigmaR,
@@ -698,6 +702,16 @@ Get_Feedback_Data <- function(sim_env,
   feedback$retro_data$WAA <- array(sim_list$WAA[,1:y,,,sim, drop = FALSE],
                                    dim = c(feedback$retro_data$n_regions, length(feedback$retro_data$years),
                                            length(feedback$retro_data$ages), feedback$retro_data$n_sexes))
+
+  # Weight at age fishery
+  feedback$retro_data$WAA_fish <- array(sim_list$WAA_fish[,1:y,,,,sim, drop = FALSE],
+                                   dim = c(feedback$retro_data$n_regions, length(feedback$retro_data$years),
+                                           length(feedback$retro_data$ages), feedback$retro_data$n_sexes, feedback$retro_data$n_fish_fleets))
+
+  # Weight at age survey (biomass-indices not supported at this point)
+  feedback$retro_data$WAA_srv <- array(NA,
+                                   dim = c(feedback$retro_data$n_regions, length(feedback$retro_data$years),
+                                           length(feedback$retro_data$ages), feedback$retro_data$n_sexes, feedback$retro_data$n_srv_fleets))
   # Maturity at age
   feedback$retro_data$MatAA <- array(sim_list$Maturity_AA[,1:y,,,sim, drop = FALSE],
                                      dim = c(feedback$retro_data$n_regions, length(feedback$retro_data$years),

@@ -41,7 +41,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Setup_Mod_Biologicals</span><span class="op">(</span></span>
 <span>  <span class="va">input_list</span>,</span>
 <span>  <span class="va">WAA</span>,</span>
+<span>  WAA_fish <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  WAA_srv <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">MatAA</span>,</span>
+<span>  addtocomp <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  AgeingError <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Use_M_prior <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  M_prior <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -63,11 +66,23 @@
 
 
 <dt id="arg-waa">WAA<a class="anchor" aria-label="anchor" href="#arg-waa"></a></dt>
-<dd><p>Numeric array of weight-at-age, dimensioned <code>[n_regions, n_years, n_ages, n_sexes]</code>.</p></dd>
+<dd><p>Numeric array of weight-at-age (spawning), dimensioned <code>[n_regions, n_years, n_ages, n_sexes]</code>.</p></dd>
+
+
+<dt id="arg-waa-fish">WAA_fish<a class="anchor" aria-label="anchor" href="#arg-waa-fish"></a></dt>
+<dd><p>Numeric array of weight-at-age (fishery), dimensioned <code>[n_regions, n_years, n_ages, n_sexes, n_fish_fleets]</code>.</p></dd>
+
+
+<dt id="arg-waa-srv">WAA_srv<a class="anchor" aria-label="anchor" href="#arg-waa-srv"></a></dt>
+<dd><p>Numeric array of weight-at-age (survey), dimensioned <code>[n_regions, n_years, n_ages, n_sexes, n_srv_fleets]</code>.</p></dd>
 
 
 <dt id="arg-mataa">MatAA<a class="anchor" aria-label="anchor" href="#arg-mataa"></a></dt>
 <dd><p>Numeric array of maturity-at-age, dimensioned <code>[n_regions, n_years, n_ages, n_sexes]</code>.</p></dd>
+
+
+<dt id="arg-addtocomp">addtocomp<a class="anchor" aria-label="anchor" href="#arg-addtocomp"></a></dt>
+<dd><p>Numeric value for a constant to add to composition data. Default is 1e-3.</p></dd>
 
 
 <dt id="arg-ageingerror">AgeingError<a class="anchor" aria-label="anchor" href="#arg-ageingerror"></a></dt>

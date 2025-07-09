@@ -64,8 +64,7 @@ Following the initialization of `input_list`, we can pass the created object int
 1) Beverton-Holt Recruitment, where steepness is fixed at the 2024 assessment estiamted value,
 2) Recruitment deviations are estimated in a penalized likelihood framework,
 3) Recruitment deviations are estimated for all years,
-4) Initial age deviations have a `ln_sigmaR = 2`, while later deviations (after year 1) have a `ln_sigmaR = 1`. This is done to mimic the current assessment, where a different mean parameter is estimated for the early age deviations and later recruitment deviations,
-5) Initial age deviations are estimated for all ages, including the plus group,
+4) Initial age deviations are estimated for all ages, including the plus group,
 5) Initial age structure is derived by assuming a geometric series (`init_age_strc = 1`; the alternative is iterating age structure to some equilibrium `init_age_strc = 0`), and 
 6) Individuals are assumed to spawn during March (`t_spawn = 0.25`)
 
@@ -81,7 +80,7 @@ Following the initialization of `input_list`, we can pass the created object int
     # do bias ramp (0 == don't do bias ramp, 1 == do bias ramp)
     sigmaR_switch = 1,
     # when to switch from early to late sigmaR (switch in first year)
-    ln_sigmaR = log(c(2, 1)),
+    ln_sigmaR = log(c(1, 1)),
     # Starting values for early and late sigmaR
     rec_model = "bh_rec",
     # recruitment model

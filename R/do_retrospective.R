@@ -134,7 +134,7 @@ truncate_yr <- function(j,
 
 
 
-#' Functino to run retrospective analyses
+#' Run retrospective analyses
 #'
 #' @param n_retro Number of retrospective peels to do
 #' @param data Data list for RTMB model

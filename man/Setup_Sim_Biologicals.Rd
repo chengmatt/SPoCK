@@ -8,6 +8,7 @@ Setup_Sim_Biologicals(
   base_M_value,
   M_pattern,
   base_WAA_values,
+  base_WAA_fish_values,
   WAA_pattern,
   base_Maturity_AA_values,
   Maturity_AA_pattern,
@@ -20,6 +21,8 @@ Setup_Sim_Biologicals(
 \item{M_pattern}{Natural mortality pattern. Options include: constant}
 
 \item{base_WAA_values}{Base weight-at-age values dimensioned by regions, ages, sexes}
+
+\item{base_WAA_fish_values}{Base weight-at-age values for the fishery dimensioned by regions, ages, sexes, fishery fleets}
 
 \item{WAA_pattern}{Weight-at-age pattern. Options include: constant}
 

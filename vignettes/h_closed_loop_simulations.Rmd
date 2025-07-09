@@ -116,6 +116,8 @@ sim_list <- Setup_Sim_Biologicals(
   M_pattern = "constant", # M pattern
   base_WAA_values = array(rep(5 / (1 + exp(-1 * (1:sim_list$n_ages - 5))), each = sim_list$n_regions * sim_list$n_sexes),
                           dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes)), # weight-at-age values
+  base_WAA_fish_values = array(rep(5 / (1 + exp(-1 * (1:sim_list$n_ages - 5))), each = sim_list$n_regions * sim_list$n_sexes),
+                             dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets)), # weight at age fishery
   WAA_pattern = "constant", # weight-at-age patterns
   base_Maturity_AA_values = array(rep(1 / (1 + exp(-2 * (1:sim_list$n_ages - 5))), each = sim_list$n_regions * sim_list$n_sexes),
                                   dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes)), # matrutiy at age values
@@ -219,7 +221,7 @@ Biological values are similarly specified at the same values defined for the ope
 ```{r, eval = FALSE}
 input_list <- Setup_Mod_Biologicals(input_list = input_list,
                                     WAA = array(NA, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes)), # weight at age 
-                                    MatAA = array(NA, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages))), # maturity at age input_list$data$n_sexes)),
+                                    MatAA = array(NA, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes)), # maturity at age 
                                     ln_M = log(0.5) # natural mortality value
                                     )
 
@@ -424,7 +426,8 @@ for (sim in 1:sim_env$n_sims) {
       # Get necessary data inputs for later functions
       n_proj_yrs <- 2
       tmp_terminal_NAA <- array(obj$rep$NAA[,y,,], dim = c(sim_env$n_regions, sim_env$n_ages, sim_env$n_sexes)) # terminal numbers at age
-      tmp_WAA <- array(rep(data$WAA[,y,,], each = n_proj_yrs), dim = c(sim_env$n_regions, n_proj_yrs, sim_env$n_ages, sim_env$n_sexes)) # weight at age
+      tmp_WAA <- array(rep(data$WAA[,y,,], each = n_proj_yrs), dim = c(sim_env$n_regions, n_proj_yrs, sim_env$n_ages, sim_env$n_sexes)) # weight at age spawning
+      tmp_WAA_fish <- array(rep(data$WAA_fish[,y,,,], each = n_proj_yrs), dim = c(sim_env$n_regions, n_proj_yrs, sim_env$n_ages, sim_env$n_sexes, sim_env$n_fish_fleets)) # weight at age fishery
       tmp_MatAA <- array(rep(data$MatAA[,y,,], each = n_proj_yrs), dim = c(sim_env$n_regions, n_proj_yrs, sim_env$n_ages, sim_env$n_sexes)) # maturity at age
       tmp_fish_sel <- array(rep(obj$rep$fish_sel[,y,,,], each = n_proj_yrs), dim = c(sim_env$n_regions, n_proj_yrs, sim_env$n_ages, sim_env$n_sexes, sim_env$n_fish_fleets)) # selectivity
       tmp_Movement <- array(rep(obj$rep$Movement[,,y,,,drop=FALSE], n_proj_yrs), dim = c(sim_env$n_regions, sim_env$n_regions, n_proj_yrs, sim_env$n_ages, sim_env$n_sexes))
@@ -463,6 +466,7 @@ for (sim in 1:sim_env$n_sims) {
                                       terminal_F = tmp_terminal_F,
                                       natmort = tmp_natmort,
                                       WAA = tmp_WAA,
+                                      WAA_fish = tmp_WAA_fish,
                                       MatAA = tmp_MatAA,
                                       fish_sel = tmp_fish_sel,
                                       Movement = tmp_Movement,
@@ -487,7 +491,7 @@ for (sim in 1:sim_env$n_sims) {
             tmp_F <- bisection_F(f_guess = 0.05,
                                  catch = tmp_TAC[r,1,f],
                                  NAA = sim_env$NAA[r,y+1,,,sim],
-                                 WAA = sim_env$WAA[r,y+1,,,sim],
+                                 WAA = sim_env$WAA[r,y+1,,,sim], 
                                  natmort = sim_env$M[r,y+1,,,sim],
                                  fish_sel = sim_env$fish_sel[r,y+1,,,f,sim]
                                  )

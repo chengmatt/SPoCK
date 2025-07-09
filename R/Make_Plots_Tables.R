@@ -254,7 +254,7 @@ get_biological_plot <- function(data,
                     Model = model_names[i]
       )
 
-    # Weight-at-age
+    # Spawning Weight-at-age
     waa_plot_tmp_df <- reshape2::melt(data[[i]]$WAA) %>%
       dplyr::rename(Region = Var1, Year = Var2, Age = Var3, Sex = Var4) %>%
       dplyr::mutate(Region = paste("Region", Region),
@@ -304,7 +304,7 @@ get_biological_plot <- function(data,
                               ggplot2::aes(x = Age, y = value, color = factor(Model))) +
     ggplot2::geom_line(lwd = 2) +
     ggplot2::facet_grid(Region~Sex) +
-    ggplot2::labs(x = 'Age', y = 'Weight at Age', color = 'Model') +
+    ggplot2::labs(x = 'Age', y = 'Spawning Weight at Age', color = 'Model') +
     ggplot2::coord_cartesian(ylim = c(0, NA)) +
     theme_sablefish() +
     ggplot2::theme(legend.key.width = unit(2, "lines"))
@@ -760,20 +760,23 @@ get_key_quants <- function(data,
     n_yrs <- length(data[[i]]$years)
     avg_yrs <- (n_yrs - n_avg_yrs + 1):n_yrs
 
-    # weight-at-age
-    WAA_avg <- array(apply(data[[i]]$WAA[,avg_yrs,,,drop = FALSE], c(1, 3, 4), mean))
+    # spawning weight-at-age
+    WAA_avg <- apply(data[[i]]$WAA[,avg_yrs,,,drop = FALSE], c(1, 3, 4), mean)
     WAA <- array(rep(WAA_avg, each = n_proj_yrs), dim = c(data[[i]]$n_regions, n_proj_yrs, length(data[[i]]$ages), data[[i]]$n_sexes))
 
+    WAA_fish_avg <- apply(data[[i]]$WAA_fish[,avg_yrs,,,,drop = FALSE], c(1, 3, 4, 5), mean)
+    WAA_fish <- array(rep(WAA_fish_avg, each = n_proj_yrs), dim = c(data[[i]]$n_regions, n_proj_yrs, length(data[[i]]$ages), data[[i]]$n_sexes, data[[i]]$n_fish_fleets))
+
     # maturity at age
-    MatAA_avg <- array(apply(data[[i]]$MatAA[,avg_yrs,,,drop = FALSE], c(1, 3, 4), mean))
+    MatAA_avg <- apply(data[[i]]$MatAA[,avg_yrs,,,drop = FALSE], c(1, 3, 4), mean)
     MatAA <- array(rep(MatAA_avg, each = proj_model_opt$n_proj_yrs), dim = c(data[[i]]$n_regions, proj_model_opt$n_proj_yrs, length(data[[i]]$ages), data[[i]]$n_sexes))
 
     # natural mortality
-    natmort_avg <- array(apply(rep[[i]]$natmort[,avg_yrs,,,drop = FALSE], c(1, 3, 4), mean))
+    natmort_avg <- apply(rep[[i]]$natmort[,avg_yrs,,,drop = FALSE], c(1, 3, 4), mean)
     natmort <- array(rep(natmort_avg, each = proj_model_opt$n_proj_yrs), dim = c(data[[i]]$n_regions, proj_model_opt$n_proj_yrs, length(data[[i]]$ages), data[[i]]$n_sexes))
 
     # fishery selectivity
-    fish_sel_avg <- array(apply(rep[[i]]$fish_sel[,avg_yrs,,,,drop = FALSE], c(1, 3, 4, 5), mean))
+    fish_sel_avg <- apply(rep[[i]]$fish_sel[,avg_yrs,,,,drop = FALSE], c(1, 3, 4, 5), mean)
     fish_sel <- array(rep(fish_sel_avg, each = proj_model_opt$n_proj_yrs), dim = c(data[[i]]$n_regions, proj_model_opt$n_proj_yrs, length(data[[i]]$ages), data[[i]]$n_sexes, data[[i]]$n_fish_fleets))
 
     # movement
@@ -814,7 +817,8 @@ get_key_quants <- function(data,
                                          terminal_NAA = terminal_NAA, # terminal numbers at age
                                          terminal_F = terminal_F, # terminal F
                                          natmort = natmort, # natural mortality values to use in projection
-                                         WAA = WAA, # weight at age values to use in projection
+                                         WAA = WAA, # spawning weight at age values to use in projection
+                                         WAA_fish = WAA_fish, # fishery weight at age to use in projection
                                          MatAA = MatAA, # maturity at age values to use in projection
                                          fish_sel = fish_sel, # fishery selectivity values to use in projection
                                          Movement = Movement, # movement values

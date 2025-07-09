@@ -3,6 +3,7 @@
 #' @param base_M_value Base natural mortality value dimensioned by regions, ages, sexes
 #' @param M_pattern Natural mortality pattern. Options include: constant
 #' @param base_WAA_values Base weight-at-age values dimensioned by regions, ages, sexes
+#' @param base_WAA_fish_values Base weight-at-age values for the fishery dimensioned by regions, ages, sexes, fishery fleets
 #' @param WAA_pattern Weight-at-age pattern. Options include: constant
 #' @param base_Maturity_AA_values Base maturity values dimensioned by regions, ages, sexes
 #' @param Maturity_AA_pattern Maturity pattern. Options include: constant
@@ -13,6 +14,7 @@ Setup_Sim_Biologicals <- function(
                                   base_M_value,
                                   M_pattern,
                                   base_WAA_values,
+                                  base_WAA_fish_values,
                                   WAA_pattern,
                                   base_Maturity_AA_values,
                                   Maturity_AA_pattern,
@@ -22,6 +24,7 @@ Setup_Sim_Biologicals <- function(
   # Create containers to store values
   M <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
   WAA <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
+  WAA_fish <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets, sim_list$n_sims))
   Maturity_AA <- array(0, dim = c(sim_list$n_regions, sim_list$n_yrs, sim_list$n_ages, sim_list$n_sexes, sim_list$n_sims))
 
   for(sim in 1:sim_list$n_sims) {
@@ -34,6 +37,7 @@ Setup_Sim_Biologicals <- function(
 
           # WAA constant
           if(WAA_pattern == "constant") WAA[r,y,,s,sim] <- base_WAA_values[r,,s]
+          if(WAA_pattern == "constant") for(f in 1:sim_list$n_fish_fleets) WAA_fish[r,y,,s,f,sim] <- base_WAA_fish_values[r,,s,f]
 
           # Maturity constant
           if(Maturity_AA_pattern == "constant") Maturity_AA[r,y,,s,sim] <- base_Maturity_AA_values[r,,s]
@@ -46,6 +50,7 @@ Setup_Sim_Biologicals <- function(
   # output into list
   sim_list$M <- M
   sim_list$WAA <- WAA
+  sim_list$WAA_fish <- WAA_fish
   sim_list$Maturity_AA <- Maturity_AA
 
   return(sim_list)
@@ -55,7 +60,7 @@ Setup_Sim_Biologicals <- function(
 #' Setup biological inputs for estimation model
 #'
 #' @param input_list List containing data, parameter, and map lists for the model.
-#' @param WAA Numeric array of weight-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.
+#' @param WAA Numeric array of weight-at-age (spawning), dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.
 #' @param MatAA Numeric array of maturity-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.
 #' @param AgeingError Numeric matrix representing the ageing error transition matrix, dimensioned by \code{[number of modeled ages, number of observed composition ages]}. Defaults to identity matrix if not specified (no ageing error).
 #' @param Use_M_prior Integer flag indicating whether to apply a natural mortality prior (\code{0} = no, \code{1} = yes).
@@ -74,11 +79,17 @@ Setup_Sim_Biologicals <- function(
 #'   \item \code{"length"}: Length-based selectivity.
 #'   \item \code{"age"}: Age-based selectivity
 #' }
+#' @param WAA_fish Numeric array of weight-at-age (fishery), dimensioned \code{[n_regions, n_years, n_ages, n_sexes, n_fish_fleets]}.
+#' @param WAA_srv Numeric array of weight-at-age (survey), dimensioned \code{[n_regions, n_years, n_ages, n_sexes, n_srv_fleets]}.
+#' @param addtocomp Numeric value for a constant to add to composition data. Default is 1e-3.
 #'
 #' @export Setup_Mod_Biologicals
 Setup_Mod_Biologicals <- function(input_list,
                                   WAA,
+                                  WAA_fish = NULL,
+                                  WAA_srv = NULL,
                                   MatAA,
+                                  addtocomp = 1e-3,
                                   AgeingError = NULL,
                                   Use_M_prior = 0,
                                   M_prior = NA,
@@ -94,6 +105,8 @@ Setup_Mod_Biologicals <- function(input_list,
 
   # Checking dimensions
   check_data_dimensions(WAA, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'WAA')
+  if(!is.null(WAA_fish)) check_data_dimensions(WAA_fish, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, n_fish_fleets = input_list$data$n_fish_fleets, what = 'WAA_fish')
+  if(!is.null(WAA_srv)) check_data_dimensions(WAA_srv, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, n_srv_fleets = input_list$data$n_srv_fleets, what = 'WAA_srv')
   check_data_dimensions(MatAA, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'MatAA')
   if(!is.null(AgeingError)) check_data_dimensions(AgeingError, n_ages = length(input_list$data$ages), what = 'AgeingError')
   if(fit_lengths == 1) check_data_dimensions(SizeAgeTrans, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_lens = length(input_list$data$lens), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'SizeAgeTrans')
@@ -112,7 +125,23 @@ Setup_Mod_Biologicals <- function(input_list,
     collect_message("Selectivity is length-based")
   } # if length based
 
+  # setup fishery and survey specific weight at age (if not specified - just uses the WAA (spawning) already supplied)
+  if(is.null(WAA_fish)) { # if no fishery WAA provided, use spawning WAA supplied
+    WAA_fish <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes, input_list$data$n_fish_fleets))
+    for(f in 1:input_list$data$n_fish_fleets) WAA_fish[,,,,f] <- WAA
+    collect_message("WAA_fish was specified at NULL. Using the spawning WAA for WAA_fish")
+  }
+
+  # if no survey WAA provided, use spawning WAA supplied
+  if(is.null(WAA_srv)) {
+    WAA_srv <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), length(input_list$data$ages), input_list$data$n_sexes, input_list$data$n_srv_fleets))
+    for(f in 1:input_list$data$n_srv_fleets) WAA_srv[,,,,f] <- WAA
+    collect_message("WAA_srv was specified at NULL. Using the spawning WAA for WAA_srv")
+  }
+
   input_list$data$WAA <- WAA
+  input_list$data$WAA_fish <- WAA_fish
+  input_list$data$WAA_srv <- WAA_srv
   input_list$data$MatAA <- MatAA
   if(is.null(AgeingError)) AgeingError <- diag(1, length(input_list$data$ages)) # if no inputs for ageing error, then create identity matrix
   input_list$data$AgeingError <- AgeingError
@@ -122,6 +151,7 @@ Setup_Mod_Biologicals <- function(input_list,
   input_list$data$M_prior <- M_prior
   input_list$data$Fixed_natmort <- Fixed_natmort
   input_list$data$Selex_Type <- Selex_Type
+  input_list$data$addtocomp <- addtocomp
 
   # Input indicator for estimating or not estimating M
   if(is.null(M_spec) || M_spec == "est_ln_M_only") input_list$data$use_fixed_natmort <- 0

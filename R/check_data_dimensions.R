@@ -25,10 +25,22 @@ check_data_dimensions <- function(x,
 
 # Biologicals -------------------------------------------------------------
 
-  # Weight at age
+  # Weight at age (spawning), maturity, or natural mortality
   if(what %in% c('WAA', 'MatAA', "Fixed_natmort")) {
     if(sum(dim(x) == c(n_regions, n_years, n_ages, n_sexes)) != 4)
       stop(paste("Dimensions of", what, "are not correct. Should be n_regions, n_years, n_ages, and n_sexes"))
+  }
+
+  # weight at age for the fishery
+  if(what == 'WAA_fish') {
+    if(sum(dim(x) == c(n_regions, n_years, n_ages, n_sexes, n_fish_fleets)) != 5)
+      stop(paste("Dimensions of", what, "are not correct. Should be n_regions, n_years, n_ages, n_sexes, and n_fish_fleets"))
+  }
+
+  # weight at age for the survey
+  if(what == 'WAA_srv') {
+    if(sum(dim(x) == c(n_regions, n_years, n_ages, n_sexes, n_srv_fleets)) != 5)
+      stop(paste("Dimensions of", what, "are not correct. Should be n_regions, n_years, n_ages, n_sexes, and n_srv_fleets"))
   }
 
   if(what == 'AgeingError') { # Not checking the age dimension

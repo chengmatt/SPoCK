@@ -84,6 +84,8 @@ Simulates a static spatial, sex, and age-structured population (no feedback loop
    M_pattern = "constant",
    base_WAA_values = array(rep(5 * (1 - exp(-0.1 * 1:sim_list$n_ages)), each = sim_list$n_regions * sim_list$n_sexes),
                            dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes)),
+   base_WAA_fish_values = array(rep(5 * (1 - exp(-0.1 * 1:sim_list$n_ages)), each = sim_list$n_regions * sim_list$n_sexes),
+                                dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes, sim_list$n_fish_fleets)),
    WAA_pattern = "constant",
    base_Maturity_AA_values = array(rep(1 / (1 + exp(-0.3 * 1:sim_list$n_ages)), each = sim_list$n_regions * sim_list$n_sexes),
                                    dim = c(sim_list$n_regions, sim_list$n_ages, sim_list$n_sexes)),

@@ -235,6 +235,16 @@ used</td>
 n_sexes</td>
 </tr>
 <tr class="even">
+<td><code>WAA_fish</code></td>
+<td>Weight-at-age values for the fishery dimensioned by n_regions,
+n_years, n_ages, n_sexes, n_fish_fleets</td>
+</tr>
+<tr class="odd">
+<td><code>WAA_srv</code></td>
+<td>Weight-at-age values for the survey dimensioned by n_regions,
+n_years, n_ages, n_sexes, n_srv_fleets</td>
+</tr>
+<tr class="even">
 <td><code>MatAA</code></td>
 <td>Maturity-at-age values dimensioned by n_regions, n_years, n_ages,
 n_sexes</td>
@@ -256,28 +266,32 @@ n_lens, n_ages, n_sexes. Can be specified as NA if length compositions
 are not fit</td>
 </tr>
 <tr class="even">
+<td><code>addtocomp</code></td>
+<td>Constant to add to all composition data.</td>
+</tr>
+<tr class="odd">
 <td><code>Use_M_prior</code></td>
 <td>Value specifying whether natural mortality priors are used. 0: Don’t
 use prior, 1: Use prior</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>M_prior</code></td>
 <td>Vector specifying the mean and standard deviation of natural
 mortality in normal space. Element 1 should be the mean and element 2
 should be the standard deviation. The prior is applied to the M
 parameter and not the offset</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Selex_Type</code></td>
 <td>Value specifying whether age or length-based selectivity is used. 0:
 Age-based, 1: Length-based</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>use_fixed_natmort</code></td>
 <td>Value specifying whether a fixed mortality array is used. 0: Don’t
 use and estimate M, 1: Use</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>Fixed_natmort</code></td>
 <td>Natural mortality array dimensioned by n_regions, n_years, n_ages,
 and n_sexes.</td>

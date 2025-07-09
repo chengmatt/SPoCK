@@ -7,7 +7,10 @@
 Setup_Mod_Biologicals(
   input_list,
   WAA,
+  WAA_fish = NULL,
+  WAA_srv = NULL,
   MatAA,
+  addtocomp = 0.001,
   AgeingError = NULL,
   Use_M_prior = 0,
   M_prior = NA,
@@ -22,9 +25,15 @@ Setup_Mod_Biologicals(
 \arguments{
 \item{input_list}{List containing data, parameter, and map lists for the model.}
 
-\item{WAA}{Numeric array of weight-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.}
+\item{WAA}{Numeric array of weight-at-age (spawning), dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.}
+
+\item{WAA_fish}{Numeric array of weight-at-age (fishery), dimensioned \code{[n_regions, n_years, n_ages, n_sexes, n_fish_fleets]}.}
+
+\item{WAA_srv}{Numeric array of weight-at-age (survey), dimensioned \code{[n_regions, n_years, n_ages, n_sexes, n_srv_fleets]}.}
 
 \item{MatAA}{Numeric array of maturity-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.}
+
+\item{addtocomp}{Numeric value for a constant to add to composition data. Default is 1e-3.}
 
 \item{AgeingError}{Numeric matrix representing the ageing error transition matrix, dimensioned by \code{[number of modeled ages, number of observed composition ages]}. Defaults to identity matrix if not specified (no ageing error).}
 

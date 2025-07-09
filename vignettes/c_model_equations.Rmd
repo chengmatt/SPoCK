@@ -47,10 +47,10 @@ h_r = 0.2 + (1 - 0.2) \frac{\exp(h^{'}_r)}{1 + \exp(h^{'}_r)}
 where $h^{'}_r$ is the steepness parameter in bounded logit space. $SSB0_r$ represents the unfished spawning stock biomass computed as the spawning biomass per recruit multiplied by $R0\zeta_r$ and $RecLag$ represents the delay between spawning and when recruits enter the population. If $RecLag > y$, the model utilizes $SSB0_r$ instead of $SSB_(r,y-RecLag)$ to compute deterministic recruitment. $SSB_(r,y)$ is the spawning stock biomass, which is computed as: 
 
 \[
-SSB_{r,y} = \sum_a^{a+} N_{r,y,a,s=1}W_{r,y,a,s=1}Mat_{r,y,a,s=1}
+SSB_{r,y} = \sum_a^{a+} N_{r,y,a,s=1}W_{r,y,a,s=1}^\text{spawn}Mat_{r,y,a,s=1}
 \]
 
-$N_{r,y,a,s=1}$ here represents the numbers at age across regions and years for females ($s = 1$), $W_{r,y,a,s=1}$ are values of weight at age for females, and $Mat_{r,y,a,s=1}$ are values of maturity at age. In a single-sex model, $SSB_{r,y}$ is simply computed as: $SSB_{r,y} = \sum_a^{a+} N_{r,y,a,s=1}W_{r,y,a,s=1} \cdot 0.5$. 
+$N_{r,y,a,s=1}$ here represents the numbers at age across regions and years for females ($s = 1$), $W_{r,y,a,s=1}^\text{spawn}$ are values of weight at age for spawning females, and $Mat_{r,y,a,s=1}$ are values of maturity at age. In a single-sex model, $SSB_{r,y}$ is simply computed as: $SSB_{r,y} = \sum_a^{a+} N_{r,y,a,s=1}W_{r,y,a,s=1}^\text{spawn} \cdot 0.5$. 
 
 In a spatial model, regional recruitment apportionment parameters $\zeta_r$ are derived using a multinomial logit transformation. There are also additional options that can be specified for recruitment processes in a spatial model. In particular, users can also specify whether recruitment occurs globally instead of locally. In such a case, the Beverton-Holt relatinoship is rewritten as: 
 
@@ -259,10 +259,10 @@ C^l_{r,y,l,s,f} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{C^a}_{r,y,s,f}
 
 $\boldsymbol{A}^l_{r,y,s}$ is a data input derived external to the assessment model and is required if users are fitting to length composition data, where the matrix represents the probability of being in a length bin, given some age. 
 
-Expected catch ($\text{Catch}_{r,y,f}$) is then derived by simply taking the summation of the expected catch-at-age across ages and sexes, multiplied by their respective weights-at-age:
+Expected catch ($\text{Catch}_{r,y,f}$) is then derived by simply taking the summation of the expected catch-at-age across ages and sexes, multiplied by their respective weights-at-age for the fishery:
 
 \[
-\text{Catch}_{r,y,f} = \sum_a^{a_+} \sum_s^{n_s} C^a_{r,y,a,s,f} W_{r,y,a,s}
+\text{Catch}_{r,y,f} = \sum_a^{a_+} \sum_s^{n_s} C^a_{r,y,a,s,f} W_{r,y,a,s}^\text{fish}
 \]
 
 Fishery indices ($\text{FshIdx}_{r,y,f}$) can be specified as either abundance-based (first equation below) or biomass-based (second equation below): 
@@ -270,7 +270,7 @@ Fishery indices ($\text{FshIdx}_{r,y,f}$) can be specified as either abundance-b
 \[
 \begin{aligned}
 \text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} \\
-\text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} W_{r,y,a,s}
+\text{FshIdx}_{r,y,f} = q^{Fsh}_{r,y,f} \sum_a^{a_+} \sum_s^{n_s} N_{r,y,a,s} \exp(-Z_{r,y,a,s}0.5) Sel_{r,y,a,s,f}^{Fsh} W_{r,y,a,s}^\text{fish}
 \end{aligned}
 \]
 
@@ -289,12 +289,12 @@ where $Sel_{r,y,a,s,sf}^{Srv}$ here is the survey selectivity pattern. Expected 
 I^l_{r,y,l,s,sf} = (\boldsymbol{A}^l_{r,y,s})^T \boldsymbol{I^a}_{r,y,s,f}
 \]
 
-Again, survey indices ($\text{SrvIdx}_{r,y,sf}$) can be computed either as abundance-based (first equation below), or biomass-based (second equation below):
+Again, survey indices ($\text{SrvIdx}_{r,y,sf}$) can be computed either as abundance-based (first equation below), or biomass-based (second equation below; where weight-at-age can be survey-specific):
 
 \[
 \begin{aligned}
 \text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} \\ 
-\text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} W_{r,y,a,s}
+\text{SrvIdx}_{r,y,sf} = q^{Srv}_{r,y,sf} \sum_a^{a_+} \sum_s^{n_s} I^a_{r,y,a,s,sf} W_{r,y,a,s}^\text{srv}
 \end{aligned}
 \]
 
