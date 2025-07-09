@@ -130,10 +130,10 @@ R0 \exp\left(-(a-1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,
 This approach is generally more appropriate when movement does not occur among regions, given that a closed form solution can easily be derived for the plus-group. Initial age deviations can then be applied to the equilibrium age structure:
 
 \[
-N_{r,a,s}^{Init} = N_{r,a,s}^{Init} \exp(\epsilon_{r,y}^{Init})
+N_{r,a,s}^{Init} = N_{r,a,s}^{Init} \exp(\epsilon_{r,a}^{Init})
 \]
 
-where $\epsilon_{r,y}^{Init}$ are initial age deviations [constrained by a normal distribution](#initpen).
+where $\epsilon_{r,y}^{Init}$ are initial age deviations [constrained by a normal distribution](#initpen). Note that there are several options for initializing the age structure. In particular, users can specify equilibrium age structure, where deviations are assumed to be 0, stochastic age structure with the plus group following the equilibrium solution, and stochastic age structure with the plus group following the equilibrium solution but with an additional deviation applied to the plus group. 
 
 ### Selectivity Processes (Fishery and Survey) {#selforms}
 

@@ -144,11 +144,13 @@ Setup_Sim_Rec <- function(
 #' \code{"local"}, \code{"global"}, or \code{NULL}.
 #' @param t_spawn Numeric fraction specifying spawning timing within the year.
 #' @param ... Additional arguments specifying starting values for recruitment parameters such as \code{ln_global_R0}, \code{Rec_prop}, \code{h}, \code{ln_InitDevs}, \code{ln_RecDevs}, and \code{ln_sigmaR}.
-#' @param equil_init_age_strc Integer flag specifying whether initial age structure is in equilibrium or stochastic. Default is stochastic.
+#' @param equil_init_age_strc Integer flag specifying how initial age structure deviations should be initialized. Default is stochastic for all ages except the recruitment age and the plus group.
 #'   \itemize{
 #'     \item \code{0}: Equilibrium initial age structure.
-#'     \item \code{1}: Stochastic initial age structure.
+#'     \item \code{1}: Stochastic initial age structure for all ages, except for the plus group, which follows equilibrium calculations (geometric series)
+#'     \item \code{2}: Stochastic initial age structure for all ages
 #'   }
+#' @param max_bias_ramp_fct Numeric specifying the maximum bias correction to apply to the recruitment bias ramp (should be between 0 and 1)
 #'
 #' @export Setup_Mod_Rec
 Setup_Mod_Rec <- function(input_list,
@@ -160,6 +162,7 @@ Setup_Mod_Rec <- function(input_list,
                           h_sd = NA,
                           do_rec_bias_ramp = 0,
                           bias_year = NA,
+                          max_bias_ramp_fct = 1,
                           sigmaR_switch = 1,
                           dont_est_recdev_last = 0,
                           sexratio = 1,
@@ -214,6 +217,8 @@ Setup_Mod_Rec <- function(input_list,
   if(dont_est_recdev_last == 0) collect_message("Recruitment deviations for every year is estiamted")
   else collect_message("Recruitment deviations are not estimated for terminal year - ", dont_est_recdev_last, ". Recruitment during those periods are specified as the mean / deterministic recruitment")
 
+  if(max_bias_ramp_fct > 1 || max_bias_ramp_fct < 0) stop("max_bias_ramp_fct must be between 0 and 1!")
+
   # Set up parameter list
   starting_values <- list(...) # get starting values if there are any
 
@@ -232,6 +237,7 @@ Setup_Mod_Rec <- function(input_list,
   input_list$data$init_F_prop <- init_F_prop
   input_list$data$t_spawn <- t_spawn
   input_list$data$equil_init_age_strc <- equil_init_age_strc
+  input_list$data$max_bias_ramp_fct <- max_bias_ramp_fct
 
   # Global R0
   if("ln_global_R0" %in% names(starting_values)) input_list$par$ln_global_R0 <- starting_values$ln_global_R0
@@ -247,7 +253,7 @@ Setup_Mod_Rec <- function(input_list,
 
   # Initial age deviations
   if("ln_InitDevs" %in% names(starting_values)) input_list$par$ln_InitDevs <- starting_values$ln_InitDevs
-  else input_list$par$ln_InitDevs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$ages) - 2))
+  else input_list$par$ln_InitDevs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$ages) - 1))
 
   # Recruitment deviations
   if("ln_RecDevs" %in% names(starting_values)) input_list$par$ln_RecDevs <- starting_values$ln_RecDevs
@@ -269,24 +275,49 @@ Setup_Mod_Rec <- function(input_list,
     else collect_message("Recruitment Variability is specified as: ", sigmaR_spec)
   } else collect_message("Recruitment Variability is estimated for both early and late periods")
 
-  # Initial age deviations (stochastic)
+  # Initial age deviations (stochastic for all ages, including plus group)
   if(!is.null(InitDevs_spec)) {
     map_InitDevs <- input_list$par$ln_InitDevs # set up mapping for initial age deviations
     if(rec_dd == 'global' && InitDevs_spec != "est_shared_r" && input_list$data$n_regions > 1) stop("Please specify a valid initial age deviations option for global recruitment density dependence (should be est_shared_r or leave as NULL)!")
-    # Share across regions and estimate
+
+     # Share across regions and estimate
     if(InitDevs_spec == "est_shared_r") {
-      for(r in 1:input_list$data$n_regions) map_InitDevs[r,] <- 1:length(map_InitDevs[1,]) # share parameters across regions
-      input_list$map$ln_InitDevs <- factor(map_InitDevs)
+      if(input_list$data$equil_init_age_strc == 2) {
+        for(r in 1:input_list$data$n_regions) map_InitDevs[r,] <- 1:length(map_InitDevs[1,]) # share parameters across regions (and estimate plus group)
+        collect_message("Initial age deviations are stochastic and estimated for all ages, including the plus group")
+      }
+      if(input_list$data$equil_init_age_strc == 1) {
+        for(r in 1:input_list$data$n_regions) {
+          map_InitDevs[r,-dim(input_list$par$ln_InitDevs)[2]] <- 1:length(map_InitDevs[1,-dim(input_list$par$ln_InitDevs)[2]]) # share parameters across regions (but don't estimate plus group)
+          map_InitDevs[r,dim(input_list$par$ln_InitDevs)[2]] <- NA # NA for plus group
+          input_list$par$ln_InitDevs[r,dim(input_list$par$ln_InitDevs)[2]] <- 0 # reset plus group starting value to 0
+          collect_message("Initial Age Deviations is stochastic for all ages, but the plus group follows equilibrium calculations.")
+        } # end r loop
+      } # end case 1 (no stochastic deviations for plus group)
+      input_list$map$ln_InitDevs <- factor(map_InitDevs) # input into map
     } # end if
+
     # Fix all initial deviations
     if(InitDevs_spec == "fix") input_list$map$ln_InitDevs <- factor(rep(NA, prod(dim(map_InitDevs))))
+
     if(!InitDevs_spec %in% c("est_shared_r", "fix"))  stop("Please specify a valid initial deviations option. These include: fix, est_shared_r. Conversely, leave at NULL to estimate all initial deviations.")
     else collect_message("Initial Deviations is stochastic and specified as: ", InitDevs_spec)
-  } else if(input_list$data$equil_init_age_strc == 1) collect_message("Initial Age Deviations is estimated for all dimensions")
+
+  } else {
+    if(input_list$data$equil_init_age_strc == 2) collect_message("Initial Age Deviations is estimated for all dimensions. They are are stochastic and estimated for all ages, including the plus group")
+    if(input_list$data$equil_init_age_strc == 1) {
+      map_InitDevs <- input_list$par$ln_InitDevs # set up mapping for initial age deviations
+      map_InitDevs[,-dim(input_list$par$ln_InitDevs)[2]] <- 1:length(map_InitDevs[,-dim(input_list$par$ln_InitDevs)[2]]) # don't estimate plus group
+      map_InitDevs[,dim(input_list$par$ln_InitDevs)[2]] <- NA # NA for plus group
+      input_list$par$ln_InitDevs[,dim(input_list$par$ln_InitDevs)[2]] <- 0 # reset plus group starting value to 0
+      input_list$map$ln_InitDevs <- factor(map_InitDevs) # input into map
+      collect_message("Initial Age Deviations is stochastic for all ages, but the plus group follows equilibrium calculations.")
+    }
+  }
 
   # Initial age deviations (equilibrium)
   if(input_list$data$equil_init_age_strc == 0) {
-    input_list$par$ln_InitDevs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$ages) - 2)) # override starting values if previously specified
+    input_list$par$ln_InitDevs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$ages) - 1)) # override starting values if previously specified
     input_list$map$ln_InitDevs <- factor(rep(NA, length(input_list$par$ln_InitDevs))) # set mapping
     collect_message("Initial Age Structure is specified to be in equilibrium. No initial age deviations are estimated.")
   }

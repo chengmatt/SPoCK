@@ -106,9 +106,9 @@ SPoRC_rtmb = function(pars, data) {
   Tag_nLL = array(data = 0, dim = c(max_tag_liberty, n_tag_cohorts, n_regions, n_ages, n_sexes)) # Tagging Likelihoods
 
   # Penalties and Priors
-  Fmort_nLL = array(0, dim = c(n_regions, n_yrs, n_fish_fleets)) # Fishing Mortality Deviation penalty
-  Rec_nLL = array(0, dim = c(n_regions, n_yrs)) # Recruitment penalty
-  Init_Rec_nLL = array(0, dim = c(n_regions, n_ages - 2)) # Initial Recruitment penalty
+  Fmort_nLL = array(0, dim = dim(ln_F_devs)) # Fishing Mortality Deviation penalty
+  Rec_nLL = array(0, dim = dim(ln_RecDevs)) # Recruitment penalty
+  Init_Rec_nLL = array(0, dim = dim(ln_InitDevs)) # Initial Recruitment penalty
   bias_ramp = rep(0, n_yrs) # bias ramp from Methot and Taylor 2011
   sel_nLL = 0 # Penalty for selectivity deviations
   fish_q_nLL = 0 # Prior/penalty for fishery q
@@ -215,7 +215,6 @@ SPoRC_rtmb = function(pars, data) {
     } # end y loop
   } # end r loop
 
-
   ## Mortality ---------------------------------------------------------------
   for(r in 1:n_regions) {
     for(y in 1:n_yrs) {
@@ -281,6 +280,8 @@ SPoRC_rtmb = function(pars, data) {
     if (length(range2) > 0) bias_ramp[range2] = 1 # full bias correction
     if (length(range3) > 0) bias_ramp[range3] = 1 - ((years[range3] - bias_year[3]) / (bias_year[4] - bias_year[3])) # descending limb
 
+    bias_ramp = bias_ramp * max_bias_ramp_fct # scale bias ramp by a factor
+
   } # end if doing bias ramp
 
   ## Initial Age Structure ---------------------------------------------------
@@ -317,8 +318,7 @@ SPoRC_rtmb = function(pars, data) {
     # Apply initial age deviations
     for(r in 1:n_regions) {
       for(s in 1:n_sexes) {
-        Init_NAA[r,2:(n_ages-1),s] = Init_NAA[r,2:(n_ages-1),s] * exp(ln_InitDevs[r,]) # add in non-equilibrium age structure
-        NAA[r,1,2:n_ages,s] = Init_NAA[r,2:n_ages,s] # add in plus group
+        NAA[r,1,2:n_ages,s] = Init_NAA[r,2:n_ages,s] * exp(ln_InitDevs[r,]) # add in non-equilibrium age structure
       } # end s loop
     } # end r loop
 
@@ -336,7 +336,7 @@ SPoRC_rtmb = function(pars, data) {
                                       sexratio[s] *  Rec_trans_prop[r]
 
         # Plus group calculations
-        NAA[r,1,n_ages,s] = R0 * exp( - ((n_ages - 1) * (natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1]))) ) /
+        NAA[r,1,n_ages,s] = R0 * exp( ln_InitDevs[r,n_ages - 1] - ((n_ages - 1) * (natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1]))) ) /
                             (1 - exp(-(natmort[r,1, n_ages, s] + (init_F * fish_sel[r,1, n_ages, s, 1])))) *
                             sexratio[s] * Rec_trans_prop[r]
 
@@ -939,7 +939,7 @@ SPoRC_rtmb = function(pars, data) {
   if(likelihoods == 0) {
     for(r in 1:n_regions) {
       # if initial age structure is stochastic
-      if(equil_init_age_strc == 1) Init_Rec_nLL[r,] = (ln_InitDevs[r,] / exp(ln_sigmaR[1]))^2 # initial age structure penalty
+      if(equil_init_age_strc %in% c(1,2)) Init_Rec_nLL[r,] = (ln_InitDevs[r,] / exp(ln_sigmaR[1]))^2 # initial age structure penalty
       if(sigmaR_switch > 1) for(y in 1:(sigmaR_switch-1)) {
         Rec_nLL[r,y] = (ln_RecDevs[r,y]/exp(ln_sigmaR[1]))^2 + bias_ramp[y]*ln_sigmaR[1] # early period
       } # end first y loop
@@ -954,7 +954,7 @@ SPoRC_rtmb = function(pars, data) {
   if(likelihoods == 1) {
     for(r in 1:n_regions) {
       # if initial age structure is stochastic
-      if(equil_init_age_strc == 1) Init_Rec_nLL[r,] = -RTMB::dnorm(ln_InitDevs[r,], 0, exp(ln_sigmaR[1]), TRUE) # initial age structure penalty
+      if(equil_init_age_strc %in% c(1,2)) Init_Rec_nLL[r,] = -RTMB::dnorm(ln_InitDevs[r,], 0, exp(ln_sigmaR[1]), TRUE) # initial age structure penalty
       if(sigmaR_switch > 1) for(y in 1:(sigmaR_switch-1)) {
         Rec_nLL[r,y] = -RTMB::dnorm(ln_RecDevs[r,y], 0, exp(ln_sigmaR[1]), TRUE)
       } # first y loop

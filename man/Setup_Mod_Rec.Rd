@@ -14,6 +14,7 @@ Setup_Mod_Rec(
   h_sd = NA,
   do_rec_bias_ramp = 0,
   bias_year = NA,
+  max_bias_ramp_fct = 1,
   sigmaR_switch = 1,
   dont_est_recdev_last = 0,
   sexratio = 1,
@@ -66,6 +67,8 @@ For example, with 65 years total, \code{c(21, 31, 60, 64)} means:
   \item Years 64–65: No bias correction.
 }}
 
+\item{max_bias_ramp_fct}{Numeric specifying the maximum bias correction to apply to the recruitment bias ramp (should be between 0 and 1)}
+
 \item{sigmaR_switch}{Integer year indicating when \code{sigmaR} switches from early to late values (0 disables switching).}
 
 \item{dont_est_recdev_last}{Integer specifying how many of the most recent recruitment deviations to not estimate. Default is 0.}
@@ -78,10 +81,11 @@ For example, with 65 years total, \code{c(21, 31, 60, 64)} means:
   \item \code{1}: Initialize using a geometric series.
 }}
 
-\item{equil_init_age_strc}{Integer flag specifying whether initial age structure is in equilibrium or stochastic. Default is stochastic.
+\item{equil_init_age_strc}{Integer flag specifying how initial age structure deviations should be initialized. Default is stochastic for all ages except the recruitment age and the plus group.
 \itemize{
   \item \code{0}: Equilibrium initial age structure.
-  \item \code{1}: Stochastic initial age structure.
+  \item \code{1}: Stochastic initial age structure for all ages, except for the plus group, which follows equilibrium calculations (geometric series)
+  \item \code{2}: Stochastic initial age structure for all ages
 }}
 
 \item{init_F_prop}{Numeric value specifying the initial fishing mortality proportion relative to mean fishing mortality for initializing age structure.}

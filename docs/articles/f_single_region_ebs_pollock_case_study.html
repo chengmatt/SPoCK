@@ -131,7 +131,9 @@ framework,</li>
 later deviations (after year 1) have a <code>ln_sigmaR = 1</code>. This
 is done to mimic the current assessment, where a different mean
 parameter is estimated for the early age deviations and later
-recruitment deviations.</li>
+recruitment deviations,</li>
+<li>Initial age deviations are estimated for all ages, including the
+plus group,</li>
 <li>Initial age structure is derived by assuming a geometric series
 (<code>init_age_strc = 1</code>; the alternative is iterating age
 structure to some equilibrium <code>init_age_strc = 0</code>), and</li>
@@ -163,7 +165,8 @@ structure to some equilibrium <code>init_age_strc = 0</code>), and</li>
 <span>    <span class="co"># recruitment sex ratio</span></span>
 <span>    init_age_strc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    ln_global_R0 <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>    t_spawn <span class="op">=</span> <span class="fl">0.25</span></span>
+<span>    t_spawn <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>    equil_init_age_strc <span class="op">=</span> <span class="fl">2</span></span>
 <span>    <span class="co"># starting value for r0</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>

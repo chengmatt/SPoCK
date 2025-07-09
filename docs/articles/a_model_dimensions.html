@@ -159,26 +159,37 @@ given region is mapped off.</td>
 bias ramp is conducted. 0: Don’t do bias ramp, 1: Do bias ramp</td>
 </tr>
 <tr class="odd">
+<td><code>max_bias_ramp_fct</code></td>
+<td>Value specifying the maximum bias correction factor applied to the
+recruitment bias ramp.</td>
+</tr>
+<tr class="even">
 <td><code>bias_year</code></td>
 <td>Vector of years, specifying when to change the bias ramp. Can be
 specified with an NA if do_rec_bias_ramp = 0</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>sigmaR_switch</code></td>
 <td>Value specifying when to transition between using an early period
 sigma and late period sigma R for penalizing initial age deviations and
 recruitment deviations. Specify as 0 if sigmaR early is equal to sigmaR
 late.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>sexratio</code></td>
 <td>Vector specifying the recruitment sex ratio</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>init_age_strc</code></td>
 <td>Value specifying how the population age structure should be
 initialized. 0: Initialize via iteration to equilibrium, 1: Initialize
-with geometric series solution</td>
+with geometric series solution.</td>
+</tr>
+<tr class="even">
+<td><code>equil_init_age_strc</code></td>
+<td>Value specifying how intial age deviations arise. 0 == equilibrium,
+1 == stochastic except for plus group, 2 == stochastic for all ages
+(including the plus group)</td>
 </tr>
 <tr class="odd">
 <td><code>init_F_prop</code></td>

@@ -38,10 +38,12 @@ Name | Description
 `h_sd`	| Vector of n_regions specifying the standard deviation of the steepness prior. Must be > 0 
 `map_h_Pars`	| Vector of n_regions specifying whether or not the steepness for a given region is mapped off.
 `do_rec_bias_ramp` | Value specifying whether or not the Methot and Taylor recruitment bias ramp is conducted. 0: Don’t do bias ramp, 1: Do bias ramp
+`max_bias_ramp_fct` | Value specifying the maximum bias correction factor applied to the recruitment bias ramp.
 `bias_year`	| Vector of years, specifying when to change the bias ramp. Can be specified with an NA if do_rec_bias_ramp = 0
 `sigmaR_switch`	| Value specifying when to transition between using an early period sigma and late period sigma R for penalizing initial age deviations and recruitment deviations. Specify as 0 if sigmaR early is equal to sigmaR late.
 `sexratio`	| Vector specifying the recruitment sex ratio
-`init_age_strc`	| Value specifying how the population age structure should be initialized. 0: Initialize via iteration to equilibrium, 1: Initialize with geometric series solution 
+`init_age_strc`	| Value specifying how the population age structure should be initialized. 0: Initialize via iteration to equilibrium, 1: Initialize with geometric series solution.
+`equil_init_age_strc` | Value specifying how intial age deviations arise. 0 == equilibrium, 1 == stochastic except for plus group, 2 == stochastic for all ages (including the plus group)
 `init_F_prop`	| Value specifying the proportion of fishing mortality to apply to the initial age deviations relative to the mean fishing mortality parameter for fishery fleet 1 (the dominant fleet)
 `rec_model` | Value specifying the recruitment model. 0 == Mean Recruitment, 1 == Beverton-Holt with steepness parameterization
 `rec_dd` | Value specifying the recruitment density dependence (only used when there is a stock recruitment relationship) 0 == local density, 1 == global density, 999 == no density dependent stock recruitment form is used

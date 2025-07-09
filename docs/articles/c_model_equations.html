@@ -292,13 +292,18 @@ R0 \exp\left(-(a-1)(Natmort_{r,1,a,s} + Fmort_{init}\mu_{f=1}Sel^{Fsh}_{r,1,a,s,
 occur among regions, given that a closed form solution can easily be
 derived for the plus-group. Initial age deviations can then be applied
 to the equilibrium age structure:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>=</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-N_{r,a,s}^{Init} = N_{r,a,s}^{Init} \exp(\epsilon_{r,y}^{Init})
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>=</mo><msubsup><mi>N</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>s</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>a</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+N_{r,a,s}^{Init} = N_{r,a,s}^{Init} \exp(\epsilon_{r,a}^{Init})
 </annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>ϵ</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi></mrow><mrow><mi>I</mi><mi>n</mi><mi>i</mi><mi>t</mi></mrow></msubsup><annotation encoding="application/x-tex">\epsilon_{r,y}^{Init}</annotation></semantics></math>
 are initial age deviations <a href="#initpen">constrained by a normal
-distribution</a>.</p>
+distribution</a>. Note that there are several options for initializing
+the age structure. In particular, users can specify equilibrium age
+structure, where deviations are assumed to be 0, stochastic age
+structure with the plus group following the equilibrium solution, and
+stochastic age structure with the plus group following the equilibrium
+solution but with an additional deviation applied to the plus group.</p>
 </div>
 <div class="section level3">
 <h3 id="selforms">Selectivity Processes (Fishery and Survey)<a class="anchor" aria-label="anchor" href="#selforms"></a>
