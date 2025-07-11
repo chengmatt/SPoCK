@@ -17,6 +17,8 @@ Setup_Mod_Srvsel_and_Q(
   srv_q_spec = NULL,
   srv_sel_devs_spec = NULL,
   corr_opt_semipar = NULL,
+  srv_q_formula = NULL,
+  srv_q_cov_dat = NULL,
   ...
 )
 }
@@ -174,8 +176,48 @@ This argument is only used when a continuous time-varying selectivity form is sp
 
 These correlation-suppression flags are ignored when \code{cont_tv_sel} is set to any other value.}
 
-\item{...}{Additional arguments specifying starting values for survey selectivity and catchability parameters (srvsel_pe_pars, ln_srvsel_devs, ln_srv_fixed_sel_pars, ln_srv_q)}
+\item{srv_q_formula}{A named list of formulas specifying environmental covariate relationships
+for each region and survey fleet. Each element should be named using the convention
+`"Region_<region>_Fleet_<fleet>"` and contain a formula object using covariate names present in
+`srv_q_cov_dat`. The formula determines how environmental covariates influence survey catchability.
+If `NULL`, no environmental covariate effects are included.}
+
+\item{srv_q_cov_dat}{A named list containing time series vectors (typically by year) of environmental
+covariates used in the `srv_q_formula`. Each entry should be a numeric vector of length equal to the
+number of years, and names must match the variable names used in the formulas. If `NULL`, survey
+catchability is assumed to be time-invariant (i.e., not influenced by environmental variables).}
+
+\item{...}{Additional arguments specifying starting values for survey selectivity and catchability parameters (srvsel_pe_pars, ln_srvsel_devs, ln_srv_fixed_sel_pars, ln_srv_q, srv_q_coeff)}
 }
 \description{
 Setup survey selectivity and catchability specifications
+}
+\details{
+If both `srv_q_formula` and `srv_q_cov_dat` are non-`NULL`, the model constructs time-varying design matrices
+for each region and fleet based on the provided formulas and environmental covariates. A coefficient array
+(`srv_q_coeff`) and a mapping array (`map_srv_q_coeff`) are created to estimate and track the associated
+regression coefficients. The design matrix is stored in `srv_q_env`, a 4D array indexed by
+\code{[region, year, fleet, covariate]}.
+
+If either argument is `NULL`, environmental covariate effects are excluded and survey catchability is treated
+as constant over time.
+
+\strong{Important:} All covariate time series in `srv_q_cov_dat` must:
+\itemize{
+  \item Be numeric vectors with a length equal to the number of years in the model.
+  \item Align to the same years across all covariates.
+  \item Contain no missing values; users must impute or interpolate missing covariate values prior to use. For years in which the index is not used, values can be set at 0.
+}
+
+Covariates that are defined but not used in any formula can be filled with zeros (e.g., \code{rep(0, n_yrs)}).
+This avoids issues with list structure but does not affect the design matrix or model results.
+
+\strong{Example formulas:}
+\itemize{
+  \item \code{"Region_1_Fleet_1"} = \code{~ 0 + poly(env1_r1_f1, 3) + env2_r1_f1} uses a 3rd-degree
+        polynomial for \code{env1_r1_f1} and a linear term for \code{env2_r1_f1}.
+  \item \code{"Region_2_Fleet_1"} = \code{~ 0 + env1_r2_f1 + env2_r2_f1} includes additive effects of
+        two covariates.
+  \item \code{"Region_3_Fleet_2"} = \code{~ NULL} disables environmental covariates for that fleet-region.
+}
 }

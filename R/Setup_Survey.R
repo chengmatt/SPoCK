@@ -674,7 +674,46 @@ Setup_Mod_SrvIdx_and_Comps <- function(input_list,
 #' These correlation-suppression flags are ignored when \code{cont_tv_sel} is set to any other value.
 #' @param Use_srv_q_prior Integer specifying whether to use survey q prior or not (0 dont use) (1 use)
 #' @param srv_q_prior Survey q priors in normal space, dimensioned by region, block,  survey fleet, and 2 (mean, and sd in the 4 dimension of array)
-#' @param ... Additional arguments specifying starting values for survey selectivity and catchability parameters (srvsel_pe_pars, ln_srvsel_devs, ln_srv_fixed_sel_pars, ln_srv_q)
+#' @param ... Additional arguments specifying starting values for survey selectivity and catchability parameters (srvsel_pe_pars, ln_srvsel_devs, ln_srv_fixed_sel_pars, ln_srv_q, srv_q_coeff)
+#' @param srv_q_formula A named list of formulas specifying environmental covariate relationships
+#'   for each region and survey fleet. Each element should be named using the convention
+#'   `"Region_<region>_Fleet_<fleet>"` and contain a formula object using covariate names present in
+#'   `srv_q_cov_dat`. The formula determines how environmental covariates influence survey catchability.
+#'   If `NULL`, no environmental covariate effects are included.
+#'
+#' @param srv_q_cov_dat A named list containing time series vectors (typically by year) of environmental
+#'   covariates used in the `srv_q_formula`. Each entry should be a numeric vector of length equal to the
+#'   number of years, and names must match the variable names used in the formulas. If `NULL`, survey
+#'   catchability is assumed to be time-invariant (i.e., not influenced by environmental variables).
+#'
+#' @details
+#' If both `srv_q_formula` and `srv_q_cov_dat` are non-`NULL`, the model constructs time-varying design matrices
+#' for each region and fleet based on the provided formulas and environmental covariates. A coefficient array
+#' (`srv_q_coeff`) and a mapping array (`map_srv_q_coeff`) are created to estimate and track the associated
+#' regression coefficients. The design matrix is stored in `srv_q_env`, a 4D array indexed by
+#' \code{[region, year, fleet, covariate]}.
+#'
+#' If either argument is `NULL`, environmental covariate effects are excluded and survey catchability is treated
+#' as constant over time.
+#'
+#' \strong{Important:} All covariate time series in `srv_q_cov_dat` must:
+#' \itemize{
+#'   \item Be numeric vectors with a length equal to the number of years in the model.
+#'   \item Align to the same years across all covariates.
+#'   \item Contain no missing values; users must impute or interpolate missing covariate values prior to use. For years in which the index is not used, values can be set at 0.
+#' }
+#'
+#' Covariates that are defined but not used in any formula can be filled with zeros (e.g., \code{rep(0, n_yrs)}).
+#' This avoids issues with list structure but does not affect the design matrix or model results.
+#'
+#' \strong{Example formulas:}
+#' \itemize{
+#'   \item \code{"Region_1_Fleet_1"} = \code{~ 0 + poly(env1_r1_f1, 3) + env2_r1_f1} uses a 3rd-degree
+#'         polynomial for \code{env1_r1_f1} and a linear term for \code{env2_r1_f1}.
+#'   \item \code{"Region_2_Fleet_1"} = \code{~ 0 + env1_r2_f1 + env2_r2_f1} includes additive effects of
+#'         two covariates.
+#'   \item \code{"Region_3_Fleet_2"} = \code{~ NULL} disables environmental covariates for that fleet-region.
+#' }
 #'
 #' @export Setup_Mod_Srvsel_and_Q
 #' @importFrom stringr str_detect
@@ -690,6 +729,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
                                    srv_q_spec = NULL,
                                    srv_sel_devs_spec = NULL,
                                    corr_opt_semipar = NULL,
+                                   srv_q_formula = NULL,
+                                   srv_q_cov_dat = NULL,
                                    ...
                                    ) {
 
@@ -701,11 +742,11 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   if(!Use_srv_q_prior %in% c(0,1)) stop("Values for Use_srv_q_prior are not valid. They are == 0 (don't use prior), or == 1 (use prior)")
   collect_message("Survey Catchability priors are: ", ifelse(Use_srv_q_prior == 0, "Not Used", "Used"))
   if(is.null(input_list$data$Selex_Type)) stop("Selectivity type (age or length-based) has not been specified yet! Make sure to first specify biological inputs with Setup_Mod_Biologicals.")
+  if(!is.null(srv_q_cov_dat) && !is.null(srv_q_formula)) collect_message("Using covariates to predict survey catchability")
 
   # define for continuous time-varying selectivity
   cont_tv_srv_sel_mat <- array(NA, dim = c(input_list$data$n_regions, input_list$data$n_srv_fleets))
-  cont_tv_map <- data.frame(type = c("none", "iid", "rw", "3dmarg", "3dcond", "2dar1"),
-                            num = c(0,1,2,3,4,5)) # set up values we map to
+  cont_tv_map <- data.frame(type = c("none", "iid", "rw", "3dmarg", "3dcond", "2dar1"), num = c(0,1,2,3,4,5)) # set up values we map to
 
   for(i in 1:length(cont_tv_srv_sel)) {
     # Extract out components from list
@@ -797,8 +838,66 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   }
 
   if(any(is.na(srv_q_blocks_arr))) stop("Survey Catchability Blocks are returning an NA. Did you update the year range of srv_q_blocks?")
-
   for(f in 1:input_list$data$n_srv_fleets) collect_message(paste("Survey Catchability Time Blocks for survey", f, "is specified at:", length(unique(srv_q_blocks_arr[,,f]))))
+
+  # setup survey catchability covariate stuff
+  # Figure out the total number of regression coefficients that could be estimated
+  if(!is.null(srv_q_cov_dat) && !is.null(srv_q_formula)) {
+    n_srv_q_cov <- max(sapply(names(srv_q_formula), function(key) { # sapply to extract names from formula
+      tmp_formula <- srv_q_formula[[key]] # get formula
+      var_names <- all.vars(tmp_formula) # get var names
+      tmp_dat <- data.frame(srv_q_cov_dat[var_names]) # make dataframe
+      ncol(model.matrix(tmp_formula, data = tmp_dat)) # figure out number of columns for formula
+    }))
+  } else {
+    do_srv_q_cov <- 0 # Indicator for whether covariates are included into survey catchability
+    n_srv_q_cov <- 1 # dummy to initialize the array
+  }
+
+  # containers
+  srv_q_cov <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), input_list$data$n_srv_fleets, n_srv_q_cov)) # environmental time series
+  srv_q_coeff <- array(0, dim = c(input_list$data$n_regions, input_list$data$n_srv_fleets, n_srv_q_cov)) # coefficients to be estimated
+  map_srv_q_coeff <- array(NA, dim = c(input_list$data$n_regions, input_list$data$n_srv_fleets, n_srv_q_cov)) # coefficients to be mapped off
+
+  # Loop through to map stuff off and populate containers
+  if(!is.null(srv_q_cov_dat) && !is.null(srv_q_formula)) {
+
+    # Validate covariate length
+    cov_lengths <- lengths(srv_q_cov_dat)
+    # Check all covariates are the same length
+    if (length(unique(cov_lengths)) != 1) stop("All covariates in 'srv_q_cov_dat' must have the same length. If some years are missing data, either impute some value, or set at 0 (if it is not used in the calculation).")
+    # Check that length matches the model year structure
+    if (unique(cov_lengths) != length(input_list$data$years)) stop(paste0("Covariate length mismatch: expected ",  length(input_list$data$years),  " years but got ", unique(cov_lengths),  "."))
+
+    do_srv_q_cov <- 1 # Indicator for whether covariates are included into survey catchability
+    coeff_counter <- 0 # setup counter for mapping
+
+    for(r in 1:n_regions) {
+      for(f in 1:n_srv_fleets) {
+
+        # Get key to index
+        key <- paste(paste("Region", r, sep = "_"), "_Fleet_", f, sep = "")
+        # get temporary formula
+        tmp_formula <- srv_q_formula[[key]]
+        # extract variable names
+        var_names <- all.vars(tmp_formula)
+        if(length(var_names) == 0) next # skip if no variables
+        # get environmental covariates from environmental data list, based on model formula
+        tmp_dat <- data.frame(srv_q_cov_dat[var_names])
+        # Generate design matrix
+        tmp_design_mat <- model.matrix(tmp_formula, data = tmp_dat)
+        # store covariate effects into container
+        srv_q_cov[r,,f,1:ncol(tmp_design_mat)] <- tmp_design_mat
+
+        # setup mapping - assign unique counter values for each coefficient
+        for(i in 1:ncol(tmp_design_mat)) {
+          coeff_counter <- coeff_counter + 1
+          map_srv_q_coeff[r,f,i] <- coeff_counter
+        } # end i loop
+
+      } # end sf loop
+    } # end r loop
+  } # if using covariates
 
   # Setup data input list
   input_list$data$cont_tv_srv_sel <- cont_tv_srv_sel_mat
@@ -807,6 +906,8 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   input_list$data$srv_q_blocks <- srv_q_blocks_arr
   input_list$data$srv_q_prior <- srv_q_prior
   input_list$data$Use_srv_q_prior <- Use_srv_q_prior
+  input_list$data$do_srv_q_cov <- do_srv_q_cov
+  input_list$data$srv_q_cov <- srv_q_cov
 
   # Set up parameter inputs
   starting_values <- list(...)
@@ -842,6 +943,11 @@ Setup_Mod_Srvsel_and_Q <- function(input_list,
   if(input_list$data$Selex_Type == 1) bins <- length(input_list$data$lens) # length based deviations
   if("ln_srvsel_devs" %in% names(starting_values)) input_list$par$ln_srvsel_devs <- starting_values$ln_srvsel_devs
   else input_list$par$ln_srvsel_devs <- array(0, dim = c(input_list$data$n_regions, length(input_list$data$years), bins, input_list$data$n_sexes, input_list$data$n_srv_fleets))
+
+  # Survey catchability covariate effects
+  if("srv_q_coeff" %in% names(starting_values)) input_list$par$srv_q_coeff <- starting_values$srv_q_coeff
+  else input_list$par$srv_q_coeff <- srv_q_coeff # input parameter array
+  input_list$map$srv_q_coeff <- factor(map_srv_q_coeff) # set up mapping
 
   # Setup mapping list
   # Initialize counter and mapping array for fixed effects survey selectivity

@@ -452,6 +452,8 @@ SPoRC_rtmb = function(pars, data) {
 
         srv_q_blk_idx = srv_q_blocks[r,y,sf] # get time-block catchability index
         srv_q[r,y,sf] = exp(ln_srv_q[r,srv_q_blk_idx,sf]) # Input into survey catchability container
+        if(exists("do_srv_q_cov") && do_srv_q_cov == 1) srv_q[r,y,sf] = srv_q[r,y,sf] * exp(sum(srv_q_cov[r,y,sf,] * srv_q_coeff[r,sf,])) # adding covariate effects
+
 
         if(sablefish_ADMB == 1) SrvIAA[r,y,,,sf] = NAA[r,y,,] * srv_sel[r,y,,,sf] # Survey index at age (sablefish specific)
         else SrvIAA[r,y,,,sf] = NAA[r,y,,] * srv_sel[r,y,,,sf] * SAA_mid[r,y,,] # Survey index at age

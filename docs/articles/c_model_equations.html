@@ -534,8 +534,24 @@ survey-specific):</p>
 </annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mrow><mi>S</mi><mi>r</mi><mi>v</mi></mrow></msubsup><annotation encoding="application/x-tex">q^{Srv}_{r,y,sf}</annotation></semantics></math>
-is the survey catchability coefficient. Currently, survey catchability
-coefficients can only vary over time as time blocks.</p>
+is the survey catchability coefficient. Currently, several options are
+available for parameterizing survey catchability. These include
+time-blocks, where a unique value is estimated for each defined period.
+Additionally, users can also input environmental covariates, which is
+parameterized as follows:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>q</mi><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mrow><mi>S</mi><mi>r</mi><mi>v</mi></mrow></msubsup><mo>=</mo><msubsup><mover><mi>q</mi><mo accent="true">̂</mo></mover><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mrow><mi>S</mi><mi>r</mi><mi>v</mi></mrow></msubsup><mo>⋅</mo><mi>e</mi><mi>x</mi><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>β</mi><mi>k</mi></msub><mo>⋅</mo><msub><mi>X</mi><mrow><mi>k</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+q^{Srv}_{r,y,sf} = \widehat{q}^{Srv}_{r,y,sf} \cdot exp(\sum_k \beta_k \cdot X_{k,r,y,sf})
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+represents a multi-dimensional index vector that can accommodate various
+effect types (fixed effects, interactions, and polynomials),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+is the covariate effect itself,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\beta_k</annotation></semantics></math>
+are the regression coefficients for a given covariate, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mover><mi>q</mi><mo accent="true">̂</mo></mover><mrow><mi>r</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>s</mi><mi>f</mi></mrow><mrow><mi>S</mi><mi>r</mi><mi>v</mi></mrow></msubsup><annotation encoding="application/x-tex">\hat{q}^{Srv}_{r,y,sf}</annotation></semantics></math>
+is the mean catchability parameter.</p>
 </div>
 <div class="section level3">
 <h3 id="tagging-observation-model">Tagging Observation Model<a class="anchor" aria-label="anchor" href="#tagging-observation-model"></a>

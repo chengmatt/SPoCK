@@ -960,6 +960,17 @@ and n_srv_fleets indicating which values are mapped off</td>
 <td>Array of values dimensioned by n_regions, n_q_time_blocks, and
 n_srv_fleets indicating which values are mapped off</td>
 </tr>
+<tr class="odd">
+<td><code>do_srv_q_cov</code></td>
+<td>Numeric value indicating whether a survey catchability covariate is
+used in the model. 0 == Not used, 1 == Used,</td>
+</tr>
+<tr class="even">
+<td><code>srv_q_cov</code></td>
+<td>Array dimensioned by <code>n_regions</code>, <code>n_yrs</code>,
+<code>n_srv_fleets</code>, <code>n_covariates</code> representing the
+covariates used to compute survey catchability.</td>
+</tr>
 </tbody>
 </table>
 </div>

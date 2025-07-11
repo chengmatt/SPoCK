@@ -170,84 +170,91 @@ selectivity is age or length-based)</td>
 <td>Log survey catchability</td>
 </tr>
 <tr class="even">
+<td><code>srv_q_coeff</code></td>
+<td><code>n_regions, n_srv_fleets, n_covariates</code></td>
+<td>Survey Index</td>
+<td>Regression coefficients for survey catchability based on
+covariates</td>
+</tr>
+<tr class="odd">
 <td><code>ln_M</code></td>
 <td><code>1</code></td>
 <td>Natural Mortality</td>
 <td>Log natural mortality</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>M_offset</code></td>
 <td><code>1</code></td>
 <td>Natural Mortality</td>
 <td>Offset for M</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ln_global_R0</code></td>
 <td><code>1</code></td>
 <td>Recruitment</td>
 <td>Log virgin/mean recruitment</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R0_prop</code></td>
 <td><code>n_regions – 1</code></td>
 <td>Recruitment</td>
 <td>Proportions for R0</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>steepness_h</code></td>
 <td><code>n_regions</code></td>
 <td>Recruitment</td>
 <td>Steepness parameters (bounded logit space)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>ln_InitDevs</code></td>
 <td><code>n_regions, n_ages - 2</code></td>
 <td>Recruitment</td>
 <td>Log initial age deviations</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ln_RecDevs</code></td>
 <td><code>n_regions, n_recdev_years</code></td>
 <td>Recruitment</td>
 <td>Log recruitment deviations</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>ln_sigmaR</code></td>
 <td><code>2</code></td>
 <td>Recruitment</td>
 <td>SD for initial and recruitment deviations</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ln_FishAge_theta</code></td>
 <td><code>n_regions, n_fish_fleets, n_sexes</code></td>
 <td>Fishery Compositions</td>
 <td>Log overdispersion (fishery age comp)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>ln_FishLen_theta</code></td>
 <td><code>n_regions, n_fish_fleets, n_sexes</code></td>
 <td>Fishery Compositions</td>
 <td>Log overdispersion (fishery length comp)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ln_SrvAge_theta</code></td>
 <td><code>n_regions, n_srv_fleets, n_sexes</code></td>
 <td>Survey Compositions</td>
 <td>Log overdispersion (survey age comp)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>ln_SrvLen_theta</code></td>
 <td><code>n_regions, n_srv_fleets, n_sexes</code></td>
 <td>Survey Compositions</td>
 <td>Log overdispersion (survey length comp)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>move_pars</code></td>
 <td><code>n_regions, n_regions – 1, n_years, n_ages, n_sexes</code></td>
 <td>Movement</td>
 <td>Movement logit parameters</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>logit_move_devs</code></td>
 <td>
 <code>n_regions</code>, <code>n_regions – 1</code>,
@@ -256,7 +263,7 @@ selectivity is age or length-based)</td>
 <td>Movement</td>
 <td>Logit movement deviations</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>move_pe_pars</code></td>
 <td>
 <code>n_regions</code>, <code>n_ages</code>,
@@ -265,25 +272,25 @@ selectivity is age or length-based)</td>
 <td>Movement</td>
 <td>Log process error parameters</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>ln_Init_Tag_Mort</code></td>
 <td><code>1</code></td>
 <td>Tagging</td>
 <td>Log tag mortality</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ln_Tag_Shed</code></td>
 <td><code>1</code></td>
 <td>Tagging</td>
 <td>Log chronic tag shedding</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Tag_Reporting_Pars</code></td>
 <td><code>n_regions, n_years</code></td>
 <td>Tagging</td>
 <td>Logit tag reporting rate parameters</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>ln_tag_theta</code></td>
 <td><code>1</code></td>
 <td>Tagging</td>

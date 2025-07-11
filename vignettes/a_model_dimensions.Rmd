@@ -172,6 +172,8 @@ Name | Description
 `srv_q_prior` | Survey catchability prior values by region, time blocks, survey fleet, and 2 (mean, and sd in the 4 dimension of array)
 `map_ln_srvsel_devs` | Array of values dimensioned by n_regions, n_years, n_ages, n_sexes, and n_srv_fleets indicating which values are mapped off
 `map_srv_q` | Array of values dimensioned by n_regions, n_q_time_blocks, and n_srv_fleets indicating which values are mapped off
+`do_srv_q_cov` | Numeric value indicating whether a survey catchability covariate is used in the model. 0 == Not used, 1 == Used,
+`srv_q_cov` | Array dimensioned by `n_regions`, `n_yrs`, `n_srv_fleets`, `n_covariates` representing the covariates used to compute survey catchability.
 
 ## Data Inputs for Defining Model Weighting
 Name | Description
