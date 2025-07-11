@@ -438,6 +438,7 @@ global_BH_Fmsy <- function(pars,
 #' @param sex_ratio_f Sex ratio for females used to compute biological reference points
 #' @param calc_rec_st_yr The first year in which mean recruitment is computed for
 #' @param rec_age Actual recruitment age value
+#' @param n_avg_yrs Number of years to average over demographics to compute reference points
 #'
 #' @importFrom stats nlminb
 #' @import RTMB
@@ -463,11 +464,16 @@ Get_Reference_Points <- function(data,
                                  calc_rec_st_yr = 1,
                                  rec_age = 1,
                                  type,
-                                 what
+                                 what,
+                                 n_avg_yrs = 1
                                  ) {
 
   f_ref_pt <- vector() # set up storage
   b_ref_pt <- vector() # set up storage
+
+  # determine years to average over demogrphaics
+  n_yrs <- length(data$years)
+  avg_yrs <- (n_yrs - n_avg_yrs + 1):n_yrs
 
   if(type == "single_region") {
 
@@ -477,12 +483,26 @@ Get_Reference_Points <- function(data,
     # Extract out relevant elements
     n_ages <- length(data$ages) # number of ages
     n_years <- length(data$years) # number of years
-    data_list$F_fract_flt <- rep$Fmort[1,n_years,] / sum(rep$Fmort[1,n_years,]) # get fleet F fraction to derive population level selectivity
-    data_list$fish_sel <- array(rep$fish_sel[1,n_years,,1,], dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
-    data_list$natmort <- rep$natmort[1,1,,1] # get female natural mortality
     data_list$t_spwn <- t_spwn # specified mortality time up until spawning
-    data_list$WAA <- data$WAA[1,1,,1] # weight-at-age for females
-    data_list$MatAA <- data$MatAA[1,1,,1] # maturity at age for females
+
+    # fishing mortality fraction
+    data_list$F_fract_flt <- rep$Fmort[1,n_years,] / sum(rep$Fmort[1,n_years,]) # get fleet F fraction to derive population level selectivity
+
+    # fishery selectivity
+    fish_sel_avg <- apply(rep$fish_sel[,avg_yrs,,1,,drop = FALSE], c(1, 3, 4, 5), mean)
+    data_list$fish_sel <- array(fish_sel_avg, dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
+
+    # natural mortality
+    natmort_avg <- apply(rep$natmort[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+    data_list$natmort <- as.vector(natmort_avg) # get female natural mortality
+
+    # weight at age
+    WAA_avg <- apply(data$WAA[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+    data_list$WAA <- WAA_avg # weight at age for females
+
+    # maturity at age
+    MatAA_avg <- apply(data$MatAA[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+    data_list$MatAA <- MatAA_avg # maturity at age for females
 
     if(what == 'SPR') {
       data_list$SPR_x <- SPR_x # SPR fraction
@@ -523,8 +543,7 @@ Get_Reference_Points <- function(data,
 
   if(type == 'multi_region') {
 
-    if(!what %in% c("independent_SPR", "independent_BH_MSY",
-                    "global_SPR", "global_BH_MSY"))
+    if(!what %in% c("independent_SPR", "independent_BH_MSY", "global_SPR", "global_BH_MSY"))
       stop("what is not correctly specified! Should be independent_SPR, independent_BH_MSY, global_SPR, global_BH_MSY for type = multi_region")
 
     data_list <- list() # set up data list
@@ -535,12 +554,24 @@ Get_Reference_Points <- function(data,
         # Extract out relevant elements for a given region
         n_years <- length(data$years) # number of years
         n_ages <- length(data$ages) # number of ages
-        data_list$F_fract_flt <- rep$Fmort[r,n_years,] / sum(rep$Fmort[r,n_years,]) # get fleet F fraction to derive population level selectivity
-        data_list$fish_sel <- array(rep$fish_sel[r,n_years,,1,], dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
-        data_list$natmort <- rep$natmort[r,1,,1] # get female natural mortality
         data_list$t_spwn <- t_spwn # specified mortality time up until spawning
-        data_list$WAA <- data$WAA[r,1,,1] # weight-at-age for females
-        data_list$MatAA <- data$MatAA[r,1,,1] # maturity at age for females
+        data_list$F_fract_flt <- rep$Fmort[r,n_years,] / sum(rep$Fmort[r,n_years,]) # get fleet F fraction to derive population level selectivity
+
+        # fishery selectivity
+        fish_sel_avg <- apply(rep$fish_sel[r,avg_yrs,,1,,drop = FALSE], c(1, 3, 4, 5), mean)
+        data_list$fish_sel <- array(fish_sel_avg, dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
+
+        # natural mortality
+        natmort_avg <- apply(rep$natmort[r,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+        data_list$natmort <- as.vector(natmort_avg) # get female natural mortality
+
+        # weight at age
+        WAA_avg <- apply(data$WAA[r,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+        data_list$WAA <- WAA_avg # weight at age for females
+
+        # maturity at age
+        MatAA_avg <- apply(data$MatAA[r,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+        data_list$MatAA <- MatAA_avg # maturity at age for females
 
         data_list$SPR_x <- SPR_x # SPR fraction
 
@@ -566,11 +597,24 @@ Get_Reference_Points <- function(data,
         n_years <- length(data$years) # number of years
         n_ages <- length(data$ages) # number of ages
         data_list$F_fract_flt <- rep$Fmort[r,n_years,] / sum(rep$Fmort[r,n_years,]) # get fleet F fraction to derive population level selectivity
-        data_list$fish_sel <- array(rep$fish_sel[r,n_years,,1,], dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
-        data_list$natmort <- rep$natmort[r,1,,1] # get female natural mortality
-        data_list$t_spwn <- t_spwn # specified mortality time up until spawning
-        data_list$WAA <- data$WAA[r,1,,1] # weight-at-age for females
-        data_list$MatAA <- data$MatAA[r,1,,1] # maturity at age for females
+
+        # fishery selectivity
+        fish_sel_avg <- apply(rep$fish_sel[r,avg_yrs,,1,,drop = FALSE], c(1, 3, 4, 5), mean)
+        data_list$fish_sel <- array(fish_sel_avg, dim = c(n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
+
+        # natural mortality
+        natmort_avg <- apply(rep$natmort[r,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+        data_list$natmort <- as.vector(natmort_avg) # get female natural mortality
+
+        # weight at age
+        WAA_avg <- apply(data$WAA[r,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+        data_list$WAA <- WAA_avg # weight at age for females
+
+        # maturity at age
+        MatAA_avg <- apply(data$MatAA[r,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+        data_list$MatAA <- MatAA_avg # maturity at age for females
+
+        # Beverton Holt parameters
         data_list$h <- rep$h_trans[r] # steepness
         data_list$R0 <- rep$R0 * rep$Rec_trans_prop[r] # unfished recruitment by region
 
@@ -595,13 +639,32 @@ Get_Reference_Points <- function(data,
       n_ages <- length(data$ages) # number of ages to iterate through
       n_years <- length(data$years) # number of years
       n_regions <- data$n_regions # number of regions
-      data_list$F_fract_flt <- rep$Fmort[,n_years,,drop = FALSE] / apply(rep$Fmort[,n_years,,drop = FALSE], 1, sum) # get fleet F fraction to derive population level selectivity
-      data_list$fish_sel <- array(rep$fish_sel[,n_years,,1,], dim = c(n_regions, n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
-      data_list$natmort <- rep$natmort[,1,,1] # get female natural mortality
       data_list$t_spwn <- t_spwn # specified mortality time up until spawning
-      data_list$WAA <- data$WAA[,1,,1] # weight-at-age for females
-      data_list$MatAA <- data$MatAA[,1,,1] # maturity at age for females
-      data_list$Movement <- array(rep$Movement[,,n_years,,1], dim = c(n_regions, n_regions, n_ages)) # Movement
+
+      # Fleet fraction F
+      data_list$F_fract_flt <- rep$Fmort[,n_years,,drop = FALSE] / apply(rep$Fmort[,n_years,,drop = FALSE], 1, sum) # get fleet F fraction to derive population level selectivity
+
+      # fishery selectivity
+      fish_sel_avg <- apply(rep$fish_sel[,avg_yrs,,1,,drop = FALSE], c(1, 3, 4, 5), mean)
+      data_list$fish_sel <- array(fish_sel_avg, dim = c(n_regions, n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
+
+      # natural mortality
+      natmort_avg <- apply(rep$natmort[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+      data_list$natmort <- array(natmort_avg, dim = c(n_regions, n_ages)) # get female natural mortality
+
+      # weight at age
+      WAA_avg <- apply(data$WAA[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+      data_list$WAA <- array(WAA_avg, dim = c(n_regions, n_ages)) # weight at age for females
+
+      # maturity at age
+      MatAA_avg <- apply(data$MatAA[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+      data_list$MatAA <- array(MatAA_avg, dim = c(n_regions, n_ages)) # maturity at age for females
+
+      # Movement
+      Movement_avg <- apply(rep$Movement[,,avg_yrs,,1,drop = FALSE], c(1,2,4,5), mean)
+      data_list$Movement <- array(Movement_avg, dim = c(n_regions, n_regions, n_ages)) # Movement
+
+      # Recruitment options
       data_list$do_recruits_move <- data$do_recruits_move # whether recruits move
       data_list$Rec_Prop <- rep$Rec_trans_prop # recruitment proportions
 
@@ -623,19 +686,39 @@ Get_Reference_Points <- function(data,
 
     if(what == 'global_BH_MSY') {
 
-      # extract out dimensions
+      # Extract out relevant elements for a given region
       n_ages <- length(data$ages) # number of ages to iterate through
       n_years <- length(data$years) # number of years
       n_regions <- data$n_regions # number of regions
-      data_list$F_fract_flt <- rep$Fmort[,n_years,,drop = FALSE] / apply(rep$Fmort[,n_years,,drop = FALSE], 1, sum) # get fleet F fraction to derive population level selectivity
-      data_list$fish_sel <- array(rep$fish_sel[,n_years,,1,], dim = c(n_regions, n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
-      data_list$natmort <- rep$natmort[,1,,1] # get female natural mortality
       data_list$t_spwn <- t_spwn # specified mortality time up until spawning
-      data_list$WAA <- data$WAA[,1,,1] # weight-at-age for females
-      data_list$MatAA <- data$MatAA[,1,,1] # maturity at age for females
-      data_list$Movement <- array(rep$Movement[,,n_years,,1], dim = c(n_regions, n_regions, n_ages)) # Movement
+
+      # Fleet fraction F
+      data_list$F_fract_flt <- rep$Fmort[,n_years,,drop = FALSE] / apply(rep$Fmort[,n_years,,drop = FALSE], 1, sum) # get fleet F fraction to derive population level selectivity
+
+      # fishery selectivity
+      fish_sel_avg <- apply(rep$fish_sel[,avg_yrs,,1,,drop = FALSE], c(1, 3, 4, 5), mean)
+      data_list$fish_sel <- array(fish_sel_avg, dim = c(n_regions, n_ages, data$n_fish_fleets)) # get female selectivity for all fleets
+
+      # natural mortality
+      natmort_avg <- apply(rep$natmort[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+      data_list$natmort <- array(natmort_avg, dim = c(n_regions, n_ages)) # get female natural mortality
+
+      # weight at age
+      WAA_avg <- apply(data$WAA[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+      data_list$WAA <- array(WAA_avg, dim = c(n_regions, n_ages)) # weight at age for females
+
+      # maturity at age
+      MatAA_avg <- apply(data$MatAA[,avg_yrs,,1,drop = FALSE], c(1, 3, 4), mean)
+      data_list$MatAA <- array(MatAA_avg, dim = c(n_regions, n_ages)) # maturity at age for females
+
+      # Movement
+      Movement_avg <- apply(rep$Movement[,,avg_yrs,,1,drop = FALSE], c(1,2,4,5), mean)
+      data_list$Movement <- array(Movement_avg, dim = c(n_regions, n_regions, n_ages)) # Movement
+
+      # Recruitment options
       data_list$do_recruits_move <- data$do_recruits_move # whether recruits move
       data_list$Rec_Prop <- rep$Rec_trans_prop # recruitment proportions
+
       data_list$h <- mean(rep$h_trans) # steepness
       data_list$R0 <- rep$R0  # unfished recruitment
 

@@ -53,17 +53,17 @@ Spatial reference points also include both SPR and MSY-based metrics, but are fu
 To derive SPR reference points, users must specify a target percentage representing the spawning biomass per recruit under fishing relative to the unfished level. Following that, several additional quantities are needed to compute these reference points. This includes: 
 
 - the relative fishing mortality between fleets ($Frat_f = Fmort_{y = term,f} / \sum_f Fmort_{y = term,f}$), 
-- fleet-specific fishery selectivity ($Sel_{y = term,a,s = 1,f}^{Fsh}$),
-- natural mortality for females ($NatMort_{y=1,a,s=1}$), 
-- weight at age for females ($W_{y=1,a,s=1}$),
-- maturity at age for females ($Mat_{y=1,a,s=1}$), 
+- fleet-specific fishery selectivity ($Sel_{y = avg,a,s = 1,f}^{Fsh}$),
+- natural mortality for females ($NatMort_{y = avg,a,s=1}$), 
+- weight at age for females ($W_{y = avg,a,s=1}$),
+- maturity at age for females ($Mat_{y = avg,a,s=1}$), 
 - spawn timing ($t_{spwn}$), 
 - a vector of recruitment values ($Rec_{y,s}$), 
 - the recruitment sex ratio ($\psi_s$), 
 - recruitment age ($RecAge$), and
 - the first year in the recruitment vector ($RecYear$) to be used for mean recruitment calculations. 
 
-For relative fishing mortality between fleets and fleet-specific fishery selectivity, the terminal year is utilized for these calculations. By contrast, estimates from the first model year are utilized for natural mortality, weight at age, and maturity at age.
+For relative fishing mortality between fleets, the terminal year is utilized for these calculations. By contrast, estimates based on a user-defined average over multiple years are used for natural mortality, weight at age, maturity at age, and fleet-specific selectivity.
 
 SPR reference points are then derived with the following process:
 
@@ -80,13 +80,13 @@ where $N_{a = 1}^{fished}$ and $N_{a = 1}^{unfished}$ are the fished and unfishe
 \[
 N_{a}^{\text{fished}} = 
 \begin{cases}
-N_{a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{y=1,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right) & \text{if } 2 < a < n_{\text{ages}} \\
+N_{a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{y = avg,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{avg},a-1,s=1,f}^{\text{Fsh}}\right)\right) & \text{if } 2 < a < n_{\text{ages}} \\
 \\
 N_{a - 1}^{\text{fished}} \cdot 
 \frac{
-\exp\left(-\left(NatMort_{y=1,n_{\text{ages}}-1,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},n_{\text{ages}}-1,s=1,f}^{\text{Fsh}}\right)\right)
+\exp\left(-\left(NatMort_{y = avg,n_{\text{ages}}-1,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{avg},n_{\text{ages}}-1,s=1,f}^{\text{Fsh}}\right)\right)
 }{
-1 - \exp\left(-\left(NatMort_{y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}\right)\right)
+1 - \exp\left(-\left(NatMort_{y = avg,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{avg},n_{\text{ages}},s=1,f}^{\text{Fsh}}\right)\right)
 } & \text{if } a = n_{\text{ages}}
 \end{cases}
 \]
@@ -94,13 +94,13 @@ N_{a - 1}^{\text{fished}} \cdot
 \[
 N_{a}^{\text{unfished}} = 
 \begin{cases}
-N_{a - 1}^{\text{unfished}} \cdot \exp\left(-NatMort_{y=1,a-1,s=1}\right) & \text{if } 2 < a < n_{\text{ages}} \\
+N_{a - 1}^{\text{unfished}} \cdot \exp\left(-NatMort_{y = avg,a-1,s=1}\right) & \text{if } 2 < a < n_{\text{ages}} \\
 \\
 N_{a - 1}^{\text{unfished}} \cdot 
 \frac{
-\exp\left(-NatMort_{y=1,n_{\text{ages}}-1,s=1}\right)
+\exp\left(-NatMort_{y = avg,n_{\text{ages}}-1,s=1}\right)
 }{
-1 - \exp\left(-NatMort_{y=1,n_{\text{ages}},s=1}\right)
+1 - \exp\left(-NatMort_{y = avg,n_{\text{ages}},s=1}\right)
 } & \text{if } a = n_{\text{ages}}
 \end{cases}
 \]
@@ -108,11 +108,11 @@ N_{a - 1}^{\text{unfished}} \cdot
 where $F_x$ represents the estimated fishing mortality rate that reduces the spawning biomass per recruit to x%, relative to the unfished level. Fished and unfished numbers at age per recruit can then be converted to spawning biomass per recruit quantities ($SSB$) with the following equations:
 
 \[
-SSB^{\text{fished}} = \sum_a N_{a}^{\text{fished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y=1,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a,s=1,f}^{\text{Fsh}} \right)
+SSB^{\text{fished}} = \sum_a N_{a}^{\text{fished}} \cdot W_{y = avg,a,s=1} \cdot \text{Mat}_{y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y = avg,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{avg},a,s=1,f}^{\text{Fsh}} \right)
 \]
 
 \[
-SSB^{\text{unfished}} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y=1,a,s=1} \right)
+SSB^{\text{unfished}} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y = avg,a,s=1} \cdot \text{Mat}_{y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y = avg,a,s=1} \right)
 \]
 
 
@@ -138,15 +138,15 @@ B_x = SSB^{\text{fished}} \cdot \frac{\sum_{RecYear}^{Y - RecAge} Rec_{y,s}}{Y -
 Deriving MSY based reference points using a Beverton-Holt stock recruitment relationship involves maximizing the equilibrium yield per recruit and requires several additional inputs. For completeness, we summarize the required inputs to derive MSY based reference points when assuming a Beverton-Holt relationship. These inputs include:
 
 - the relative fishing mortality between fleets ($Frat_f = Fmort_{y = term,f} / \sum_f Fmort_{y = term,f}$), 
-- fleet-specific fishery selectivity ($Sel_{y = term,a,s = 1,f}^{Fsh}$),
-- natural mortality for females ($NatMort_{y=1,a,s=1}$), 
-- weight at age for females ($W_{y=1,a,s=1}$),
-- maturity at age for females ($Mat_{y=1,a,s=1}$), 
+- fleet-specific fishery selectivity ($Sel_{y = avg,a,s = 1,f}^{Fsh}$),
+- natural mortality for females ($NatMort_{y = avg,a,s=1}$), 
+- weight at age for females ($W_{y = avg,a,s=1}$),
+- maturity at age for females ($Mat_{y = avg,a,s=1}$), 
 - an estimate of virgin recruitment ($R_0$),
 - an estimate of steepness ($h$),
 - the recruitment sex ratio ($\psi_s$).
 
-Similarly, for relative fishing mortality between fleets and fleet-specific fishery selectivity, terminal year estimates are utilized for these calculations. By contrast, estimates from the first model year are utilized for natural mortality, weight at age, and maturity at age.
+Similarly, relative fishing mortality between fleets, the terminal year is utilized for these calculations. By contrast, estimates based on a user-defined average over multiple years are used for natural mortality, weight at age, maturity at age, and fleet-specific selectivity.
 
 MSY reference points can then be derived using the standard per-recruit calculations, where the initial number of fished and unfished individuals can be set at an arbitrary value:
 
@@ -163,13 +163,13 @@ The following numbers-at-age per recruit are then decremented with an exponentia
 \[
   N_{a}^{\text{fished}} = 
     \begin{cases}
-  N_{a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{y=1,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right) & \text{if } 2 < a < n_{\text{ages}} \\
+  N_{a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{y = avg,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{avg},a-1,s=1,f}^{\text{Fsh}}\right)\right) & \text{if } 2 < a < n_{\text{ages}} \\
   \\
   N_{a - 1}^{\text{fished}} \cdot 
   \frac{
-    \exp\left(-\left(NatMort_{y=1,n_{\text{ages}}-1,s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{term},n_{\text{ages}}-1,s=1,f}^{\text{Fsh}}\right)\right)
+    \exp\left(-\left(NatMort_{y = avg,n_{\text{ages}}-1,s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{avg},n_{\text{ages}}-1,s=1,f}^{\text{Fsh}}\right)\right)
   }{
-    1 - \exp\left(-\left(NatMort_{y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}\right)\right)
+    1 - \exp\left(-\left(NatMort_{y = avg,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_{msy} \cdot \text{Sel}_{y=\text{avg},n_{\text{ages}},s=1,f}^{\text{Fsh}}\right)\right)
   } & \text{if } a = n_{\text{ages}}
   \end{cases}
   \]
@@ -177,13 +177,13 @@ The following numbers-at-age per recruit are then decremented with an exponentia
 \[
   N_{a}^{\text{unfished}} = 
     \begin{cases}
-  N_{a - 1}^{\text{unfished}} \cdot \exp\left(-NatMort_{y=1,a-1,s=1}\right) & \text{if } 2 < a < n_{\text{ages}} \\
+  N_{a - 1}^{\text{unfished}} \cdot \exp\left(-NatMort_{y = avg,a-1,s=1}\right) & \text{if } 2 < a < n_{\text{ages}} \\
   \\
   N_{a - 1}^{\text{unfished}} \cdot 
   \frac{
-    \exp\left(-NatMort_{y=1,n_{\text{ages}}-1,s=1}\right)
+    \exp\left(-NatMort_{y = avg,n_{\text{ages}}-1,s=1}\right)
   }{
-    1 - \exp\left(-NatMort_{y=1,n_{\text{ages}},s=1}\right)
+    1 - \exp\left(-NatMort_{y = avg,n_{\text{ages}},s=1}\right)
   } & \text{if } a = n_{\text{ages}}
   \end{cases}
   \]
@@ -193,16 +193,16 @@ where $F_{msy}$ here represents the fishing mortality that would result in equil
 \[
 C_{a} = 
 \frac{
-  \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}
+  \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{avg},a-1,s=1,f}^{\text{Fsh}}
 }{
-  \left(NatMort_{y=1,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)
+  \left(NatMort_{y = avg,a-1,s=1} + \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{avg},a-1,s=1,f}^{\text{Fsh}}\right)
 }
 \cdot
 N_a^{\text{fished}} \cdot 
 \left(
   1 - \exp\left[
     -\left(
-      NatMort_{y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}
+      NatMort_{y = avg,n_{\text{ages}},s=1} + \sum_f \text{Frat}_f \cdot F_{\text{msy}} \cdot \text{Sel}_{y=\text{avg},n_{\text{ages}},s=1,f}^{\text{Fsh}}
     \right)
   \right]
 \right)
@@ -211,11 +211,11 @@ N_a^{\text{fished}} \cdot
 Values for equilibrium recruitment are then calculated using the Beverton-Holt stock recruitment relationship. Estimates of equilibrium recruitment are needed to convert per recruit quantities to yield and $B_{msy}$. Here, we first derive the fished and unfished spawning biomass per recruit:
 
 \[
-SSB^{\text{fished}} = \sum_a N_{a}^{\text{fished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y=1,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{term},a,s=1,f}^{\text{Fsh}} \right) 
+SSB^{\text{fished}} = \sum_a N_{a}^{\text{fished}} \cdot W_{y = avg,a,s=1} \cdot \text{Mat}_{y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y = avg,a,s=1} + \sum_f \text{Frat}_f \cdot F_x \cdot \text{Sel}_{y=\text{avg},a,s=1,f}^{\text{Fsh}} \right) 
 \]
 
 \[
-SSB^{\text{unfished}} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y=1,a,s=1} \cdot \text{Mat}_{y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y=1,a,s=1} \right)
+SSB^{\text{unfished}} = \sum_a N_{a}^{\text{unfished}} \cdot W_{y = avg,a,s=1} \cdot \text{Mat}_{y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{y = avg,a,s=1} \right)
 \]
 
 Equilibrium recruitment can then be derived with the following:
@@ -264,13 +264,13 @@ In contrast to computing reference points when assuming independent populations,
 Deriving global SPR reference points requires a different set of inputs. These include:
 
 - the relative fishing mortality between fleets ($Frat_{r,f} = Fmort_{r,y = term,f} / \sum_f Fmort_{r,y = term,f}$), 
-- fleet-specific fishery selectivity ($Sel_{r,y = term,a,s = 1,f}^{Fsh}$),
-- natural mortality for females ($NatMort_{r,y=1,a,s=1}$), 
-- weight at age for females ($W_{r,y=1,a,s=1}$),
-- maturity at age for females ($Mat_{r,y=1,a,s=1}$), 
+- fleet-specific fishery selectivity ($Sel_{r,y = avg,a,s = 1,f}^{Fsh}$),
+- natural mortality for females ($NatMort_{r,y = avg,a,s=1}$), 
+- weight at age for females ($W_{r,y = avg,a,s=1}$),
+- maturity at age for females ($Mat_{r,y = avg,a,s=1}$), 
 - spawn timing ($t_{spwn}$), 
 - a vector of recruitment values ($Rec_{r,y,s}$), 
-- a matrix of movement values ($\boldsymbol{M}_{y = \text{term},\, a,\, s = 1}$)
+- a matrix of movement values ($\boldsymbol{M}_{y = \text{avg},\, a,\, s = 1}$)
 - the recruitment sex ratio ($\psi_s$), 
 - recruitment age ($RecAge$), 
 - the first year in the recruitment vector ($RecYear$) to be used for mean recruitment calculations, and 
@@ -291,7 +291,7 @@ Here, \(N_{r,a=1}^{\text{fished}}\) and \(N_{r,a=1}^{\text{unfished}}\) represen
 Subsequently, movement is applied. If recruits are allowed to move, the movement matrix is applied starting from age 1; otherwise, it is applied starting from age 2:
 
 \[
-\boldsymbol{N}_a^{\text{fished}} = (\boldsymbol{N}_a^{\text{fished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\boldsymbol{N}_a^{\text{fished}} = (\boldsymbol{N}_a^{\text{fished}})^\top \boldsymbol{M}_{y = \text{avg}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
 \begin{cases} 
 1 & \text{if recruits move} \\
 2 & \text{otherwise}
@@ -299,33 +299,33 @@ Subsequently, movement is applied. If recruits are allowed to move, the movement
 \]
 
 \[
-\boldsymbol{N}_a^{\text{unfished}} = (\boldsymbol{N}_a^{\text{unfished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\boldsymbol{N}_a^{\text{unfished}} = (\boldsymbol{N}_a^{\text{unfished}})^\top \boldsymbol{M}_{y = \text{avg}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
 \begin{cases} 
 1 & \text{if recruits move} \\
 2 & \text{otherwise}
 \end{cases}
 \]
 
-In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoRC` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoRC`, all demographic and fishery parameters are held constant at the values for the terminal modeled age ($n_{ages}$). Following movement processes, an exponential mortality model is then applied:
+In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoRC` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoRC`, all demographic and fishery parameters are held constant at the values for the avginal modeled age ($n_{ages}$). Following movement processes, an exponential mortality model is then applied:
 
 \[
-N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{x} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right)
+N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{r,y = avg,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{x} \cdot \text{Sel}_{r,y=\text{avg},a-1,s=1,f}^{\text{Fsh}}\right)\right)
 \quad \text{if } 2 < a < A
 \]
 
 \[
-N_{r,a}^{\text{unfished}} = N_{r,a - 1}^{\text{unfished}} \cdot \exp\left(-\left(NatMort_{r,y=1,a-1,s=1}\right)\right)
+N_{r,a}^{\text{unfished}} = N_{r,a - 1}^{\text{unfished}} \cdot \exp\left(-\left(NatMort_{r,y = avg,a-1,s=1}\right)\right)
 \quad \text{if } 2 < a < A
 \]
 
 Again, fished and unfished numbers at age per recruit can then be converted to spawning biomass per recruit quantities:
 
 \[
-SSB^{\text{fished}}_r = \sum_a N_{r,a}^{\text{fished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y=1,a,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_x \cdot \text{Sel}_{r,y=\text{term},a,s=1,f}^{\text{Fsh}} \right)
+SSB^{\text{fished}}_r = \sum_a N_{r,a}^{\text{fished}} \cdot W_{r,y = avg,a,s=1} \cdot \text{Mat}_{r,y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y = avg,a,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_x \cdot \text{Sel}_{r,y=\text{avg},a,s=1,f}^{\text{Fsh}} \right)
 \]
 
 \[
-SSB^{\text{unfished}}_r = \sum_a N_{r,a}^{\text{unfished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y=1,a,s=1} \right)
+SSB^{\text{unfished}}_r = \sum_a N_{r,a}^{\text{unfished}} \cdot W_{r,y = avg,a,s=1} \cdot \text{Mat}_{r,y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y = avg,a,s=1} \right)
 \]
 
 and the global spawning potential ratio can then be computed as:
@@ -382,13 +382,13 @@ Deriving global MSY in a spatial cointext requires movement among regions to be 
 Global MSY reference points requires the following inputs:
 
 - the relative fishing mortality between fleets ($Frat_{r,f} = Fmort_{r,y = term,f} / \sum_f Fmort_{r,y = term,f}$), 
-- fleet-specific fishery selectivity ($Sel_{r,y = term,a,s = 1,f}^{Fsh}$),
-- natural mortality for females ($NatMort_{r,y=1,a,s=1}$), 
-- weight at age for females ($W_{r,y=1,a,s=1}$),
-- maturity at age for females ($Mat_{r,y=1,a,s=1}$), 
+- fleet-specific fishery selectivity ($Sel_{r,y = avg,a,s = 1,f}^{Fsh}$),
+- natural mortality for females ($NatMort_{r,y = avg,a,s=1}$), 
+- weight at age for females ($W_{r,y = avg,a,s=1}$),
+- maturity at age for females ($Mat_{r,y = avg,a,s=1}$), 
 - spawn timing ($t_{spwn}$), 
 - a vector of recruitment values ($Rec_{r,y,s}$), 
-- a matrix of movement values ($\boldsymbol{M}_{y = \text{term},\, a,\, s = 1}$)
+- a matrix of movement values ($\boldsymbol{M}_{y = \text{avg},\, a,\, s = 1}$)
 - the recruitment sex ratio ($\psi_s$), 
 - recruitment age ($RecAge$), 
 - the first year in the recruitment vector ($RecYear$) to be used for mean recruitment calculations, 
@@ -407,7 +407,7 @@ N_{r,a = 1}^{\text{unfished}} = \zeta_r
 Here, \(N_{r,a=1}^{\text{fished}}\) and \(N_{r,a=1}^{\text{unfished}}\) represent the regional numbers-at-age per recruit (for the first age class) under fished and unfished conditions, respectively. We can then apply movement dynamics. If recruits are allowed to move, the movement matrix is applied starting from age 1; otherwise, it is applied starting from age 2:
 
 \[
-\boldsymbol{N}_a^{\text{fished}} = (\boldsymbol{N}_a^{\text{fished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\boldsymbol{N}_a^{\text{fished}} = (\boldsymbol{N}_a^{\text{fished}})^\top \boldsymbol{M}_{y = \text{avg}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
 \begin{cases} 
 1 & \text{if recruits move} \\
 2 & \text{otherwise}
@@ -415,7 +415,7 @@ Here, \(N_{r,a=1}^{\text{fished}}\) and \(N_{r,a=1}^{\text{unfished}}\) represen
 \]
 
 \[
-\boldsymbol{N}_a^{\text{unfished}} = (\boldsymbol{N}_a^{\text{unfished}})^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\boldsymbol{N}_a^{\text{unfished}} = (\boldsymbol{N}_a^{\text{unfished}})^\top \boldsymbol{M}_{y = \text{avg}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
 \begin{cases} 
 1 & \text{if recruits move} \\
 2 & \text{otherwise}
@@ -425,12 +425,12 @@ Here, \(N_{r,a=1}^{\text{fished}}\) and \(N_{r,a=1}^{\text{unfished}}\) represen
 In these expressions, \(A\) denotes the number of modeled ages ($n_{ages}$) in `SPoRC` multiplied by 10. For example, if 30 ages are modeled, then \(A = 300\). This extension enables iterative propagation of the plus group under movement, given that no closed-form solution exists. For \(a > n_{ages}\)  in `SPoRC`, all demographic and fishery parameters are held constant at the values for the terminal modeled age ($n_{ages}$). After movement processes occur, an exponential mortality model is then applied:
 
 \[
-N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)\right)
+N_{r,a}^{\text{fished}} = N_{r,a - 1}^{\text{fished}} \cdot \exp\left(-\left(NatMort_{r,y = avg,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{avg},a-1,s=1,f}^{\text{Fsh}}\right)\right)
 \quad \text{if } 2 < a < A
 \]
 
 \[
-N_{r,a}^{\text{unfished}} = N_{r,a - 1}^{\text{unfished}} \cdot \exp\left(-\left(NatMort_{r,y=1,a-1,s=1}\right)\right)
+N_{r,a}^{\text{unfished}} = N_{r,a - 1}^{\text{unfished}} \cdot \exp\left(-\left(NatMort_{r,y = avg,a-1,s=1}\right)\right)
 \quad \text{if } 2 < a < A
 \]
 
@@ -439,16 +439,16 @@ Baranov's catch equation is then invoked to compute yield per recruit in each re
 \[
 C_{r,a} = 
 \frac{
-  \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}
+  \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{avg},a-1,s=1,f}^{\text{Fsh}}
 }{
-  \left(NatMort_{r,y=1,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{term},a-1,s=1,f}^{\text{Fsh}}\right)
+  \left(NatMort_{r,y = avg,a-1,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{avg},a-1,s=1,f}^{\text{Fsh}}\right)
 }
 \cdot
 N_{r,a}^{\text{fished}} \cdot 
 \left(
   1 - \exp\left[
     -\left(
-      NatMort_{r,y=1,n_{\text{ages}},s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{term},n_{\text{ages}},s=1,f}^{\text{Fsh}}
+      NatMort_{r,y = avg,n_{\text{ages}},s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{\text{msy}} \cdot \text{Sel}_{r,y=\text{avg},n_{\text{ages}},s=1,f}^{\text{Fsh}}
     \right)
   \right]
 \right)
@@ -457,11 +457,11 @@ N_{r,a}^{\text{fished}} \cdot
 Equilibrium recruitment is then computed using the Beverton-Holt stock recruitment relationship, where we first need to derive the quantities for fished and unfished spawning biomass per recruit:
 
 \[
-SSB_r^{\text{fished}} = \sum_a N_{r,a}^{\text{fished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y=1,a,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{term},a,s=1,f}^{\text{Fsh}} \right)
+SSB_r^{\text{fished}} = \sum_a N_{r,a}^{\text{fished}} \cdot W_{r,y = avg,a,s=1} \cdot \text{Mat}_{r,y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y = avg,a,s=1} + \sum_f \text{Frat}_{r,f} \cdot F_{msy} \cdot \text{Sel}_{r,y=\text{avg},a,s=1,f}^{\text{Fsh}} \right)
 \]
 
 \[
-SSB_r^{\text{unfished}} = \sum_a N_{r,a}^{\text{unfished}} \cdot W_{r,y=1,a,s=1} \cdot \text{Mat}_{r,y=1,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y=1,a,s=1} \right)
+SSB_r^{\text{unfished}} = \sum_a N_{r,a}^{\text{unfished}} \cdot W_{r,y = avg,a,s=1} \cdot \text{Mat}_{r,y = avg,a,s=1} \cdot \exp\left(-t_{\text{spwn}} \cdot NatMort_{r,y = avg,a,s=1} \right)
 \]
 
 Calculations for equilibrium recruitment then follow as:
@@ -590,11 +590,11 @@ where density-dependence occurs globally, and a recruitment apportionment parame
 Lastly, users can specify recruitment projections to be stochastic, wherein an inverse Gaussian (`inv_gauss`) distribution parameterized based on estimated recruitment values from the assessment model is utilized to project recruitment into the future:
 
 \[
-\text{AMeanRec}_r = \frac{1}{Y} \sum_{y=1}^{Y} \text{Rec}_{r,y}
+\text{AMeanRec}_r = \frac{1}{Y} \sum_{y = avg}^{Y} \text{Rec}_{r,y}
 \]
 
 \[
-\text{HMeanRec}_r = \left( \frac{1}{Y} \sum_{y=1}^{Y} \frac{1}{\text{Rec}_{r,y}} \right)^{-1}
+\text{HMeanRec}_r = \left( \frac{1}{Y} \sum_{y = avg}^{Y} \frac{1}{\text{Rec}_{r,y}} \right)^{-1}
 \]
 
 \[
@@ -646,7 +646,7 @@ Thus, this inverse gaussian mixture ensures the simulated values have approximat
 After recruitment processes occur, the usual dynamics are then applied to project the population forward. Here, movement of individuals first occurs:
 
 \[
-\boldsymbol{projN}_a^ = (\boldsymbol{projN}_a)^\top \boldsymbol{M}_{y = \text{term}, a, s = 1} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
+\boldsymbol{projN}_a^ = (\boldsymbol{projN}_a)^\top \boldsymbol{M}_{y, a, s} \quad \text{for } a = a_{\min}, \dots, A, \quad a_{\min} = 
 \begin{cases} 
 1 & \text{if recruits move} \\
 2 & \text{otherwise}

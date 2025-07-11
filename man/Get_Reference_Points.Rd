@@ -13,7 +13,8 @@ Get_Reference_Points(
   calc_rec_st_yr = 1,
   rec_age = 1,
   type,
-  what
+  what,
+  n_avg_yrs = 1
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ Get_Reference_Points(
 \item{independent_BH_MSY}{MSY reference points derived from a Beverton-Holt, without movement }
 \item{global_BH_MSY}{MSY reference points derived from a Beverton-Holt, with movement }
 }}
+
+\item{n_avg_yrs}{Number of years to average over demographics to compute reference points}
 }
 \value{
 A list object of fishing and biological reference points
