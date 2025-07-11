@@ -56,7 +56,7 @@ Name | Description
 `WAA_fish`	| Weight-at-age values for the fishery dimensioned by n_regions, n_years, n_ages, n_sexes, n_fish_fleets
 `WAA_srv`	| Weight-at-age values for the survey dimensioned by n_regions, n_years, n_ages, n_sexes, n_srv_fleets
 `MatAA`	| Maturity-at-age values dimensioned by n_regions, n_years, n_ages, n_sexes
-`AgeingError`	| Ageing error matrix dimensioned by number of modelled ages, number of observed composition ages, where rows sum to 1
+`AgeingError`	| Ageing error dimensioned by number of years, number of modelled ages, number of observed composition ages, where rows across modelled ages sum to 1
 `fit_lengths`	| Value describing whether or not to fit length composition data. 0: Don’t fit lengths, 1: Fit lengths
 `SizeAgeTrans`	| Size-age transition matrix dimensioned by n_regions, n_years, n_lens, n_ages, n_sexes. Can be specified as NA if length compositions are not fit
 `addtocomp`  | Constant to add to all composition data.

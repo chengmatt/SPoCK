@@ -504,7 +504,7 @@ In the first option (termed ‘Aggregated’), both observed and expected age or
 \begin{aligned}
 O_b = \frac{O_b}{\sum_b O_b} \\
 E_b = \frac{1}{n_s \cdot n_r} \sum_{i = 1}^{n_s \cdot n_r} \frac{E_{r,b,s}}{\sum_b E_{r,b,s}} \\
-\boldsymbol{E} = \boldsymbol{E} \textbf{AgeError} \\
+\boldsymbol{E} = \boldsymbol{E} \textbf{AgeError}_y \\
 \boldsymbol{O} = \left\{ O_b \;\middle|\; b = 1, \ldots, n_b \right\} \\
 \boldsymbol{E} = \left\{ E_b \;\middle|\; b = 1, \ldots, n_b \right\}
 \end{aligned}
@@ -516,7 +516,7 @@ In the second option (termed ‘SplitRegionSplitSex’), both observed and expec
 \begin{aligned}
 O_{r,b,s} = \frac{O_{r,b,s}}{\sum_b O_{r,b,s}} \\
 E_{r,b,s} = \frac{E_{r,b,s}}{\sum_b E_{r,b,s}} \\
-\boldsymbol{E}_{r,s} = \boldsymbol{E}_{r,s} \textbf{AgeError} \\
+\boldsymbol{E}_{r,s} = \boldsymbol{E}_{r,s} \textbf{AgeError}_y \\
 \boldsymbol{O}_{r,s} = \left\{ O_{r,b,s} \;\middle|\; b = 1, \ldots, n_b \right\} \\
 \boldsymbol{E}_{r,s} = \left\{ E_{r,b,s} \;\middle|\; b = 1, \ldots, n_b \right\} 
 \end{aligned}
@@ -528,7 +528,7 @@ In the third option (termed ‘SplitRegionJointSex’), observed and expected co
 \begin{aligned}
 O_{r,b,s} = \frac{O_{r,b,s}}{\sum_{b,s} O_{r,b,s}} \\
 E_{r,b,s} = \frac{E_{r,b,s}}{\sum_{b,s} E_{r,b,s}} \\
-\boldsymbol{E}_{r} = (\boldsymbol{E}_r)^T (\textbf{I} \otimes \textbf{AgeError}) \\
+\boldsymbol{E}_{r} = (\boldsymbol{E}_r)^T (\textbf{I} \otimes \textbf{AgeError}_y) \\
 \boldsymbol{O}_r = \left\{ O_{r,b,s} \;\middle|\; b = 1,\ldots,n_b;\; s = 1,2 \right\} \\
 \boldsymbol{E}_r = \left\{ E_{r,b,s} \;\middle|\; b = 1,\ldots,n_b;\; s = 1,2 \right\} 
 \end{aligned}

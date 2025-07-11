@@ -35,7 +35,18 @@ Setup_Mod_Biologicals(
 
 \item{addtocomp}{Numeric value for a constant to add to composition data. Default is 1e-3.}
 
-\item{AgeingError}{Numeric matrix representing the ageing error transition matrix, dimensioned by \code{[number of modeled ages, number of observed composition ages]}. Defaults to identity matrix if not specified (no ageing error).}
+\item{AgeingError}{Numeric matrix or array representing the ageing error transition matrix.
+  If a matrix (2D), dimensions should be \code{[number of modeled ages, number of observed composition ages]}
+  and the ageing error is assumed to be constant over time.
+  If an array (3D), dimensions should be \code{[number of years, number of modeled ages, number of observed composition ages]}
+  allowing ageing error to vary by year.
+  Defaults to an identity matrix (no ageing error) if not specified, assuming observed age bins exactly match modeled age bins.
+
+  **Note:** If the observed age composition bins differ from the modeled age bins
+  (e.g., observed ages 2–10 while modeled ages are 1–10), the default identity matrix will cause a dimensional mismatch
+  and misalignment. In such cases, users should provide a custom ageing error matrix mapping modeled to observed ages.
+  For example, to drop the first modeled age bin, supply a matrix like \code{diag(1, 10)[, 2:10]}.
+  This ensures proper alignment of age bins for likelihood calculations.}
 
 \item{Use_M_prior}{Integer flag indicating whether to apply a natural mortality prior (\code{0} = no, \code{1} = yes).}
 
@@ -59,7 +70,7 @@ Setup_Mod_Biologicals(
 
 \item{Fixed_natmort}{Numeric array of fixed natural mortality values, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}. Required if \code{M_spec = "fix"}.}
 
-\item{...}{Additional arguments for starting values such as \code{ln_M} and \code{M_offset}. These are ignored if \code{M_spec = "fix"}.}
+\item{...}{Additional arguments for starting values such as \code{ln_M} and \code{M_offset.} These are ignored if \code{M_spec = fix}.}
 }
 \description{
 Setup biological inputs for estimation model

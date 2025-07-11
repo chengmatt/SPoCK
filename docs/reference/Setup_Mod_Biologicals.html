@@ -86,7 +86,17 @@
 
 
 <dt id="arg-ageingerror">AgeingError<a class="anchor" aria-label="anchor" href="#arg-ageingerror"></a></dt>
-<dd><p>Numeric matrix representing the ageing error transition matrix, dimensioned by <code>[number of modeled ages, number of observed composition ages]</code>. Defaults to identity matrix if not specified (no ageing error).</p></dd>
+<dd><p>Numeric matrix or array representing the ageing error transition matrix.
+  If a matrix (2D), dimensions should be <code>[number of modeled ages, number of observed composition ages]</code>
+  and the ageing error is assumed to be constant over time.
+  If an array (3D), dimensions should be <code>[number of years, number of modeled ages, number of observed composition ages]</code>
+  allowing ageing error to vary by year.
+  Defaults to an identity matrix (no ageing error) if not specified, assuming observed age bins exactly match modeled age bins.</p>
+<p>**Note:** If the observed age composition bins differ from the modeled age bins
+  (e.g., observed ages 2–10 while modeled ages are 1–10), the default identity matrix will cause a dimensional mismatch
+  and misalignment. In such cases, users should provide a custom ageing error matrix mapping modeled to observed ages.
+  For example, to drop the first modeled age bin, supply a matrix like <code>diag(1, 10)[, 2:10]</code>.
+  This ensures proper alignment of age bins for likelihood calculations.</p></dd>
 
 
 <dt id="arg-use-m-prior">Use_M_prior<a class="anchor" aria-label="anchor" href="#arg-use-m-prior"></a></dt>
@@ -122,7 +132,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments for starting values such as <code>ln_M</code> and <code>M_offset</code>. These are ignored if <code>M_spec = "fix"</code>.</p></dd>
+<dd><p>Additional arguments for starting values such as <code>ln_M</code> and <code>M_offset.</code> These are ignored if <code>M_spec = fix</code>.</p></dd>
 
 </dl></div>
 

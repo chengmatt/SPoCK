@@ -62,7 +62,18 @@ Setup_Sim_Biologicals <- function(
 #' @param input_list List containing data, parameter, and map lists for the model.
 #' @param WAA Numeric array of weight-at-age (spawning), dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.
 #' @param MatAA Numeric array of maturity-at-age, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}.
-#' @param AgeingError Numeric matrix representing the ageing error transition matrix, dimensioned by \code{[number of modeled ages, number of observed composition ages]}. Defaults to identity matrix if not specified (no ageing error).
+#' @param AgeingError Numeric matrix or array representing the ageing error transition matrix.
+#'   If a matrix (2D), dimensions should be \code{[number of modeled ages, number of observed composition ages]}
+#'   and the ageing error is assumed to be constant over time.
+#'   If an array (3D), dimensions should be \code{[number of years, number of modeled ages, number of observed composition ages]}
+#'   allowing ageing error to vary by year.
+#'   Defaults to an identity matrix (no ageing error) if not specified, assuming observed age bins exactly match modeled age bins.
+#'
+#'   **Note:** If the observed age composition bins differ from the modeled age bins
+#'   (e.g., observed ages 2–10 while modeled ages are 1–10), the default identity matrix will cause a dimensional mismatch
+#'   and misalignment. In such cases, users should provide a custom ageing error matrix mapping modeled to observed ages.
+#'   For example, to drop the first modeled age bin, supply a matrix like \code{diag(1, 10)[, 2:10]}.
+#'   This ensures proper alignment of age bins for likelihood calculations.
 #' @param Use_M_prior Integer flag indicating whether to apply a natural mortality prior (\code{0} = no, \code{1} = yes).
 #' @param M_prior Numeric vector of length two giving the mean (in normal space) and standard deviation of the natural mortality prior.
 #' @param fit_lengths Integer flag indicating whether to fit length data (\code{0} = no, \code{1} = yes).
@@ -73,7 +84,6 @@ Setup_Sim_Biologicals <- function(
 #'   \item \code{"fix"}: Fix all natural mortality parameters using the provided array.
 #' }
 #' @param Fixed_natmort Numeric array of fixed natural mortality values, dimensioned \code{[n_regions, n_years, n_ages, n_sexes]}. Required if \code{M_spec = "fix"}.
-#' @param ... Additional arguments for starting values such as \code{ln_M} and \code{M_offset}. These are ignored if \code{M_spec = "fix"}.
 #' @param Selex_Type Character string specifying whether selectivity is age or length-based. Default is age-based
 #' \itemize{
 #'   \item \code{"length"}: Length-based selectivity.
@@ -82,6 +92,7 @@ Setup_Sim_Biologicals <- function(
 #' @param WAA_fish Numeric array of weight-at-age (fishery), dimensioned \code{[n_regions, n_years, n_ages, n_sexes, n_fish_fleets]}.
 #' @param WAA_srv Numeric array of weight-at-age (survey), dimensioned \code{[n_regions, n_years, n_ages, n_sexes, n_srv_fleets]}.
 #' @param addtocomp Numeric value for a constant to add to composition data. Default is 1e-3.
+#' @param ... Additional arguments for starting values such as \code{ln_M} and \code{M_offset.} These are ignored if \code{M_spec = fix}.
 #'
 #' @export Setup_Mod_Biologicals
 Setup_Mod_Biologicals <- function(input_list,
@@ -108,10 +119,15 @@ Setup_Mod_Biologicals <- function(input_list,
   if(!is.null(WAA_fish)) check_data_dimensions(WAA_fish, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, n_fish_fleets = input_list$data$n_fish_fleets, what = 'WAA_fish')
   if(!is.null(WAA_srv)) check_data_dimensions(WAA_srv, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, n_srv_fleets = input_list$data$n_srv_fleets, what = 'WAA_srv')
   check_data_dimensions(MatAA, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'MatAA')
-  if(!is.null(AgeingError)) check_data_dimensions(AgeingError, n_ages = length(input_list$data$ages), what = 'AgeingError')
   if(fit_lengths == 1) check_data_dimensions(SizeAgeTrans, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_lens = length(input_list$data$lens), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'SizeAgeTrans')
   if(!is.null(M_spec)) if(M_spec == 'fix') if(is.null(Fixed_natmort)) stop("Please provide a fixed natural mortality array dimensioned by n_regions, n_years, n_ages, and n_sexes!")
   if(!is.null(M_spec)) if(M_spec == 'fix') check_data_dimensions(Fixed_natmort, n_regions = input_list$data$n_regions, n_years = length(input_list$data$years), n_ages = length(input_list$data$ages), n_sexes = input_list$data$n_sexes, what = 'Fixed_natmort')
+
+  # Checking ageing error dimensions
+  if(!is.null(AgeingError)) {
+    if(length(dim(AgeingError)) == 2) check_data_dimensions(AgeingError, n_ages = length(input_list$data$ages), what = 'AgeingError') # user supplied ageing error is not time-varying
+    if(length(dim(AgeingError)) == 3) check_data_dimensions(AgeingError, n_ages = length(input_list$data$ages), n_years = length(input_list$data$years), what = 'AgeingError_t') # user supplied ageing error is time-varying
+  }
 
   # Whether selectivity is age or length-based
   if(Selex_Type == 'age') {
@@ -139,12 +155,33 @@ Setup_Mod_Biologicals <- function(input_list,
     collect_message("WAA_srv was specified at NULL. Using the spawning WAA for WAA_srv")
   }
 
+  # setup ageing error if not provided
+  if(is.null(AgeingError)) {
+    AgeingError <- diag(1, length(input_list$data$ages)) # if no inputs for ageing error, then create identity matrix
+    AgeingError_t <- array(0, dim = c(length(input_list$data$years), dim(AgeingError)))
+    for(i in 1:length(input_list$data$years)) AgeingError_t[i,,] <- AgeingError
+    warning("No ageing error matrix was provided. A default identity matrix was used, which assumes that the number and structure of modelled age bins exactly match the observed age bins. If the observed age composition data includes fewer age bins than the model (e.g., observed ages 2-10 while modelled ages are 1-10), this default assumption will cause a dimensional mismatch and potentially misalign the modelled and observed compositions. To avoid this, please provide an ageing error matrix of dimension n_model_ages x n_obs_ages that correctly maps modelled ages to observed age bins. For example, if observed ages are 2-10, supply a matrix that drops the first model age by using a shifted identity matrix: diag(1, 10)[, 2:10]. This will ensure the age bins are correctly aligned for likelihood calculations.")
+
+  }
+
+  # setup ageing error if user-supplied is not year specific
+  if(!is.null(AgeingError) && length(dim(AgeingError)) == 2) {
+    AgeingError_t <- array(0, dim = c(length(input_list$data$years), dim(AgeingError)))
+    for(i in 1:length(input_list$data$years)) AgeingError_t[i,,] <- AgeingError
+    collect_message("Ageing Error is specified to be time-invariant")
+  }
+
+  # ageing error if it is year specific (just reassigning)
+  if(!is.null(AgeingError) && length(dim(AgeingError)) == 3) {
+    AgeingError_t <- AgeingError
+    collect_message("Ageing Error is specified to be time-varying")
+  }
+
   input_list$data$WAA <- WAA
   input_list$data$WAA_fish <- WAA_fish
   input_list$data$WAA_srv <- WAA_srv
   input_list$data$MatAA <- MatAA
-  if(is.null(AgeingError)) AgeingError <- diag(1, length(input_list$data$ages)) # if no inputs for ageing error, then create identity matrix
-  input_list$data$AgeingError <- AgeingError
+  input_list$data$AgeingError <- AgeingError_t
   input_list$data$fit_lengths <- fit_lengths
   input_list$data$SizeAgeTrans <- SizeAgeTrans
   input_list$data$Use_M_prior <- Use_M_prior

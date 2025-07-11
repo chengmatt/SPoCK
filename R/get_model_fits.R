@@ -301,7 +301,15 @@ get_comp_prop <- function(data,
   Pred_SrvLen <- array(data = NA, dim = c(n_regions, n_yrs, n_lens, n_sexes, n_srv_fleets), dimnames = list(NULL, year_labels, len_labels, NULL, NULL)) # Predicted survey lengths
 
   # Get quantities
-  AgeingError <- data$AgeingError # ageing errors
+  # setup ageing error if user-supplied is not year specific
+  if(length(dim(data$AgeingError)) == 2) {
+    AgeingError_t <- array(0, dim = c(length(input_list$data$years), dim(data$AgeingError)))
+    for(i in 1:length(input_list$data$years)) AgeingError_t[i,,] <-  data$AgeingError
+  }
+  # ageing error if it is year specific (just reassigning)
+  if(length(dim(data$AgeingError)) == 3) AgeingError_t <-  data$AgeingError
+
+  AgeingError <- AgeingError_t # ageing errors
   CAA <- rep$CAA # catch at age
   CAL <- rep$CAL # catch at len
   SrvIAA <- rep$SrvIAA # survey at age
@@ -346,7 +354,7 @@ get_comp_prop <- function(data,
 
         # reformat expected compositions
         tmp_comps <- Restrc_Comps(Exp = Exp, Obs = Obs, Comp_Type = Comp_Type,
-                                  age_or_len = 0, AgeingError = AgeingError, comp_agg_type = comp_agg_type)
+                                  age_or_len = 0, AgeingError = AgeingError_t[y,,], comp_agg_type = comp_agg_type)
         # Input into storage
         Obs_FishAge[,y,,,f] <- tmp_comps$Obs
         Pred_FishAge[,y,,,f] <- tmp_comps$Exp
@@ -393,7 +401,7 @@ get_comp_prop <- function(data,
 
         # reformat expected compositions
         tmp_comps <- Restrc_Comps(Exp = Exp, Obs = Obs, Comp_Type = Comp_Type,
-                                  age_or_len = 0, AgeingError = AgeingError, comp_agg_type = comp_agg_type)
+                                  age_or_len = 0, AgeingError = AgeingError_t[y,,], comp_agg_type = comp_agg_type)
         # Input into storage
         Obs_SrvAge[,y,,,f] <- tmp_comps$Obs
         Pred_SrvAge[,y,,,f] <- tmp_comps$Exp
@@ -475,6 +483,7 @@ get_comp_prop <- function(data,
               Pred_FishLen_mat = Pred_FishLen,
               Pred_SrvAge_mat = Pred_SrvAge,
               Pred_SrvLen_mat = Pred_SrvLen))
+
 } # end function
 
 

@@ -48,6 +48,11 @@ check_data_dimensions <- function(x,
       stop("Dimensions of AgeingError are not correct. Should be n_ages, number of observed composition ages")
   }
 
+  if(what == 'AgeingError_t') { # Not checking the age dimension
+    if(sum(dim(x)[1:2] == c(n_years, n_ages)) != 2)
+      stop("Dimensions of AgeingError are not correct. Should be n_years, n_ages, number of observed composition ages")
+  }
+
   if(what == 'SizeAgeTrans') {
     if(sum(dim(x) == c(n_regions, n_years, n_lens, n_ages, n_sexes)) != 5)
        stop("Dimensions of SizeAgeTrans are not correct. Should be n_regions, n_years, n_lens, n_ages, and n_sexes")
